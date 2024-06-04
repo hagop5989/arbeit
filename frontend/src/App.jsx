@@ -8,6 +8,7 @@ import albaRoutes from "./path/albaRoutes.jsx";
 import bossRoutes from "./path/bossRoutes.jsx";
 import storeRoutes from "./path/storeRoutes.jsx";
 import boardRoutes from "./path/boardRoutes.jsx";
+import { NavComponent } from "./NavComponent.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -23,7 +24,7 @@ function App() {
       path: "/",
       element: <Home />,
       children: [
-        { index: true, element: <div>index 화면</div> },
+        { index: true, element: <NavComponent /> },
         ...albaRoutes,
         ...bossRoutes,
         ...storeRoutes,
