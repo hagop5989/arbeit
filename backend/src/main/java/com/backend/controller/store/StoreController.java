@@ -30,6 +30,13 @@ public class StoreController {
         return service.list();
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity get(@PathVariable Integer id) {
+        Store store = service.get(id);
+
+        return ResponseEntity.ok().body(store);
+    }
+
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id) {
         service.remove(id);

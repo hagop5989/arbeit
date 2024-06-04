@@ -40,4 +40,8 @@ public class StoreService {
 
     public void edit(Store store) {
     }
+
+    public Store get(Integer id) {
+        return mapper.selectByStoreId(id);
+    }
 }
