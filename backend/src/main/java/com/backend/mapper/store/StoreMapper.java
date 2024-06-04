@@ -30,4 +30,11 @@ public interface StoreMapper {
             WHERE id = #{id}
             """)
     int deleteById(Integer id);
+
+    @Select("""
+            SELECT id, name, content, address, category
+            FROM store
+            WHERE id = #{id}
+            """)
+    Store selectByStoreId(Integer id);
 }
