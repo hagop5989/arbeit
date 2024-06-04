@@ -19,6 +19,7 @@ CREATE TABLE alba_posts
     title      VARCHAR(100)  NOT NULL,
     content    VARCHAR(3000) NOT NULL,
     store_name VARCHAR(45)   NOT NULL,
-    store_id   INT           NOT NULL,
+    boss_name  VARCHAR(10)   NOT NULL REFERENCES boss (name),
+    store_id   INT,
     boss_id    INT           NOT NULL
 );
