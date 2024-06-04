@@ -5,17 +5,9 @@ import { Navbar } from "../comment/Navbar.jsx";
 
 export function Home() {
   return (
-    <Box mb={350}>
+    <Box>
       <Navbar />
-      <Box
-        mx={{
-          base: 0,
-          lg: 200,
-        }}
-        mt={10}
-      >
-        <Outlet />
-      </Box>
+      <Outlet />
     </Box>
   );
 }

@@ -13,7 +13,7 @@ export function BoardList() {
   }, []);
   return (
     <Box>
-      <Box>자유 게시판</Box>
+      <Box bgColor={"yellow.200"}>자유 게시판</Box>
       <Box>
         <Table>
           <Thead>
@@ -38,8 +38,8 @@ export function BoardList() {
               >
                 <Td> {board.id}</Td>
                 <Td> {board.title}</Td>
-                <Td> {board.content}</Td>
                 <Td> {board.writer}</Td>
+                <Td> {board.content}</Td>
               </Tr>
             ))}
           </Tbody>

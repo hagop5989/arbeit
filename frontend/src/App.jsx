@@ -13,8 +13,9 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <BoardList />,
+        element: <div>홈 화면</div>,
       },
+      { path: "board/list", component: <BoardList /> },
       { path: "write", element: <BoardWriter /> },
       { path: "board/:id", element: <BoardView /> },
       { path: "edit/:id", element: <BoardEdit /> },
