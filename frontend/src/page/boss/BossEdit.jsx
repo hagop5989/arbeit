@@ -10,7 +10,7 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import { LoginContext } from "./LoginProvider.jsx";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

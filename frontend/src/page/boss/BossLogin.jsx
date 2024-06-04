@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginProvider.jsx";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 
 function BossLogin(props) {
