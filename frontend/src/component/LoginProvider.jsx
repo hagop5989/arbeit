@@ -1,4 +1,5 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+
 import { jwtDecode } from "jwt-decode";
 
 export const LoginContext = createContext(null);
@@ -6,6 +7,7 @@ export const LoginContext = createContext(null);
 export function LoginProvider({ children }) {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [expired, setExpired] = useState(0);
   const [authority, setAuthority] = useState([]);
 
@@ -22,7 +24,7 @@ export function LoginProvider({ children }) {
     return Date.now() < expired * 1000;
   }
 
-  // 권한 있는 지? 확인
+  // 권한
   function hasAccess(param) {
     return id == param;
   }
@@ -37,8 +39,8 @@ export function LoginProvider({ children }) {
     const payload = jwtDecode(token);
     setExpired(payload.exp);
     setId(payload.sub);
+    setEmail(payload.email);
     setName(payload.name);
-    // setAuthority(payload.scope.split(" ")); // "admin manager user"
   }
 
   // logout
@@ -46,6 +48,7 @@ export function LoginProvider({ children }) {
     localStorage.removeItem("token");
     setExpired(0);
     setId("");
+    setEmail("");
     setName("");
     setAuthority([]);
   }
@@ -53,13 +56,14 @@ export function LoginProvider({ children }) {
   return (
     <LoginContext.Provider
       value={{
-        id,
-        name,
-        login,
-        logout,
-        isLoggedIn,
-        hasAccess,
-        // isAdmin,
+        id: id,
+        email: email,
+        name: name,
+        login: login,
+        logout: logout,
+        isLoggedIn: isLoggedIn,
+        hasAccess: hasAccess,
+        isAdmin,
       }}
     >
       {children}
