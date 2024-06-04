@@ -2,7 +2,6 @@ package com.backend.controller.alba;
 
 import com.backend.domain.alba.Alba;
 import com.backend.domain.alba.AlbaEditForm;
-import com.backend.domain.alba.AlbaLoginForm;
 import com.backend.domain.alba.AlbaSignupForm;
 import com.backend.service.alba.AlbaService;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +27,6 @@ public class AlbaController {
 
     private final AlbaService albaService;
 
-    /**
-     * create
-     */
     @PostMapping("/signup")
     public ResponseEntity signup(@Validated @RequestBody AlbaSignupForm form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -42,9 +38,6 @@ public class AlbaController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * read
-     */
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity info(@PathVariable("id") Integer id, Authentication authentication) {
@@ -54,38 +47,14 @@ public class AlbaController {
         return ResponseEntity.ok().body(albaService.findById(id));
     }
 
-    /**
-     * readAll
-     */
     @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
     public List<Alba> list() {
         return albaService.findAll();
     }
 
-    /**
-     * login
-     */
-    @PostMapping(value = "/token", params = "type=ALBA")
-    public ResponseEntity token(@Validated @RequestBody AlbaLoginForm form, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = getErrorMessages(bindingResult);
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        Map<String, Object> map = albaService.getToken(form);
-        if (map == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(map);
-    }
-
-    /**
-     * update
-     */
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SCOPE_ALBA')")
     public ResponseEntity edit(@Validated @RequestBody AlbaEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
                                Authentication authentication) {
@@ -103,9 +72,6 @@ public class AlbaController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * delete
-     */
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity delete(@PathVariable("id") Integer id,
@@ -118,7 +84,7 @@ public class AlbaController {
         return ResponseEntity.ok().build();
     }
 
-    private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
+    public static Map<String, String> getErrorMessages(BindingResult bindingResult) {
         Map<String, String> errors = new HashMap<>();
         for (FieldError error : bindingResult.getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());

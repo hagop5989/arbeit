@@ -15,6 +15,8 @@ CREATE TABLE alba
 
 SELECT *
 FROM alba;
+SELECT *
+FROM boss;
 
 DESC alba;
 show tables;

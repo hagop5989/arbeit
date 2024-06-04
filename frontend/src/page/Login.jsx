@@ -21,7 +21,7 @@ export function Login() {
 
   function handleLoginBtn() {
     axios
-      .post(`/api/alba/token?type=${type}`, { email, password })
+      .post(`/api/token?type=${type}`, { email, password })
       .then((res) => {
         account.login(res.data.token);
       })

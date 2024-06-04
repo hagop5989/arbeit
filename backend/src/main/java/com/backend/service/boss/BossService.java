@@ -1,5 +1,6 @@
 package com.backend.service.boss;
 
+import com.backend.domain.authority.Authority;
 import com.backend.domain.boss.Boss;
 import com.backend.mapper.boss.BossMapper;
 import lombok.RequiredArgsConstructor;
@@ -76,11 +77,6 @@ public class BossService {
                 String token = "";
                 Instant now = Instant.now();
 
-//                List<String> authority = mapper.selectAuthorityByBossId(boss.getId());
-
-//                String authorityString = authority.stream()
-//                        .collect(Collectors.joining(" "));
-
                 JwtClaimsSet claims = JwtClaimsSet.builder()
                         .issuer("self")
                         .issuedAt(now)
@@ -88,7 +84,7 @@ public class BossService {
                         .subject(dbBoss.getId().toString())
                         .claim("email", dbBoss.getEmail())
                         .claim("name", dbBoss.getName())
-//                        .claim("scope",authorityString)
+                        .claim("scope", Authority.BOSS)
                         .build();
 
                 token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

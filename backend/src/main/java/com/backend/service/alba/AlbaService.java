@@ -4,6 +4,7 @@ import com.backend.domain.alba.Alba;
 import com.backend.domain.alba.AlbaEditForm;
 import com.backend.domain.alba.AlbaLoginForm;
 import com.backend.domain.alba.AlbaSignupForm;
+import com.backend.domain.authority.Authority;
 import com.backend.mapper.alba.AlbaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,9 @@ public class AlbaService {
                         .issuedAt(now)
                         .expiresAt(now.plusSeconds(60 * 60 * 24 * 7))
                         .subject(dbAlba.getId().toString())
-//                        .claim("name", dbAlba.getName())
+                        .claim("email", dbAlba.getEmail())
+                        .claim("name", dbAlba.getName())
+                        .claim("scope", Authority.ALBA)
                         .build();
 
                 token = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
@@ -80,6 +83,7 @@ public class AlbaService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
+        
         Integer loginId = Integer.valueOf(authentication.getName());
         if (!id.equals(loginId)) {
             return false;
