@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+
 import { jwtDecode } from "jwt-decode";
 
 export const LoginContext = createContext(null);
@@ -8,7 +9,7 @@ export function LoginProvider({ children }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [expired, setExpired] = useState(0);
-  // const [authority, setAuthority] = useState([]);
+  const [authority, setAuthority] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -22,14 +23,15 @@ export function LoginProvider({ children }) {
   function isLoggedIn() {
     return Date.now() < expired * 1000;
   }
-  // 권한 보유확인
+
+  // 권한
   function hasAccess(param) {
     return id == param;
   }
 
-  function isAdmin() {
-    // return authority.includes("admin");
-  }
+  // function isAdmin() {
+  //   return authority.includes("admin");
+  // }
 
   // login
   function login(token) {
@@ -39,7 +41,6 @@ export function LoginProvider({ children }) {
     setId(payload.sub);
     setEmail(payload.email);
     setName(payload.name);
-    // setAuthority(payload.scope.split(" ")); // admin manager user
   }
 
   // logout
@@ -49,7 +50,7 @@ export function LoginProvider({ children }) {
     setId("");
     setEmail("");
     setName("");
-    // setAuthority([]);
+    setAuthority([]);
   }
 
   return (
@@ -62,7 +63,7 @@ export function LoginProvider({ children }) {
         logout: logout,
         isLoggedIn: isLoggedIn,
         hasAccess: hasAccess,
-        isAdmin: isAdmin,
+        isAdmin,
       }}
     >
       {children}

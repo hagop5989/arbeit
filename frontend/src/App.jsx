@@ -11,8 +11,12 @@ import axios from "axios";
 import { BossAlbaPost } from "./page/posts/BossAlbaPost.jsx";
 import { BossAlbaPostCreate } from "./page/posts/BossAlbaPostCreate.jsx";
 import { BossAlbaPostManage } from "./page/posts/BossAlbaPostManage.jsx"; // axios interceptor 설정
+import { AlbaSignup } from "./page/alba/AlbaSignup.jsx";
+import { Login } from "./page/Login.jsx";
+import { AlbaInfo } from "./page/alba/AlbaInfo.jsx";
+import { AlbaEdit } from "./page/alba/AlbaEdit.jsx";
+import { AlbaList } from "./page/alba/AlbaList.jsx";
 
-// axios interceptor 설정
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -27,13 +31,18 @@ function App() {
       path: "/",
       element: <Home />,
       children: [
-        { index: true, element: <Boss /> },
+        { index: true, element: <div>index 화면</div> },
         { path: "bossSignup", element: <BossSignup /> },
         { path: "bossLogin", element: <BossLogin /> },
         { path: "bossEdit", element: <BossEdit /> },
         { path: "bossAlbaPost", element: <BossAlbaPost /> },
         { path: "bossAlbaPostCreate", element: <BossAlbaPostCreate /> },
         { path: "bossAlbaPostManage", element: <BossAlbaPostManage /> },
+        { path: "login", element: <Login /> },
+        { path: "alba/signup", element: <AlbaSignup /> },
+        { path: "alba/list", element: <AlbaList /> },
+        { path: "alba/:id", element: <AlbaInfo /> },
+        { path: "alba/edit/:id", element: <AlbaEdit /> },
       ],
     },
   ]);
