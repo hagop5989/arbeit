@@ -126,7 +126,7 @@ function BossLogin(props) {
             <Text as="a" href="#" mr={2}>
               비밀번호 찾기(모달예정)
             </Text>
-            <Text as="a" href="#" onClick={() => navigate("bossSignup")}>
+            <Text as="a" href="#" onClick={() => navigate("boss/Signup")}>
               회원가입
             </Text>
           </Box>

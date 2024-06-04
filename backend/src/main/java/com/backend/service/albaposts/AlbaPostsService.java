@@ -24,7 +24,9 @@ public class AlbaPostsService {
     }
 
     public AlbaPosts selectByPostId(Integer postId) {
-        return mapper.selectByPostId(postId);
+        AlbaPosts selectpost = mapper.selectByPostId(postId);
+        System.out.println("selectpost = " + selectpost);
+        return selectpost;
     }
 
     public List<AlbaPosts> findAllByBossId(Integer bossId) {

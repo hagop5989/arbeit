@@ -13,13 +13,15 @@ FROM boss
 WHERE email = 's@s';
 
 DROP TABLE alba_posts;
+
+
 CREATE TABLE alba_posts
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     title      VARCHAR(100)  NOT NULL,
     content    VARCHAR(3000) NOT NULL,
     store_name VARCHAR(45)   NOT NULL,
-    boss_name  VARCHAR(10)   NOT NULL REFERENCES boss (name),
     store_id   INT,
-    boss_id    INT           NOT NULL
+    boss_id    INT           NOT NULL REFERENCES boss (id)
 );
+

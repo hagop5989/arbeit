@@ -39,26 +39,26 @@ function Navbar(props) {
             )}
             <VStack display={!showBoxes ? "block" : "none"}>
               <Flex>
-                <Box onClick={() => navigate("/bossSignup")} {...navCss}>
+                <Box onClick={() => navigate("/boss/Signup")} {...navCss}>
                   회원가입
                 </Box>
-                <Box onClick={() => navigate("/bossLogin")} {...navCss}>
+                <Box onClick={() => navigate("/boss/Login")} {...navCss}>
                   로그인
                 </Box>
               </Flex>
             </VStack>
             <VStack display={showBoxes ? "block" : "none"}>
               <Flex gap={3}>
-                <Box onClick={() => navigate("/bossAlbaPost")} {...navCss}>
+                <Box onClick={() => navigate("/boss/albaPost")} {...navCss}>
                   알바공고
                 </Box>
-                <Box onClick={() => navigate("/bossEdit")} {...navCss}>
+                <Box onClick={() => navigate("/boss/Edit")} {...navCss}>
                   정보수정
                 </Box>
                 <Box
                   onClick={() => {
                     account.logout();
-                    navigate("/bossLogin");
+                    navigate("/boss/Login");
                   }}
                   {...navCss}
                 >

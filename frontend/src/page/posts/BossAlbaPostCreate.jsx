@@ -39,7 +39,7 @@ export function BossAlbaPostCreate() {
         .post("/api/boss/post/insert", albaPost)
         .then((res) => {
           mytoast("공고생성 되었습니다", "success");
-          navigate("/bossAlbaPostList");
+          navigate("/boss/albaPost/list");
         })
         .catch((e) => {
           mytoast("입력 값을 확인해주세요.", "error");

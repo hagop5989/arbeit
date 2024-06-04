@@ -53,7 +53,7 @@ function BossEdit(props) {
       })
       .finally(() => {
         account.logout();
-        navigate("/bossLogin");
+        navigate("/boss/Login");
       });
   }
 
