@@ -14,6 +14,8 @@ import { Login } from "./page/Login.jsx";
 import { AlbaInfo } from "./page/alba/AlbaInfo.jsx";
 import { AlbaEdit } from "./page/alba/AlbaEdit.jsx";
 import { AlbaList } from "./page/alba/AlbaList.jsx";
+import { StoreList } from "./page/store/StoreList.jsx";
+import { StoreRegister } from "./page/store/StoreRegister.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -41,9 +43,12 @@ function App() {
         { path: "alba/list", element: <AlbaList /> },
         { path: "alba/:id", element: <AlbaInfo /> },
         { path: "alba/edit/:id", element: <AlbaEdit /> },
+        { path: "store/list", element: <StoreList /> },
+        { path: "store/add", element: <StoreRegister /> },
       ],
     },
   ]);
+  
   return (
     <LoginProvider>
       <ChakraProvider>
