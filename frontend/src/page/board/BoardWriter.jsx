@@ -8,22 +8,21 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { useState } from "react";
 
 export function BoardWriter() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [writer, setWriter] = useState({});
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
-  const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
 
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post(`api/board/${writer}`, {
+      .post(`api/board/writer`, {
         title,
         content,
       })
@@ -84,7 +83,7 @@ export function BoardWriter() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input readOnly value={account.writer}></Input>
+            <Input onChange={(e) => setWriter(e.target.value)}></Input>
           </FormControl>
         </Box>
 

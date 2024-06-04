@@ -63,28 +63,40 @@ export function BoardEdit() {
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
-          <Input />
+          <Input
+            defaultValue={board.title}
+            onChange={(e) => setBoard({ ...board, title: e.target.value })}
+          />
         </FormControl>
       </Box>
 
       <Box>
         <FormControl>
           <FormLabel>본문</FormLabel>
-          <Input />
+          <Input
+            defaultValue={board.content}
+            onChange={(e) => setBoard({ ...board, content: e.target.value })}
+          />
         </FormControl>
       </Box>
 
       <Box>
         <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Input />
+          <Input
+            defaultValue={board.writer}
+            onChange={(e) => setBoard({ ...board, writer: e.target.value })}
+          />
         </FormControl>
       </Box>
 
       <Box>
         <FormControl>
           <FormLabel>별명</FormLabel>
-          <Input />
+          <Input
+            defaultValue={board.nickName}
+            onChange={(e) => setBoard({ ...board, title: e.target.value })}
+          />
         </FormControl>
       </Box>
 
