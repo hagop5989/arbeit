@@ -16,6 +16,10 @@ import { AlbaEdit } from "./page/alba/AlbaEdit.jsx";
 import { AlbaList } from "./page/alba/AlbaList.jsx";
 import { StoreList } from "./page/store/StoreList.jsx";
 import { StoreRegister } from "./page/store/StoreRegister.jsx";
+import { BoardWriter } from "./page/board/BoardWriter.jsx";
+import { BoardList } from "./page/board/BoardList.jsx";
+import { BoardView } from "./page/board/BoardView.jsx";
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -45,6 +49,10 @@ function App() {
         { path: "alba/edit/:id", element: <AlbaEdit /> },
         { path: "store/list", element: <StoreList /> },
         { path: "store/add", element: <StoreRegister /> },
+        { path: "board/list", component: <BoardList /> },
+        { path: "write", element: <BoardWriter /> },
+        { path: "board/:id", element: <BoardView /> },
+        { path: "edit/:id", element: <BoardEdit /> },
       ],
     },
   ]);
