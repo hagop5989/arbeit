@@ -1,24 +1,25 @@
 package com.backend.domain.alba;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Alba {
+public class AlbaEditForm {
 
-    private Integer id;
+    @Email
+    @NotBlank
     private String email;
-    @Setter
     private String password;
+    private String passwordCheck;
+    @NotBlank
     private String name;
+    @NotBlank
     private String address;
+    @NotBlank
     private String phone;
-    private LocalDateTime inserted;
-
 }

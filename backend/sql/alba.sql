@@ -17,3 +17,4 @@ SELECT *
 FROM alba;
 
 DESC alba;
+show tables;

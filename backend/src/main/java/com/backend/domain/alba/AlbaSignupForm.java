@@ -5,13 +5,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-@NotBlank
 public class AlbaSignupForm {
 
     @Email
+    @NotBlank
     private String email;
+    @NotBlank
     private String password;
+    @NotBlank
     private String name;
+    @NotBlank
     private String address;
+    @NotBlank
     private String phone;
 }
