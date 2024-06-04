@@ -1,13 +1,14 @@
-import {createContext, useEffect, useState} from "react";
+import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 export const LoginContext = createContext(null);
 
 export function LoginProvider({ children }) {
   const [id, setId] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [expired, setExpired] = useState(0);
-  const [authority, setAuthority] = useState([]);
+  // const [authority, setAuthority] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,7 +28,7 @@ export function LoginProvider({ children }) {
   }
 
   function isAdmin() {
-    return authority.includes("admin");
+    // return authority.includes("admin");
   }
 
   // login
@@ -36,8 +37,9 @@ export function LoginProvider({ children }) {
     const payload = jwtDecode(token);
     setExpired(payload.exp);
     setId(payload.sub);
-    setEmail(payload.nickName);
-    setAuthority(payload.scope.split(" ")); // admin manager user
+    setEmail(payload.email);
+    setName(payload.name);
+    // setAuthority(payload.scope.split(" ")); // admin manager user
   }
 
   // logout
@@ -46,14 +48,16 @@ export function LoginProvider({ children }) {
     setExpired(0);
     setId("");
     setEmail("");
-    setAuthority([]);
+    setName("");
+    // setAuthority([]);
   }
 
   return (
     <LoginContext.Provider
       value={{
         id: id,
-        nickName: email,
+        email: email,
+        name: name,
         login: login,
         logout: logout,
         isLoggedIn: isLoggedIn,

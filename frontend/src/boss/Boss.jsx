@@ -1,19 +1,13 @@
 import React from "react";
-import { Box, Button, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading } from "@chakra-ui/react";
 
 function Boss(props) {
   return (
     <Box>
-      <Heading>보스페이지</Heading>
-      <Button onClick={() => {}}>
-        <a href={"/BossSignup"}>회원가입</a>
-      </Button>
-      <Button onClick={() => {}}>
-        <a href={"/BossLogin"}>로그인</a>
-      </Button>
-      <Button onClick={() => {}}>
-        <a href={"/BossEdit"}>정보수정</a>
-      </Button>
+      <Heading>보스 메인페이지</Heading>
+      <Center>
+        <h1>보스 메인 페이지입니다!!!!</h1>
+      </Center>
     </Box>
   );
 }
