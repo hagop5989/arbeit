@@ -20,6 +20,7 @@ import { BoardWriter } from "./page/board/BoardWriter.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
+import { LoginIndex } from "./LoginIndex.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -35,7 +36,7 @@ function App() {
       path: "/",
       element: <Home />,
       children: [
-        { index: true, element: <div>index 화면</div> },
+        { index: true, element: <LoginIndex /> },
         { path: "bossSignup", element: <BossSignup /> },
         { path: "bossLogin", element: <BossLogin /> },
         { path: "bossEdit", element: <BossEdit /> },
@@ -47,6 +48,7 @@ function App() {
         { path: "alba/list", element: <AlbaList /> },
         { path: "alba/:id", element: <AlbaInfo /> },
         { path: "alba/edit/:id", element: <AlbaEdit /> },
+        { path: "testIndex", element: <LoginIndex /> },
         { path: "store/list", element: <StoreList /> },
         { path: "store/add", element: <StoreRegister /> },
         { path: "list", element: <BoardList /> },

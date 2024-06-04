@@ -8,6 +8,8 @@ import {
   FormLabel,
   Heading,
   Input,
+  Stack,
+  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -95,6 +97,26 @@ function BossLogin(props) {
           </FormControl>
         </Center>
       </Flex>
+      <Box>
+        <Stack spacing={4}>
+          <Input placeholder="기업회원 이메일 입력" />
+          <Input placeholder="비밀번호" type="password" />
+          <Button colorScheme="blue" size="lg" width="full">
+            로그인
+          </Button>
+          <Box textAlign="right" mt={2}>
+            <Text as="a" href="#" mr={2}>
+              아이디 찾기
+            </Text>
+            <Text as="a" href="#" mr={2}>
+              비밀번호 찾기
+            </Text>
+            <Text as="a" href="#">
+              회원가입
+            </Text>
+          </Box>
+        </Stack>
+      </Box>
     </Box>
   );
 }
