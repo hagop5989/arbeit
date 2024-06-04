@@ -9,7 +9,7 @@ export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("api/board/List").then((res) => setBoardList(res.data));
+    axios.get("api/board/list").then((res) => setBoardList(res.data));
   }, []);
   return (
     <Box>

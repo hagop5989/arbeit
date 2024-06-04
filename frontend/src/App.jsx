@@ -49,14 +49,14 @@ function App() {
         { path: "alba/edit/:id", element: <AlbaEdit /> },
         { path: "store/list", element: <StoreList /> },
         { path: "store/add", element: <StoreRegister /> },
-        { path: "board/list", component: <BoardList /> },
+        { path: "list", element: <BoardList /> },
         { path: "write", element: <BoardWriter /> },
         { path: "board/:id", element: <BoardView /> },
         { path: "edit/:id", element: <BoardEdit /> },
       ],
     },
   ]);
-  
+
   return (
     <LoginProvider>
       <ChakraProvider>
