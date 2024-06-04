@@ -3,7 +3,7 @@ import BossLogin from "../page/boss/BossLogin.jsx";
 import BossEdit from "../page/boss/BossEdit.jsx";
 import { BossAlbaPost } from "../page/posts/BossAlbaPost.jsx";
 import { BossAlbaPostCreate } from "../page/posts/BossAlbaPostCreate.jsx";
-import { BossAlbaPostManage } from "../page/posts/BossAlbaPostManage.jsx";
+import { BossAlbaPostList } from "../page/posts/BossAlbaPostList.jsx";
 
 const bossRoutes = [
   { path: "bossSignup", element: <BossSignup /> },
@@ -11,7 +11,7 @@ const bossRoutes = [
   { path: "bossEdit", element: <BossEdit /> },
   { path: "bossAlbaPost", element: <BossAlbaPost /> },
   { path: "bossAlbaPostCreate", element: <BossAlbaPostCreate /> },
-  { path: "bossAlbaPostManage", element: <BossAlbaPostManage /> },
+  { path: "bossAlbaPostList", element: <BossAlbaPostList /> },
 ];
 
 export default bossRoutes;

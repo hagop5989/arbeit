@@ -22,6 +22,7 @@ export function BossAlbaPostCreate() {
     title: "",
     content: "",
     storeName: "default",
+    bossId: account.id,
     bossName: account.name,
   });
   const allFieldsFilled = Object.values(albaPost).every(
@@ -38,7 +39,7 @@ export function BossAlbaPostCreate() {
         .post("/api/boss/post/insert", albaPost)
         .then((res) => {
           mytoast("공고생성 되었습니다", "success");
-          navigate("/bossLogin");
+          navigate("/bossAlbaPostList");
         })
         .catch((e) => {
           mytoast("입력 값을 확인해주세요.", "error");

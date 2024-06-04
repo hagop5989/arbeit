@@ -8,8 +8,8 @@ import java.util.List;
 @Mapper
 public interface AlbaPostsMapper {
     @Insert("""
-            INSERT INTO alba_posts( title, content, store_name, store_id, boss_id)
-            VALUES(#{title}, #{content}, #{storeName}, #{storeId}, #{bossId})
+            INSERT INTO alba_posts( title, content, store_name,boss_name, store_id, boss_id)
+            VALUES(#{title}, #{content}, #{storeName},#{boss_name}, #{storeId}, #{bossId})
             """)
     int insert(AlbaPosts albaPosts);
 
