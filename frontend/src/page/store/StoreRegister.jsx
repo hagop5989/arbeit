@@ -38,9 +38,11 @@ export function StoreRegister() {
       )
       .then((response) => {
         toast({
+          title: "가게 등록 성공",
           description: "새 가게가 등록되었습니다.",
           status: "success",
-          position: "top",
+          duration: 5000,
+          isClosable: true,
         });
         navigate("/");
       })
@@ -50,11 +52,13 @@ export function StoreRegister() {
           error.response ? error.response.data : error.message,
         );
         toast({
+          title: "가게 등록 실패",
           description: error.response
             ? error.response.data
             : "등록 중 오류가 발생했습니다.",
           status: "error",
-          position: "top",
+          duration: 5000,
+          isClosable: true,
         });
       });
   }
@@ -69,58 +73,61 @@ export function StoreRegister() {
   }
 
   return (
-    <Box>
-      <Box>
-        <Box>
-          <FormControl>
-            <FormLabel>가게 이름</FormLabel>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>가게 내용</FormLabel>
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>가게 주소</FormLabel>
-            <Input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>가게 카테고리</FormLabel>
-            <Select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="요식업">요식업</option>
-              <option value="미용">미용</option>
-              <option value="유통">유통</option>
-              <option value="사무직">사무업무</option>
-              <option value="생산">생산</option>
-              <option value="기타">기타</option>
-            </Select>
-          </FormControl>
-        </Box>
-        <Box>
-          <Button
-            isDisabled={disableSaveButton}
-            colorScheme={"blue"}
-            onClick={handleSaveClick}
-          >
-            저장
-          </Button>
-        </Box>
+    <Box p={4} maxWidth="600px" mx="auto">
+      <Box mb={4}>
+        <FormControl>
+          <FormLabel>가게 이름</FormLabel>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="가게 이름을 입력하세요."
+          />
+        </FormControl>
       </Box>
+      <Box mb={4}>
+        <FormControl>
+          <FormLabel>가게 내용</FormLabel>
+          <Textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="가게 내용을 입력하세요."
+          />
+        </FormControl>
+      </Box>
+      <Box mb={4}>
+        <FormControl>
+          <FormLabel>가게 주소</FormLabel>
+          <Input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="가게 주소를 입력하세요."
+          />
+        </FormControl>
+      </Box>
+      <Box mb={4}>
+        <FormControl>
+          <FormLabel>가게 카테고리</FormLabel>
+          <Select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="카테고리 선택"
+          >
+            <option value="요식업">요식업</option>
+            <option value="미용">미용</option>
+            <option value="유통">유통</option>
+            <option value="사무직">사무업무</option>
+            <option value="생산">생산</option>
+            <option value="기타">기타</option>
+          </Select>
+        </FormControl>
+      </Box>
+      <Button
+        isDisabled={disableSaveButton}
+        colorScheme="blue"
+        onClick={handleSaveClick}
+      >
+        저장
+      </Button>
     </Box>
   );
 }
