@@ -30,7 +30,7 @@ export function AlbaEdit() {
   };
 
   function handleSaveBtn() {
-    axios.put(`/api/alba/edit`, alba).then().catch().finally();
+    axios.put(`/api/alba/${id}`, alba).then().catch().finally();
   }
 
   return (
