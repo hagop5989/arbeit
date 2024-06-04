@@ -2,6 +2,8 @@ import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -16,10 +18,12 @@ export function BoardList() {
         <Table>
           <Thead>
             <Tr>
-              <Th>아이디</Th>
+              <Th>#</Th>
               <Th>제목</Th>
               <Th>본문</Th>
-              <Th>작성자</Th>
+              <Th>
+                <FontAwesomeIcon icon={faUserPen} />
+              </Th>
             </Tr>
           </Thead>
           <Tbody>

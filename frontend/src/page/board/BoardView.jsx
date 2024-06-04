@@ -46,7 +46,22 @@ export function BoardView() {
   }
 
   function handleReMoving() {
-    axios.delete(`/api/board/${id}`);
+    axios
+      .delete(`/api/board/${id}`)
+      .then(() => {
+        toast({
+          status: "success",
+          description: `${id}번 게시물이 삭제되었습니다`,
+          position: "top",
+        });
+        navigate("/");
+      })
+      .catch(() => {
+        toast({
+          status: "error",
+          description: `${id}번 게시물 삭제를 실패하였습니다`,
+        });
+      });
   }
 
   return (
@@ -94,27 +109,29 @@ export function BoardView() {
       {/*-----------*/}
       <Box>
         <Button
-          colorScheme={"grey"}
+          colorScheme={"purple"}
           onClick={() => navigate(`/edit/${board.id}`)}
         >
           수정
         </Button>
-        <Button colorScheme={"grey"} onClick={onOpen}>
+
+        <Button colorScheme={"red"} onClick={onOpen}>
           삭제
         </Button>
       </Box>
       {/*-----------*/}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent />
-        <ModalHeader></ModalHeader>
-        <ModalBody>삭제하시겠습니까?</ModalBody>
-        <ModalFooter>
-          <Button onClick={onclose}>취소</Button>
-          <Button colorScheme={"grey"} onClick={handleReMoving}>
-            확인
-          </Button>
-        </ModalFooter>
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalBody>삭제하시겠습니까?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>취소</Button>
+            <Button colorScheme={"green"} onClick={handleReMoving}>
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
     </Box>
   );

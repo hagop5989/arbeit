@@ -43,4 +43,19 @@ public class BoardController {
         }
         return ResponseEntity.ok().body(board);
     }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable Integer id) {
+        service.removing(id);
+    }
+
+    @PutMapping("edit")
+    public ResponseEntity edit(@RequestBody Board board) {
+        if (service.validate(board)) {
+            service.edit(board);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
