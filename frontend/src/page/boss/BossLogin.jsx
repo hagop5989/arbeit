@@ -99,19 +99,34 @@ function BossLogin(props) {
       </Flex>
       <Box>
         <Stack spacing={4}>
-          <Input placeholder="기업회원 이메일 입력" />
-          <Input placeholder="비밀번호" type="password" />
-          <Button colorScheme="blue" size="lg" width="full">
+          <Input
+            value={loginBoss.email.trim()}
+            onChange={(e) => handleLoginBossInput("email", e)}
+            type={"text"}
+            placeholder="기업회원 이메일 입력"
+          />
+          <Input
+            value={loginBoss.password}
+            onChange={(e) => handleLoginBossInput("password", e)}
+            placeholder="비밀번호"
+            type="password"
+          />
+          <Button
+            onClick={handleLoginBoss}
+            colorScheme="blue"
+            size="lg"
+            width="full"
+          >
             로그인
           </Button>
           <Box textAlign="right" mt={2}>
             <Text as="a" href="#" mr={2}>
-              아이디 찾기
+              아이디 찾기(모달예정)
             </Text>
             <Text as="a" href="#" mr={2}>
-              비밀번호 찾기
+              비밀번호 찾기(모달예정)
             </Text>
-            <Text as="a" href="#">
+            <Text as="a" href="#" onClick={() => navigate("bossSignup")}>
               회원가입
             </Text>
           </Box>
