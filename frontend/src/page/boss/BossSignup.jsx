@@ -40,7 +40,7 @@ function BossSignup(props) {
         .post("/api/boss/insert", newBoss)
         .then((res) => {
           mytoast("회원가입 되었습니다", "success");
-          navigate("/bossLogin");
+          navigate("/boss/Login");
         })
         .catch((e) => {
           mytoast("입력 값을 확인해주세요.", "error");

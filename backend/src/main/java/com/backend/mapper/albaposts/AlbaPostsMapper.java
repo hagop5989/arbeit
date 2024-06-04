@@ -8,8 +8,8 @@ import java.util.List;
 @Mapper
 public interface AlbaPostsMapper {
     @Insert("""
-            INSERT INTO alba_posts( title, content, store_name,boss_name, store_id, boss_id)
-            VALUES(#{title}, #{content}, #{storeName},#{boss_name}, #{storeId}, #{bossId})
+            INSERT INTO alba_posts( title, content, store_name, store_id, boss_id)
+            VALUES(#{title}, #{content}, #{storeName}, #{storeId}, #{bossId})
             """)
     int insert(AlbaPosts albaPosts);
 
@@ -31,8 +31,10 @@ public interface AlbaPostsMapper {
     AlbaPosts selectByPostId(Integer id);
 
     @Select("""
-            SELECT * FROM alba_posts
-            WHERE boss_id = #{bossId}
+            SELECT ap.id, ap.title, ap.store_name, b.name AS bossName
+            FROM alba_posts ap
+            JOIN boss b ON ap.boss_id = b.id
+            WHERE b.id = #{id}
             """)
     List<AlbaPosts> findAllByBossId(Integer bossId);
 

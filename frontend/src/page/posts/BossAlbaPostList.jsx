@@ -46,7 +46,7 @@ export function BossAlbaPostList() {
                   key={albaPost.id}
                   cursor={"pointer"}
                   _hover={{ bgColor: "gray.200" }}
-                  onClick={() => navigate(`/bossAlbaPostList/${albaPost.id}`)}
+                  onClick={() => navigate(`/boss/albaPost/${albaPost.id}`)}
                 >
                   <Td>{albaPost.id}</Td>
                   <Td>{albaPost.title}</Td>

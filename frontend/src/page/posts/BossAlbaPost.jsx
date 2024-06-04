@@ -11,7 +11,7 @@ export function BossAlbaPost() {
         <Box>
           <Flex>
             <Box
-              onClick={() => navigate("/bossAlbaPostCreate")}
+              onClick={() => navigate("/boss/albaPost/create")}
               textAlign="center"
               fontSize="3rem"
               margin="30px"
@@ -25,7 +25,7 @@ export function BossAlbaPost() {
               생성하기
             </Box>
             <Box
-              onClick={() => navigate("/bossAlbaPostManage")}
+              onClick={() => navigate("/boss/albaPost/list")}
               textAlign="center"
               fontSize="3rem"
               margin="30px"

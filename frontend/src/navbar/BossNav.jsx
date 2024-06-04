@@ -6,14 +6,14 @@ export function BossNav() {
 
   return (
     <>
-      <Box onClick={() => navigate("/bossSignup")}>/bossSignup</Box>
-      <Box onClick={() => navigate("/bossLogin")}>/bossLogin</Box>
-      <Box onClick={() => navigate("/bossEdit")}>/bossEdit</Box>
-      <Box onClick={() => navigate(`/bossAlbaPost`)}>/bossAlbaPost</Box>
-      <Box onClick={() => navigate(`/bossAlbaPostCreate`)}>
+      <Box onClick={() => navigate("/boss/Signup")}>/bossSignup</Box>
+      <Box onClick={() => navigate("/boss/Login")}>/bossLogin</Box>
+      <Box onClick={() => navigate("/boss/Edit")}>/bossEdit</Box>
+      <Box onClick={() => navigate(`/boss/albaPost`)}>/bossAlbaPost</Box>
+      <Box onClick={() => navigate(`/boss/albaPost/create`)}>
         /bossAlbaPostCreate
       </Box>
-      <Box onClick={() => navigate(`/bossAlbaPostManage`)}>
+      <Box onClick={() => navigate(`/boss/albaPost/list`)}>
         /bossAlbaPostManage
       </Box>
     </>
