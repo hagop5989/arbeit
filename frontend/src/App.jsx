@@ -1,10 +1,8 @@
-import Boss from "./page/boss/Boss.jsx";
 import BossSignup from "./page/boss/BossSignup.jsx";
 import BossLogin from "./page/boss/BossLogin.jsx";
 import BossEdit from "./page/boss/BossEdit.jsx";
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import React from "react";
 import Home from "./page/Home.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
 import axios from "axios";

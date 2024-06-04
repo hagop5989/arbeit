@@ -9,7 +9,6 @@ export function LoginProvider({ children }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [expired, setExpired] = useState(0);
-  const [authority, setAuthority] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -29,10 +28,6 @@ export function LoginProvider({ children }) {
     return id == param;
   }
 
-  // function isAdmin() {
-  //   return authority.includes("admin");
-  // }
-
   // login
   function login(token) {
     localStorage.setItem("token", token);
@@ -50,20 +45,18 @@ export function LoginProvider({ children }) {
     setId("");
     setEmail("");
     setName("");
-    setAuthority([]);
   }
 
   return (
     <LoginContext.Provider
       value={{
-        id: id,
-        email: email,
-        name: name,
-        login: login,
-        logout: logout,
-        isLoggedIn: isLoggedIn,
-        hasAccess: hasAccess,
-        isAdmin,
+        id,
+        email,
+        name,
+        login,
+        logout,
+        isLoggedIn,
+        hasAccess,
       }}
     >
       {children}
