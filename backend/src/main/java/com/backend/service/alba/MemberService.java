@@ -1,5 +1,6 @@
 package com.backend.service.alba;
 
+import com.backend.domain.authority.Authority;
 import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberEditForm;
 import com.backend.domain.member.MemberLoginForm;
@@ -120,5 +121,12 @@ public class MemberService {
         }
 
         return map;
+    }
+
+    public boolean checkAuthority(MemberLoginForm form) {
+        Member dbMember = mapper.selectByEmail(form.getEmail());
+        Authority memberAuth = dbMember.getAuthority();
+        Authority newAuth = form.getAuthority();
+        return memberAuth.equals(newAuth);
     }
 }

@@ -6,16 +6,20 @@ import {
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../component/LoginProvider.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
   const [authority, setAuthority] = useState("ALBA");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [password, setPassword] = useState("");
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const account = useContext(LoginContext);
 
@@ -24,8 +28,21 @@ export function Login() {
       .post(`/api/token`, { email, password, authority })
       .then((res) => {
         account.login(res.data.token);
+        navigate("/");
+        toast({
+          status: "success",
+          description: "로그인 완료",
+          position: "top",
+        });
       })
       .catch((err) => {
+        if (err.response.status === 403) {
+          toast({
+            status: "warning",
+            description: "권한을 확인해주세요.",
+            position: "top",
+          });
+        }
         setErrors(err.response.data);
       })
       .finally();

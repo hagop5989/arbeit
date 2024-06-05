@@ -4,32 +4,26 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Heading,
   Input,
+  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [board, setBoard] = useState({});
-  const [member, setMember] = useState({});
   const [errors, setErrors] = useState({});
   const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get(`/api/member/${account.id}`).then((res) => {
-      setMember(res.data);
-    });
-  }, []);
-
-  function handleSaveClick() {
-    setBoard({ ...board, memberId: member.id });
+  function handleWriteBtn() {
     axios
-      .post(`/api/board/write`, board)
+      .post(`/api/board/write`, { ...board, memberId: account.id })
       .then(() => {
         toast({
           description: "글이 작성 되었습니다",
@@ -38,9 +32,9 @@ export function BoardWrite() {
         });
         navigate("/");
       })
-      .catch((e) => {
-        const code = e.response.status;
-
+      .catch((err) => {
+        setErrors(err.response.data);
+        const code = err.response.status;
         if (code === 400) {
           toast({
             status: "error",
@@ -58,7 +52,9 @@ export function BoardWrite() {
 
   return (
     <Box>
-      <Box>알바 경험담</Box>
+      <Box>
+        <Heading>게시판 작성</Heading>
+      </Box>
       <Box>
         <Box>
           <FormControl>
@@ -67,15 +63,12 @@ export function BoardWrite() {
             {errors && <FormHelperText>{errors.title}</FormHelperText>}
 
             <FormLabel>내용</FormLabel>
-            <Input onChange={handleInputChange("content")}></Input>
+            <Textarea onChange={handleInputChange("content")}></Textarea>
             {errors && <FormHelperText>{errors.content}</FormHelperText>}
-
-            <FormLabel>작성자</FormLabel>
-            <Input value={member.name} isReadOnly></Input>
           </FormControl>
         </Box>
         <Box>
-          <Button colorScheme={"blue"} onClick={handleSaveClick}>
+          <Button colorScheme={"blue"} onClick={handleWriteBtn}>
             등록
           </Button>
         </Box>

@@ -17,16 +17,16 @@ public interface BoardMapper {
 
 
     @Select("""
-            SELECT  id,title,content,writer
-            FROM board
+            SELECT b.id, title, m.name, b.inserted
+            FROM board b JOIN member m ON m.id = b.member_id
             ORDER BY id DESC
             """)
     List<Board> selectAll();
 
     @Select("""
-                SELECT *
-                FROM board
-                WHERE id= #{id}
+                SELECT b.id, m.name, b.member_id, title, content, b.inserted
+                FROM board b JOIN member m ON m.id = b.member_id
+                WHERE b.id= #{id}
             """)
     Board selectById(Integer id);
 
@@ -40,8 +40,8 @@ public interface BoardMapper {
 
     @Update("""
             UPDATE board
-                SET title=#{title},
-                    content=#{content},
+            SET title=#{title},
+                content=#{content}
             WHERE id= #{id}
             """)
     int update(Board board);

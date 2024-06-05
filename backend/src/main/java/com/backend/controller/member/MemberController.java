@@ -14,9 +14,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RestController
@@ -73,8 +73,8 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    public static Map<String, String> getErrorMessages(BindingResult bindingResult) {
-        Map<String, String> errors = new HashMap<>();
+    private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
+        Map<String, String> errors = new ConcurrentHashMap<>();
         for (FieldError error : bindingResult.getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
