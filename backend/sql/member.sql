@@ -10,10 +10,11 @@ CREATE TABLE member
     name      VARCHAR(10)  NOT NULL,
     address   VARCHAR(100) NOT NULL,
     phone     VARCHAR(11)  NOT NULL,
-    authority VARCHAR(3)   NOT NULL,
+    authority VARCHAR(10)  NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
 
+DROP TABLE authority;
 CREATE TABLE authority
 (
     member_id INT REFERENCES member (id),
@@ -22,3 +23,9 @@ CREATE TABLE authority
 );
 
 show tables;
+
+# INSERT INTO member (email, password, name, address, phone, authority)
+# VALUES ('admin@admin', '123', 'admin', '관리자 주소', '관리자 전화번호', 'ADMIN');
+
+SELECT *
+FROM member;

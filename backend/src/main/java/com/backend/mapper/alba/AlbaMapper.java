@@ -1,6 +1,6 @@
 package com.backend.mapper.alba;
 
-import com.backend.domain.member.Alba;
+import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberSignupForm;
 import org.apache.ibatis.annotations.*;
 
@@ -16,28 +16,28 @@ public interface AlbaMapper {
     void insert(MemberSignupForm form);
 
     @Select("SELECT * FROM member ORDER BY id DESC")
-    List<Alba> selectAll();
+    List<Member> selectAll();
 
     @Select("""
             SELECT *
             FROM member
             WHERE email=#{email}
             """)
-    Alba selectByEmail(String email);
+    Member selectByEmail(String email);
 
     @Select("""
             SELECT *
             FROM member
             WHERE id=#{id}
             """)
-    Alba selectById(Integer id);
+    Member selectById(Integer id);
 
     @Update("""
             UPDATE member
             SET email=#{email}, name=#{name}, address=#{address}, phone=#{phone}
             WHERE id=#{id}
             """)
-    void updateById(Alba alba);
+    void updateById(Member member);
 
     @Delete("DELETE FROM member WHERE id=#{id}")
     void deleteById(Integer id);

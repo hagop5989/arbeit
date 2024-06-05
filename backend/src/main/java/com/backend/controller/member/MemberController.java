@@ -1,9 +1,9 @@
 package com.backend.controller.member;
 
-import com.backend.domain.member.Alba;
-import com.backend.domain.member.AlbaEditForm;
+import com.backend.domain.member.Member;
+import com.backend.domain.member.MemberEditForm;
 import com.backend.domain.member.MemberSignupForm;
-import com.backend.service.alba.AlbaService;
+import com.backend.service.alba.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class MemberController {
 
-    private final AlbaService albaService;
+    private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity signup(@Validated @RequestBody MemberSignupForm form, BindingResult bindingResult) {
@@ -34,28 +34,28 @@ public class MemberController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        albaService.signup(form);
+        memberService.signup(form);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity info(@PathVariable("id") Integer id, Authentication authentication) {
-        if (!albaService.hasAccess(id, authentication)) {
+        if (!memberService.hasAccess(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.ok().body(albaService.findById(id));
+        return ResponseEntity.ok().body(memberService.findById(id));
     }
 
     @GetMapping("/list")
-    @PreAuthorize("isAuthenticated()")
-    public List<Alba> list() {
-        return albaService.findAll();
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public List<Member> list() {
+        return memberService.findAll();
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
-    public ResponseEntity edit(@Validated @RequestBody AlbaEditForm form, BindingResult bindingResult,
+    public ResponseEntity edit(@Validated @RequestBody MemberEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
                                Authentication authentication) {
 
@@ -64,11 +64,11 @@ public class MemberController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        if (!albaService.hasAccess(id, authentication)) {
+        if (!memberService.hasAccess(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        albaService.edit(form, authentication);
+        memberService.edit(form, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -76,11 +76,11 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity delete(@PathVariable("id") Integer id,
                                  Authentication authentication) {
-        if (!albaService.hasAccess(id, authentication)) {
+        if (!memberService.hasAccess(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        albaService.deleteById(id);
+        memberService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
