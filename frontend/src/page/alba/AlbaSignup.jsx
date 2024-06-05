@@ -6,17 +6,18 @@ import {
   FormLabel,
   Heading,
   Input,
+  Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
 
 export function AlbaSignup() {
-  const [alba, setAlba] = useState({});
+  const [member, setMember] = useState({});
   const [errors, setErrors] = useState({});
 
   function handleSignupBtn() {
     axios
-      .post("/api/alba/signup", alba)
+      .post("/api/signup", member)
       .then()
       .catch((err) => {
         setErrors(err.response.data);
@@ -25,7 +26,7 @@ export function AlbaSignup() {
   }
 
   const handleInputChange = (prop) => (e) => {
-    setAlba({ ...alba, [prop]: e.target.value });
+    setMember({ ...member, [prop]: e.target.value });
   };
 
   return (
@@ -34,6 +35,15 @@ export function AlbaSignup() {
         <Heading>알바 회원가입</Heading>
       </Box>
       <FormControl>
+        <Select
+          placeholder="권한을 정해주세요."
+          onChange={handleInputChange("authority")}
+        >
+          <option value="ALBA">알바</option>
+          <option value="BOSS">사장</option>
+          <option value="ADMIN">관리자 (나중에 지울 예정)</option>
+        </Select>
+
         <FormLabel>이메일</FormLabel>
         <Input onChange={handleInputChange("email")} />
         {errors && <FormHelperText>{errors.email}</FormHelperText>}

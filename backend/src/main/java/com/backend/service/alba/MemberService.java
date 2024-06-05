@@ -1,10 +1,9 @@
 package com.backend.service.alba;
 
-import com.backend.domain.alba.Alba;
-import com.backend.domain.alba.AlbaEditForm;
-import com.backend.domain.alba.AlbaLoginForm;
-import com.backend.domain.alba.AlbaSignupForm;
-import com.backend.domain.authority.Authority;
+import com.backend.domain.member.Member;
+import com.backend.domain.member.MemberEditForm;
+import com.backend.domain.member.MemberLoginForm;
+import com.backend.domain.member.MemberSignupForm;
 import com.backend.mapper.alba.AlbaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,23 +24,23 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class AlbaService {
+public class MemberService {
 
     private final AlbaMapper mapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtEncoder encoder;
 
-    public void signup(AlbaSignupForm form) {
+    public void signup(MemberSignupForm form) {
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         mapper.insert(form);
     }
 
-    public Map<String, Object> getToken(AlbaLoginForm form) {
+    public Map<String, Object> getToken(MemberLoginForm form) {
         Map<String, Object> result = null;
 
-        Alba dbAlba = mapper.selectByEmail(form.getEmail());
-        if (dbAlba != null) {
-            if (passwordEncoder.matches(form.getPassword(), dbAlba.getPassword())) {
+        Member dbMember = mapper.selectByEmail(form.getEmail());
+        if (dbMember != null) {
+            if (passwordEncoder.matches(form.getPassword(), dbMember.getPassword())) {
                 result = new HashMap<>();
                 String token = "";
                 Instant now = Instant.now();
@@ -50,10 +49,10 @@ public class AlbaService {
                         .issuer("self")
                         .issuedAt(now)
                         .expiresAt(now.plusSeconds(60 * 60 * 24 * 7))
-                        .subject(dbAlba.getId().toString())
-                        .claim("email", dbAlba.getEmail())
-                        .claim("name", dbAlba.getName())
-                        .claim("scope", Authority.ALBA)
+                        .subject(dbMember.getId().toString())
+                        .claim("scope", form.getAuthority())
+                        .claim("email", dbMember.getEmail())
+                        .claim("name", dbMember.getName())
                         .build();
 
                 token = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
@@ -65,25 +64,31 @@ public class AlbaService {
         return result;
     }
 
-    public Alba findById(Integer id) {
-        Alba alba = mapper.selectById(id);
-        alba.setPassword("");
-        return alba;
+    public Member findById(Integer id) {
+        Member member = mapper.selectById(id);
+        member.setPassword("");
+        return member;
     }
 
-    public void edit(AlbaEditForm form, Authentication authentication) {
-        Alba alba = new Alba(Integer.valueOf(
-                authentication.getName()), form.getEmail(), form.getPassword(),
-                form.getName(), form.getAddress(), form.getPhone(), null);
-        mapper.updateById(alba);
+    public void edit(MemberEditForm form, Authentication authentication) {
+        Member member = new Member(
+                Integer.valueOf(authentication.getName()),
+                form.getEmail(),
+                null,
+                form.getName(),
+                form.getAddress(),
+                form.getPhone(),
+                null,
+                null
+        );
+        mapper.updateById(member);
     }
 
-    public List<Alba> findAll() {
+    public List<Member> findAll() {
         return mapper.selectAll();
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
-        
         Integer loginId = Integer.valueOf(authentication.getName());
         if (!id.equals(loginId)) {
             return false;

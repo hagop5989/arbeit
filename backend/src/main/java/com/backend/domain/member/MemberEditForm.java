@@ -1,4 +1,4 @@
-package com.backend.domain.alba;
+package com.backend.domain.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlbaEditForm {
+public class MemberEditForm {
 
     @Email
     @NotBlank

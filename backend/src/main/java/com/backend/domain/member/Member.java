@@ -1,5 +1,6 @@
-package com.backend.domain.alba;
+package com.backend.domain.member;
 
+import com.backend.domain.authority.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Alba {
+public class Member {
 
     private Integer id;
     private String email;
@@ -19,6 +20,6 @@ public class Alba {
     private String name;
     private String address;
     private String phone;
+    private Authority authority;
     private LocalDateTime inserted;
-
 }

@@ -1,11 +1,13 @@
-package com.backend.domain.alba;
+package com.backend.domain.member;
 
+import com.backend.domain.authority.Authority;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class AlbaSignupForm {
+public class MemberSignupForm {
 
     @Email
     @NotBlank
@@ -18,4 +20,6 @@ public class AlbaSignupForm {
     private String address;
     @NotBlank
     private String phone;
+    @NotNull
+    private Authority authority;
 }

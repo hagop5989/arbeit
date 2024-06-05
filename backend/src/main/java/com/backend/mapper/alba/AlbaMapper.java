@@ -1,7 +1,7 @@
 package com.backend.mapper.alba;
 
-import com.backend.domain.alba.Alba;
-import com.backend.domain.alba.AlbaSignupForm;
+import com.backend.domain.member.Member;
+import com.backend.domain.member.MemberSignupForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -10,35 +10,35 @@ import java.util.List;
 public interface AlbaMapper {
 
     @Insert("""
-            INSERT INTO alba (email, password, name, address, phone)
-            VALUES (#{email}, #{password}, #{name}, #{address}, #{phone})
+            INSERT INTO member (email, password, name, address, phone, authority)
+            VALUES (#{email}, #{password}, #{name}, #{address}, #{phone}, #{authority})
             """)
-    void insert(AlbaSignupForm form);
+    void insert(MemberSignupForm form);
 
-    @Select("SELECT * FROM alba ORDER BY id DESC")
-    List<Alba> selectAll();
+    @Select("SELECT * FROM member ORDER BY id DESC")
+    List<Member> selectAll();
 
     @Select("""
             SELECT *
-            FROM alba
+            FROM member
             WHERE email=#{email}
             """)
-    Alba selectByEmail(String email);
+    Member selectByEmail(String email);
 
     @Select("""
             SELECT *
-            FROM alba
+            FROM member
             WHERE id=#{id}
             """)
-    Alba selectById(Integer id);
+    Member selectById(Integer id);
 
     @Update("""
-            UPDATE alba
+            UPDATE member
             SET email=#{email}, name=#{name}, address=#{address}, phone=#{phone}
             WHERE id=#{id}
             """)
-    void updateById(Alba alba);
+    void updateById(Member member);
 
-    @Delete("DELETE FROM alba WHERE id=#{id}")
+    @Delete("DELETE FROM member WHERE id=#{id}")
     void deleteById(Integer id);
 }
