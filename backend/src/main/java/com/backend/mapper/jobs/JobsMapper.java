@@ -8,8 +8,8 @@ import java.util.List;
 @Mapper
 public interface JobsMapper {
     @Insert("""
-            INSERT INTO jobs( title, content, store_name, store_id, boss_id)
-            VALUES(#{title}, #{content}, #{storeName}, #{storeId}, #{bossId})
+            INSERT INTO jobs( title, content, store_name, store_id, member_id)
+            VALUES(#{title}, #{content}, #{storeName}, #{storeId}, #{memberId})
             """)
     int insert(Jobs jobs);
 
@@ -19,7 +19,7 @@ public interface JobsMapper {
             content = #{content},
             store_name = #{storeName},
             store_id = #{storeId},
-            boss_id = #{bossId}
+            member_id = #{memberId}
             WHERE id = #{id}
             """)
     int update(Jobs jobs);
@@ -31,14 +31,14 @@ public interface JobsMapper {
     Jobs selectByJobsId(Integer id);
 
     @Select("""
-            SELECT j.id, j.title, j.store_name, m.name AS bossName, j.inserted
+            SELECT j.id, j.title, j.store_name, m.name AS memberName, j.inserted
             FROM jobs j
-            JOIN member m ON j.boss_id = m.id
-            WHERE m.id = #{bossId}
+            JOIN member m ON j.member_id = m.id
+            WHERE m.id = #{memberId}
             ORDER BY id DESC
             LIMIT #{offset},10
             """)
-    List<Jobs> findAllByBossId(Integer bossId, Integer offset);
+    List<Jobs> findAllByMemberId(Integer memberId, Integer offset);
 
     @Delete("""
             DELETE FROM jobs
@@ -49,7 +49,7 @@ public interface JobsMapper {
     @Select("""
             <script>
             SELECT COUNT(j.id) 
-            FROM jobs j JOIN member m ON j.boss_id = m.id
+            FROM jobs j JOIN member m ON j.member_id = m.id
                 <trim prefix="WHERE" prefixOverrides="OR">
                     <if test="searchType != null">
                         <bind name="pattern" value="'%' + keyword + '%'" />
@@ -73,8 +73,8 @@ public interface JobsMapper {
                    j.title,
                    j.store_name,
                    j.inserted,
-                   m.name AS bossName
-            FROM jobs j JOIN member m ON j.boss_id = m.id
+                   m.name AS memberName
+            FROM jobs j JOIN member m ON j.member_id = m.id
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
                        <bind name="pattern" value="'%' + keyword + '%'" />
@@ -92,6 +92,7 @@ public interface JobsMapper {
             LIMIT #{offset}, 10
             </script>
                 """)
-    List<Jobs> selectAllPaging(Integer offset, String searchType, String keyword);
+    List<Jobs> selectAllPaging(int offset, String searchType, String keyword);
+
 
 }

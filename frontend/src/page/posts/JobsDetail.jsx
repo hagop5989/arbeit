@@ -23,8 +23,8 @@ function JobsDetail(props) {
     title: "default",
     content: "default",
     storeName: "default",
-    bossId: account.id,
-    bossName: "",
+    memberId: account.id,
+    memberName: "",
   });
   const allFieldsFilled =
     editJobs.title.length > 0 &&
@@ -38,7 +38,7 @@ function JobsDetail(props) {
   function handleSubmitEditJobs() {
     if (allFieldsFilled) {
       axios
-        .put("/api/boss/jobs/update", editJobs)
+        .put("/api/jobs/update", editJobs)
         .then((res) => {
           myToast("수정 완료 되었습니다", "success");
         })
@@ -55,10 +55,10 @@ function JobsDetail(props) {
 
   function handleSubmitDeleteJobs() {
     axios
-      .delete(`/api/boss/jobs/delete?id=${id}`)
+      .delete(`/api/jobs/delete?id=${id}`)
       .then((res) => {
         myToast("삭제 완료 되었습니다", "success");
-        navigate("/boss/jobs/list");
+        navigate("/jobs/list");
       })
       .catch(() => {
         myToast("삭제실패", "error");
@@ -78,7 +78,7 @@ function JobsDetail(props) {
 
   useEffect(() => {
     axios
-      .get(`/api/boss/jobs/${id}`)
+      .get(`/api/jobs/${id}`)
       .then((res) => {
         setEditJobs(res.data);
       })
@@ -89,7 +89,7 @@ function JobsDetail(props) {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate("/api/boss/jobs/list");
+          navigate("/api/jobs/list");
         }
       });
   }, []);
@@ -124,12 +124,7 @@ function JobsDetail(props) {
               readOnly
             />
             <FormLabel>작성자</FormLabel>
-            <Input
-              value={account.name}
-              // onChange={(e) => handleEditInput("bossName", e)}
-              type={"text"}
-              readOnly
-            />
+            <Input value={account.name} type={"text"} readOnly />
 
             <Flex justifyContent="center">
               <Button
@@ -150,7 +145,7 @@ function JobsDetail(props) {
                 삭제
               </Button>
               <Button
-                onClick={() => navigate("/boss/jobs/list")}
+                onClick={() => navigate("/jobs/list")}
                 colorScheme={"green"}
                 w={120}
                 my={3}

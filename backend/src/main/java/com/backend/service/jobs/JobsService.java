@@ -1,7 +1,6 @@
 package com.backend.service.jobs;
 
 import com.backend.domain.jobs.Jobs;
-import com.backend.domain.member.Member;
 import com.backend.mapper.jobs.JobsMapper;
 import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,6 @@ public class JobsService {
     private final MemberMapper memberMapper;
 
     public void insert(Jobs jobs) {
-        Member writer = memberMapper.selectById(jobs.getBossId());
-//        jobs.setBossName(writer.getName());
         jobsMapper.insert(jobs);
     }
 
@@ -30,18 +27,15 @@ public class JobsService {
     }
 
     public Jobs selectByJobsId(Integer jobsId) {
-        Jobs dbJobs = jobsMapper.selectByJobsId(jobsId);
-        Member writer = memberMapper.selectById(dbJobs.getBossId());
-        dbJobs.setBossName(writer.getName());
+        return jobsMapper.selectByJobsId(jobsId);
 
-        return dbJobs;
     }
 
     public void deleteByJobsId(Integer jobsId) {
         jobsMapper.deleteByJobsId(jobsId);
     }
 
-    public Map<String, Object> list(Integer bossId, Integer page,
+    public Map<String, Object> list(Integer memberId, Integer page,
                                     String searchType, String keyword) {
         Map pageInfo = new HashMap();
         Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword);
@@ -68,10 +62,10 @@ public class JobsService {
         pageInfo.put("lastPageNum", lastPageNum);
         pageInfo.put("leftPageNum", leftPageNum);
         pageInfo.put("rightPageNum", rightPageNum);
-        List<Jobs> JobsBoardList2 = jobsMapper.selectAllPaging(offset, searchType, keyword);
-        System.out.println("JobsBoardList2 = " + JobsBoardList2);
+        List<Jobs> JobsBoardList = jobsMapper.selectAllPaging(offset, searchType, keyword);
+
         return Map.of("pageInfo", pageInfo,
-                "jobsList", JobsBoardList2);
+                "jobsList", JobsBoardList);
     }
 }
 

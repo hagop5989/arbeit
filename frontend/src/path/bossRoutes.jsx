@@ -11,9 +11,9 @@ const bossRoutes = [
   { path: "boss/login", element: <BossLogin /> },
   { path: "boss/edit", element: <BossEdit /> },
   // { path: "boss/jobs", element: <BossJobs /> },
-  { path: "boss/jobs/create", element: <JobsCreate /> },
-  { path: "boss/jobs/list", element: <JobsList /> },
-  { path: "boss/jobs/:id", element: <JobsDetail /> },
+  { path: "jobs/create", element: <JobsCreate /> },
+  { path: "jobs/list", element: <JobsList /> },
+  { path: "jobs/:id", element: <JobsDetail /> },
 ];
 
 export default bossRoutes;

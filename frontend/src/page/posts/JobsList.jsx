@@ -46,7 +46,7 @@ export function JobsList() {
   }
 
   function handleSearchClick() {
-    navigate(`/boss/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
+    navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
   }
 
   // T 문자를 제거하고 날짜만 반환하는 함수
@@ -60,7 +60,7 @@ export function JobsList() {
     const keywordParam = searchParams.get("keyword");
 
     const params = {
-      bossId: account.id,
+      memberId: account.id,
       page: currentPage,
       type: typeParam,
       keyword: keywordParam,
@@ -73,7 +73,7 @@ export function JobsList() {
       setSearchKeyword(keywordParam);
     }
 
-    axios.get("/api/boss/jobs/list", { params }).then((res) => {
+    axios.get("/api/jobs/list", { params }).then((res) => {
       setJobsList(res.data.jobsList);
       setPageInfo(res.data.pageInfo);
     });
@@ -102,12 +102,12 @@ export function JobsList() {
                   key={jobs.id}
                   cursor={"pointer"}
                   _hover={{ bgColor: "gray.200" }}
-                  onClick={() => navigate(`/boss/jobs/${jobs.id}`)}
+                  onClick={() => navigate(`/jobs/${jobs.id}`)}
                 >
                   <Td>{jobs.id}</Td>
                   <Td>{jobs.title}</Td>
                   <Td>{jobs.storeName}</Td>
-                  <Td>{jobs.bossName}</Td>
+                  <Td>{jobs.memberName}</Td>
                   <Td>{formatInsertedDate(jobs.inserted)}</Td>
                 </Tr>
               ))}
@@ -181,13 +181,14 @@ export function JobsList() {
             </Box>
           </Flex>
         </Center>
+
         <Button
-          onClick={() => navigate("/boss/jobs/create")}
+          onClick={() => navigate("/jobs/create")}
           colorScheme={"green"}
           w={120}
           my={3}
         >
-          이전
+          공고생성
         </Button>
       </Box>
     </Center>
