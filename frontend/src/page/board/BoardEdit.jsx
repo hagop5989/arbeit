@@ -3,7 +3,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,6 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -53,17 +53,17 @@ export function BoardEdit() {
       });
   }
 
-  if (board == null) {
+  if (!board == null) {
     return <Spinner />;
   }
 
   return (
     <Box>
-      <Box>{board.writer} 수정</Box>
+      <Box color={"blue"}>{board.writer} 수정</Box>
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
-          <Input
+          <Textarea
             defaultValue={board.title}
             onChange={(e) => setBoard({ ...board, title: e.target.value })}
           />
@@ -73,29 +73,9 @@ export function BoardEdit() {
       <Box>
         <FormControl>
           <FormLabel>본문</FormLabel>
-          <Input
+          <Textarea
             defaultValue={board.content}
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
-          />
-        </FormControl>
-      </Box>
-
-      <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input
-            defaultValue={board.writer}
-            onChange={(e) => setBoard({ ...board, writer: e.target.value })}
-          />
-        </FormControl>
-      </Box>
-
-      <Box>
-        <FormControl>
-          <FormLabel>별명</FormLabel>
-          <Input
-            defaultValue={board.nickName}
-            onChange={(e) => setBoard({ ...board, title: e.target.value })}
           />
         </FormControl>
       </Box>
@@ -105,10 +85,11 @@ export function BoardEdit() {
           저장
         </Button>
       </Box>
+
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
+          <ModalHeader>저장!</ModalHeader>
           <ModalBody>저장하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>

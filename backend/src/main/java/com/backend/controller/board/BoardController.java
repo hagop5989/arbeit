@@ -52,6 +52,7 @@ public class BoardController {
 
     @PutMapping("/edit")
     public ResponseEntity edit(@RequestBody Board board) {
+        
         if (boardService.validate(board)) {
             boardService.edit(board);
             return ResponseEntity.ok().build();

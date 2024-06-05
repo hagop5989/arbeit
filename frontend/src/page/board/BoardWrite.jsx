@@ -8,13 +8,13 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [writer, setWriter] = useState({});
-  const [nickname, setNickname] = useState("");
+  const { name } = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ export function BoardWrite() {
       .post(`api/board/write`, {
         title,
         content,
+        writer: name,
       })
       .then(() => {
         toast({
@@ -55,12 +56,6 @@ export function BoardWrite() {
   if (content.trim().length === 0) {
     disableSaveButton = true;
   }
-  if (writer.trim().length === 0) {
-    disableSaveButton = true;
-  }
-  if (nickname.trim().length === 0) {
-    disableSaveButton = true;
-  }
 
   return (
     <Box>
@@ -83,14 +78,7 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input onChange={(e) => setWriter(e.target.value)}></Input>
-          </FormControl>
-        </Box>
-
-        <Box>
-          <FormControl>
-            <FormLabel>별명</FormLabel>
-            <Input onChange={(e) => setNickname(e.target.value)}></Input>
+            <Input value={name} isReadOnly></Input>
           </FormControl>
         </Box>
 
