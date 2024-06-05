@@ -15,7 +15,7 @@ public class BoardService {
 
     final BoardMapper mapper;
 
-    public void writer(Board board) {
+    public void write(Board board) {
         mapper.insert(board);
     }
 

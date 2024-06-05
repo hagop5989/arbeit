@@ -10,7 +10,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export function BoardWriter() {
+export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState({});
@@ -22,7 +22,7 @@ export function BoardWriter() {
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post(`api/board/writer`, {
+      .post(`api/board/write`, {
         title,
         content,
       })
