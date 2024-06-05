@@ -2,7 +2,7 @@ package com.backend.controller;
 
 import com.backend.domain.member.MemberLoginForm;
 import com.backend.domain.member.MemberSignupForm;
-import com.backend.service.alba.MemberService;
+import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.backend.service.alba;
+package com.backend.service.member;
 
 import com.backend.domain.authority.Authority;
 import com.backend.domain.member.Member;
