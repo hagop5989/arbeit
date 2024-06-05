@@ -33,7 +33,6 @@ export function MemberList() {
                 <Th>#</Th>
                 <Th>이메일</Th>
                 <Th>이름</Th>
-                <Th>권한</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -47,7 +46,6 @@ export function MemberList() {
                   <Td>{member.id}</Td>
                   <Td>{member.email}</Td>
                   <Td>{member.name}</Td>
-                  <Td>{member.authority}</Td>
                 </Tr>
               ))}
             </Tbody>
