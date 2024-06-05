@@ -46,8 +46,10 @@ public class MemberController {
     public ResponseEntity edit(@Validated @RequestBody MemberEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
                                Authentication authentication) {
-        if (bindingResult.hasErrors()) {
+        Map<String, String> passwordMatch = memberService.passwordMatch(form);
+        if (bindingResult.hasErrors() || passwordMatch != null) {
             Map<String, String> errors = getErrorMessages(bindingResult);
+            errors.put("passwordCheck", passwordMatch.get("passwordCheck"));
             return ResponseEntity.badRequest().body(errors);
         }
 

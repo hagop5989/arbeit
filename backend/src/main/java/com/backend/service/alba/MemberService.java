@@ -112,4 +112,13 @@ public class MemberService {
     public void deleteById(Integer id) {
         mapper.deleteById(id);
     }
+
+    public Map<String, String> passwordMatch(MemberEditForm form) {
+        Map<String, String> map = null;
+        if (!form.getPassword().equals(form.getPasswordCheck())) {
+            map = Map.of("passwordCheck", "패스워드와 확인이 일치하지 않습니다.");
+        }
+
+        return map;
+    }
 }

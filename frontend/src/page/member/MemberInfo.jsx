@@ -7,6 +7,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Spinner,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export function MemberInfo() {
   const { id } = useParams();
-  const [member, setMember] = useState({});
+  const [member, setMember] = useState(null);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -46,6 +47,14 @@ export function MemberInfo() {
       })
       .catch()
       .finally();
+  }
+
+  if (member === null) {
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
   }
 
   return (
