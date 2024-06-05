@@ -13,11 +13,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export function AlbaList() {
-  const [albaList, setAlbaList] = useState([]);
+export function MemberList() {
+  const [memberList, setMemberList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("/api/alba/list").then((res) => setAlbaList(res.data));
+    axios.get("/api/member/list").then((res) => setMemberList(res.data));
   }, []);
 
   return (
@@ -33,19 +33,21 @@ export function AlbaList() {
                 <Th>#</Th>
                 <Th>이메일</Th>
                 <Th>이름</Th>
+                <Th>권한</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {albaList.map((alba) => (
+              {memberList.map((member) => (
                 <Tr
-                  key={alba.id}
+                  key={member.id}
                   cursor={"pointer"}
                   _hover={{ bgColor: "gray.200" }}
-                  onClick={() => navigate(`/alba/${alba.id}`)}
+                  onClick={() => navigate(`/member/${member.id}`)}
                 >
-                  <Td>{alba.id}</Td>
-                  <Td>{alba.email}</Td>
-                  <Td>{alba.name}</Td>
+                  <Td>{member.id}</Td>
+                  <Td>{member.email}</Td>
+                  <Td>{member.name}</Td>
+                  <Td>{member.authority}</Td>
                 </Tr>
               ))}
             </Tbody>

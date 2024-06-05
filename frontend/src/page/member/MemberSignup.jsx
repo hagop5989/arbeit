@@ -10,16 +10,21 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export function AlbaSignup() {
+export function MemberSignup() {
   const [member, setMember] = useState({});
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   function handleSignupBtn() {
     axios
       .post("/api/signup", member)
-      .then()
+      .then(() => {
+        navigate("/login");
+      })
       .catch((err) => {
+        setErrors(null);
         setErrors(err.response.data);
       })
       .finally();

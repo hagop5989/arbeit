@@ -1,12 +1,10 @@
 package com.backend.controller;
 
-import com.backend.domain.boss.Boss;
 import com.backend.domain.member.MemberLoginForm;
+import com.backend.domain.member.MemberSignupForm;
 import com.backend.service.alba.MemberService;
-import com.backend.service.boss.BossService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -23,35 +21,36 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class LoginController {
+public class AuthController {
 
-    private final BossService bossService;
     private final MemberService memberService;
 
-    @PostMapping(value = "/token", params = "type=ALBA")
-    public ResponseEntity getTokenByAlba(@Validated @RequestBody MemberLoginForm form, BindingResult bindingResult) {
+    @PostMapping("/signup")
+    public ResponseEntity signup(@Validated @RequestBody MemberSignupForm form, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        memberService.signup(form);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/token")
+    public ResponseEntity getToken(@Validated @RequestBody MemberLoginForm form, BindingResult bindingResult) {
+        log.info("bindingResult={}", bindingResult);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
         }
 
         Map<String, Object> map = memberService.getToken(form);
+
         if (map == null) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok().body(map);
-    }
-
-    // TODO : Bean Validation 사용
-    @PostMapping(value = "/token", params = "type=BOSS")
-    public ResponseEntity token(@RequestBody Boss boss) {
-        Map<String, Object> token = bossService.getToken(boss);
-
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok(token);
     }
 
     public static Map<String, String> getErrorMessages(BindingResult bindingResult) {

@@ -1,5 +1,5 @@
 import { Box, Heading } from "@chakra-ui/react";
-import { AlbaNav } from "./navbar/AlbaNav.jsx";
+import { MemberNav } from "./navbar/MemberNav.jsx";
 import { BossNav } from "./navbar/BossNav.jsx";
 import { StoreNav } from "./navbar/StoreNav.jsx";
 import { BoardNav } from "./navbar/BoardNav.jsx";
@@ -9,7 +9,7 @@ export function NavComponent() {
     <Box ml={10}>
       <Box>
         <Heading>하정현 작업물</Heading>
-        <AlbaNav />
+        <MemberNav />
       </Box>
       <br />
       <Box>
