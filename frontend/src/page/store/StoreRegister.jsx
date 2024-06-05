@@ -17,25 +17,19 @@ export function StoreRegister() {
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("all");
+  const [files, setFiles] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
 
   function handleSaveClick() {
     axios
-      .post(
-        "/api/store/add",
-        {
-          name: name,
-          content: content,
-          address: address,
-          category: category,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      )
+      .postForm("/api/store/add", {
+        name: name,
+        content: content,
+        address: address,
+        category: category,
+        files: files,
+      })
       .then((response) => {
         toast({
           title: "가게 등록 성공",
@@ -44,7 +38,7 @@ export function StoreRegister() {
           duration: 5000,
           isClosable: true,
         });
-        navigate("/");
+        navigate("/store/list");
       })
       .catch((error) => {
         console.error(
@@ -70,6 +64,11 @@ export function StoreRegister() {
     address.trim().length === 0
   ) {
     disableSaveButton = true;
+  }
+
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li>{files[i].name}</li>);
   }
 
   return (
@@ -104,6 +103,20 @@ export function StoreRegister() {
           />
         </FormControl>
       </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>사진</FormLabel>
+          <Input
+            multiple
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFiles(e.target.files)}
+          />
+        </FormControl>
+      </Box>
+      <Box>
+        <ul>{fileNameList}</ul>
+      </Box>
       <Box mb={4}>
         <FormControl>
           <FormLabel>가게 카테고리</FormLabel>
@@ -121,6 +134,7 @@ export function StoreRegister() {
           </Select>
         </FormControl>
       </Box>
+
       <Button
         isDisabled={disableSaveButton}
         colorScheme="blue"

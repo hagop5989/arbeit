@@ -5,6 +5,7 @@ import com.backend.mapper.store.StoreMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,8 +16,14 @@ public class StoreService {
 
     private final StoreMapper mapper;
 
-    public void add(Store store) {
+    public void add(Store store, MultipartFile[] files) {
         mapper.insert(store);
+
+        if (files != null) {
+            for (MultipartFile file : files) {
+                mapper.insertFileName(store.getId(), file.getOriginalFilename());
+            }
+        }
     }
 
     public List<Store> list() {
@@ -39,6 +46,7 @@ public class StoreService {
     }
 
     public void edit(Store store) {
+        mapper.update(store);
     }
 
     public Store get(Integer id) {

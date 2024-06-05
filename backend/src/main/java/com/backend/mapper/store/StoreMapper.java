@@ -1,10 +1,7 @@
 package com.backend.mapper.store;
 
 import com.backend.domain.store.Store;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -15,7 +12,7 @@ public interface StoreMapper {
                 INSERT INTO store (name, content, address, category)
                 VALUES (#{name}, #{content}, #{address}, #{category})
             """)
-
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     public int insert(Store store);
 
     @Select("""
@@ -37,4 +34,16 @@ public interface StoreMapper {
             WHERE id = #{id}
             """)
     Store selectByStoreId(Integer id);
+
+    @Update("""
+            UPDATE store
+            SET name= #{name}, content= #{content}, address= #{address}, category= #{category}
+            """)
+    int update(Store store);
+
+    @Insert("""
+            INSERT INTO store_file (store_id, name)
+            VALUES (#{storeId}, #{name})
+            """)
+    int insertFileName(Integer storeid, String name);
 }
