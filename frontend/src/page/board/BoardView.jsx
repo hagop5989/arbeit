@@ -1,11 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
   Button,
   FormControl,
   FormLabel,
+  Heading,
   Input,
   Modal,
   ModalBody,
@@ -18,19 +19,19 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
-
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
-
       .then((res) => setBoard(res.data))
       .catch((err) => {
         if (err.response.status === 404) {
@@ -48,7 +49,7 @@ export function BoardView() {
     return <Spinner />;
   }
 
-  function handleReMoving() {
+  function handleRemoveBtn() {
     axios
       .delete(`/api/board/${id}`)
       .then(() => {
@@ -61,76 +62,57 @@ export function BoardView() {
       })
       .catch(() => {
         toast({
-          status: "error",
-          description: `${id}번 게시물 삭제를 실패하였습니다`,
+          status: "warning",
+          description: "접근 권한이 없습니다.",
+          position: "top",
         });
       });
   }
 
   return (
     <Box>
-      <Box>{board.writer}</Box>
+      <Box>
+        <Heading>게시판 정보</Heading>
+      </Box>
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
-          <Textarea value={board.title} readOnly></Textarea>
-        </FormControl>
-      </Box>
-      {/*-----------*/}
-      <Box>
-        <FormControl>
+          <Input value={board.title} readOnly></Input>
           <FormLabel>본문</FormLabel>
           <Textarea value={board.content} readOnly></Textarea>
-        </FormControl>
-      </Box>
-
-      {/*-----------*/}
-
-      {/*-----------*/}
-      <Box>
-        <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Textarea value={board.writer} readOnly></Textarea>
+          <Input value={board.name} readOnly></Input>
         </FormControl>
       </Box>
-      {/*-----------*/}
-      <Box>
-        <FormControl>
-          <FormLabel>작성일시</FormLabel>
-          <Input
-            type={"datetime-local"}
-            value={board.inserted}
-            readOnly
-          ></Input>
-        </FormControl>
-      </Box>
-      {/*-----------*/}
-      <Box>
-        <Button
-          colorScheme={"purple"}
-          onClick={() => navigate(`/edit/${board.id}`)}
-        >
-          수정
-        </Button>
 
-        <Button colorScheme={"red"} onClick={onOpen}>
-          삭제
-        </Button>
-      </Box>
-      {/*-----------*/}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalBody>삭제하시겠습니까?</ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>취소</Button>
-            <Button colorScheme={"green"} onClick={handleReMoving}>
-              확인
+      {account.hasAccess(board.memberId) && (
+        <Box>
+          <Box>
+            <Button
+              colorScheme={"blue"}
+              onClick={() => navigate(`/board/edit/${board.id}`)}
+            >
+              수정
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            <Button colorScheme={"red"} onClick={onOpen}>
+              삭제
+            </Button>
+          </Box>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>게시물 삭제</ModalHeader>
+              <ModalBody>삭제하시겠습니까?</ModalBody>
+              <ModalFooter>
+                <Button onClick={onClose}>취소</Button>
+                <Button colorScheme={"red"} onClick={handleRemoveBtn}>
+                  확인
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -1,23 +1,32 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    axios
-      .get(`api/board/list?${searchParams}`)
-      .then((res) => setBoardList(res.data));
-  }, [searchParams]);
+    axios.get(`/api/board/list`).then((res) => setBoardList(res.data));
+  }, []);
+
   return (
     <Box>
-      <Box bgColor={"yellow.200"}>자유 게시판</Box>
+      <Box>
+        <Heading>게시판</Heading>
+      </Box>
       <Box>
         <Table>
           <Thead>
@@ -27,6 +36,7 @@ export function BoardList() {
               <Th>
                 <FontAwesomeIcon icon={faUserPen} />
               </Th>
+              <Th>작성일시</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -39,9 +49,10 @@ export function BoardList() {
                 onClick={() => navigate(`/board/${board.id}`)}
                 key={board.id}
               >
-                <Td> {board.id}</Td>
-                <Td> {board.title}</Td>
-                <Td> {board.writer}</Td>
+                <Td>{board.id}</Td>
+                <Td>{board.title}</Td>
+                <Td>{board.memberName}</Td>
+                <Td>{board.inserted}</Td>
               </Tr>
             ))}
           </Tbody>

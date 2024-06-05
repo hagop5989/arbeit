@@ -4,6 +4,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Heading,
   Input,
   Textarea,
   useToast,
@@ -51,7 +52,9 @@ export function BoardWrite() {
 
   return (
     <Box>
-      <Box>알바 경험담</Box>
+      <Box>
+        <Heading>게시판 작성</Heading>
+      </Box>
       <Box>
         <Box>
           <FormControl>

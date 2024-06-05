@@ -1,6 +1,7 @@
 package com.backend.service.board;
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.BoardEditForm;
 import com.backend.domain.board.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -21,6 +23,7 @@ public class BoardService {
         Board board = new Board(
                 null,
                 Integer.valueOf(authentication.getName()),
+                null,
                 form.getTitle(),
                 form.getContent(),
                 null
@@ -28,33 +31,30 @@ public class BoardService {
         mapper.insert(board);
     }
 
-    public boolean validate(Board board) {
-        if (board.getTitle() == null ||
-                board.getTitle().trim().equals("")) {
-            return false;
-        }
-
-        if (board.getContent() == null ||
-                board.getContent().trim().equals("")) {
-            return false;
-        }
-
-        return true;
-    }
-
     public List<Board> list() {
         return mapper.selectAll();
     }
 
-    public Board get(Integer id) {
+    public Board findById(Integer id) {
         return mapper.selectById(id);
     }
 
-    public void removing(Integer id) {
+    public void delete(Integer id) {
         mapper.deleteById(id);
     }
 
-    public void edit(Board board) {
+    public void edit(BoardEditForm form, Integer id) {
+        Board board = new Board(
+                id,
+                form.getTitle(),
+                form.getContent()
+        );
         mapper.update(board);
+    }
+
+    public boolean hasAccess(Integer id, Authentication authentication) {
+        Integer memberId = mapper.selectById(id).getMemberId();
+        Integer loginId = Integer.valueOf(authentication.getName());
+        return Objects.equals(memberId, loginId);
     }
 }

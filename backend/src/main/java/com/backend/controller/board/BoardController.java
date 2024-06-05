@@ -2,10 +2,12 @@ package com.backend.controller.board;
 
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.BoardEditForm;
 import com.backend.domain.board.BoardWriteForm;
 import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,9 +16,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Slf4j
@@ -47,33 +49,50 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable Integer id) {
-        Board board = boardService.get(id);
+    public ResponseEntity info(@PathVariable Integer id) {
+        log.info("BoardController.info id={}", id);
+        Board board = boardService.findById(id);
 
         if (board == null) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok().body(board);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
-        boardService.removing(id);
-    }
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity edit(@Validated @RequestBody BoardEditForm form, BindingResult bindingResult,
+                               @PathVariable("id") Integer id,
+                               Authentication authentication) {
 
-    @PutMapping("/edit")
-    public ResponseEntity edit(@RequestBody Board board) {
-
-        if (boardService.validate(board)) {
-            boardService.edit(board);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
+
+        if (!boardService.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        boardService.edit(form, id);
+        return ResponseEntity.ok().build();
     }
 
-    public static Map<String, String> getErrorMessages(BindingResult bindingResult) {
-        Map<String, String> errors = new HashMap<>();
+    @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
+
+        if (!boardService.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        boardService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
+        Map<String, String> errors = new ConcurrentHashMap<>();
         for (FieldError error : bindingResult.getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
