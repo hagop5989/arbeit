@@ -3,7 +3,7 @@ package com.backend.domain.albaposts;
 import lombok.Data;
 
 @Data
-public class AlbaPosts {
+public class Jobs {
     private Integer id;
 
     private String title;

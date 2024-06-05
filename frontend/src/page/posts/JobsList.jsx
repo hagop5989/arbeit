@@ -14,15 +14,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
-export function BossAlbaPostList() {
-  const [albaPostList, setAlbaPostList] = useState([]);
+export function JobsList() {
+  const [jobsList, setJobsList] = useState([]);
   const account = useContext(LoginContext);
 
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`/api/boss/post/list?bossId=${account.id}`)
-      .then((res) => setAlbaPostList(res.data));
+      .get(`/api/boss/jobs/list?bossId=${account.id}`)
+      .then((res) => setJobsList(res.data));
   }, []);
   return (
     <Center>
@@ -41,17 +41,17 @@ export function BossAlbaPostList() {
               </Tr>
             </Thead>
             <Tbody>
-              {albaPostList.map((albaPost) => (
+              {jobsList.map((jobs) => (
                 <Tr
-                  key={albaPost.id}
+                  key={jobs.id}
                   cursor={"pointer"}
                   _hover={{ bgColor: "gray.200" }}
-                  onClick={() => navigate(`/boss/albaPost/${albaPost.id}`)}
+                  onClick={() => navigate(`/boss/jobs/${jobs.id}`)}
                 >
-                  <Td>{albaPost.id}</Td>
-                  <Td>{albaPost.title}</Td>
-                  <Td>{albaPost.storeName}</Td>
-                  <Td>{albaPost.bossName}</Td>
+                  <Td>{jobs.id}</Td>
+                  <Td>{jobs.title}</Td>
+                  <Td>{jobs.storeName}</Td>
+                  <Td>{jobs.bossName}</Td>
                 </Tr>
               ))}
             </Tbody>

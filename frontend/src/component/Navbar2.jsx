@@ -49,7 +49,7 @@ function Navbar(props) {
             </VStack>
             <VStack display={showBoxes ? "block" : "none"}>
               <Flex gap={3}>
-                <Box onClick={() => navigate("/boss/albaPost")} {...navCss}>
+                <Box onClick={() => navigate("/boss/jobs")} {...navCss}>
                   알바공고
                 </Box>
                 <Box onClick={() => navigate("/boss/Edit")} {...navCss}>

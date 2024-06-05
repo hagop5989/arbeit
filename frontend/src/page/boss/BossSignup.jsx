@@ -39,16 +39,16 @@ function BossSignup(props) {
       axios
         .post("/api/boss/insert", newBoss)
         .then((res) => {
-          mytoast("회원가입 되었습니다", "success");
+          myToast("회원가입 되었습니다", "success");
           navigate("/boss/Login");
         })
         .catch((e) => {
-          mytoast("입력 값을 확인해주세요.", "error");
+          myToast("입력 값을 확인해주세요.", "error");
           console.log(e);
         })
         .finally(() => {});
     } else {
-      mytoast("입력값 중 빈칸이 존재합니다.", "error");
+      myToast("입력값 중 빈칸이 존재합니다.", "error");
     }
   }
 
@@ -56,12 +56,12 @@ function BossSignup(props) {
     axios
       .get(`/api/boss/signupCheck?email=${newBoss.email}`)
       .then(() => {
-        mytoast("회원가입 가능합니다.", "info");
+        myToast("회원가입 가능합니다.", "info");
         setEmailCheck(true);
       })
       .catch((e) => {
         if (e.response.status === 400) {
-          mytoast("이미 존재하는 이메일입니다.", "error");
+          myToast("이미 존재하는 이메일입니다.", "error");
           setEmailCheck(false);
         }
       })
@@ -69,7 +69,7 @@ function BossSignup(props) {
   }
 
   const toast = useToast();
-  function mytoast(text, status) {
+  function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
       status: status,

@@ -15,38 +15,51 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-function BossAlbaPostView(props) {
+function JobsDetail(props) {
   const { id } = useParams();
   const account = useContext(LoginContext);
   const navigate = useNavigate();
-  const [editAlbaPost, setEditAlbaPost] = useState({
+  const [editJobs, setEditJobs] = useState({
     title: "",
     content: "",
     storeName: "default",
     bossId: account.id,
     bossName: account.name,
   });
-  const allFieldsFilled = Object.values(editAlbaPost).every(
+  const allFieldsFilled = Object.values(editJobs).every(
     (value) => value.length > 0,
   );
-  function handlePostInput(field, e) {
-    setEditAlbaPost((prevPost) => ({ ...prevPost, [field]: e.target.value }));
+  function handleEditInput(field, e) {
+    setEditJobs((prevJobs) => ({ ...prevJobs, [field]: e.target.value }));
   }
 
-  function handleBossAlbaPostEdit() {
+  function handleSubmitEditJobs() {
     axios
-      .put("/api/boss/albaPost/edit", editAlbaPost)
+      .put("/api/boss/jobs/edit", editJobs)
       .then((res) => {
-        mytoast("수정 완료 되었습니다", "success");
+        myToast("수정 완료 되었습니다", "success");
       })
       .catch(() => {
-        mytoast("수정실패", "error");
+        myToast("수정실패", "error");
+      })
+      .finally(() => {});
+  }
+
+  function handleSubmitDeleteJobs() {
+    axios
+      .put(`/api/boss/jobs/delete?id=${id}`, editJobs)
+      .then((res) => {
+        myToast("삭제 완료 되었습니다", "success");
+        navigate("/api/boss/jobs/list");
+      })
+      .catch(() => {
+        myToast("삭제실패", "error");
       })
       .finally(() => {});
   }
 
   const toast = useToast();
-  function mytoast(text, status) {
+  function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
       status: status,
@@ -57,9 +70,9 @@ function BossAlbaPostView(props) {
 
   useEffect(() => {
     axios
-      .get(`/api/boss/albaPost/${id}`)
+      .get(`/api/boss/jobs/${id}`)
       .then((res) => {
-        setEditAlbaPost(res.data);
+        setEditJobs(res.data);
       })
       .catch((err) => {
         if (err.response.status === 404) {
@@ -68,7 +81,7 @@ function BossAlbaPostView(props) {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate("/api/boss/albaPost/list");
+          navigate("/api/boss/jobs/list");
         }
       });
   }, []);
@@ -82,30 +95,30 @@ function BossAlbaPostView(props) {
             <FormLabel>제목</FormLabel>
 
             <Input
-              value={editAlbaPost.title}
-              onChange={(e) => handlePostInput("title", e)}
+              value={editJobs.title}
+              onChange={(e) => handleEditInput("title", e)}
               type={"text"}
               placeholder={"제목을 입력해주세요"}
             />
 
             <FormLabel>내용</FormLabel>
             <Textarea
-              value={editAlbaPost.content}
-              onChange={(e) => handlePostInput("content", e)}
+              value={editJobs.content}
+              onChange={(e) => handleEditInput("content", e)}
               type={"text"}
               placeholder={"내용을 입력해주세요"}
             />
             <FormLabel>가게명</FormLabel>
             <Input
-              value={editAlbaPost.storeName}
-              onChange={(e) => handlePostInput("storeName", e)}
+              value={editJobs.storeName}
+              onChange={(e) => handleEditInput("storeName", e)}
               type={"text"}
               readOnly
             />
             <FormLabel>작성자</FormLabel>
             <Input
-              value={editAlbaPost.bossName}
-              onChange={(e) => handlePostInput("bossName", e)}
+              value={editJobs.bossName}
+              onChange={(e) => handleEditInput("bossName", e)}
               type={"text"}
               readOnly
             />
@@ -113,12 +126,28 @@ function BossAlbaPostView(props) {
             <Flex justifyContent="center">
               <Button
                 isDisabled={!allFieldsFilled}
-                onClick={handleBossAlbaPostEdit}
+                onClick={handleSubmitEditJobs}
                 colorScheme={"purple"}
                 w={120}
                 my={3}
               >
-                공고수정
+                수정
+              </Button>
+              <Button
+                onClick={handleSubmitDeleteJobs}
+                colorScheme={"red"}
+                w={120}
+                my={3}
+              >
+                삭제
+              </Button>
+              <Button
+                onClick={() => navigate(-1)}
+                colorScheme={"green"}
+                w={120}
+                my={3}
+              >
+                이전
               </Button>
             </Flex>
           </FormControl>
@@ -128,4 +157,4 @@ function BossAlbaPostView(props) {
   );
 }
 
-export default BossAlbaPostView;
+export default JobsDetail;
