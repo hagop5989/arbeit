@@ -1,18 +1,30 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
+  Button,
   FormControl,
   FormLabel,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Select,
   Textarea,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 
 export function StoreEdit() {
   const { id } = useParams();
   const [store, setStore] = useState(null);
+  const toast = useToast();
+  const navigate = useNavigate();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
     axios.get(`/api/store/${id}`).then((res) => setStore(res.data));
@@ -20,6 +32,35 @@ export function StoreEdit() {
 
   if (!store) {
     return <div>Loading...</div>;
+  }
+
+  function handleClickSave() {
+    axios
+      .put("/api/store/edit", store, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then(() => {
+        toast({
+          status: "success",
+          description: `${store.id}가게가 수정되었습니다.`,
+          position: "top",
+        });
+        navigate(`/store/${store.id}`);
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          toast({
+            status: "error",
+            description: `가게가 수정되지 않았습니다. 작성한 내용을 확인해주세요.`,
+            position: "top",
+          });
+        }
+      })
+      .finally(() => {
+        onClose();
+      });
   }
 
   return (
@@ -70,6 +111,24 @@ export function StoreEdit() {
             </Select>
           </FormControl>
         </Box>
+        <Box>
+          <Button colorScheme={"blue"} onClick={onOpen}>
+            저장
+          </Button>
+        </Box>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader></ModalHeader>
+            <ModalBody>저장하시겠습니까?</ModalBody>
+            <ModalFooter>
+              <Button onClick={onClose}>취소</Button>
+              <Button onClick={handleClickSave} colorScheme={"blue"}>
+                확인
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
     </Box>
   );

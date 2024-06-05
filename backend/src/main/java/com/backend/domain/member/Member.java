@@ -1,6 +1,5 @@
 package com.backend.domain.member;
 
-import com.backend.domain.authority.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +19,5 @@ public class Member {
     private String name;
     private String address;
     private String phone;
-    private Authority authority;
     private LocalDateTime inserted;
 }

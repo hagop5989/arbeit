@@ -1,11 +1,13 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function StoreList() {
   const [storeList, setStoreList] = useState([]);
   const navigate = useNavigate();
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     axios
@@ -40,23 +42,25 @@ export function StoreList() {
             </Tr>
           </Thead>
           <Tbody>
-            {storeList.map((store) => (
-              <Tr
-                key={store.id}
-                _hover={{
-                  bgColor: "gray.200",
-                }}
-                cursor={"pointer"}
-                onClick={() => navigate(`/store/${store.id}`)}
-                height="4cm" // 각 행의 높이 조절
-                overflow="hidden" // 내용이 넘칠 경우 숨김 처리
-              >
-                <Td>{store.id}</Td>
-                <Td>{store.name}</Td>
-                <Td>{store.address}</Td>
-                <Td>{store.category}</Td>
-              </Tr>
-            ))}
+            {storeList.map((store) =>
+              account.hasAccess(store.memberId) ? (
+                <Tr
+                  key={store.id}
+                  _hover={{
+                    bgColor: "gray.200",
+                  }}
+                  cursor={"pointer"}
+                  onClick={() => navigate(`/store/${store.id}`)}
+                  height="4cm" // 각 행의 높이 조절
+                  overflow="hidden" // 내용이 넘칠 경우 숨김 처리
+                >
+                  <Td>{store.id}</Td>
+                  <Td>{store.name}</Td>
+                  <Td>{store.address}</Td>
+                  <Td>{store.category}</Td>
+                </Tr>
+              ) : null,
+            )}
           </Tbody>
         </Table>
       </Box>

@@ -1,5 +1,6 @@
 package com.backend.mapper.member;
 
+import com.backend.domain.authority.MemberAuth;
 import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberSignupForm;
 import org.apache.ibatis.annotations.*;
@@ -10,10 +11,11 @@ import java.util.List;
 public interface MemberMapper {
 
     @Insert("""
-            INSERT INTO member (email, password, name, address, phone, authority)
-            VALUES (#{email}, #{password}, #{name}, #{address}, #{phone}, #{authority})
+            INSERT INTO member (email, password, name, address, phone)
+            VALUES (#{email}, #{password}, #{name}, #{address}, #{phone})
             """)
-    void insert(MemberSignupForm form);
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insert(MemberSignupForm form);
 
     @Select("SELECT * FROM member ORDER BY id DESC")
     List<Member> selectAll();
@@ -41,4 +43,20 @@ public interface MemberMapper {
 
     @Delete("DELETE FROM member WHERE id=#{id}")
     void deleteById(Integer id);
+
+    /**
+     * 권한 관련 SQL
+     */
+    @Insert("""
+            INSERT INTO authority (member_id, name)
+            VALUES (#{memberId}, #{authority})
+            """)
+    void insertAuth(MemberAuth auth);
+
+    @Select("""
+            SELECT name
+            FROM authority
+            WHERE member_id=#{memberId}
+            """)
+    String selectAuthById(Integer memberId);
 }

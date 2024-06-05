@@ -9,14 +9,14 @@ import java.util.List;
 public interface StoreMapper {
 
     @Insert("""
-                INSERT INTO store (name, content, address, category)
-                VALUES (#{name}, #{content}, #{address}, #{category})
+                INSERT INTO store (name, content, address, category, member_id)
+                VALUES (#{name}, #{content}, #{address}, #{category}, #{memberId})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     public int insert(Store store);
 
     @Select("""
-            SELECT id, name, content, address, category
+            SELECT id, name, content, address, category, member_id
             FROM store
             ORDER BY id
             """)
@@ -29,15 +29,21 @@ public interface StoreMapper {
     int deleteById(Integer id);
 
     @Select("""
-            SELECT id, name, content, address, category
-            FROM store
-            WHERE id = #{id}
+            SELECT s.id,
+                   s.name,
+                   s.content,
+                   s.address,
+                   s.category,
+                   s.member_id
+            FROM store s JOIN member m ON s.member_id = m.id
+            WHERE s.id = #{id}
             """)
     Store selectByStoreId(Integer id);
 
     @Update("""
-            UPDATE store
-            SET name= #{name}, content= #{content}, address= #{address}, category= #{category}
+                UPDATE store
+                SET name= #{name}, content= #{content}, address= #{address}, category= #{category}
+                WHERE id = #{id}
             """)
     int update(Store store);
 

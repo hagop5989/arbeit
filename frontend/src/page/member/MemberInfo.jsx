@@ -66,8 +66,6 @@ export function MemberInfo() {
         <Box>
           <Box>
             <FormControl>
-              <FormLabel>권한</FormLabel>
-              <Input value={member.authority} isReadOnly />
               <FormLabel>이메일</FormLabel>
               <Input value={member.email} isReadOnly />
               <FormLabel>이름</FormLabel>

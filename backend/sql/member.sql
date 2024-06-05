@@ -14,11 +14,14 @@ CREATE TABLE member
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE member
+    DROP COLUMN authority;
+
 DROP TABLE authority;
 CREATE TABLE authority
 (
     member_id INT REFERENCES member (id),
-    name      VARCHAR(3) NOT NULL,
+    name      VARCHAR(10) NOT NULL,
     PRIMARY KEY (member_id, name)
 );
 
@@ -29,3 +32,7 @@ show tables;
 
 SELECT *
 FROM member;
+SELECT *
+FROM authority;
+INSERT INTO authority (member_Id, name)
+VALUES ('16', 'ADMIN');

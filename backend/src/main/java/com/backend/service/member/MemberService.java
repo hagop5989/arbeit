@@ -1,6 +1,6 @@
 package com.backend.service.member;
 
-import com.backend.domain.authority.Authority;
+import com.backend.domain.authority.MemberAuth;
 import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberEditForm;
 import com.backend.domain.member.MemberLoginForm;
@@ -34,32 +34,44 @@ public class MemberService {
     public void signup(MemberSignupForm form) {
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         mapper.insert(form);
+      
+        MemberAuth auth = new MemberAuth(form.getId(), form.getAuthority());
+        mapper.insertAuth(auth);
     }
 
     public Map<String, Object> getToken(MemberLoginForm form) {
         Map<String, Object> result = null;
 
         Member dbMember = mapper.selectByEmail(form.getEmail());
-        if (dbMember != null) {
-            if (passwordEncoder.matches(form.getPassword(), dbMember.getPassword())) {
-                result = new HashMap<>();
-                String token = "";
-                Instant now = Instant.now();
 
-                JwtClaimsSet claims = JwtClaimsSet.builder()
-                        .issuer("self")
-                        .issuedAt(now)
-                        .expiresAt(now.plusSeconds(60 * 60 * 24 * 7))
-                        .subject(dbMember.getId().toString())
-                        .claim("scope", form.getAuthority())
-                        .claim("email", dbMember.getEmail())
-                        .claim("name", dbMember.getName())
-                        .build();
+        if (dbMember == null) {
+            log.info("dbMember = null");
+            return null;
+        }
 
-                token = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        Integer dbMemberId = dbMember.getId();
+        String authority = mapper.selectAuthById(dbMemberId);
 
-                result.put("token", token);
-            }
+        if (String.valueOf(form.getAuthority()).equals(authority)
+                && passwordEncoder.matches(form.getPassword(), dbMember.getPassword())) {
+
+            result = new HashMap<>();
+            String token = "";
+            Instant now = Instant.now();
+
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .issuer("self")
+                    .issuedAt(now)
+                    .expiresAt(now.plusSeconds(60 * 60 * 24 * 7))
+                    .subject(dbMember.getId().toString())
+                    .claim("scope", authority)
+                    .claim("email", dbMember.getEmail())
+                    .claim("name", dbMember.getName())
+                    .build();
+
+            token = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
+            result.put("token", token);
         }
 
         return result;
@@ -122,7 +134,7 @@ public class MemberService {
 
         return map;
     }
-
+  
     public boolean checkAuthority(MemberLoginForm form) {
         Member dbMember = mapper.selectByEmail(form.getEmail());
         Authority memberAuth = dbMember.getAuthority();
