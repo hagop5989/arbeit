@@ -1,8 +1,8 @@
-package com.backend.controller.alba;
+package com.backend.controller.member;
 
-import com.backend.domain.alba.Alba;
-import com.backend.domain.alba.AlbaEditForm;
-import com.backend.domain.alba.AlbaSignupForm;
+import com.backend.domain.member.Alba;
+import com.backend.domain.member.AlbaEditForm;
+import com.backend.domain.member.MemberSignupForm;
 import com.backend.service.alba.AlbaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +22,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/alba")
-public class AlbaController {
+@RequestMapping("/api")
+public class MemberController {
 
     private final AlbaService albaService;
 
     @PostMapping("/signup")
-    public ResponseEntity signup(@Validated @RequestBody AlbaSignupForm form, BindingResult bindingResult) {
+    public ResponseEntity signup(@Validated @RequestBody MemberSignupForm form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);

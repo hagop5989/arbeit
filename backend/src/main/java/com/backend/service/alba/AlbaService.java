@@ -1,10 +1,10 @@
 package com.backend.service.alba;
 
-import com.backend.domain.alba.Alba;
-import com.backend.domain.alba.AlbaEditForm;
-import com.backend.domain.alba.AlbaLoginForm;
-import com.backend.domain.alba.AlbaSignupForm;
 import com.backend.domain.authority.Authority;
+import com.backend.domain.member.Alba;
+import com.backend.domain.member.AlbaEditForm;
+import com.backend.domain.member.AlbaLoginForm;
+import com.backend.domain.member.MemberSignupForm;
 import com.backend.mapper.alba.AlbaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class AlbaService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtEncoder encoder;
 
-    public void signup(AlbaSignupForm form) {
+    public void signup(MemberSignupForm form) {
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         mapper.insert(form);
     }
@@ -72,10 +72,8 @@ public class AlbaService {
     }
 
     public void edit(AlbaEditForm form, Authentication authentication) {
-        Alba alba = new Alba(Integer.valueOf(
-                authentication.getName()), form.getEmail(), form.getPassword(),
-                form.getName(), form.getAddress(), form.getPhone(), null);
-        mapper.updateById(alba);
+        // todo : 수정
+//        mapper.updateById(alba);
     }
 
     public List<Alba> findAll() {
@@ -83,7 +81,7 @@ public class AlbaService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
-        
+
         Integer loginId = Integer.valueOf(authentication.getName());
         if (!id.equals(loginId)) {
             return false;

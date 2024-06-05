@@ -1,7 +1,7 @@
 package com.backend.controller;
 
-import com.backend.domain.alba.AlbaLoginForm;
 import com.backend.domain.boss.Boss;
+import com.backend.domain.member.AlbaLoginForm;
 import com.backend.service.alba.AlbaService;
 import com.backend.service.boss.BossService;
 import lombok.RequiredArgsConstructor;

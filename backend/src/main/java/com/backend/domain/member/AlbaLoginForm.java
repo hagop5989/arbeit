@@ -1,4 +1,4 @@
-package com.backend.domain.alba;
+package com.backend.domain.member;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
