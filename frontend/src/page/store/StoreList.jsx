@@ -1,4 +1,4 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,13 +8,28 @@ export function StoreList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("/api/store/list").then((res) => setStoreList(res.data));
+    axios
+      .get("/api/store/list", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => setStoreList(res.data));
   }, []);
 
   return (
-    <Box>
-      <Box>
-        <Box>가게 목록</Box>
+    <Box position="relative" p={4}>
+      <Box
+        ml={300}
+        maxHeight="1000px"
+        boxShadow="lg"
+        borderRadius="md"
+        bg="white"
+        p={4}
+      >
+        <Box fontSize="2xl" fontWeight="bold" mb={4}>
+          가게 목록
+        </Box>
         <Table>
           <Thead>
             <Tr>
@@ -44,6 +59,15 @@ export function StoreList() {
             ))}
           </Tbody>
         </Table>
+      </Box>
+      <Box position="fixed" bottom={8} right={8}>
+        <Button
+          colorScheme="blue"
+          onClick={() => navigate("/store/add")}
+          boxShadow="lg"
+        >
+          추가
+        </Button>
       </Box>
     </Box>
   );

@@ -10,3 +10,13 @@ CREATE TABLE store
 
 SELECT *
 FROM store;
+
+CREATE TABLE store_file
+(
+    store_id INT         NOT NULL REFERENCES store (id),
+    name     VARCHAR(45) NOT NULL,
+    PRIMARY KEY (store_id, name)
+);
+
+SELECT *
+FROM member;

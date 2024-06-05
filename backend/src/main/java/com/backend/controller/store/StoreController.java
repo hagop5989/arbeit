@@ -5,6 +5,7 @@ import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,9 +17,11 @@ public class StoreController {
     private final StoreService service;
 
     @PostMapping("/add")
-    public ResponseEntity add(@RequestBody Store store) {
+    public ResponseEntity add(Store store,
+                              @RequestParam(value = "files[]", required = false) MultipartFile[] files) {
+
         if (service.validate(store)) {
-            service.add(store);
+            service.add(store, files);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().body("Validation failed");
@@ -38,8 +41,9 @@ public class StoreController {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity delete(@PathVariable Integer id) {
         service.remove(id);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("edit")
