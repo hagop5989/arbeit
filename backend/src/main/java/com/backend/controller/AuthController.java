@@ -2,10 +2,9 @@ package com.backend.controller;
 
 import com.backend.domain.member.MemberLoginForm;
 import com.backend.domain.member.MemberSignupForm;
-import com.backend.service.alba.MemberService;
+import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -43,10 +42,6 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
-        }
-
-        if (!memberService.checkAuthority(form)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         Map<String, Object> map = memberService.getToken(form);
