@@ -15,44 +15,44 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
-export function BossAlbaPostCreate() {
+export function JobsCreate() {
   const account = useContext(LoginContext);
   const navigate = useNavigate();
-  const [albaPost, setAlbaPost] = useState({
+  const [jobs, setJobs] = useState({
     title: "",
     content: "",
     storeName: "default",
     bossId: account.id,
     bossName: account.name,
   });
-  const allFieldsFilled = Object.values(albaPost).every(
+  const allFieldsFilled = Object.values(jobs).every(
     (value) => value.length > 0,
   );
 
-  function handleBossAlbaPostInput(field, e) {
-    setAlbaPost((prevBoss) => ({ ...prevBoss, [field]: e.target.value }));
+  function handleCreateInput(field, e) {
+    setJobs((prevBoss) => ({ ...prevBoss, [field]: e.target.value }));
   }
 
-  function handleBossAlbaPostCreate() {
+  function handleSubmitCreateJobs() {
     if (allFieldsFilled) {
       axios
-        .post("/api/boss/post/insert", albaPost)
+        .post("/api/boss/jobs/insert", jobs)
         .then((res) => {
-          mytoast("공고생성 되었습니다", "success");
-          navigate("/boss/albaPost/list");
+          myToast("공고생성 되었습니다", "success");
+          navigate("/boss/jobs/list");
         })
         .catch((e) => {
-          mytoast("입력 값을 확인해주세요.", "error");
+          myToast("입력 값을 확인해주세요.", "error");
           console.log(e);
         })
         .finally(() => {});
     } else {
-      mytoast("입력값 중 빈칸이 존재합니다.", "error");
+      myToast("입력값 중 빈칸이 존재합니다.", "error");
     }
   }
 
   const toast = useToast();
-  function mytoast(text, status) {
+  function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
       status: status,
@@ -69,30 +69,30 @@ export function BossAlbaPostCreate() {
             <FormLabel>제목</FormLabel>
 
             <Input
-              value={albaPost.title}
-              onChange={(e) => handleBossAlbaPostInput("title", e)}
+              value={jobs.title}
+              onChange={(e) => handleCreateInput("title", e)}
               type={"text"}
               placeholder={"제목을 입력해주세요"}
             />
 
             <FormLabel>내용</FormLabel>
             <Textarea
-              value={albaPost.content}
-              onChange={(e) => handleBossAlbaPostInput("content", e)}
+              value={jobs.content}
+              onChange={(e) => handleCreateInput("content", e)}
               type={"text"}
               placeholder={"내용을 입력해주세요"}
             />
             <FormLabel>가게명</FormLabel>
             <Input
-              value={albaPost.storeName}
-              onChange={(e) => handleBossAlbaPostInput("storeName", e)}
+              value={jobs.storeName}
+              onChange={(e) => handleCreateInput("storeName", e)}
               type={"text"}
               readOnly
             />
             <FormLabel>작성자</FormLabel>
             <Input
-              value={albaPost.bossName}
-              onChange={(e) => handleBossAlbaPostInput("bossName", e)}
+              value={jobs.bossName}
+              onChange={(e) => handleCreateInput("bossName", e)}
               type={"text"}
               readOnly
             />
@@ -100,7 +100,7 @@ export function BossAlbaPostCreate() {
             <Flex justifyContent="center">
               <Button
                 isDisabled={!allFieldsFilled}
-                onClick={handleBossAlbaPostCreate}
+                onClick={handleSubmitCreateJobs}
                 colorScheme={"purple"}
                 w={120}
                 my={3}

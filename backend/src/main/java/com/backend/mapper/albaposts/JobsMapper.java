@@ -1,17 +1,17 @@
 package com.backend.mapper.albaposts;
 
-import com.backend.domain.albaposts.AlbaPosts;
+import com.backend.domain.albaposts.Jobs;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
-public interface AlbaPostsMapper {
+public interface JobsMapper {
     @Insert("""
             INSERT INTO alba_posts( title, content, store_name, store_id, boss_id)
             VALUES(#{title}, #{content}, #{storeName}, #{storeId}, #{bossId})
             """)
-    int insert(AlbaPosts albaPosts);
+    int insert(Jobs jobs);
 
     @Update("""
             UPDATE alba_posts SET
@@ -22,13 +22,13 @@ public interface AlbaPostsMapper {
             boss_id = #{bossId}
             WHERE id = #{id}
             """)
-    int update(AlbaPosts albaPosts);
+    int update(Jobs jobs);
 
     @Select("""
             SELECT * FROM alba_posts
             WHERE id = #{id}
             """)
-    AlbaPosts selectByPostId(Integer id);
+    Jobs selectByJobsId(Integer id);
 
     @Select("""
             SELECT ap.id, ap.title, ap.store_name, b.name AS bossName
@@ -36,12 +36,12 @@ public interface AlbaPostsMapper {
             JOIN boss b ON ap.boss_id = b.id
             WHERE b.id = #{id}
             """)
-    List<AlbaPosts> findAllByBossId(Integer bossId);
+    List<Jobs> findAllByBossId(Integer bossId);
 
     @Delete("""
             DELETE FROM alba_posts
             WHERE id=#{id}
             """)
-    int deleteByPostId(Integer id);
+    int deleteByJobsId(Integer id);
 
 }
