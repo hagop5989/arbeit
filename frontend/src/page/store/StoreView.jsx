@@ -51,7 +51,7 @@ export function StoreView() {
           description: `${id}번 가게 등록이 삭제되었습니다.`,
           position: "top",
         });
-        navigate("/store");
+        navigate("/store/list");
       })
       .catch(() => {
         toast({

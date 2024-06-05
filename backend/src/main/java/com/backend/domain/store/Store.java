@@ -10,5 +10,6 @@ public class Store {
     private String content;
     private String address;
     private String category;
+    private Integer memberId;
 
 }

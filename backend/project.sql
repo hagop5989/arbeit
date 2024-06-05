@@ -8,6 +8,10 @@ CREATE TABLE store
     category VARCHAR(45)   NOT NULL
 );
 
+
+ALTER TABLE store
+    ADD COLUMN member_id INT REFERENCES member (id) AFTER category;
+
 SELECT *
 FROM store;
 
