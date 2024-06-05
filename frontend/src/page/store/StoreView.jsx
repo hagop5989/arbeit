@@ -109,6 +109,11 @@ export function StoreView() {
           <Input value={store.category} readOnly />
         </FormControl>
       </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>가게 별점</FormLabel>
+        </FormControl>
+      </Box>
       <Flex justifyContent="space-between">
         <Button
           colorScheme="purple"

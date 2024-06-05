@@ -9,6 +9,7 @@ CREATE TABLE store
 );
 
 
+
 ALTER TABLE store
     ADD COLUMN member_id INT REFERENCES member (id) AFTER category;
 
@@ -24,3 +25,21 @@ CREATE TABLE store_file
 
 SELECT *
 FROM member;
+
+CREATE TABLE category
+(
+    id   INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(45) NOT NULL
+
+);
+
+ALTER TABLE store
+    DROP COLUMN category;
+
+ALTER TABLE store
+    ADD COLUMN category_id INT REFERENCES category (id) AFTER member_id;
+
+
+INSERT INTO category (name)
+VALUES ('사무직');
+

@@ -29,20 +29,21 @@ public interface StoreMapper {
     int deleteById(Integer id);
 
     @Select("""
-            SELECT s.id, 
-                   s.name, 
-                   s.content, 
-                   s.address, 
-                   s.category, 
+            SELECT s.id,
+                   s.name,
+                   s.content,
+                   s.address,
+                   s.category,
                    s.member_id
             FROM store s JOIN member m ON s.member_id = m.id
             WHERE s.id = #{id}
-                        """)
+            """)
     Store selectByStoreId(Integer id);
 
     @Update("""
-            UPDATE store
-            SET name= #{name}, content= #{content}, address= #{address}, category= #{category}
+                UPDATE store
+                SET name= #{name}, content= #{content}, address= #{address}, category= #{category}
+                WHERE id = #{id}
             """)
     int update(Store store);
 
