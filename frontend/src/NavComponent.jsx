@@ -7,6 +7,7 @@ import { BoardNav } from "./navbar/BoardNav.jsx";
 export function NavComponent() {
   return (
     <Box ml={10}>
+      <br />
       <Box>
         <Heading>하정현 작업물</Heading>
         <MemberNav />

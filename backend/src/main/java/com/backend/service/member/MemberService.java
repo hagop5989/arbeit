@@ -34,7 +34,7 @@ public class MemberService {
     public void signup(MemberSignupForm form) {
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         mapper.insert(form);
-      
+
         MemberAuth auth = new MemberAuth(form.getId(), form.getAuthority());
         mapper.insertAuth(auth);
     }
@@ -102,7 +102,6 @@ public class MemberService {
                 form.getName(),
                 form.getAddress(),
                 form.getPhone(),
-                null,
                 null
         );
 
@@ -133,12 +132,5 @@ public class MemberService {
         }
 
         return map;
-    }
-  
-    public boolean checkAuthority(MemberLoginForm form) {
-        Member dbMember = mapper.selectByEmail(form.getEmail());
-        Authority memberAuth = dbMember.getAuthority();
-        Authority newAuth = form.getAuthority();
-        return memberAuth.equals(newAuth);
     }
 }
