@@ -29,10 +29,7 @@ public class BoardService {
                 board.getContent().trim().equals("")) {
             return false;
         }
-        if ((board.getWriter() == null ||
-                board.getWriter().trim().equals(""))) {
-            return false;
-        }
+        
         return true;
     }
 
