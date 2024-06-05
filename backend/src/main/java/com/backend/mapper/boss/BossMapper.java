@@ -7,19 +7,19 @@ import org.apache.ibatis.annotations.*;
 public interface BossMapper {
 
     @Insert("""
-            INSERT INTO boss(email, password, name, address, phone)
+            INSERT INTO member(email, password, name, address, phone)
             VALUES (#{email},#{password},#{name},#{address},#{phone})
             """)
     int insert(Boss boss);
 
     @Select("""
-            SELECT * FROM boss
+            SELECT * FROM member
             WHERE email = #{email}
             """)
     Boss selectByBossDetails(Boss boss);
 
     @Select("""
-            SELECT * FROM boss
+            SELECT * FROM member
             WHERE email = #{email}
             """)
     Boss selectByBossEmail(String email);
@@ -48,7 +48,7 @@ public interface BossMapper {
     int deleteByBossId(Integer id);
 
     @Select("""
-            SELECT * FROM boss
+            SELECT * FROM member
             WHERE id = #{id}
             """)
     Boss selectByBossId(Integer id);

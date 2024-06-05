@@ -1,11 +1,11 @@
 package com.backend.controller.jobs;
 
-import com.backend.domain.albaposts.Jobs;
-import com.backend.service.albaposts.JobsService;
+import com.backend.domain.jobs.Jobs;
+import com.backend.service.jobs.JobsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,19 +23,25 @@ public class JobsController {
         service.update(jobs);
     }
 
-    @GetMapping("select")
-    public Jobs selectByPostId(@RequestParam Integer jobsId) {
-        return service.selectByJobsId(jobsId);
-    }
-
-    @GetMapping("list")
-    public List<Jobs> list(@RequestParam Integer bossId) {
-        return service.findAllByBossId(bossId);
+    @GetMapping("{id}")
+    public Jobs selectByPostId(@PathVariable Integer id) {
+        return service.selectByJobsId(id);
     }
 
     @DeleteMapping("delete")
-    public void delete(@RequestParam Integer jobsId) {
-        service.deleteByJobsId(jobsId);
+    public void delete(@RequestParam Integer id) {
+        service.deleteByJobsId(id);
+    }
+
+    @GetMapping("list")
+    public Map<String, Object> list(@RequestParam Integer bossId,
+                                    @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                    @RequestParam(value = "type", required = false) String searchType,
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword
+    ) {
+        System.out.println("keyword = " + keyword);
+        System.out.println("searchType = " + searchType);
+        return service.list(bossId, page, searchType, keyword);
     }
 
 }

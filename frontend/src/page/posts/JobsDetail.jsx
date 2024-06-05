@@ -20,37 +20,45 @@ function JobsDetail(props) {
   const account = useContext(LoginContext);
   const navigate = useNavigate();
   const [editJobs, setEditJobs] = useState({
-    title: "",
-    content: "",
+    title: "default",
+    content: "default",
     storeName: "default",
     bossId: account.id,
-    bossName: account.name,
+    bossName: "",
   });
-  const allFieldsFilled = Object.values(editJobs).every(
-    (value) => value.length > 0,
-  );
+  const allFieldsFilled =
+    editJobs.title.length > 0 &&
+    editJobs.content.length > 0 &&
+    editJobs.storeName.length;
+
   function handleEditInput(field, e) {
     setEditJobs((prevJobs) => ({ ...prevJobs, [field]: e.target.value }));
   }
 
   function handleSubmitEditJobs() {
-    axios
-      .put("/api/boss/jobs/edit", editJobs)
-      .then((res) => {
-        myToast("수정 완료 되었습니다", "success");
-      })
-      .catch(() => {
-        myToast("수정실패", "error");
-      })
-      .finally(() => {});
+    if (allFieldsFilled) {
+      axios
+        .put("/api/boss/jobs/update", editJobs)
+        .then((res) => {
+          myToast("수정 완료 되었습니다", "success");
+        })
+        .catch(() => {
+          myToast("수정실패", "error");
+        })
+        .finally(() => {});
+    } else {
+      console.log(allFieldsFilled);
+      console.log(editJobs);
+      myToast("입력값 중 빈칸이 존재합니다.", "error");
+    }
   }
 
   function handleSubmitDeleteJobs() {
     axios
-      .put(`/api/boss/jobs/delete?id=${id}`, editJobs)
+      .delete(`/api/boss/jobs/delete?id=${id}`)
       .then((res) => {
         myToast("삭제 완료 되었습니다", "success");
-        navigate("/api/boss/jobs/list");
+        navigate("/boss/jobs/list");
       })
       .catch(() => {
         myToast("삭제실패", "error");
@@ -117,8 +125,8 @@ function JobsDetail(props) {
             />
             <FormLabel>작성자</FormLabel>
             <Input
-              value={editJobs.bossName}
-              onChange={(e) => handleEditInput("bossName", e)}
+              value={account.name}
+              // onChange={(e) => handleEditInput("bossName", e)}
               type={"text"}
               readOnly
             />
@@ -142,7 +150,7 @@ function JobsDetail(props) {
                 삭제
               </Button>
               <Button
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/boss/jobs/list")}
                 colorScheme={"green"}
                 w={120}
                 my={3}
