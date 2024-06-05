@@ -25,3 +25,7 @@ CREATE TABLE alba_posts
     boss_id    INT           NOT NULL REFERENCES boss (id)
 );
 
+
+SELECT *
+FROM member;
+
