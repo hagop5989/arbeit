@@ -28,4 +28,15 @@ DELETE
 FROM jobs
 WHERE id BETWEEN 200 AND 887;
 
+# jobs boss_id 컬럼 이름 변경 (member_id)
+ALTER TABLE jobs
+    CHANGE COLUMN boss_id member_id INT NOT NULL;
+
+DESC jobs;
+
+ALTER TABLE jobs
+    ADD CONSTRAINT fk_member
+        FOREIGN KEY (member_id)
+            REFERENCES member (id);
+
 

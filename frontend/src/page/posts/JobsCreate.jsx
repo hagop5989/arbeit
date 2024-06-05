@@ -22,24 +22,24 @@ export function JobsCreate() {
     title: "",
     content: "",
     storeName: "default",
-    bossId: account.id,
-    bossName: account.name,
+    memberId: account.id,
+    name: account.name,
   });
   const allFieldsFilled = Object.values(jobs).every(
     (value) => value.length > 0,
   );
 
   function handleCreateInput(field, e) {
-    setJobs((prevBoss) => ({ ...prevBoss, [field]: e.target.value }));
+    setJobs((prev) => ({ ...prev, [field]: e.target.value }));
   }
 
   function handleSubmitCreateJobs() {
     if (allFieldsFilled) {
       axios
-        .post("/api/boss/jobs/insert", jobs)
+        .post("/api/jobs/insert", jobs)
         .then((res) => {
           myToast("공고생성 되었습니다", "success");
-          navigate("/boss/jobs/list");
+          navigate("/jobs/list");
         })
         .catch((e) => {
           myToast("입력 값을 확인해주세요.", "error");
@@ -91,8 +91,8 @@ export function JobsCreate() {
             />
             <FormLabel>작성자</FormLabel>
             <Input
-              value={jobs.bossName}
-              onChange={(e) => handleCreateInput("bossName", e)}
+              value={jobs.name}
+              onChange={(e) => handleCreateInput("name", e)}
               type={"text"}
               readOnly
             />

@@ -7,12 +7,13 @@ import java.time.LocalDateTime;
 @Data
 public class Jobs {
     private Integer id;
+    private Integer memberId;
+    private Integer storeId;
+    private String storeName;
+
     private String title;
     private String content;
-    private String storeName;
     private LocalDateTime inserted;
-    private String bossName;
-    private Integer storeId;
-    private Integer bossId;
 
+    private String memberName;
 }
