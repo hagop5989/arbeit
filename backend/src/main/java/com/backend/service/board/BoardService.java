@@ -1,8 +1,10 @@
 package com.backend.service.board;
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,14 @@ public class BoardService {
 
     final BoardMapper mapper;
 
-    public void writer(Board board) {
+    public void write(BoardWriteForm form, Authentication authentication) {
+        Board board = new Board(
+                null,
+                Integer.valueOf(authentication.getName()),
+                form.getTitle(),
+                form.getContent(),
+                null
+        );
         mapper.insert(board);
     }
 
@@ -29,10 +38,7 @@ public class BoardService {
                 board.getContent().trim().equals("")) {
             return false;
         }
-        if ((board.getWriter() == null ||
-                board.getWriter().trim().equals(""))) {
-            return false;
-        }
+
         return true;
     }
 

@@ -14,6 +14,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -21,6 +22,7 @@ import {
 export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
+
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -28,6 +30,7 @@ export function BoardView() {
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
+
       .then((res) => setBoard(res.data))
       .catch((err) => {
         if (err.response.status === 404) {
@@ -70,29 +73,24 @@ export function BoardView() {
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
-          <Input value={board.title} readOnly></Input>
+          <Textarea value={board.title} readOnly></Textarea>
         </FormControl>
       </Box>
       {/*-----------*/}
       <Box>
         <FormControl>
           <FormLabel>본문</FormLabel>
-          <Input value={board.content} readOnly></Input>
+          <Textarea value={board.content} readOnly></Textarea>
         </FormControl>
       </Box>
 
       {/*-----------*/}
-      <Box>
-        <FormControl>
-          <FormLabel>별명</FormLabel>
-          <Input value={board.nickName} readOnly></Input>
-        </FormControl>
-      </Box>
+
       {/*-----------*/}
       <Box>
         <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Input value={board.writer} readOnly></Input>
+          <Textarea value={board.writer} readOnly></Textarea>
         </FormControl>
       </Box>
       {/*-----------*/}

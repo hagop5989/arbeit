@@ -4,10 +4,11 @@ import Home from "./page/Home.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
 import axios from "axios";
 import { Login } from "./page/Login.jsx";
-import albaRoutes from "./path/albaRoutes.jsx";
+import memberRoutes from "./path/memberRoutes.jsx";
 import bossRoutes from "./path/bossRoutes.jsx";
 import storeRoutes from "./path/storeRoutes.jsx";
 import boardRoutes from "./path/boardRoutes.jsx";
+import { NavComponent } from "./NavComponent.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -23,8 +24,8 @@ function App() {
       path: "/",
       element: <Home />,
       children: [
-        { index: true, element: <div>index 화면</div> },
-        ...albaRoutes,
+        { index: true, element: <NavComponent /> },
+        ...memberRoutes,
         ...bossRoutes,
         ...storeRoutes,
         ...boardRoutes,

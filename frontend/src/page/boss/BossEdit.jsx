@@ -34,10 +34,10 @@ function BossEdit(props) {
     axios
       .put("/api/boss/update", editBoss)
       .then((res) => {
-        mytoast("수정 완료 되었습니다", "success");
+        myToast("수정 완료 되었습니다", "success");
       })
       .catch(() => {
-        mytoast("수정실패", "error");
+        myToast("수정실패", "error");
       })
       .finally(() => {});
   }
@@ -46,14 +46,14 @@ function BossEdit(props) {
     axios
       .delete(`/api/boss/delete?id=${account.id}`)
       .then((res) => {
-        mytoast("삭제 완료 되었습니다", "success");
+        myToast("삭제 완료 되었습니다", "success");
       })
       .catch(() => {
-        mytoast("삭제 실패", "error");
+        myToast("삭제 실패", "error");
       })
       .finally(() => {
         account.logout();
-        navigate("/bossLogin");
+        navigate("/boss/Login");
       });
   }
 
@@ -63,7 +63,7 @@ function BossEdit(props) {
         .get(`/api/boss/select?id=${account.id}`)
         .then((res) => {
           setEditBoss(res.data);
-          mytoast("회원정보를 로드하였습니다.", "success");
+          myToast("회원정보를 로드하였습니다.", "success");
         })
         .catch(() => {})
         .finally(() => {});
@@ -71,7 +71,7 @@ function BossEdit(props) {
   }, []);
 
   const toast = useToast();
-  function mytoast(text, status) {
+  function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
       status: status,

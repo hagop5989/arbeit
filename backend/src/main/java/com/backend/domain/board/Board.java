@@ -1,17 +1,19 @@
 package com.backend.domain.board;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Board {
 
     private Integer id;
+    private Integer memberId;
     private String title;
     private String content;
-    private String writer;
-    private String nick_name;
     private LocalDateTime inserted;
-
 }

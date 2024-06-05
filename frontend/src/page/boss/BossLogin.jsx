@@ -8,8 +8,6 @@ import {
   FormLabel,
   Heading,
   Input,
-  Stack,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -33,17 +31,17 @@ function BossLogin(props) {
         .post("/api/boss/token", loginBoss)
         .then((res) => {
           account.login(res.data.token);
-          mytoast("로그인 되었습니다", "success");
+          myToast("로그인 되었습니다", "success");
           navigate("/");
         })
         .catch((e) => {
           if (e.response.status === 403) {
-            mytoast(`로그인 실패 !\n 입력 값을 확인 해주세요.`, "error");
+            myToast(`로그인 실패 !\n 입력 값을 확인 해주세요.`, "error");
           }
         })
         .finally(() => {});
     } else {
-      mytoast("입력값 중 빈칸이 존재합니다.", "error");
+      myToast("입력값 중 빈칸이 존재합니다.", "error");
     }
   }
 
@@ -55,7 +53,7 @@ function BossLogin(props) {
   }
 
   const toast = useToast();
-  function mytoast(text, status) {
+  function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
       status: status,
@@ -97,41 +95,6 @@ function BossLogin(props) {
           </FormControl>
         </Center>
       </Flex>
-      <Box>
-        <Stack spacing={4}>
-          <Input
-            value={loginBoss.email.trim()}
-            onChange={(e) => handleLoginBossInput("email", e)}
-            type={"text"}
-            placeholder="기업회원 이메일 입력"
-          />
-          <Input
-            value={loginBoss.password}
-            onChange={(e) => handleLoginBossInput("password", e)}
-            placeholder="비밀번호"
-            type="password"
-          />
-          <Button
-            onClick={handleLoginBoss}
-            colorScheme="blue"
-            size="lg"
-            width="full"
-          >
-            로그인
-          </Button>
-          <Box textAlign="right" mt={2}>
-            <Text as="a" href="#" mr={2}>
-              아이디 찾기(모달예정)
-            </Text>
-            <Text as="a" href="#" mr={2}>
-              비밀번호 찾기(모달예정)
-            </Text>
-            <Text as="a" href="#" onClick={() => navigate("bossSignup")}>
-              회원가입
-            </Text>
-          </Box>
-        </Stack>
-      </Box>
     </Box>
   );
 }

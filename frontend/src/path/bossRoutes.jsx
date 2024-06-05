@@ -1,17 +1,19 @@
 import BossSignup from "../page/boss/BossSignup.jsx";
 import BossLogin from "../page/boss/BossLogin.jsx";
 import BossEdit from "../page/boss/BossEdit.jsx";
-import { BossAlbaPost } from "../page/posts/BossAlbaPost.jsx";
-import { BossAlbaPostCreate } from "../page/posts/BossAlbaPostCreate.jsx";
-import { BossAlbaPostManage } from "../page/posts/BossAlbaPostManage.jsx";
+import { JobsCreate } from "../page/posts/JobsCreate.jsx";
+import { JobsList } from "../page/posts/JobsList.jsx";
+import JobsDetail from "../page/posts/JobsDetail.jsx";
 
+// list : jobs , view : detail
 const bossRoutes = [
-  { path: "bossSignup", element: <BossSignup /> },
-  { path: "bossLogin", element: <BossLogin /> },
-  { path: "bossEdit", element: <BossEdit /> },
-  { path: "bossAlbaPost", element: <BossAlbaPost /> },
-  { path: "bossAlbaPostCreate", element: <BossAlbaPostCreate /> },
-  { path: "bossAlbaPostManage", element: <BossAlbaPostManage /> },
+  { path: "boss/signup", element: <BossSignup /> },
+  { path: "boss/login", element: <BossLogin /> },
+  { path: "boss/edit", element: <BossEdit /> },
+  // { path: "boss/jobs", element: <BossJobs /> },
+  { path: "boss/jobs/create", element: <JobsCreate /> },
+  { path: "boss/jobs/list", element: <JobsList /> },
+  { path: "boss/jobs/:id", element: <JobsDetail /> },
 ];
 
 export default bossRoutes;

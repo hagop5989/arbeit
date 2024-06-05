@@ -12,7 +12,7 @@ import axios from "axios";
 import { LoginContext } from "../component/LoginProvider.jsx";
 
 export function Login() {
-  const [type, setType] = useState("ALBA");
+  const [authority, setAuthority] = useState("ALBA");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [password, setPassword] = useState("");
@@ -21,7 +21,7 @@ export function Login() {
 
   function handleLoginBtn() {
     axios
-      .post(`/api/alba/token?type=${type}`, { email, password })
+      .post(`/api/token`, { email, password, authority })
       .then((res) => {
         account.login(res.data.token);
       })
@@ -32,7 +32,7 @@ export function Login() {
   }
 
   function handleTypeBtn(value) {
-    setType(value);
+    setAuthority(value);
   }
 
   return (
@@ -43,16 +43,22 @@ export function Login() {
       <Box>
         <Box>
           <Button
-            colorScheme={type === "ALBA" ? "blue" : "gray"}
+            colorScheme={authority === "ALBA" ? "blue" : "gray"}
             onClick={() => handleTypeBtn("ALBA")}
           >
             알바
           </Button>
           <Button
-            colorScheme={type === "BOSS" ? "blue" : "gray"}
+            colorScheme={authority === "BOSS" ? "blue" : "gray"}
             onClick={() => handleTypeBtn("BOSS")}
           >
             사장
+          </Button>
+          <Button
+            colorScheme={authority === "ADMIN" ? "blue" : "gray"}
+            onClick={() => handleTypeBtn("ADMIN")}
+          >
+            관리자 (나중에 지울 예정)
           </Button>
         </Box>
         <Box>
