@@ -51,7 +51,7 @@ export function StoreView() {
           description: `${id}번 가게 등록이 삭제되었습니다.`,
           position: "top",
         });
-        navigate("/store");
+        navigate("/store/list");
       })
       .catch(() => {
         toast({
@@ -107,6 +107,11 @@ export function StoreView() {
         <FormControl>
           <FormLabel>가게 카테고리</FormLabel>
           <Input value={store.category} readOnly />
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>가게 별점</FormLabel>
         </FormControl>
       </Box>
       <Flex justifyContent="space-between">
