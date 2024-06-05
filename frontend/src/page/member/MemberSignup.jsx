@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-export function AlbaSignup() {
+export function MemberSignup() {
   const [member, setMember] = useState({});
   const [errors, setErrors] = useState({});
 

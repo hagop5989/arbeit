@@ -4,7 +4,7 @@ import Home from "./page/Home.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
 import axios from "axios";
 import { Login } from "./page/Login.jsx";
-import albaRoutes from "./path/albaRoutes.jsx";
+import memberRoutes from "./path/memberRoutes.jsx";
 import bossRoutes from "./path/bossRoutes.jsx";
 import storeRoutes from "./path/storeRoutes.jsx";
 import boardRoutes from "./path/boardRoutes.jsx";
@@ -25,7 +25,7 @@ function App() {
       element: <Home />,
       children: [
         { index: true, element: <NavComponent /> },
-        ...albaRoutes,
+        ...memberRoutes,
         ...bossRoutes,
         ...storeRoutes,
         ...boardRoutes,

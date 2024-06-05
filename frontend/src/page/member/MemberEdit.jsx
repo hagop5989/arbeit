@@ -12,25 +12,25 @@ import {
   Input,
 } from "@chakra-ui/react";
 
-export function AlbaEdit() {
+export function MemberEdit() {
   const { id } = useParams();
-  const [alba, setAlba] = useState({});
+  const [member, setMember] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`/api/alba/${id}`)
-      .then((res) => setAlba(res.data))
+      .get(`/api/member/${id}`)
+      .then((res) => setMember(res.data))
       .catch()
       .finally();
   }, []);
 
   const handleInputChange = (prop) => (e) => {
-    setAlba({ ...alba, [prop]: e.target.value });
+    setMember({ ...member, [prop]: e.target.value });
   };
 
   function handleSaveBtn() {
-    axios.put(`/api/alba/${id}`, alba).then().catch().finally();
+    axios.put(`/api/member/${id}`, member).then().catch().finally();
   }
 
   return (
@@ -43,10 +43,7 @@ export function AlbaEdit() {
           <Box>
             <FormControl>
               <FormLabel>이메일</FormLabel>
-              <Input
-                defaultValue={alba.email}
-                onChange={handleInputChange("email")}
-              />
+              <Input value={member.email} isReadOnly />
               <FormLabel>패스워드</FormLabel>
               <Input
                 defaultValue={""}
@@ -59,17 +56,17 @@ export function AlbaEdit() {
               />
               <FormLabel>이름</FormLabel>
               <Input
-                defaultValue={alba.name}
+                defaultValue={member.name}
                 onChange={handleInputChange("name")}
               />
               <FormLabel>주소</FormLabel>
               <Input
-                defaultValue={alba.address}
+                defaultValue={member.address}
                 onChange={handleInputChange("address")}
               />
               <FormLabel>전화번호</FormLabel>
               <Input
-                defaultValue={alba.phone}
+                defaultValue={member.phone}
                 onChange={handleInputChange("phone")}
               />
               <Flex>

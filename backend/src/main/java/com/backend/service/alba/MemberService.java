@@ -4,7 +4,7 @@ import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberEditForm;
 import com.backend.domain.member.MemberLoginForm;
 import com.backend.domain.member.MemberSignupForm;
-import com.backend.mapper.alba.AlbaMapper;
+import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -26,7 +26,7 @@ import java.util.Map;
 @Transactional(rollbackFor = Exception.class)
 public class MemberService {
 
-    private final AlbaMapper mapper;
+    private final MemberMapper mapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtEncoder encoder;
 
@@ -71,16 +71,28 @@ public class MemberService {
     }
 
     public void edit(MemberEditForm form, Authentication authentication) {
+
+        Member dbMember = mapper.selectById(Integer.valueOf(authentication.getName()));
+        String password = dbMember.getPassword();
+        String newPassword = form.getPassword();
+
+        if (!newPassword.trim().isBlank()) {
+            if (form.getPassword().equals(form.getPasswordCheck())) {
+                password = passwordEncoder.encode(form.getPassword());
+            }
+        }
+
         Member member = new Member(
                 Integer.valueOf(authentication.getName()),
-                form.getEmail(),
                 null,
+                password,
                 form.getName(),
                 form.getAddress(),
                 form.getPhone(),
                 null,
                 null
         );
+
         mapper.updateById(member);
     }
 
@@ -89,6 +101,7 @@ public class MemberService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
+
         Integer loginId = Integer.valueOf(authentication.getName());
         if (!id.equals(loginId)) {
             return false;

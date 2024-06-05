@@ -9,27 +9,34 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-export function AlbaInfo() {
+export function MemberInfo() {
   const { id } = useParams();
-  const [alba, setAlba] = useState({});
+  const [member, setMember] = useState({});
   const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
     axios
-      .get(`/api/alba/${id}`)
-      .then((res) => setAlba(res.data))
-      .catch()
+      .get(`/api/member/${id}`)
+      .then((res) => setMember(res.data))
+      .catch(() => {
+        toast({
+          status: "warning",
+          description: "접근 권한이 없습니다.",
+          position: "top",
+        });
+        navigate("/member/list");
+      })
       .finally();
   }, []);
 
   function handleRemoveBtn() {
     axios
-      .delete(`/api/alba/${id}`)
+      .delete(`/api/member/${id}`)
       .then(() => {
         toast({
           status: "success",
@@ -50,16 +57,18 @@ export function AlbaInfo() {
         <Box>
           <Box>
             <FormControl>
+              <FormLabel>권한</FormLabel>
+              <Input value={member.authority} isReadOnly />
               <FormLabel>이메일</FormLabel>
-              <Input value={alba.email} isReadOnly />
+              <Input value={member.email} isReadOnly />
               <FormLabel>이름</FormLabel>
-              <Input value={alba.name} isReadOnly />
+              <Input value={member.name} isReadOnly />
               <FormLabel>주소</FormLabel>
-              <Input value={alba.address} isReadOnly />
+              <Input value={member.address} isReadOnly />
               <FormLabel>전화번호</FormLabel>
-              <Input value={alba.phone} isReadOnly />
+              <Input value={member.phone} isReadOnly />
               <Flex>
-                <Button onClick={() => navigate(`/alba/edit/${id}`)}>
+                <Button onClick={() => navigate(`/member/edit/${id}`)}>
                   회원 수정
                 </Button>
                 <Button onClick={handleRemoveBtn}>회원 삭제</Button>

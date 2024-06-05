@@ -1,4 +1,4 @@
-package com.backend.mapper.alba;
+package com.backend.mapper.member;
 
 import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberSignupForm;
@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface AlbaMapper {
+public interface MemberMapper {
 
     @Insert("""
             INSERT INTO member (email, password, name, address, phone, authority)
@@ -34,7 +34,7 @@ public interface AlbaMapper {
 
     @Update("""
             UPDATE member
-            SET email=#{email}, name=#{name}, address=#{address}, phone=#{phone}
+            SET password=#{password}, name=#{name}, address=#{address}, phone=#{phone}
             WHERE id=#{id}
             """)
     void updateById(Member member);

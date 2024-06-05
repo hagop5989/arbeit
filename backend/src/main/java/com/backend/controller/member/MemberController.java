@@ -2,7 +2,6 @@ package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
 import com.backend.domain.member.MemberEditForm;
-import com.backend.domain.member.MemberSignupForm;
 import com.backend.service.alba.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,21 +21,10 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/member")
 public class MemberController {
 
     private final MemberService memberService;
-
-    @PostMapping("/signup")
-    public ResponseEntity signup(@Validated @RequestBody MemberSignupForm form, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = getErrorMessages(bindingResult);
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        memberService.signup(form);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -54,11 +42,10 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('SCOPE_ALBA')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated @RequestBody MemberEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
                                Authentication authentication) {
-
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
