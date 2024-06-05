@@ -7,6 +7,7 @@ import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -27,6 +28,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/write")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity write(@Validated @RequestBody BoardWriteForm form, BindingResult bindingResult,
                                 Authentication authentication) {
 
