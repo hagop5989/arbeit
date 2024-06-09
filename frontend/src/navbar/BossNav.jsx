@@ -6,13 +6,13 @@ export function BossNav() {
 
   return (
     <>
-      <Box onClick={() => navigate("/boss/Signup")}>/bossSignup</Box>
-      <Box onClick={() => navigate("/boss/Login")}>/bossLogin</Box>
-      <Box onClick={() => navigate("/boss/Edit")}>/bossEdit</Box>
       <Box onClick={() => navigate(`/jobs/create`)}>/jobsCreate</Box>
       <Box onClick={() => navigate(`/jobs/list`)}>/jobsList</Box>
       <Box onClick={() => navigate(`/member/resume/write`)}>/ResumeWrite</Box>
       <Box onClick={() => navigate(`/member/resume/list`)}>/ResumeList</Box>
+      <Box onClick={() => navigate(`/member/resume/edit`)}>
+        /ResumeEdit(Test 중)
+      </Box>
     </>
   );
 }

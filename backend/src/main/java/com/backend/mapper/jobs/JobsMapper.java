@@ -8,8 +8,12 @@ import java.util.List;
 @Mapper
 public interface JobsMapper {
     @Insert("""
-            INSERT INTO jobs( title, content, store_name, store_id, member_id)
-            VALUES(#{title}, #{content}, #{storeName}, #{storeId}, #{memberId})
+            INSERT INTO jobs
+            (member_id, store_id, category_id, title, content,
+             salary, deadline, recruitment_number, store_name)
+            VALUES
+            (#{memberId},#{storeId},#{categoryId},#{title},#{content},
+            #{salary},#{deadline},#{recruitmentNumber},#{storeName})
             """)
     int insert(Jobs jobs);
 
@@ -30,15 +34,6 @@ public interface JobsMapper {
             """)
     Jobs selectByJobsId(Integer id);
 
-    @Select("""
-            SELECT j.id, j.title, j.store_name, m.name AS memberName, j.inserted
-            FROM jobs j
-            JOIN member m ON j.member_id = m.id
-            WHERE m.id = #{memberId}
-            ORDER BY id DESC
-            LIMIT #{offset},10
-            """)
-    List<Jobs> findAllByMemberId(Integer memberId, Integer offset);
 
     @Delete("""
             DELETE FROM jobs
@@ -71,6 +66,9 @@ public interface JobsMapper {
             <script>
             SELECT j.id,
                    j.title,
+                   j.content,
+                   j.salary,
+                   j.store_name,
                    j.store_name,
                    j.inserted,
                    m.name AS memberName
@@ -89,7 +87,7 @@ public interface JobsMapper {
                </trim>
             GROUP BY j.id
             ORDER BY j.id DESC
-            LIMIT #{offset}, 10
+            LIMIT #{offset}, 8
             </script>
                 """)
     List<Jobs> selectAllPaging(int offset, String searchType, String keyword);

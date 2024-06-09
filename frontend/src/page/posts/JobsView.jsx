@@ -6,14 +6,18 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Grid,
   Heading,
+  Image,
   Input,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { JobsList2 } from "./JobsTesView.jsx";
 
 function JobsView(props) {
   const { id } = useParams();
@@ -67,6 +71,7 @@ function JobsView(props) {
   }
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -97,7 +102,12 @@ function JobsView(props) {
   return (
     <Box>
       <Heading>알바공고 상세페이지 </Heading>
+      <Center>
+        <JobsList2 />
+      </Center>
       <Flex justifyContent={"center"} alignItems={"center"}>
+        {/*<JobsList />*/}
+
         <Center w={"30%"}>
           <FormControl>
             <FormLabel>제목</FormLabel>
@@ -166,6 +176,104 @@ function JobsView(props) {
         </Center>
       </Flex>
     </Box>
+  );
+}
+
+// Example usage
+export function JobsList() {
+  const job = {
+    title:
+      "[월최대410만가능]쿠팡CLS헬퍼리더채용(현장운영인력관리/물류관리자성장)",
+    logo: "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif",
+    hashtags: "#초간단즉시지원 #정규직전환가능 #셔틀제공",
+    description:
+      "4대보험 | 설립6년차 | 19년1월부터이용중 | 기업인증 | 채용1,532회",
+    salary: "4,100,000원",
+    duration: "1년이상",
+    schedule: "요일협의",
+    time: "시간협의",
+  };
+
+  function JobDetail({ job }) {
+    return (
+      <Box
+        w={"full"}
+        maxW={"800px"}
+        p={5}
+        borderWidth="1px"
+        borderRadius="lg"
+        border={"1px solid lightgray"}
+        m="2"
+      >
+        <Box
+          w={"full"}
+          p={5}
+          borderBottomWidth="1px"
+          borderBottomColor="gray.200"
+          mb={5}
+        >
+          <Flex justifyContent="space-between" alignItems="center">
+            <Text fontSize="2xl" fontWeight="bold">
+              {job.title}
+            </Text>
+            <Image
+              w={"150px"}
+              h={"60px"}
+              src={job.logo}
+              alt={job.title}
+              objectFit="cover"
+            />
+          </Flex>
+          <Text fontSize="sm" color="gray.500" mt={2}>
+            {job.hashtags}
+          </Text>
+          <Text fontSize="md" mt={2}>
+            {job.description}
+          </Text>
+        </Box>
+
+        <Grid templateColumns="repeat(4, 1fr)" gap={4}>
+          <Box>
+            <Text fontSize="lg" fontWeight="bold">
+              {job.salary}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              월급
+            </Text>
+          </Box>
+          <Box>
+            <Text fontSize="lg" fontWeight="bold">
+              {job.duration}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              기간
+            </Text>
+          </Box>
+          <Box>
+            <Text fontSize="lg" fontWeight="bold">
+              {job.schedule}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              요일
+            </Text>
+          </Box>
+          <Box>
+            <Text fontSize="lg" fontWeight="bold">
+              {job.time}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              시간
+            </Text>
+          </Box>
+        </Grid>
+      </Box>
+    );
+  }
+
+  return (
+    <Center>
+      <JobDetail job={job} />
+    </Center>
   );
 }
 

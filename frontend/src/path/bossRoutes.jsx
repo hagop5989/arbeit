@@ -6,7 +6,8 @@ import { JobsList } from "../page/posts/JobsList.jsx";
 import JobsView from "../page/posts/JobsView.jsx";
 import { ResumeWrite } from "../page/member/ResumeWrite.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
-import ResumeView from "../page/member/ResumeView.jsx"; // list : jobs , view : detail
+import ResumeView from "../page/member/ResumeView.jsx";
+import { ResumeEdit } from "../page/member/ResumeEdit.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
@@ -19,6 +20,7 @@ const bossRoutes = [
   { path: "member/resume/write", element: <ResumeWrite /> },
   { path: "member/resume/list", element: <ResumeList /> },
   { path: "member/resume/:id", element: <ResumeView /> },
+  { path: "member/resume/edit", element: <ResumeEdit /> },
 ];
 
 export default bossRoutes;

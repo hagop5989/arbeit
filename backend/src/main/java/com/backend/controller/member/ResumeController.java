@@ -4,7 +4,10 @@ import com.backend.domain.member.Resume;
 import com.backend.service.member.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -14,9 +17,11 @@ public class ResumeController {
     private final ResumeService service;
 
     @PostMapping("insert")
-    public void insert(@RequestBody Resume resume) {
-        System.out.println("ResumeController.insert");
-        service.insert(resume);
+    public void insert(@ModelAttribute Resume resume,
+                       @RequestParam(value = "files[]" , required = false) MultipartFile[] files) throws IOException {
+        System.out.println("files = " + Arrays.toString(files));
+        System.out.println("resume = " + resume);
+        service.insert(resume,files);
     }
 
     @GetMapping("list")

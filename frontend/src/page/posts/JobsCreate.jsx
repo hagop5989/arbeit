@@ -4,9 +4,13 @@ import {
   Center,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
+  InputGroup,
+  InputRightElement,
+  Select,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -21,20 +25,25 @@ export function JobsCreate() {
   const [jobs, setJobs] = useState({
     title: "",
     content: "",
+    salary: "",
+    deadline: "",
+    recruitmentNumber: "",
     storeName: "default",
+    categoryId: "1",
+    storeId: "8",
+
     memberId: account.id,
     name: account.name,
   });
-  const allFieldsFilled = Object.values(jobs).every(
-    (value) => value.length > 0,
-  );
+
+  // const allFieldsFilled =
 
   function handleCreateInput(field, e) {
     setJobs((prev) => ({ ...prev, [field]: e.target.value }));
   }
 
   function handleSubmitCreateJobs() {
-    if (allFieldsFilled) {
+    if (true) {
       axios
         .post("/api/jobs/insert", jobs)
         .then((res) => {
@@ -52,6 +61,7 @@ export function JobsCreate() {
   }
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -60,6 +70,7 @@ export function JobsCreate() {
       duration: "700",
     });
   }
+
   return (
     <Box>
       <Heading>알바공고 생성</Heading>
@@ -82,6 +93,61 @@ export function JobsCreate() {
               type={"text"}
               placeholder={"내용을 입력해주세요"}
             />
+            <FormLabel>시급</FormLabel>
+            <InputGroup>
+              <InputRightElement w={"15%"}>(원)</InputRightElement>
+              <Input
+                value={jobs.salary}
+                onChange={(e) => handleCreateInput("salary", e)}
+                type={"number"}
+                placeholder={"시급을 입력해주세요"}
+              />
+            </InputGroup>
+
+            <Flex justifyContent={"space-between"} my={3}>
+              <Box w={"50%"} borderRadius={"5px"}>
+                <FormLabel>근무시작</FormLabel>
+                <Input type="time" />
+              </Box>
+              <Box w={"50%"} borderRadius={"5px"} ml={1}>
+                <FormLabel>근무종료</FormLabel>
+                <Input type="time" />
+              </Box>
+            </Flex>
+            <FormHelperText my={2}>
+              시계 모양을 클릭하여 선택해주세요
+            </FormHelperText>
+
+            <FormLabel>마감일</FormLabel>
+            <Input
+              value={jobs.deadline}
+              onChange={(e) => handleCreateInput("deadline", e)}
+              type={"datetime-local"}
+              placeholder={"마감일을 입력해주세요"}
+            />
+
+            <Flex gap={3}>
+              <Box w={"50%"}>
+                <FormLabel>모집인원</FormLabel>
+                <InputGroup>
+                  <InputRightElement w={"15%"}>(명)</InputRightElement>
+                  <Input
+                    value={jobs.recruitmentNumber}
+                    onChange={(e) => handleCreateInput("recruitmentNumber", e)}
+                    type={"number"}
+                    placeholder={"모집인원"}
+                  />
+                </InputGroup>
+              </Box>
+              <Box w={"50%"}>
+                <FormLabel>카테고리 선택</FormLabel>
+                <Select onChange={(e) => handleCreateInput("categoryId", e)}>
+                  <option>1</option>
+                  <option>2</option>
+                </Select>
+              </Box>
+            </Flex>
+
             <FormLabel>가게명</FormLabel>
             <Input
               value={jobs.storeName}
@@ -99,7 +165,7 @@ export function JobsCreate() {
 
             <Flex justifyContent="center">
               <Button
-                isDisabled={!allFieldsFilled}
+                // isDisabled={!allFieldsFilled}
                 onClick={handleSubmitCreateJobs}
                 colorScheme={"purple"}
                 w={120}

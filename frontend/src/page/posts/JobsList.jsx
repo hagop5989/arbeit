@@ -1,17 +1,17 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
   Center,
   Flex,
-  Heading,
+  Grid,
+  GridItem,
+  Image,
   Input,
   Select,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
+  Text,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -35,25 +35,6 @@ export function JobsList() {
   const [searchType, setSearchType] = useState("all");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const pageNums = [];
-  for (let i = pageInfo.leftPageNum; i <= pageInfo.rightPageNum; i++) {
-    pageNums.push(i);
-  }
-
-  function handlePageButtonClick(currentPage) {
-    setCurrentPage(currentPage);
-  }
-
-  function handleSearchClick() {
-    navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
-  }
-
-  // T 문자를 제거하고 날짜만 반환하는 함수
-  const formatInsertedDate = (inserted) => {
-    if (!inserted) return "";
-    return inserted.replace("T", " ");
-  };
 
   useEffect(() => {
     const typeParam = searchParams.get("type");
@@ -79,43 +60,38 @@ export function JobsList() {
     });
   }, [currentPage, searchParams]);
 
+  const pageNums = [];
+  for (let i = pageInfo.leftPageNum; i <= pageInfo.rightPageNum; i++) {
+    pageNums.push(i);
+  }
+
+  function handlePageButtonClick(currentPage) {
+    setCurrentPage(currentPage);
+  }
+
+  function handleSearchClick() {
+    navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
+  }
+
+  // T 문자를 제거하고 날짜만 반환하는 함수
+  const formatInsertedDate = (inserted) => {
+    if (!inserted) return "";
+    return inserted.replace("T", " ");
+  };
+
   return (
     <Center>
       <Box>
-        <Box>
-          <Heading>알바 공고 목록</Heading>
-        </Box>
-        <Box>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>#</Th>
-                <Th>타이틀</Th>
-                <Th>가게명</Th>
-                <Th>작성자</Th>
-                <Th>작성시간</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {jobsList.map((jobs) => (
-                <Tr
-                  key={jobs.id}
-                  cursor={"pointer"}
-                  _hover={{ bgColor: "gray.200" }}
-                  onClick={() => navigate(`/jobs/${jobs.id}`)}
-                >
-                  <Td>{jobs.id}</Td>
-                  <Td>{jobs.title}</Td>
-                  <Td>{jobs.storeName}</Td>
-                  <Td>{jobs.memberName}</Td>
-                  <Td>{formatInsertedDate(jobs.inserted)}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
+        <Grid templateColumns="repeat(4,1fr)" gap={6}>
+          {jobsList.map((job) => (
+            <GridItem key={job.id}>
+              <JobCard job={job} />
+            </GridItem>
+          ))}
+        </Grid>
+
         <Center gap={3} mt={2}>
-          <Flex>
+          <Flex gap={2}>
             {pageInfo.prevPageNum && (
               <>
                 <Button onClick={() => handlePageButtonClick(1)}>
@@ -193,4 +169,69 @@ export function JobsList() {
       </Box>
     </Center>
   );
+
+  function JobCard({ job }) {
+    console.log(job);
+    return (
+      <Card
+        onClick={() => navigate(`/jobs/${job.id}`)}
+        w={"300px"}
+        h={"230px"}
+        cursor={"pointer"}
+        borderWidth="1px"
+        borderRadius="lg"
+        border={"1px solid lightgray"}
+        borderTop={"2px solid red"}
+        overflow="hidden"
+        p="5"
+        m="2"
+      >
+        <Center>
+          <Image
+            w={"150px"}
+            h={"60px"}
+            src={
+              "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif"
+            }
+            alt={job.title}
+            objectFit="cover"
+          />
+        </Center>
+        <CardBody fontSize="sm">
+          <Text w={"220px"} h={"22px"} overflow="hidden" mt="2" fontSize="sm">
+            {job.title}
+          </Text>
+          <Center>
+            <Text
+              w={"250px"}
+              h={"50px"}
+              overflow="hidden"
+              fontWeight="bold"
+              mt="2"
+              fontSize="medium"
+            >
+              {job.content}
+            </Text>
+          </Center>
+          <Flex mt="2">
+            <Text color="gray.600" fontSize="sm">
+              서울 마포구
+            </Text>
+            <Text color="teal.500" fontWeight="bold" ml={2}>
+              {" "}
+              시급
+            </Text>
+            <Text fontWeight="bold" fontSize="sm" ml={1} color="gray.600">
+              {job.salary} 원
+            </Text>
+          </Flex>
+        </CardBody>
+        <CardFooter>
+          <Button mt="2" colorScheme="teal" width="full">
+            신청하기
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
 }

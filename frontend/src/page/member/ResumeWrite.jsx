@@ -4,6 +4,7 @@ import {
   Center,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -18,14 +19,14 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 export function ResumeWrite() {
   const account = useContext(LoginContext);
   const navigate = useNavigate();
+  const [files, setFiles] = useState([]);
   const [resume, setResume] = useState({
     memberId: account.id,
     title: "",
     content: "",
   });
-  const allFieldsFilled = Object.values(resume).every(
-    (value) => value.length > 0,
-  );
+
+  const allFieldsFilled = resume.title.length > 0 && resume.content.length > 0;
 
   function handleCreateInput(field, e) {
     setResume((prev) => ({ ...prev, [field]: e.target.value }));
@@ -33,8 +34,17 @@ export function ResumeWrite() {
 
   function handleSubmitCreateResume() {
     if (allFieldsFilled) {
+      const formData = new FormData();
+      formData.append("memberId", account.id);
+      formData.append("title", resume.title);
+      formData.append("content", resume.content);
+
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+
       axios
-        .post("/api/member/resume/insert", resume)
+        .postForm("/api/member/resume/insert", formData)
         .then((res) => {
           myToast("이력서 생성 되었습니다", "success");
           navigate("/member/resume/list");
@@ -50,6 +60,7 @@ export function ResumeWrite() {
   }
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -58,6 +69,7 @@ export function ResumeWrite() {
       duration: "700",
     });
   }
+
   return (
     <Box>
       <Heading>이력서 생성</Heading>
@@ -80,6 +92,18 @@ export function ResumeWrite() {
               type={"text"}
               placeholder={"내용을 입력해주세요"}
             />
+            <FormControl>
+              <FormLabel>파일</FormLabel>
+              <Input
+                multiple
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFiles(e.target.files)}
+              />
+              <FormHelperText>
+                총 용량은 10MB, 한 파일은 1MB를 초과할 수 없습니다.
+              </FormHelperText>
+            </FormControl>
 
             <Flex justifyContent="center">
               <Button

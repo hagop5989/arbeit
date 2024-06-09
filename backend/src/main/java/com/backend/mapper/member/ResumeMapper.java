@@ -3,6 +3,7 @@ package com.backend.mapper.member;
 import com.backend.domain.member.Resume;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -12,9 +13,10 @@ public interface ResumeMapper {
 
 
     @Insert("""
-            INSERT INTO resume( member_id, title, content)
-            VALUES ( #{memberId}, #{title}, #{content})
+            INSERT INTO resume(member_id, title, content)
+            VALUES (#{memberId}, #{title}, #{content})
             """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Resume resume);
 
     @Select("""
@@ -28,5 +30,12 @@ public interface ResumeMapper {
             WHERE id = #{id}
             """)
     Resume select(Integer id);
+
+
+    @Insert("""
+            INSERT INTO resume_file (resume_id, name)
+            VALUES (#{resumeId},#{name})
+            """)
+    int insertFileName(Integer id, String originalFilename);
 
 }
