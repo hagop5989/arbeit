@@ -16,14 +16,15 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
-import KakaoMap2 from "./KakaoMap2.jsx";
+import { KakaoMap1 } from "./KakaoMap1.jsx";
 
-export function JobsCreate() {
+export function JobsView2() {
+  const { id } = useParams();
   const account = useContext(LoginContext);
   const navigate = useNavigate();
-  const [jobs, setJobs] = useState({
+  const [editJobs, setEditJobs] = useState({
     title: "",
     content: "",
     salary: "",
@@ -40,47 +41,62 @@ export function JobsCreate() {
     endTime: "",
     x: "",
     y: "",
-    markerName: "",
+    resultName: "",
   });
 
-  const handleMapSubmit = (x, y, markerName) => {
-    setJobs((prev) => ({
-      ...prev,
-      x: x,
-      y: y,
-      markerName: markerName,
-    }));
-  };
-
   /* log 찍는 용도 */
+  // useEffect(() => {
+  //   // console.log("Jobs state updated:", editJobs);
+  // }, [editJobs]);
+
+  function handleEditInput(field, e) {
+    setEditJobs((prev) => ({ ...prev, [field]: e.target.value }));
+  }
+
+  function handleSubmitEditJobs() {
+    axios
+      .put("/api/jobs/update", editJobs)
+      .then((res) => {
+        myToast("수정 완료 되었습니다", "success");
+      })
+      .catch(() => {
+        myToast("수정실패", "error");
+      })
+      .finally(() => {});
+  }
+
+  function handleSubmitDeleteJobs() {
+    axios
+      .delete(`/api/jobs/delete?id=${id}`)
+      .then((res) => {
+        myToast("삭제 완료 되었습니다", "success");
+        navigate("/jobs/list");
+      })
+      .catch(() => {
+        myToast("삭제실패", "error");
+      })
+      .finally(() => {});
+  }
+
   useEffect(() => {
-    // console.log("Jobs state updated:", jobs);
-  }, [jobs]);
-
-  function handleCreateInput(field, e) {
-    setJobs((prev) => ({ ...prev, [field]: e.target.value }));
-  }
-
-  function handleSubmitCreateJobs() {
-    if (true) {
-      axios
-        .post("/api/jobs/insert", jobs)
-        .then((res) => {
-          myToast("공고생성 되었습니다", "success");
-          navigate("/jobs/list");
-        })
-        .catch((e) => {
-          myToast("입력 값을 확인해주세요.", "error");
-          console.log(e);
-        })
-        .finally(() => {});
-    } else {
-      myToast("입력값 중 빈칸이 존재합니다.", "error");
-    }
-  }
+    axios
+      .get(`/api/jobs/${id}`)
+      .then((res) => {
+        setEditJobs(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          toast({
+            status: "info",
+            description: "해당 게시물이 존재하지 않습니다.",
+            position: "top",
+          });
+          navigate("/api/jobs/list");
+        }
+      });
+  }, [id, navigate]); // 여기에 의존성 배열을 추가합니다
 
   const toast = useToast();
-
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -92,23 +108,23 @@ export function JobsCreate() {
 
   return (
     <Box>
-      <Heading>알바공고 생성</Heading>
+      <Heading>알바공고 상세페이지</Heading>
       <Flex justifyContent={"center"} alignItems={"center"}>
         <Center w={"30%"}>
           <FormControl>
             <FormLabel>제목</FormLabel>
 
             <Input
-              value={jobs.title}
-              onChange={(e) => handleCreateInput("title", e)}
+              value={editJobs.title}
+              onChange={(e) => handleEditInput("title", e)}
               type={"text"}
               placeholder={"제목을 입력해주세요"}
             />
 
             <FormLabel>내용</FormLabel>
             <Textarea
-              value={jobs.content}
-              onChange={(e) => handleCreateInput("content", e)}
+              value={editJobs.content}
+              onChange={(e) => handleEditInput("content", e)}
               type={"text"}
               placeholder={"내용을 입력해주세요"}
             />
@@ -116,8 +132,8 @@ export function JobsCreate() {
             <InputGroup>
               <InputRightElement w={"15%"}>(원)</InputRightElement>
               <Input
-                value={jobs.salary}
-                onChange={(e) => handleCreateInput("salary", e)}
+                value={editJobs.salary}
+                onChange={(e) => handleEditInput("salary", e)}
                 type={"number"}
                 placeholder={"시급을 입력해주세요"}
               />
@@ -128,16 +144,16 @@ export function JobsCreate() {
                 <FormLabel>근무시작</FormLabel>
                 <Input
                   type="time"
-                  value={jobs.startTime}
-                  onChange={(e) => handleCreateInput("startTime", e)}
+                  value={editJobs.startTime}
+                  onChange={(e) => handleEditInput("startTime", e)}
                 />
               </Box>
               <Box w={"50%"} borderRadius={"5px"} ml={1}>
                 <FormLabel>근무종료</FormLabel>
                 <Input
                   type="time"
-                  value={jobs.endTime}
-                  onChange={(e) => handleCreateInput("endTime", e)}
+                  value={editJobs.endTime}
+                  onChange={(e) => handleEditInput("endTime", e)}
                 />
               </Box>
             </Flex>
@@ -147,8 +163,8 @@ export function JobsCreate() {
 
             <FormLabel>마감일</FormLabel>
             <Input
-              value={jobs.deadline}
-              onChange={(e) => handleCreateInput("deadline", e)}
+              value={editJobs.deadline}
+              onChange={(e) => handleEditInput("deadline", e)}
               type={"datetime-local"}
               placeholder={"마감일을 입력해주세요"}
             />
@@ -159,8 +175,8 @@ export function JobsCreate() {
                 <InputGroup>
                   <InputRightElement w={"15%"}>(명)</InputRightElement>
                   <Input
-                    value={jobs.recruitmentNumber}
-                    onChange={(e) => handleCreateInput("recruitmentNumber", e)}
+                    value={editJobs.recruitmentNumber}
+                    onChange={(e) => handleEditInput("recruitmentNumber", e)}
                     type={"number"}
                     placeholder={"모집인원"}
                   />
@@ -168,7 +184,7 @@ export function JobsCreate() {
               </Box>
               <Box w={"50%"}>
                 <FormLabel>카테고리 선택</FormLabel>
-                <Select onChange={(e) => handleCreateInput("categoryId", e)}>
+                <Select onChange={(e) => handleEditInput("categoryId", e)}>
                   <option>1</option>
                   <option>2</option>
                 </Select>
@@ -177,31 +193,58 @@ export function JobsCreate() {
 
             <FormLabel>가게명</FormLabel>
             <Input
-              value={jobs.storeName}
-              onChange={(e) => handleCreateInput("storeName", e)}
+              value={editJobs.storeName}
+              onChange={(e) => handleEditInput("storeName", e)}
               type={"text"}
               readOnly
             />
             <FormLabel>작성자</FormLabel>
             <Input
-              value={jobs.name}
-              onChange={(e) => handleCreateInput("name", e)}
+              value={editJobs.name}
+              onChange={(e) => handleEditInput("name", e)}
               type={"text"}
               readOnly
             />
             <FormLabel>가게위치</FormLabel>
 
-            <KakaoMap2 onSubmit={handleMapSubmit} />
-
+            <KakaoMap1
+              x={editJobs.y}
+              y={editJobs.x}
+              markerName={editJobs.markerName}
+            />
             <Flex justifyContent="center">
               <Button
                 // isDisabled={!allFieldsFilled}
-                onClick={handleSubmitCreateJobs}
+                // onClick={handleSubmitEditJobs}
+                colorScheme={"teal"}
+                w={120}
+                my={3}
+              >
+                지원
+              </Button>
+              <Button
+                onClick={handleSubmitEditJobs}
                 colorScheme={"purple"}
                 w={120}
-                my={"100px"}
+                my={3}
               >
-                공고생성
+                수정
+              </Button>
+              <Button
+                onClick={handleSubmitDeleteJobs}
+                colorScheme={"red"}
+                w={120}
+                my={3}
+              >
+                삭제
+              </Button>
+              <Button
+                onClick={() => navigate("/jobs/list")}
+                colorScheme={"green"}
+                w={120}
+                my={3}
+              >
+                이전
               </Button>
             </Flex>
           </FormControl>

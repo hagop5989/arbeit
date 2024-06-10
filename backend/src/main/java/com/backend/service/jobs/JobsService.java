@@ -27,7 +27,9 @@ public class JobsService {
     }
 
     public Jobs selectByJobsId(Integer jobsId) {
-        return jobsMapper.selectByJobsId(jobsId);
+        Jobs jobs = jobsMapper.selectByJobsId(jobsId);
+        System.out.println("jobs = " + jobs);
+        return jobs;
 
     }
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -17,7 +17,6 @@ import {
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { JobsList2 } from "./JobsTesView.jsx";
 
 function JobsView(props) {
   const { id } = useParams();
@@ -81,30 +80,28 @@ function JobsView(props) {
     });
   }
 
-  useEffect(() => {
-    axios
-      .get(`/api/jobs/${id}`)
-      .then((res) => {
-        setEditJobs(res.data);
-      })
-      .catch((err) => {
-        if (err.response.status === 404) {
-          toast({
-            status: "info",
-            description: "해당 게시물이 존재하지 않습니다.",
-            position: "top",
-          });
-          navigate("/api/jobs/list");
-        }
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`/api/jobs/${id}`)
+  //     .then((res) => {
+  //       setEditJobs(res.data);
+  //     })
+  //     .catch((err) => {
+  //       if (err.response.status === 404) {
+  //         toast({
+  //           status: "info",
+  //           description: "해당 게시물이 존재하지 않습니다.",
+  //           position: "top",
+  //         });
+  //         navigate("/api/jobs/list");
+  //       }
+  //     });
+  // }, []);
 
   return (
     <Box>
       <Heading>알바공고 상세페이지 </Heading>
-      <Center>
-        <JobsList2 />
-      </Center>
+      <Center>{/*<JobsList2 />*/}</Center>
       <Flex justifyContent={"center"} alignItems={"center"}>
         {/*<JobsList />*/}
 
