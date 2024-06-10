@@ -2,9 +2,9 @@ import { JobsCreate } from "../page/posts/JobsCreate.jsx";
 import { JobsList } from "../page/posts/JobsList.jsx";
 import { ResumeWrite } from "../page/member/ResumeWrite.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
-import ResumeView from "../page/member/ResumeView.jsx";
 import { ResumeEdit } from "../page/member/ResumeEdit.jsx";
-import { JobsView2 } from "../page/posts/JobsView2.jsx"; // list : jobs , view : detail
+import { JobsView2 } from "../page/posts/JobsView2.jsx";
+import { ResumeView } from "../page/member/ResumeView.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [

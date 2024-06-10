@@ -37,6 +37,11 @@ export function ResumeList() {
     });
   }, [searchParams]);
 
+  const handleButtonClick = (event, path) => {
+    event.stopPropagation();
+    navigate(path);
+  };
+
   return (
     <Center>
       <Box>
@@ -48,8 +53,9 @@ export function ResumeList() {
             <Thead>
               <Tr>
                 <Th>#</Th>
-                <Th>타이틀</Th>
-                <Th>작성내역</Th>
+                <Th>제목</Th>
+                <Th>생성일</Th>
+                <Th>공개종료일</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -62,8 +68,8 @@ export function ResumeList() {
                 >
                   <Td>{resume.id}</Td>
                   <Td>{resume.title}</Td>
-                  <Td>{resume.content}</Td>
-                  {/*<Td>{formatInsertedDate(resume.inserted)}</Td>*/}
+                  <Td>{resume.inserted}</Td>
+                  <Td>{resume.deadline}</Td>
                 </Tr>
               ))}
             </Tbody>
