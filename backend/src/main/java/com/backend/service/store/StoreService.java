@@ -63,4 +63,8 @@ public class StoreService {
 
         return store.getMemberId().equals(Integer.valueOf(authentication.getName()));
     }
+
+    public List<Store> cate() {
+        return mapper.setcate();
+    }
 }

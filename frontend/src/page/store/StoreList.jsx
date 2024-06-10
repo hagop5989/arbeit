@@ -35,7 +35,7 @@ export function StoreList() {
         <Table>
           <Thead>
             <Tr>
-              <Th>사진</Th>
+              <Th>id</Th>
               <Th>가게명</Th>
               <Th>주소</Th>
               <Th>업종</Th>
@@ -48,6 +48,8 @@ export function StoreList() {
                   key={store.id}
                   _hover={{
                     bgColor: "gray.200",
+                    transform: "translateX(-40px) scale(1.05)",
+                    transition: "transform 0.2s ease-in-out",
                   }}
                   cursor={"pointer"}
                   onClick={() => navigate(`/store/${store.id}`)}
@@ -57,7 +59,7 @@ export function StoreList() {
                   <Td>{store.id}</Td>
                   <Td>{store.name}</Td>
                   <Td>{store.address}</Td>
-                  <Td>{store.category}</Td>
+                  <Td>{store.cate}</Td>
                 </Tr>
               ) : null,
             )}

@@ -22,9 +22,16 @@ import {
 export function StoreEdit() {
   const { id } = useParams();
   const [store, setStore] = useState(null);
+  const [categories, setCategories] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  useEffect(() => {
+    axios.get(`/api/store/cate`).then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
 
   useEffect(() => {
     axios.get(`/api/store/${id}`).then((res) => setStore(res.data));
@@ -97,17 +104,27 @@ export function StoreEdit() {
         </Box>
         <Box mb={7}>
           <FormControl>
+            <FormLabel>전화 번호</FormLabel>
+            <Input
+              defaultValue={store.phone}
+              onChange={(e) => setStore({ ...store, phone: e.target.value })}
+            />
+          </FormControl>
+        </Box>
+        <Box mb={7}>
+          <FormControl>
             <FormLabel>가게 카테고리</FormLabel>
             <Select
-              defaultValue={store.category}
-              onChange={(e) => setStore({ ...store, category: e.target.value })}
+              defaultValue={store.cate}
+              onChange={(e) =>
+                setStore({ ...store, categoryId: e.target.value })
+              }
             >
-              <option value="요식업">요식업</option>
-              <option value="미용">미용</option>
-              <option value="유통">유통</option>
-              <option value="사무직">사무업무</option>
-              <option value="생산">생산</option>
-              <option value="기타">기타</option>
+              {categories.map((cate) => (
+                <option key={cate.id} value={cate.id}>
+                  {cate.name}
+                </option>
+              ))}
             </Select>
           </FormControl>
         </Box>

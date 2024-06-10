@@ -19,10 +19,16 @@ public class StoreController {
 
     private final StoreService service;
 
+    @GetMapping("cate")
+    public List<Store> getAllCate() {
+        return service.cate();
+    }
+
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity add(Authentication authentication, Store store,
                               @RequestParam(value = "files[]", required = false) MultipartFile[] files) {
+
 
         if (service.validate(store)) {
             service.add(store, files, authentication);

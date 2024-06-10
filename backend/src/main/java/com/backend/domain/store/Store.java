@@ -9,7 +9,8 @@ public class Store {
     private String name;
     private String content;
     private String address;
-    private String category;
+    private String cate;
+    private String phone;
     private Integer memberId;
     private Integer categoryId;
 

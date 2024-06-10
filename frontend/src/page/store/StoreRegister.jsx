@@ -8,7 +8,7 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -16,10 +16,19 @@ export function StoreRegister() {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");
-  const [category, setCategory] = useState("all");
+  const [phone, setPhone] = useState();
+  const [categoryId, setCategoryId] = useState("all");
+  const [categories, setCategories] = useState([]);
+
   const [files, setFiles] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get(`/api/store/cate`).then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
 
   function handleSaveClick() {
     axios
@@ -27,8 +36,9 @@ export function StoreRegister() {
         name: name,
         content: content,
         address: address,
-        category: category,
+        categoryId: categoryId,
         files: files,
+        phone: phone,
       })
       .then((response) => {
         toast({
@@ -103,6 +113,16 @@ export function StoreRegister() {
           />
         </FormControl>
       </Box>
+      <Box mb={4}>
+        <FormControl>
+          <FormLabel>전화 번호</FormLabel>
+          <Input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="전화 번호를 입력하세요."
+          />
+        </FormControl>
+      </Box>
       <Box>
         <FormControl>
           <FormLabel>사진</FormLabel>
@@ -121,16 +141,15 @@ export function StoreRegister() {
         <FormControl>
           <FormLabel>가게 카테고리</FormLabel>
           <Select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
             placeholder="카테고리 선택"
           >
-            <option value="요식업">요식업</option>
-            <option value="미용">미용</option>
-            <option value="유통">유통</option>
-            <option value="사무직">사무업무</option>
-            <option value="생산">생산</option>
-            <option value="기타">기타</option>
+            {categories.map((cate) => (
+              <option key={cate.id} value={cate.id}>
+                {cate.name}
+              </option>
+            ))}
           </Select>
         </FormControl>
       </Box>

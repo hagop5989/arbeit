@@ -9,15 +9,15 @@ import java.util.List;
 public interface StoreMapper {
 
     @Insert("""
-                INSERT INTO store (name, content, address, category, member_id)
-                VALUES (#{name}, #{content}, #{address}, #{category}, #{memberId})
+                INSERT INTO store (name, content, address, phone, category_id, member_id)
+                VALUES (#{name}, #{content}, #{address}, #{phone}, #{categoryId}, #{memberId})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     public int insert(Store store);
 
     @Select("""
-            SELECT id, name, content, address, category, member_id
-            FROM store
+            SELECT s.id, s.name, s.content, s.address, s.phone, c.name cate, s.member_id
+            FROM store s JOIN category c ON s.category_id = c.id
             ORDER BY id
             """)
     List<Store> selectAll();
@@ -33,16 +33,17 @@ public interface StoreMapper {
                    s.name,
                    s.content,
                    s.address,
-                   s.category,
+                   s.phone,
+                   c.name cate,
                    s.member_id
-            FROM store s JOIN member m ON s.member_id = m.id
+            FROM store s JOIN member m ON s.member_id = m.id JOIN category c ON s.category_id = c.id
             WHERE s.id = #{id}
             """)
     Store selectByStoreId(Integer id);
 
     @Update("""
                 UPDATE store
-                SET name= #{name}, content= #{content}, address= #{address}, category= #{category}
+                SET name= #{name}, content= #{content}, address= #{address}, phone= #{phone}, category_id= #{categoryId}
                 WHERE id = #{id}
             """)
     int update(Store store);
@@ -52,4 +53,12 @@ public interface StoreMapper {
             VALUES (#{storeId}, #{name})
             """)
     int insertFileName(Integer storeid, String name);
+
+
+    @Select("""
+            SELECT id, name
+            FROM category
+            ORDER BY id
+            """)
+    List<Store> setcate();
 }

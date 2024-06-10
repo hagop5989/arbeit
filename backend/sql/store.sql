@@ -11,7 +11,7 @@ CREATE TABLE store
 
 
 ALTER TABLE store
-    ADD COLUMN member_id INT REFERENCES member (id) AFTER category;
+    ADD COLUMN phone VARCHAR(45) AFTER address;
 
 SELECT *
 FROM store;
@@ -41,5 +41,7 @@ ALTER TABLE store
 
 
 INSERT INTO category (name)
-VALUES ('사무직');
+VALUES ('기타');
 
+SELECT *
+FROM category;
