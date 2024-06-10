@@ -5,6 +5,7 @@ import {
   FormHelperText,
   FormLabel,
   Heading,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -87,6 +88,16 @@ export function BoardEdit() {
             onChange={handleInputChange("content")}
           />
           {errors && <FormHelperText>{errors.content}</FormHelperText>}
+
+          <FormLabel>사진</FormLabel>
+          <Image defaultValue={board.files}></Image>
+          <Input
+            multiple
+            type={"file"}
+            accept="image/*"
+            onChange={handleInputChange("files")}
+          ></Input>
+          {errors && <FormHelperText>{errors.files}</FormHelperText>}
         </FormControl>
       </Box>
 

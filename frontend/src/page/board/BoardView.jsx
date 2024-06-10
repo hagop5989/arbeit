@@ -4,9 +4,11 @@ import axios from "axios";
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -14,16 +16,24 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spacer,
   Spinner,
   Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
 
 export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
+  const [like, setLike] = useState({
+    like: false,
+    count: 0,
+  });
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -69,17 +79,37 @@ export function BoardView() {
       });
   }
 
+  function handleCilckLike() {
+    axios
+      .put(`/api/board/like`, { boardId: board.id })
+      .then((res) => {
+        setLike(res.data);
+      })
+      .catch(() => {})
+      .finally(() => {});
+  }
+
   return (
     <Box>
-      <Box>
-        <Heading>게시판 정보</Heading>
-      </Box>
+      <Flex>
+        <Heading>{board.name}번 게시물</Heading>
+        <Spacer />
+        <Flex>
+          <Box onClick={handleCilckLike} fontSize={"2xl"}>
+            {like.count}
+          </Box>
+          {like.like && <FontAwesomeIcon icon={fullHeart} />}
+          {like.like || <FontAwesomeIcon icon={emptyHeart} />}
+        </Flex>
+      </Flex>
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
           <Input value={board.title} readOnly></Input>
           <FormLabel>본문</FormLabel>
           <Textarea value={board.content} readOnly></Textarea>
+          <FormLabel>사진</FormLabel>
+          <Image m={10} src={board.files} readOnly></Image>
           <FormLabel>작성자</FormLabel>
           <Input value={board.name} readOnly></Input>
         </FormControl>

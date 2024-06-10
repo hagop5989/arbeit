@@ -14,6 +14,8 @@ public class BoardWriteForm {
     private String title;
     @NotBlank
     private String content;
+    @NotBlank
+    private String files;
     @NotNull
     private String memberId;
     private String writer;

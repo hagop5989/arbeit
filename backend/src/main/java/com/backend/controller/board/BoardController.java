@@ -16,6 +16,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,6 @@ public class BoardController {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
         }
-
         boardService.write(form, authentication);
         return ResponseEntity.ok().build();
     }
@@ -64,7 +64,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated @RequestBody BoardEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
-                               Authentication authentication) {
+                               Authentication authentication) throws IOException {
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
@@ -90,6 +90,7 @@ public class BoardController {
         boardService.delete(id);
         return ResponseEntity.ok().build();
     }
+
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
         Map<String, String> errors = new ConcurrentHashMap<>();

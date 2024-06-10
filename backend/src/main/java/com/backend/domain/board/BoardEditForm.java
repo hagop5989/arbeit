@@ -14,4 +14,7 @@ public class BoardEditForm {
     private String title;
     @NotBlank
     private String content;
+    @NotBlank
+    private String files;
+
 }
