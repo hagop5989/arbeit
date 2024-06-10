@@ -33,6 +33,8 @@ export function BoardList() {
             <Tr>
               <Th>#</Th>
               <Th>제목</Th>
+              <Th>본문</Th>
+              <Th>사진</Th>
               <Th>
                 <FontAwesomeIcon icon={faUserPen} />
               </Th>
@@ -51,6 +53,8 @@ export function BoardList() {
               >
                 <Td>{board.id}</Td>
                 <Td>{board.title}</Td>
+                <Td>{board.content}</Td>
+                <Td>{board.files}</Td>
                 <Td>{board.memberName}</Td>
                 <Td>{board.inserted}</Td>
               </Tr>

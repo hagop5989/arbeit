@@ -9,22 +9,22 @@ import java.util.List;
 public interface BoardMapper {
 
     @Insert("""
-            INSERT INTO board (member_Id, title, content)
-            VALUES (#{memberId}, #{title},#{content})
+            INSERT INTO board (member_Id, title, content,files)
+            VALUES (#{memberId}, #{title},#{content},#{files})
             """
     )
     int insert(Board board);
 
 
     @Select("""
-            SELECT b.id, title, m.name, b.inserted
+            SELECT b.id, title,content,files, m.name, b.inserted
             FROM board b JOIN member m ON m.id = b.member_id
             ORDER BY id DESC
             """)
     List<Board> selectAll();
 
     @Select("""
-                SELECT b.id, m.name, b.member_id, title, content, b.inserted
+                SELECT b.id, m.name, b.member_id, title, content,files, b.inserted
                 FROM board b JOIN member m ON m.id = b.member_id
                 WHERE b.id= #{id}
             """)
@@ -41,8 +41,11 @@ public interface BoardMapper {
     @Update("""
             UPDATE board
             SET title=#{title},
-                content=#{content}
+                content=#{content},
+                files=#{files}
             WHERE id= #{id}
             """)
     int update(Board board);
+
+
 }

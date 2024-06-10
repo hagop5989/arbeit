@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,16 +20,21 @@ public class BoardService {
 
     final BoardMapper mapper;
 
-    public void write(BoardWriteForm form, Authentication authentication) {
+
+    public void write(BoardWriteForm form, Authentication authentication
+    ) {
         Board board = new Board(
                 null,
                 Integer.valueOf(authentication.getName()),
                 null,
                 form.getTitle(),
                 form.getContent(),
+                form.getFiles(),
                 null
         );
         mapper.insert(board);
+
+
     }
 
     public List<Board> list() {
@@ -43,11 +49,12 @@ public class BoardService {
         mapper.deleteById(id);
     }
 
-    public void edit(BoardEditForm form, Integer id) {
+    public void edit(BoardEditForm form, Integer id) throws IOException {
         Board board = new Board(
                 id,
                 form.getTitle(),
-                form.getContent()
+                form.getContent(),
+                form.getFiles()
         );
         mapper.update(board);
     }
@@ -57,4 +64,6 @@ public class BoardService {
         Integer loginId = Integer.valueOf(authentication.getName());
         return Objects.equals(memberId, loginId);
     }
+
+
 }
