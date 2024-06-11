@@ -100,6 +100,7 @@ public class MemberService {
                 null,
                 password,
                 form.getName(),
+                null, null,
                 form.getAddress(),
                 form.getPhone(),
                 null

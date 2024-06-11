@@ -61,6 +61,18 @@ export function MemberSignup() {
         <Input onChange={handleInputChange("name")} />
         {errors && <FormHelperText>{errors.name}</FormHelperText>}
 
+        <Select
+          placeholder="성별을 선택해주세요"
+          onChange={handleInputChange("gender")}
+        >
+          <option value="MALE">남자</option>
+          <option value="FEMALE">여자</option>
+        </Select>
+
+        <FormLabel>생년월일</FormLabel>
+        <Input type={"date"} onChange={handleInputChange("birthDate")} />
+        {errors && <FormHelperText>{errors.birthDate}</FormHelperText>}
+
         <FormLabel>주소</FormLabel>
         <Input onChange={handleInputChange("address")} />
         {errors && <FormHelperText>{errors.address}</FormHelperText>}

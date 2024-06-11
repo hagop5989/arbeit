@@ -12,20 +12,14 @@ export function LoginProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token === null) {
-      return;
+    if (token) {
+      login(token);
     }
-    login(token);
   }, []);
 
   // isLoggedIn
   function isLoggedIn() {
     return Date.now() < expired * 1000;
-  }
-
-  // 권한
-  function hasAccess(param) {
-    return id == param;
   }
 
   // login
@@ -36,6 +30,11 @@ export function LoginProvider({ children }) {
     setId(payload.sub);
     setEmail(payload.email);
     setName(payload.name);
+  }
+
+  // 권한
+  function hasAccess(param) {
+    return id == param;
   }
 
   // logout

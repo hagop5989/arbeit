@@ -1,8 +1,9 @@
 package com.backend.service.member;
 
-import com.backend.domain.member.Resume;
+import com.backend.domain.member.resume.Resume;
 import com.backend.mapper.member.ResumeMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,8 @@ import java.util.List;
 public class ResumeService {
     private final ResumeMapper mapper;
 
-    public void insert(Resume resume) {
+    public void insert(Resume resume, Authentication authentication) {
+        resume.setMemberId(Integer.valueOf(authentication.getName()));
         mapper.insert(resume);
     }
 
