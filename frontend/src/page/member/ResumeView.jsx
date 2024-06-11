@@ -81,6 +81,7 @@ export function ResumeView() {
       //
       // for (let i = 0; i < files.length; i++) {
       //   formData.append("files", files[i]);
+      //
     }
     axios
       .put("/api/member/resume/update", resumeEdit)
