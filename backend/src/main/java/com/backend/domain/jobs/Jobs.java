@@ -3,6 +3,7 @@ package com.backend.domain.jobs;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class Jobs {
@@ -18,6 +19,13 @@ public class Jobs {
 
     private String storeName;
     private LocalDateTime inserted;
+
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private Double x;
+    private Double y;
+    private String markerName;
+
     // 아래는 db에 없음.
     private String memberName;
 }

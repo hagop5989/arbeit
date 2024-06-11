@@ -10,10 +10,10 @@ public interface JobsMapper {
     @Insert("""
             INSERT INTO jobs
             (member_id, store_id, category_id, title, content,
-             salary, deadline, recruitment_number, store_name)
+             salary, deadline, recruitment_number, store_name,start_time,end_time,x,y,marker_name)
             VALUES
             (#{memberId},#{storeId},#{categoryId},#{title},#{content},
-            #{salary},#{deadline},#{recruitmentNumber},#{storeName})
+            #{salary},#{deadline},#{recruitmentNumber},#{storeName},#{startTime},#{endTime},#{x},#{y},#{markerName})
             """)
     int insert(Jobs jobs);
 
@@ -68,7 +68,6 @@ public interface JobsMapper {
                    j.title,
                    j.content,
                    j.salary,
-                   j.store_name,
                    j.store_name,
                    j.inserted,
                    m.name AS memberName

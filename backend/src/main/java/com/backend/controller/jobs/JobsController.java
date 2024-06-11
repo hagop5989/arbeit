@@ -15,7 +15,6 @@ public class JobsController {
 
     @PostMapping("insert")
     public void insert(@RequestBody Jobs jobs) {
-        System.out.println("jobs = " + jobs);
         service.insert(jobs);
     }
 
@@ -41,7 +40,6 @@ public class JobsController {
                                     @RequestParam(value = "keyword", defaultValue = "") String keyword
     ) {
         Map<String, Object> list = service.list(memberId, page, searchType, keyword);
-        System.out.println("list = " + list);
         return list;
     }
 
