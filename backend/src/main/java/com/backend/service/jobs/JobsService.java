@@ -2,10 +2,10 @@ package com.backend.service.jobs;
 
 import com.backend.domain.jobs.Jobs;
 import com.backend.domain.jobs.JobsFile;
+import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
 import com.backend.mapper.jobs.JobsMapper;
 import com.backend.mapper.member.MemberMapper;
-import com.backend.mapper.store.StoreMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,6 @@ import java.util.Map;
 public class JobsService {
     private final JobsMapper jobsMapper;
     private final MemberMapper memberMapper;
-    private final StoreMapper storeMapper;
     final S3Client s3Client;
 
     @Value("${aws.s3.bucket.name}")
@@ -39,8 +38,16 @@ public class JobsService {
     String srcPrefix;
 
     public void insert(Jobs jobs, MultipartFile[] files) throws IOException {
+        // 카테고리 id 찾고 jobs에 설정
+        Integer categoryId = jobsMapper.selectCategoryByCategoryName(jobs.getCategoryName());
+        jobs.setCategoryId(categoryId);
+
+        // storeName 기반으로 store id 할당
+        Store dbStore = jobsMapper.selectStoreByStoreName(jobs.getStoreName());
+        jobs.setStoreId(dbStore.getId());
+
+        // db에 jobs 입력
         jobsMapper.insert(jobs);
-        System.out.println("JobsService.insert");
         if (files != null) {
             for (MultipartFile file : files) {
                 jobsMapper.insertFileName(jobs.getId(), file.getOriginalFilename());
@@ -101,11 +108,25 @@ public class JobsService {
         Map<String, Object> result = new HashMap<>();
         Jobs jobs = jobsMapper.selectByJobsId(jobsId);
 
+        // store 에서 jobs의 storeId 기준으로 선택한 storeName 조회하여 Jobs 할당.
+        System.out.println("storeId: " + jobs.getStoreId());
+        Store dbStore = jobsMapper.selectStoreByJobStoreId(jobs.getStoreId());
+        jobs.setStoreName(dbStore.getName());
+
         // store 에서 memberId 기준으로 storeName 조회
-        List<Store> stores = jobsMapper.selectStoreByJobsMemberId(jobs.getId());
+        List<Store> stores = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
+        // jobs의 categoryId 기준으로 categoryName 설정.
+        Category category = jobsMapper.selectCategoryByCategoryId(jobs.getCategoryId());
+        jobs.setCategoryName(category.getName());
+
+        // store 의 이름들 관련 배열.
         List<String> storeNames = new ArrayList<>();
+
+        Map<String, String> categoryMap = new HashMap<>();
         for (Store store : stores) {
             storeNames.add(store.getName());
+            Category dbCategory = jobsMapper.selectCategoryByCategoryId(store.getCategoryId());
+            categoryMap.put(store.getName(), dbCategory.getName());
         }
 
         List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
@@ -115,8 +136,10 @@ public class JobsService {
                 .toList();
         jobs.setFileList(files);
 
+
         result.put("jobs", jobs);
         result.put("storeNames", storeNames);
+        result.put("categoryMap", categoryMap);
         return result;
 
     }
@@ -176,14 +199,15 @@ public class JobsService {
 
     public Map<String, Object> findInsertData(Integer memberId) {
         List<Store> stores = jobsMapper.selectStoreByJobsMemberId(memberId);
-        for (Store store : stores) {
-            Integer categoryId = store.getCategoryId();
-            jobsMapper.selectCategoryByCategoryId(categoryId);
-            // todo: category java code 생기면 마저 작성하기.
-        }
+
         List<String> storeNames = new ArrayList<>();
         List<String> categoryNames = new ArrayList<>();
+
         for (Store store : stores) {
+            Integer categoryId = store.getCategoryId();
+            Category category = jobsMapper.selectCategoryByCategoryId(categoryId);
+
+            categoryNames.add(category.getName());
             storeNames.add(store.getName());
         }
 

@@ -33,7 +33,8 @@ export function JobsCreate() {
     recruitmentNumber: "",
     storeName: "default",
     storeNames: [],
-    categoryId: "1",
+    categoryNames: [],
+    categoryName: "",
     storeId: "8",
 
     memberId: account.id,
@@ -62,16 +63,22 @@ export function JobsCreate() {
     }));
   };
 
-  useEffect(() => {}, [jobs]);
+  // useEffect(() => {}, [jobs]);
   useEffect(() => {
     axios
       .get("/api/jobs/insert", { params: { memberId: account.id } })
       .then((res) => {
-        setJobs((prev) => ({ ...prev, storeNames: res.data.storeNames }));
+        setJobs((prev) => ({
+          ...prev,
+          storeNames: res.data.storeNames,
+          categoryNames: res.data.categoryNames,
+          name: account.name,
+          memberId: account.id,
+        }));
       })
       .catch()
       .finally(console.log(jobs));
-  }, []);
+  }, [account]);
 
   function handleCreateInput(field, e) {
     setJobs((prev) => ({ ...prev, [field]: e.target.value }));
@@ -180,9 +187,13 @@ export function JobsCreate() {
               </Box>
               <Box w={"50%"}>
                 <FormLabel>카테고리 선택</FormLabel>
-                <Select onChange={(e) => handleCreateInput("categoryId", e)}>
-                  <option>1</option>
-                  <option>2</option>
+                <Select
+                  value={jobs.categoryName}
+                  onChange={(e) => handleCreateInput("categoryName", e)}
+                >
+                  {jobs.categoryNames.map((name) => (
+                    <option key={name.index}>{name}</option>
+                  ))}
                 </Select>
               </Box>
             </Flex>
