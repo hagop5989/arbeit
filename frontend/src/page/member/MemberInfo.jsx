@@ -70,12 +70,16 @@ export function MemberInfo() {
               <Input value={member.email} isReadOnly />
               <FormLabel>이름</FormLabel>
               <Input value={member.name} isReadOnly />
+              <FormLabel>성별</FormLabel>
+              <Input value={member.gender} isReadOnly />
+              <FormLabel>생년월일</FormLabel>
+              <Input value={member.birthDate} isReadOnly />
               <FormLabel>주소</FormLabel>
               <Input value={member.address} isReadOnly />
               <FormLabel>전화번호</FormLabel>
               <Input value={member.phone} isReadOnly />
               <Flex>
-                <Button onClick={() => navigate(`/member/edit/${id}`)}>
+                <Button onClick={() => navigate(`/member/${id}/edit`)}>
                   회원 수정
                 </Button>
                 <Button onClick={handleRemoveBtn}>회원 삭제</Button>

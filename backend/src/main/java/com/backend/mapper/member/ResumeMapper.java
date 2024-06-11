@@ -1,6 +1,6 @@
 package com.backend.mapper.member;
 
-import com.backend.domain.member.Resume;
+import com.backend.domain.member.resume.Resume;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -8,64 +8,55 @@ import java.util.List;
 @Mapper
 public interface ResumeMapper {
 
-
     @Insert("""
-            INSERT INTO resume
-            (member_id, title, content, birth_date, rookie, 
-            address1, address2, email, phone, preferred_pay, 
-            work_day_type, work_shift_type, deadline, preferred_job,gender)
-            VALUES 
-            (#{memberId}, #{title}, #{content}, #{birthDate}, #{rookie}, 
-            #{address1}, #{address2}, #{email}, #{phone}, #{preferredPay}, 
-            #{workDayType}, #{workShiftType}, #{deadline}, #{preferredJob},#{gender})
-              """)
+            INSERT INTO resume (member_id, title, content, is_rookie)
+            VALUES (#{memberId}, #{title}, #{content}, #{isRookie})
+            """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Resume resume);
 
     @Select("""
-            SELECT * FROM resume
+            SELECT id, title, inserted FROM resume
             WHERE member_id = #{memberId}
             """)
-    List<Resume> list(Integer memberId);
+    List<Resume> selectAllByMemberId(Integer memberId);
 
     @Select("""
-            SELECT * FROM resume
-            WHERE id = #{id}
+            SELECT COUNT(id) FROM resume
+            WHERE member_id = #{memberId}
             """)
-    Resume select(Integer id);
+    Integer selectAllOfCount(String memberId);
 
 
-    @Insert("""
-            INSERT INTO resume_file (resume_id, name)
-            VALUES (#{resumeId},#{name})
+    @Select("""
+            SELECT r.id,
+                   r.member_id,
+                   m.gender,
+                   m.birth_date,
+                   m.email,
+                   m.phone,
+                   r.title,
+                   r.content,
+                   r.is_rookie,
+                   r.inserted
+            FROM resume r JOIN member m on r.member_id = m.id
+            WHERE r.id = #{id}
             """)
-    int insertFileName(Integer id, String originalFilename);
-
+    Resume selectById(Integer id);
 
     @Delete("""
             DELETE FROM resume
             WHERE id = #{id}
             """)
-    int delete(Integer id);
+    int deleteById(Integer id);
 
     @Update("""
-            UPDATE resume SET 
-            title = #{title}, 
-            content = #{content}, 
-            birth_date = #{birthDate}, 
-            rookie = #{rookie}, 
-            address1 = #{address1}, 
-            address2 = #{address2}, 
-            email = #{email}, 
-            phone = #{phone}, 
-            preferred_pay = #{preferredPay}, 
-            work_day_type = #{workDayType}, 
-            work_shift_type = #{workShiftType},
-            deadline = #{deadline}, 
-            preferred_job = #{preferredJob},
-            gender = #{gender}
-            WHERE id = #{id}         
-                        """)
+            UPDATE resume
+            SET
+            title = #{title},
+            content = #{content}
+            WHERE id = #{id}
+            """)
     int update(Resume resume);
 
 }

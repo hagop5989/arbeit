@@ -1,21 +1,23 @@
-package com.backend.domain.board;
+package com.backend.domain.member.resume;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardWriteForm {
+public class ResumeWriteForm {
+    private Integer id;
+    private Integer memberId;
     @NotBlank
     private String title;
     @NotBlank
     private String content;
-    private String files;
     @NotNull
-    private String memberId;
-    private String writer;
+    private Integer isRookie;
 }

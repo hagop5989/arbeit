@@ -11,8 +11,8 @@ import java.util.List;
 public interface MemberMapper {
 
     @Insert("""
-            INSERT INTO member (email, password, name, address, phone)
-            VALUES (#{email}, #{password}, #{name}, #{address}, #{phone})
+            INSERT INTO member (email, password, name, gender, birth_date, address, phone)
+            VALUES (#{email}, #{password}, #{name}, #{gender}, #{birthDate}, #{address}, #{phone})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(MemberSignupForm form);

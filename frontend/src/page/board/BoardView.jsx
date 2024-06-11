@@ -120,7 +120,7 @@ export function BoardView() {
           <Box>
             <Button
               colorScheme={"blue"}
-              onClick={() => navigate(`/board/edit/${board.id}`)}
+              onClick={() => navigate(`/board/${board.id}/edit`)}
             >
               수정
             </Button>

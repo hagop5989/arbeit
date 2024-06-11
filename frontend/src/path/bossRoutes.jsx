@@ -11,10 +11,10 @@ const bossRoutes = [
   { path: "jobs/create", element: <JobsCreate /> },
   { path: "jobs/list", element: <JobsList /> },
   { path: "jobs/:id", element: <JobsView2 /> },
-  { path: "member/resume/write", element: <ResumeWrite /> },
-  { path: "member/resume/list", element: <ResumeList /> },
-  { path: "member/resume/:id", element: <ResumeView /> },
-  { path: "member/resume/edit", element: <ResumeEdit /> },
+  { path: "resume/write", element: <ResumeWrite /> },
+  { path: "resume/list", element: <ResumeList /> },
+  { path: "resume/:id", element: <ResumeView /> },
+  { path: "resume/:id/edit", element: <ResumeEdit /> },
 ];
 
 export default bossRoutes;

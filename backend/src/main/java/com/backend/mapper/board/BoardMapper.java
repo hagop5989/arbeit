@@ -17,7 +17,7 @@ public interface BoardMapper {
 
 
     @Select("""
-            SELECT b.id, b.member_id, m.name, title, b.inserted
+            SELECT b.id, b.member_id, m.name, title,files, b.inserted
             FROM board b JOIN member m ON m.id = b.member_id
             ORDER BY id DESC
             """)
