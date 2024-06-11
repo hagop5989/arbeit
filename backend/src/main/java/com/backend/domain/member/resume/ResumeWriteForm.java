@@ -19,5 +19,5 @@ public class ResumeWriteForm {
     @NotBlank
     private String content;
     @NotNull
-    private boolean isRookie;
+    private Integer isRookie;
 }

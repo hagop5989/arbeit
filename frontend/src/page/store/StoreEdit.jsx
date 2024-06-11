@@ -22,7 +22,6 @@ import {
 } from "@chakra-ui/react";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import DaumPostcode from "react-daum-postcode";
 
 export function StoreEdit() {
   const { id } = useParams();

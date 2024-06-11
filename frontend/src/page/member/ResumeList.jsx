@@ -67,13 +67,17 @@ export function ResumeList() {
                   </Td>
                   <Td
                     cursor={"pointer"}
-                    onClick={() => navigate(`/member/resume/${resume.id}`)}
+                    onClick={() => navigate(`/resume/${resume.id}`)}
                   >
                     {resume.title}
                   </Td>
                   <Td>{resume.inserted}</Td>
                   <Td>
-                    <Button>수정</Button>
+                    <Button
+                      onClick={() => navigate(`/resume/${resume.id}/edit`)}
+                    >
+                      수정
+                    </Button>
                   </Td>
                 </Tr>
               ))}

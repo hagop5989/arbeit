@@ -20,7 +20,7 @@ export function ResumeWrite() {
   const [member, setMember] = useState(null);
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
-  const [isRookie, setIsRookie] = useState(true);
+  const [isRookie, setIsRookie] = useState(1);
   const account = useContext(LoginContext);
   const navigate = useNavigate();
   const toast = useToast();
@@ -57,6 +57,14 @@ export function ResumeWrite() {
       })
       .catch((err) => {
         setErrors(err.response.data);
+        if (err.response.status === 403) {
+          toast({
+            status: "warning",
+            description: "이력서의 최대 갯수는 5개 입니다.",
+            position: "top",
+          });
+          navigate("/resume/list");
+        }
       });
   }
 
@@ -84,8 +92,18 @@ export function ResumeWrite() {
             <Input onChange={handleInputChange("title")} />
             {errors && <FormHelperText>{errors.content}</FormHelperText>}
             <Flex>
-              <Button onClick={() => handleRookieBtn(true)}>신입</Button>
-              <Button onClick={() => handleRookieBtn(false)}>경력</Button>
+              <Button
+                colorScheme={isRookie === 1 ? "blue" : "gray"}
+                onClick={() => handleRookieBtn(1)}
+              >
+                신입
+              </Button>
+              <Button
+                colorScheme={isRookie === 0 ? "blue" : "gray"}
+                onClick={() => handleRookieBtn(0)}
+              >
+                경력
+              </Button>
             </Flex>
             <FormLabel>자기 소개</FormLabel>
             <Textarea
