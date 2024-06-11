@@ -36,7 +36,8 @@ public interface StoreMapper {
                    s.phone,
                    c.name cate,
                    s.member_id,
-                   c.icon
+                   c.icon,
+                   s.category_id
             FROM store s JOIN member m ON s.member_id = m.id JOIN category c ON s.category_id = c.id
             WHERE s.id = #{id}
             """)
