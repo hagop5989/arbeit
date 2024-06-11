@@ -4,7 +4,10 @@ import com.backend.domain.jobs.Jobs;
 import com.backend.service.jobs.JobsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -14,17 +17,24 @@ public class JobsController {
     private final JobsService service;
 
     @PostMapping("insert")
-    public void insert(@RequestBody Jobs jobs) {
-        service.insert(jobs);
+    public void insert(@ModelAttribute Jobs jobs,
+                       @RequestParam(value = "files[]", required = false) MultipartFile[] files) throws IOException {
+        System.out.println("JobsController.insert");
+        service.insert(jobs, files);
+        System.out.println("JobsController.insert.end");
     }
 
     @PutMapping("update")
-    public void update(@RequestBody Jobs jobs) {
-        service.update(jobs);
+    public void update(Jobs jobs,
+                       @RequestParam(value = "removeFileList[]", required = false)
+                       List<String> removeFileList,
+                       @RequestParam(value = "addFileList[]", required = false)
+                       MultipartFile[] addFileList) throws IOException {
+        service.update(jobs, removeFileList, addFileList);
     }
 
     @GetMapping("{id}")
-    public Jobs selectByPostId(@PathVariable Integer id) {
+    public Map<String, Object> selectByPostId(@PathVariable Integer id) {
         return service.selectByJobsId(id);
     }
 

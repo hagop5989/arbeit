@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputRightElement,
   Select,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -23,6 +24,7 @@ import KakaoMap2 from "./KakaoMap2.jsx";
 export function JobsCreate() {
   const account = useContext(LoginContext);
   const navigate = useNavigate();
+  const [files, setFiles] = useState([]);
   const [jobs, setJobs] = useState({
     title: "",
     content: "",
@@ -41,7 +43,14 @@ export function JobsCreate() {
     x: "",
     y: "",
     markerName: "",
+    // fileList: [],
   });
+
+  // file 목록 작성
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li>{files[i].name}</li>);
+  }
 
   const handleMapSubmit = (x, y, markerName) => {
     setJobs((prev) => ({
@@ -62,21 +71,17 @@ export function JobsCreate() {
   }
 
   function handleSubmitCreateJobs() {
-    if (true) {
-      axios
-        .post("/api/jobs/insert", jobs)
-        .then((res) => {
-          myToast("공고생성 되었습니다", "success");
-          navigate("/jobs/list");
-        })
-        .catch((e) => {
-          myToast("입력 값을 확인해주세요.", "error");
-          console.log(e);
-        })
-        .finally(() => {});
-    } else {
-      myToast("입력값 중 빈칸이 존재합니다.", "error");
-    }
+    axios
+      .postForm("/api/jobs/insert", { ...jobs, files })
+      .then((res) => {
+        myToast("공고생성 되었습니다", "success");
+        navigate("/jobs/list");
+      })
+      .catch((e) => {
+        myToast("입력 값을 확인해주세요.", "error");
+        console.log(e);
+      })
+      .finally(() => {});
   }
 
   const toast = useToast();
@@ -204,6 +209,18 @@ export function JobsCreate() {
                 공고생성
               </Button>
             </Flex>
+            <Box>
+              <Text>사진첨부</Text>
+              <Input
+                multiple
+                type={"file"}
+                onChange={(e) => {
+                  setFiles(e.target.files);
+                }}
+              ></Input>
+              <Box w={"500px"} h={"400px"} border={"1px solid black"}></Box>
+              {fileNameList}
+            </Box>
           </FormControl>
         </Center>
       </Flex>

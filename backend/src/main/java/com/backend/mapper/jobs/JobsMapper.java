@@ -15,6 +15,7 @@ public interface JobsMapper {
             (#{memberId},#{storeId},#{categoryId},#{title},#{content},
             #{salary},#{deadline},#{recruitmentNumber},#{storeName},#{startTime},#{endTime},#{x},#{y},#{markerName})
             """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Jobs jobs);
 
     @Update("""
@@ -91,5 +92,25 @@ public interface JobsMapper {
                 """)
     List<Jobs> selectAllPaging(int offset, String searchType, String keyword);
 
+    @Insert("""
+            INSERT INTO jobs_file (jobs_id, name)
+            VALUES (#{jobsId},#{name})
+            """)
+    int insertFileName(Integer jobsId, String name);
+
+    @Select("""
+            SELECT name 
+            FROM jobs_file 
+            WHERE jobs_id = #{jobsId}
+            """)
+    List<String> selectFileNameByJobsId(Integer jobsId);
+
+
+    @Delete("""
+            DELETE FROM jobs_file
+            WHERE jobs_id = #{jobsId}
+            AND name = #{fileName}
+            """)
+    int deleteFileByJobsIdAndName(Integer jobsId, String fileName);
 
 }

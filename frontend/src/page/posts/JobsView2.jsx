@@ -1,16 +1,26 @@
 import {
+  Badge,
   Box,
   Button,
+  Card,
+  CardBody,
+  CardHeader,
   Center,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
   Heading,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
   Select,
+  Spinner,
+  Stack,
+  StackDivider,
+  Switch,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -19,11 +29,15 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { KakaoMap1 } from "./KakaoMap1.jsx";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function JobsView2() {
   const { id } = useParams();
   const account = useContext(LoginContext);
   const navigate = useNavigate();
+  const [removeFileList, setRemoveFileList] = useState([]);
+  const [addFileList, setAddFileList] = useState([]);
   const [editJobs, setEditJobs] = useState({
     title: "",
     content: "",
@@ -37,6 +51,7 @@ export function JobsView2() {
     memberId: account.id,
     name: account.name,
 
+    fileList: [],
     startTime: "",
     endTime: "",
     x: "",
@@ -55,7 +70,7 @@ export function JobsView2() {
 
   function handleSubmitEditJobs() {
     axios
-      .put("/api/jobs/update", editJobs)
+      .putForm("/api/jobs/update", { ...editJobs, removeFileList, addFileList })
       .then((res) => {
         myToast("수정 완료 되었습니다", "success");
       })
@@ -82,7 +97,7 @@ export function JobsView2() {
     axios
       .get(`/api/jobs/${id}`)
       .then((res) => {
-        setEditJobs(res.data);
+        setEditJobs(res.data.jobs);
       })
       .catch((err) => {
         if (err.response.status === 404) {
@@ -104,6 +119,42 @@ export function JobsView2() {
       position: "top",
       duration: "700",
     });
+  }
+
+  const handleImageClick = (src) => {
+    window.open(src, "_blank");
+  };
+
+  if (editJobs === null) {
+    return <Spinner />;
+  }
+
+  const fileNameList = [];
+  for (let addFile of addFileList) {
+    // 이미 있는 파일과 중복된 파일명인지?
+    let duplicate = false;
+    for (let file of editJobs.fileList) {
+      if (file.name === addFile.name) {
+        duplicate = true;
+        break;
+      }
+    }
+    fileNameList.push(
+      <Flex>
+        <Text fontSize={"md"} mr={3}>
+          {addFile.name}
+        </Text>
+        <Box>{duplicate && <Badge colorScheme="red">override</Badge>}</Box>
+      </Flex>,
+    );
+  }
+
+  function handleRemoveSwitchChange(name, checked) {
+    if (checked) {
+      setRemoveFileList([...removeFileList, name]);
+    } else {
+      setRemoveFileList(removeFileList.filter((item) => item !== name));
+    }
   }
 
   return (
@@ -212,6 +263,63 @@ export function JobsView2() {
               y={editJobs.x}
               markerName={editJobs.markerName}
             />
+            <FormLabel>첨부사진</FormLabel>
+            <Input
+              multiple
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAddFileList(e.target.files)}
+            />
+            {fileNameList.length > 0 && (
+              <Box mb={7}>
+                <Card>
+                  <CardHeader>
+                    <Heading size="md">추가 선택된 파일 목록</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Stack divider={<StackDivider />} spacing={4}>
+                      {fileNameList}
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Box>
+            )}
+
+            <Box>
+              {editJobs.fileList &&
+                editJobs.fileList.map((file) => (
+                  <Card m={3} key={file.name}>
+                    <CardBody w={"100%"} h={"100%"} alignItems="center">
+                      <Box>
+                        <Flex>
+                          <FontAwesomeIcon color="red" icon={faTrashCan} />
+                          <Switch
+                            colorScheme={"red"}
+                            onChange={(e) =>
+                              handleRemoveSwitchChange(
+                                file.name,
+                                e.target.checked,
+                              )
+                            }
+                          />
+                        </Flex>
+                      </Box>
+                      <Image
+                        cursor="pointer"
+                        onClick={() => handleImageClick(file.src)}
+                        w={"100%"}
+                        h={"100%"}
+                        src={file.src}
+                        sx={
+                          removeFileList.includes(file.name)
+                            ? { filter: "blur(8px)" }
+                            : {}
+                        }
+                      />
+                    </CardBody>
+                  </Card>
+                ))}
+            </Box>
             <Flex justifyContent="center">
               <Button
                 // isDisabled={!allFieldsFilled}
