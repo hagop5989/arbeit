@@ -45,13 +45,13 @@ export function JobsView2() {
     salary: "",
     deadline: "",
     recruitmentNumber: "",
-    storeName: "default",
+    storeName: "",
     storeNames: [],
-    categoryId: "1",
+    categoryId: "",
     categoryName: "",
     categoryNames: [],
     categoryMap: {},
-    storeId: "8",
+    storeId: "",
 
     memberId: account.id,
     name: account.name,
@@ -63,18 +63,16 @@ export function JobsView2() {
     resultName: "",
   });
 
-  function removeFileListProperties(obj) {
-    const newObj = { ...obj }; // 원본 객체를 복사합니다.
-    Object.keys(newObj).forEach((key) => {
-      if (key.startsWith("fileList")) {
-        delete newObj[key]; // fileList로 시작하는 모든 프로퍼티를 삭제합니다.
-      }
-    });
-    return newObj;
-  }
-
   function handleEditInput(field, e) {
-    setEditJobs((prev) => ({ ...prev, [field]: e.target.value }));
+    const value = e.target.value;
+    setEditJobs((prev) => ({ ...prev, [field]: value }));
+
+    if (field === "storeName") {
+      setEditJobs((prev) => ({
+        ...prev,
+        categoryName: prev.categoryMap[value] || "",
+      }));
+    }
   }
 
   function handleSubmitEditJobs() {
@@ -129,6 +127,7 @@ export function JobsView2() {
   }, [id, navigate]); // 여기에 의존성 배열을 추가합니다
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -157,7 +156,7 @@ export function JobsView2() {
       }
     }
     fileNameList.push(
-      <Flex>
+      <Flex key={addFile.name}>
         <Text fontSize={"md"} mr={3}>
           {addFile.name}
         </Text>
@@ -172,10 +171,6 @@ export function JobsView2() {
     } else {
       setRemoveFileList(removeFileList.filter((item) => item !== name));
     }
-  }
-
-  function handleCategory() {
-    /*todo: storeName*/
   }
 
   return (
@@ -256,11 +251,7 @@ export function JobsView2() {
               </Box>
               <Box w={"50%"}>
                 <FormLabel>카테고리 선택</FormLabel>
-                <Input
-                  value={editJobs.categoryName}
-                  onChange={handleCategory}
-                  readOnly
-                />
+                <Input value={editJobs.categoryName} readOnly />
               </Box>
             </Flex>
 
@@ -269,8 +260,10 @@ export function JobsView2() {
               value={editJobs.storeName}
               onChange={(e) => handleEditInput("storeName", e)}
             >
-              {editJobs.storeNames.map((name) => (
-                <option key={name.index}>{name}</option>
+              {editJobs.storeNames.map((name, index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
               ))}
             </Select>
             <FormLabel>작성자</FormLabel>
