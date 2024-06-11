@@ -1,8 +1,17 @@
 import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import {
+  faBriefcase,
+  faEllipsisH,
+  faIndustry,
+  faScissors,
+  faTruck,
+  faUtensils,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function StoreList() {
   const [storeList, setStoreList] = useState([]);
@@ -18,6 +27,15 @@ export function StoreList() {
       })
       .then((res) => setStoreList(res.data));
   }, []);
+
+  const iconMapping = {
+    utensils: faUtensils,
+    scissors: faScissors,
+    truck: faTruck,
+    briefcase: faBriefcase,
+    industry: faIndustry,
+    ellipsis: faEllipsisH,
+  };
 
   return (
     <Box position="relative" p={4}>
@@ -59,7 +77,13 @@ export function StoreList() {
                   <Td>{store.id}</Td>
                   <Td>{store.name}</Td>
                   <Td>{store.address}</Td>
-                  <Td>{store.cate}</Td>
+                  <Td>
+                    <FontAwesomeIcon
+                      icon={iconMapping[store.icon]}
+                      style={{ marginRight: "8px" }}
+                    />
+                    {store.cate}
+                  </Td>
                 </Tr>
               ) : null,
             )}

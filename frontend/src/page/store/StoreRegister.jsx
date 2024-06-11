@@ -4,21 +4,29 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Modal,
+  ModalContent,
+  ModalOverlay,
   Select,
   Textarea,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import DaumPostcode from "react-daum-postcode";
+
 import { useNavigate } from "react-router-dom";
 
 export function StoreRegister() {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState();
+  const [phone, setPhone] = useState("");
+  const [inputAddress, setInputAddress] = useState();
   const [categoryId, setCategoryId] = useState("all");
   const [categories, setCategories] = useState([]);
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const [files, setFiles] = useState([]);
   const toast = useToast();
@@ -29,6 +37,12 @@ export function StoreRegister() {
       setCategories(res.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (inputAddress) {
+      setAddress(inputAddress);
+    }
+  }, [inputAddress]);
 
   function handleSaveClick() {
     axios
@@ -81,6 +95,11 @@ export function StoreRegister() {
     fileNameList.push(<li>{files[i].name}</li>);
   }
 
+  const onCompletePost = (data) => {
+    setInputAddress(data.address);
+    onClose();
+  };
+
   return (
     <Box p={4} maxWidth="600px" mx="auto">
       <Box mb={4}>
@@ -111,8 +130,16 @@ export function StoreRegister() {
             onChange={(e) => setAddress(e.target.value)}
             placeholder="가게 주소를 입력하세요."
           />
+          <Button onClick={onOpen}>우편번호 검색</Button>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <DaumPostcode onComplete={onCompletePost} height="100%" />
+            </ModalContent>
+          </Modal>
         </FormControl>
       </Box>
+
       <Box mb={4}>
         <FormControl>
           <FormLabel>전화 번호</FormLabel>

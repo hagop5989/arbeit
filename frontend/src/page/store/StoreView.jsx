@@ -20,7 +20,16 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { faMap, faPhone } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBriefcase,
+  faEllipsisH,
+  faIndustry,
+  faMap,
+  faPhone,
+  faScissors,
+  faTruck,
+  faUtensils,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function StoreView() {
@@ -75,6 +84,15 @@ export function StoreView() {
     );
   }
 
+  const iconMapping = {
+    utensils: faUtensils,
+    scissors: faScissors,
+    truck: faTruck,
+    briefcase: faBriefcase,
+    industry: faIndustry,
+    ellipsis: faEllipsisH,
+  };
+
   return (
     <Box
       p={8}
@@ -97,8 +115,7 @@ export function StoreView() {
             <Box>
               <FormControl>
                 <FormLabel>
-                  <FontAwesomeIcon icon={faPhone} />
-                  전화 번호
+                  <FontAwesomeIcon icon={faPhone} /> 전화 번호
                 </FormLabel>
                 <Input
                   value={store.phone}
@@ -111,10 +128,14 @@ export function StoreView() {
             <Box ml={6}>
               <FormControl>
                 <FormLabel>가게 카테고리</FormLabel>
+                <FontAwesomeIcon
+                  icon={iconMapping[store.icon]}
+                  style={{ marginRight: "8px" }}
+                />
                 <Input
                   value={store.cate}
                   readOnly
-                  width="80%"
+                  width="60%"
                   textAlign="center"
                 />
               </FormControl>

@@ -16,7 +16,7 @@ public interface StoreMapper {
     public int insert(Store store);
 
     @Select("""
-            SELECT s.id, s.name, s.content, s.address, s.phone, c.name cate, s.member_id
+            SELECT s.id, s.name, s.content, s.address, s.phone, c.name cate, s.member_id, c.icon
             FROM store s JOIN category c ON s.category_id = c.id
             ORDER BY id
             """)
@@ -35,7 +35,8 @@ public interface StoreMapper {
                    s.address,
                    s.phone,
                    c.name cate,
-                   s.member_id
+                   s.member_id,
+                   c.icon
             FROM store s JOIN member m ON s.member_id = m.id JOIN category c ON s.category_id = c.id
             WHERE s.id = #{id}
             """)
@@ -61,4 +62,10 @@ public interface StoreMapper {
             ORDER BY id
             """)
     List<Store> setcate();
+
+    @Select("""
+            SELECT name
+            FROM 
+            """)
+    List<String> StoreImageByStoreId(Integer id);
 }
