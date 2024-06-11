@@ -50,7 +50,6 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity info(@PathVariable Integer id) {
-        log.info("BoardController.info id={}", id);
         Board board = boardService.findById(id);
 
         if (board == null) {
