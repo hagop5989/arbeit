@@ -1,6 +1,7 @@
 package com.backend.mapper.jobs;
 
 import com.backend.domain.jobs.Jobs;
+import com.backend.domain.store.Store;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -119,4 +120,17 @@ public interface JobsMapper {
             """)
     int deleteFileByJobsId(Integer jobsId);
 
+
+    @Select("""
+            SELECT * FROM store
+            WHERE member_id = #{jobsMemberId}
+            """)
+    List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
+
+
+    @Select("""
+            SELECT * FROM category
+            WHERE id = #{categoryId}
+            """)
+    void selectCategoryByCategoryId(Integer categoryId);
 }

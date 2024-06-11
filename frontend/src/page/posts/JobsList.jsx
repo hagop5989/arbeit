@@ -171,7 +171,6 @@ export function JobsList() {
   );
 
   function JobCard({ job }) {
-    console.log(job);
     return (
       <Card
         onClick={() => navigate(`/jobs/${job.id}`)}

@@ -16,6 +16,12 @@ import java.util.Map;
 public class JobsController {
     private final JobsService service;
 
+    @GetMapping("insert")
+    public Map<String, Object> findInsertData(Integer memberId) {
+        System.out.println("memberId = " + memberId);
+        return service.findInsertData(memberId);
+    }
+
     @PostMapping("insert")
     public void insert(@ModelAttribute Jobs jobs,
                        @RequestParam(value = "files[]", required = false) MultipartFile[] files) throws IOException {
