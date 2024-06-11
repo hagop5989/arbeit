@@ -14,7 +14,7 @@ const bossRoutes = [
   { path: "resume/write", element: <ResumeWrite /> },
   { path: "resume/list", element: <ResumeList /> },
   { path: "resume/:id", element: <ResumeView /> },
-  { path: "resume/edit", element: <ResumeEdit /> },
+  { path: "resume/:id/edit", element: <ResumeEdit /> },
 ];
 
 export default bossRoutes;

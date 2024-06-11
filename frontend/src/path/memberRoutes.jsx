@@ -7,7 +7,7 @@ const memberRoutes = [
   { path: "signup", element: <MemberSignup /> },
   { path: "member/list", element: <MemberList /> },
   { path: "member/:id", element: <MemberInfo /> },
-  { path: "member/edit/:id", element: <MemberEdit /> },
+  { path: "member/:id/edit", element: <MemberEdit /> },
 ];
 
 export default memberRoutes;

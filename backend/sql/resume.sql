@@ -21,4 +21,8 @@ CREATE TABLE resume_photo
 
 SELECT *
 FROM resume;
+DESC resume;
+
+ALTER TABLE resume
+    MODIFY COLUMN is_rookie BOOLEAN NOT NULL;
 

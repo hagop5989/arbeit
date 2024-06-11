@@ -20,21 +20,26 @@ public class ResumeService {
         mapper.insert(resume);
     }
 
-    public List<Resume> list(Integer memberId) {
-        return mapper.list(memberId);
+    public List<Resume> findAllByMemberId(Integer memberId) {
+        return mapper.selectAllByMemberId(memberId);
     }
 
-    public Resume select(Integer id) {
-        return mapper.select(id);
+    public Resume findById(Integer id) {
+        return mapper.selectById(id);
     }
 
     public void delete(Integer id) {
-        mapper.delete(id);
+        mapper.deleteById(id);
 
     }
 
     public void update(Resume resume) {
         mapper.update(resume);
 
+    }
+
+    public boolean isMaxedInsert(Authentication authentication) {
+        Integer count = mapper.selectAllOfCount(authentication.getName());
+        return count < 5;
     }
 }

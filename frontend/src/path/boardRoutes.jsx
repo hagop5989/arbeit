@@ -7,7 +7,7 @@ const boardRoutes = [
   { path: "board/list", element: <BoardList /> },
   { path: "board/write", element: <BoardWrite /> },
   { path: "board/:id", element: <BoardView /> },
-  { path: "board/edit/:id", element: <BoardEdit /> },
+  { path: "board/:id/edit", element: <BoardEdit /> },
 ];
 
 export default boardRoutes;

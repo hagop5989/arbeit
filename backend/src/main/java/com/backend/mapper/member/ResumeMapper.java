@@ -8,7 +8,6 @@ import java.util.List;
 @Mapper
 public interface ResumeMapper {
 
-
     @Insert("""
             INSERT INTO resume (member_id, title, content, is_rookie)
             VALUES (#{memberId}, #{title}, #{content}, #{isRookie})
@@ -20,27 +19,36 @@ public interface ResumeMapper {
             SELECT id, title, inserted FROM resume
             WHERE member_id = #{memberId}
             """)
-    List<Resume> list(Integer memberId);
+    List<Resume> selectAllByMemberId(Integer memberId);
 
     @Select("""
-            SELECT * FROM resume
-            WHERE id = #{id}
+            SELECT COUNT(id) FROM resume
+            WHERE member_id = #{memberId}
             """)
-    Resume select(Integer id);
+    Integer selectAllOfCount(String memberId);
 
 
-    @Insert("""
-            INSERT INTO resume_photo (resume_id, name)
-            VALUES (#{resumeId},#{name})
+    @Select("""
+            SELECT r.id,
+                   r.member_id,
+                   m.gender,
+                   m.birth_date,
+                   m.email,
+                   m.phone,
+                   r.title,
+                   r.content,
+                   r.is_rookie,
+                   r.inserted
+            FROM resume r JOIN member m on r.member_id = m.id
+            WHERE r.id = #{id}
             """)
-    int insertFileName(Integer id, String originalFilename);
-
+    Resume selectById(Integer id);
 
     @Delete("""
             DELETE FROM resume
             WHERE id = #{id}
             """)
-    int delete(Integer id);
+    int deleteById(Integer id);
 
     @Update("""
             UPDATE resume
