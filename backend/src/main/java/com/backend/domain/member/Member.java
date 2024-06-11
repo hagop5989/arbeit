@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -17,7 +19,14 @@ public class Member {
     @Setter
     private String password;
     private String name;
+    private String gender;
+    private Date birthDate;
     private String address;
     private String phone;
     private LocalDateTime inserted;
+
+    public String getBirthDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(birthDate);
+    }
 }
