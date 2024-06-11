@@ -27,7 +27,7 @@ export function StoreEdit() {
   const { id } = useParams();
   const [store, setStore] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [inputAddress, setInputAddress] = useState();
+  const [inputAddress, setInputAddress] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -50,7 +50,9 @@ export function StoreEdit() {
   }, [inputAddress]);
 
   useEffect(() => {
-    axios.get(`/api/store/${id}`).then((res) => setStore(res.data));
+    axios.get(`/api/store/${id}`).then((res) => {
+      setStore(res.data);
+    });
   }, [id]);
 
   if (!store) {
@@ -67,7 +69,7 @@ export function StoreEdit() {
       .then(() => {
         toast({
           status: "success",
-          description: `${store.id}가게가 수정되었습니다.`,
+          description: `${store.id} 가게가 수정되었습니다.`,
           position: "top",
         });
         navigate(`/store/${store.id}`);
@@ -110,7 +112,7 @@ export function StoreEdit() {
             <FormControl mt={5}>
               <FormLabel>가게 이름</FormLabel>
               <Input
-                defaultValue={store.name}
+                value={store.name}
                 width="80%"
                 onChange={(e) => setStore({ ...store, name: e.target.value })}
               />
@@ -122,7 +124,7 @@ export function StoreEdit() {
                     <FontAwesomeIcon icon={faPhone} /> 전화 번호
                   </FormLabel>
                   <Input
-                    defaultValue={store.phone}
+                    value={store.phone}
                     width="80%"
                     onChange={(e) =>
                       setStore({ ...store, phone: e.target.value })
@@ -134,11 +136,14 @@ export function StoreEdit() {
                 <FormControl>
                   <FormLabel>가게 카테고리</FormLabel>
                   <Select
-                    Value={store.categoryId}
+                    value={store.categoryId || ""}
                     onChange={(e) =>
                       setStore({ ...store, categoryId: e.target.value })
                     }
                   >
+                    <option value="" disabled>
+                      카테고리 선택
+                    </option>
                     {categories.map((cate) => (
                       <option key={cate.id} value={cate.id}>
                         {cate.name}
@@ -167,7 +172,7 @@ export function StoreEdit() {
           <FormControl>
             <FormLabel>가게 주소</FormLabel>
             <Input
-              Value={store.address}
+              value={store.address}
               onChange={(e) => setStore({ ...store, address: e.target.value })}
             />
             <Button onClick={DonOpen}>우편번호 검색</Button>
@@ -184,7 +189,7 @@ export function StoreEdit() {
           <FormControl>
             <FormLabel>본문</FormLabel>
             <Textarea
-              defaultValue={store.content}
+              value={store.content}
               onChange={(e) => setStore({ ...store, content: e.target.value })}
             ></Textarea>
           </FormControl>
