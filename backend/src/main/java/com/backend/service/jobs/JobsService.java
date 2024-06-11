@@ -100,7 +100,7 @@ public class JobsService {
         List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
         // 버킷객체URL/{id}/{name}
         List<JobsFile> files = fileNames.stream()
-                .map(name -> new JobsFile(name, STR."\{srcPrefix}/\{jobsId}/\{name}"))
+                .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/\{jobsId}/\{fileName}"))
                 .toList();
         jobs.setFileList(files);
 
@@ -110,6 +110,22 @@ public class JobsService {
     }
 
     public void deleteByJobsId(Integer jobsId) {
+        // file 명 조회
+        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
+
+        // aws s3의 file 삭제
+        for (String fileName : fileNames) {
+            String key = STR."\{srcPrefix}/\{jobsId}/\{fileName}";
+            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+
+            s3Client.deleteObject(objectRequest);
+        }
+        // db의 jobsFile 삭제
+        jobsMapper.deleteFileByJobsId(jobsId);
+        // db의 jobs 삭제
         jobsMapper.deleteByJobsId(jobsId);
     }
 

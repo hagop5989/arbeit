@@ -38,6 +38,7 @@ export function JobsView2() {
   const navigate = useNavigate();
   const [removeFileList, setRemoveFileList] = useState([]);
   const [addFileList, setAddFileList] = useState([]);
+  const [fileList, setFileList] = useState([]);
   const [editJobs, setEditJobs] = useState({
     title: "",
     content: "",
@@ -51,7 +52,6 @@ export function JobsView2() {
     memberId: account.id,
     name: account.name,
 
-    fileList: [],
     startTime: "",
     endTime: "",
     x: "",
@@ -59,10 +59,15 @@ export function JobsView2() {
     resultName: "",
   });
 
-  /* log 찍는 용도 */
-  // useEffect(() => {
-  //   // console.log("Jobs state updated:", editJobs);
-  // }, [editJobs]);
+  function removeFileListProperties(obj) {
+    const newObj = { ...obj }; // 원본 객체를 복사합니다.
+    Object.keys(newObj).forEach((key) => {
+      if (key.startsWith("fileList")) {
+        delete newObj[key]; // fileList로 시작하는 모든 프로퍼티를 삭제합니다.
+      }
+    });
+    return newObj;
+  }
 
   function handleEditInput(field, e) {
     setEditJobs((prev) => ({ ...prev, [field]: e.target.value }));
@@ -73,6 +78,7 @@ export function JobsView2() {
       .putForm("/api/jobs/update", { ...editJobs, removeFileList, addFileList })
       .then((res) => {
         myToast("수정 완료 되었습니다", "success");
+        navigate("/jobs/list");
       })
       .catch(() => {
         myToast("수정실패", "error");
@@ -98,6 +104,8 @@ export function JobsView2() {
       .get(`/api/jobs/${id}`)
       .then((res) => {
         setEditJobs(res.data.jobs);
+        setFileList(res.data.jobs.fileList);
+        delete res.data.jobs.fileList;
       })
       .catch((err) => {
         if (err.response.status === 404) {
@@ -133,7 +141,7 @@ export function JobsView2() {
   for (let addFile of addFileList) {
     // 이미 있는 파일과 중복된 파일명인지?
     let duplicate = false;
-    for (let file of editJobs.fileList) {
+    for (let file of fileList) {
       if (file.name === addFile.name) {
         duplicate = true;
         break;
@@ -286,8 +294,8 @@ export function JobsView2() {
             )}
 
             <Box>
-              {editJobs.fileList &&
-                editJobs.fileList.map((file) => (
+              {fileList &&
+                fileList.map((file) => (
                   <Card m={3} key={file.name}>
                     <CardBody w={"100%"} h={"100%"} alignItems="center">
                       <Box>

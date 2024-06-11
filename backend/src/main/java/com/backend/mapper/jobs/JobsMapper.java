@@ -113,4 +113,10 @@ public interface JobsMapper {
             """)
     int deleteFileByJobsIdAndName(Integer jobsId, String fileName);
 
+    @Delete("""
+            DELETE FROM jobs_file 
+            WHERE jobs_id = #{jobsId}
+            """)
+    int deleteFileByJobsId(Integer jobsId);
+
 }
