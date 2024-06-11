@@ -4,22 +4,45 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Modal,
+  ModalContent,
+  ModalOverlay,
   Select,
   Textarea,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import DaumPostcode from "react-daum-postcode";
+
 import { useNavigate } from "react-router-dom";
 
 export function StoreRegister() {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");
-  const [category, setCategory] = useState("all");
+  const [phone, setPhone] = useState("");
+  const [inputAddress, setInputAddress] = useState();
+  const [categoryId, setCategoryId] = useState("all");
+  const [categories, setCategories] = useState([]);
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   const [files, setFiles] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get(`/api/store/cate`).then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (inputAddress) {
+      setAddress(inputAddress);
+    }
+  }, [inputAddress]);
 
   function handleSaveClick() {
     axios
@@ -27,8 +50,9 @@ export function StoreRegister() {
         name: name,
         content: content,
         address: address,
-        category: category,
+        categoryId: categoryId,
         files: files,
+        phone: phone,
       })
       .then((response) => {
         toast({
@@ -71,6 +95,11 @@ export function StoreRegister() {
     fileNameList.push(<li>{files[i].name}</li>);
   }
 
+  const onCompletePost = (data) => {
+    setInputAddress(data.address);
+    onClose();
+  };
+
   return (
     <Box p={4} maxWidth="600px" mx="auto">
       <Box mb={4}>
@@ -101,6 +130,24 @@ export function StoreRegister() {
             onChange={(e) => setAddress(e.target.value)}
             placeholder="가게 주소를 입력하세요."
           />
+          <Button onClick={onOpen}>우편번호 검색</Button>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <DaumPostcode onComplete={onCompletePost} height="100%" />
+            </ModalContent>
+          </Modal>
+        </FormControl>
+      </Box>
+
+      <Box mb={4}>
+        <FormControl>
+          <FormLabel>전화 번호</FormLabel>
+          <Input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="전화 번호를 입력하세요."
+          />
         </FormControl>
       </Box>
       <Box>
@@ -121,16 +168,15 @@ export function StoreRegister() {
         <FormControl>
           <FormLabel>가게 카테고리</FormLabel>
           <Select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
             placeholder="카테고리 선택"
           >
-            <option value="요식업">요식업</option>
-            <option value="미용">미용</option>
-            <option value="유통">유통</option>
-            <option value="사무직">사무업무</option>
-            <option value="생산">생산</option>
-            <option value="기타">기타</option>
+            {categories.map((cate) => (
+              <option key={cate.id} value={cate.id}>
+                {cate.name}
+              </option>
+            ))}
           </Select>
         </FormControl>
       </Box>

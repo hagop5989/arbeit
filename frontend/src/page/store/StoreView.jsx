@@ -20,6 +20,17 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  faBriefcase,
+  faEllipsisH,
+  faIndustry,
+  faMap,
+  faPhone,
+  faScissors,
+  faTruck,
+  faUtensils,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function StoreView() {
   const { id } = useParams();
@@ -73,40 +84,91 @@ export function StoreView() {
     );
   }
 
+  const iconMapping = {
+    utensils: faUtensils,
+    scissors: faScissors,
+    truck: faTruck,
+    briefcase: faBriefcase,
+    industry: faIndustry,
+    ellipsis: faEllipsisH,
+  };
+
   return (
     <Box
       p={8}
-      maxWidth="1000px"
+      maxWidth="1100px"
       mx="auto"
       boxShadow="lg"
       borderRadius="md"
       bg="white"
     >
-      <Heading as="h2" size="lg" mb={6} textAlign="center">
+      <Heading as="h2" size="lg" mb={6} ml={2}>
         가게 정보
       </Heading>
+      <Flex>
+        <Box flex="1">
+          <FormControl mt={5}>
+            <FormLabel>가게 이름</FormLabel>
+            <Input value={store.name} readOnly width="80%" />
+          </FormControl>
+          <Flex mt="1cm">
+            <Box>
+              <FormControl>
+                <FormLabel>
+                  <FontAwesomeIcon icon={faPhone} /> 전화 번호
+                </FormLabel>
+                <Input
+                  value={store.phone}
+                  readOnly
+                  width="80%"
+                  textAlign="center"
+                />
+              </FormControl>
+            </Box>
+            <Box ml={6}>
+              <FormControl>
+                <FormLabel>가게 카테고리</FormLabel>
+                <FontAwesomeIcon
+                  icon={iconMapping[store.icon]}
+                  style={{ marginRight: "8px" }}
+                />
+                <Input
+                  value={store.cate}
+                  readOnly
+                  width="60%"
+                  textAlign="center"
+                />
+              </FormControl>
+            </Box>
+          </Flex>
+        </Box>
+        <Box
+          flex="1"
+          width="500px"
+          height="250px"
+          border="1px solid lightgray"
+          borderRadius="md"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          color="gray.400"
+        >
+          사진
+        </Box>
+      </Flex>
       <Box mb={6}>
         <FormControl>
-          <FormLabel>가게 이름</FormLabel>
-          <Input value={store.name} readOnly />
+          <FormLabel>
+            <FontAwesomeIcon icon={faMap} />
+            가게 주소
+          </FormLabel>
+          <Input value={store.address} readOnly />
         </FormControl>
       </Box>
       <Box mb={6}>
         <FormControl>
           <FormLabel>가게 내용</FormLabel>
           <Textarea value={store.content} readOnly />
-        </FormControl>
-      </Box>
-      <Box mb={6}>
-        <FormControl>
-          <FormLabel>가게 주소</FormLabel>
-          <Input value={store.address} readOnly />
-        </FormControl>
-      </Box>
-      <Box mb={6}>
-        <FormControl>
-          <FormLabel>가게 카테고리</FormLabel>
-          <Input value={store.category} readOnly />
         </FormControl>
       </Box>
       <Box>
