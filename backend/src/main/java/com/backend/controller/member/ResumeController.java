@@ -44,19 +44,16 @@ public class ResumeController {
 
     @GetMapping("{id}")
     public Resume select(@PathVariable Integer id) {
-        System.out.println("ResumeController.select");
         return service.select(id);
     }
 
     @PutMapping("update")
     public void update(@RequestBody Resume resume) {
-        System.out.println("ResumeController.update");
         service.update(resume);
     }
 
     @DeleteMapping("delete")
     public void delete(@RequestParam Integer id) {
-        System.out.println("id = " + id);
         service.delete(id);
     }
 

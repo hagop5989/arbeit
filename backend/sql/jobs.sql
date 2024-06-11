@@ -57,3 +57,17 @@ INSERT INTO jobs
 (member_id, store_id, category_id, title, content,
  salary, deadline, recruitment_number, store_name)
 VALUES (28, 8, 2, '테스트중', '테스트용 내용입니다. 테스트용 내용입니다. 테스트용 내용입니다.', '9500', '2024-06-10 09:00:00', '10', '배달의민족');
+
+INSERT INTO store
+    (name, content, address, phone, member_id, category_id)
+VALUES ('bossStore1', 'bossStore1Contents', 'bossStore1Address', '010-1234-5678', 28, 1);
+
+INSERT INTO store
+    (name, content, address, phone, member_id, category_id)
+VALUES ('bossStore2', 'bossStore2Contents', 'bossStore2Address', '010-1234-5678', 28, 2);
+
+select *
+FROM store;
+
+select *
+FROM category;

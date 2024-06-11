@@ -11,7 +11,7 @@ CREATE TABLE store
 
 
 ALTER TABLE store
-    ADD COLUMN member_id INT REFERENCES member (id) AFTER category;
+    ADD COLUMN phone VARCHAR(45) AFTER address;
 
 SELECT *
 FROM store;
@@ -33,13 +33,26 @@ CREATE TABLE category
 
 );
 
-ALTER TABLE store
-    DROP COLUMN category;
+ALTER TABLE category
+    DROP COLUMN category_icon;
+
+ALTER TABLE category
+    ADD COLUMN icon VARCHAR(45);
 
 ALTER TABLE store
     ADD COLUMN category_id INT REFERENCES category (id) AFTER member_id;
 
 
 INSERT INTO category (name)
-VALUES ('사무직');
+VALUES ('기타');
+
+SELECT *
+FROM category;
+
+CREATE TABLE store_file
+(
+    store_id INT          NOT NULL REFERENCES board (id),
+    name     VARCHAR(500) NOT NULL,
+    PRIMARY KEY (store_id, name)
+);
 

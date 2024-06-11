@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputRightElement,
   Select,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -23,6 +24,7 @@ import KakaoMap2 from "./KakaoMap2.jsx";
 export function JobsCreate() {
   const account = useContext(LoginContext);
   const navigate = useNavigate();
+  const [files, setFiles] = useState([]);
   const [jobs, setJobs] = useState({
     title: "",
     content: "",
@@ -30,6 +32,7 @@ export function JobsCreate() {
     deadline: "",
     recruitmentNumber: "",
     storeName: "default",
+    storeNames: [],
     categoryId: "1",
     storeId: "8",
 
@@ -41,7 +44,14 @@ export function JobsCreate() {
     x: "",
     y: "",
     markerName: "",
+    // fileList: [],
   });
+
+  // file 목록 작성
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li>{files[i].name}</li>);
+  }
 
   const handleMapSubmit = (x, y, markerName) => {
     setJobs((prev) => ({
@@ -52,31 +62,33 @@ export function JobsCreate() {
     }));
   };
 
-  /* log 찍는 용도 */
+  useEffect(() => {}, [jobs]);
   useEffect(() => {
-    // console.log("Jobs state updated:", jobs);
-  }, [jobs]);
+    axios
+      .get("/api/jobs/insert", { params: { memberId: account.id } })
+      .then((res) => {
+        setJobs((prev) => ({ ...prev, storeNames: res.data.storeNames }));
+      })
+      .catch()
+      .finally(console.log(jobs));
+  }, []);
 
   function handleCreateInput(field, e) {
     setJobs((prev) => ({ ...prev, [field]: e.target.value }));
   }
 
   function handleSubmitCreateJobs() {
-    if (true) {
-      axios
-        .post("/api/jobs/insert", jobs)
-        .then((res) => {
-          myToast("공고생성 되었습니다", "success");
-          navigate("/jobs/list");
-        })
-        .catch((e) => {
-          myToast("입력 값을 확인해주세요.", "error");
-          console.log(e);
-        })
-        .finally(() => {});
-    } else {
-      myToast("입력값 중 빈칸이 존재합니다.", "error");
-    }
+    axios
+      .postForm("/api/jobs/insert", { ...jobs, files })
+      .then((res) => {
+        myToast("공고생성 되었습니다", "success");
+        navigate("/jobs/list");
+      })
+      .catch((e) => {
+        myToast("입력 값을 확인해주세요.", "error");
+        console.log(e);
+      })
+      .finally(() => {});
   }
 
   const toast = useToast();
@@ -176,12 +188,15 @@ export function JobsCreate() {
             </Flex>
 
             <FormLabel>가게명</FormLabel>
-            <Input
+            <Select
               value={jobs.storeName}
               onChange={(e) => handleCreateInput("storeName", e)}
-              type={"text"}
-              readOnly
-            />
+            >
+              {jobs.storeNames.map((name) => (
+                <option key={name.index}>{name}</option>
+              ))}
+            </Select>
+
             <FormLabel>작성자</FormLabel>
             <Input
               value={jobs.name}
@@ -193,20 +208,32 @@ export function JobsCreate() {
 
             <KakaoMap2 onSubmit={handleMapSubmit} />
 
-            <Flex justifyContent="center">
-              <Button
-                // isDisabled={!allFieldsFilled}
-                onClick={handleSubmitCreateJobs}
-                colorScheme={"purple"}
-                w={120}
-                my={"100px"}
-              >
-                공고생성
-              </Button>
-            </Flex>
+            <Box>
+              <Text>사진첨부</Text>
+              <Input
+                multiple
+                type={"file"}
+                onChange={(e) => {
+                  setFiles(e.target.files);
+                }}
+              ></Input>
+              첨부파일 리스트:
+              {fileNameList}
+            </Box>
           </FormControl>
         </Center>
       </Flex>
+      <Center ml={"10px"}>
+        <Button
+          // isDisabled={!allFieldsFilled}
+          onClick={handleSubmitCreateJobs}
+          colorScheme={"purple"}
+          w={"200px"}
+          my={"70px"}
+        >
+          공고생성
+        </Button>
+      </Center>
     </Box>
   );
 }

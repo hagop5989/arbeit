@@ -1,8 +1,17 @@
 import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import {
+  faBriefcase,
+  faEllipsisH,
+  faIndustry,
+  faScissors,
+  faTruck,
+  faUtensils,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function StoreList() {
   const [storeList, setStoreList] = useState([]);
@@ -18,6 +27,15 @@ export function StoreList() {
       })
       .then((res) => setStoreList(res.data));
   }, []);
+
+  const iconMapping = {
+    utensils: faUtensils,
+    scissors: faScissors,
+    truck: faTruck,
+    briefcase: faBriefcase,
+    industry: faIndustry,
+    ellipsis: faEllipsisH,
+  };
 
   return (
     <Box position="relative" p={4}>
@@ -35,7 +53,7 @@ export function StoreList() {
         <Table>
           <Thead>
             <Tr>
-              <Th>사진</Th>
+              <Th>id</Th>
               <Th>가게명</Th>
               <Th>주소</Th>
               <Th>업종</Th>
@@ -48,6 +66,8 @@ export function StoreList() {
                   key={store.id}
                   _hover={{
                     bgColor: "gray.200",
+                    transform: "translateX(-40px) scale(1.05)",
+                    transition: "transform 0.2s ease-in-out",
                   }}
                   cursor={"pointer"}
                   onClick={() => navigate(`/store/${store.id}`)}
@@ -57,7 +77,13 @@ export function StoreList() {
                   <Td>{store.id}</Td>
                   <Td>{store.name}</Td>
                   <Td>{store.address}</Td>
-                  <Td>{store.category}</Td>
+                  <Td>
+                    <FontAwesomeIcon
+                      icon={iconMapping[store.icon]}
+                      style={{ marginRight: "8px" }}
+                    />
+                    {store.cate}
+                  </Td>
                 </Tr>
               ) : null,
             )}

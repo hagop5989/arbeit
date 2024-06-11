@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 public class Jobs {
@@ -25,6 +26,8 @@ public class Jobs {
     private Double x;
     private Double y;
     private String markerName;
+
+    List<JobsFile> fileList;
 
     // 아래는 db에 없음.
     private String memberName;
