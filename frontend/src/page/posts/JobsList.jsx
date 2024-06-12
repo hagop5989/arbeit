@@ -221,7 +221,7 @@ export function JobsList() {
               시급
             </Text>
             <Text fontWeight="bold" fontSize="sm" ml={1} color="gray.600">
-              {job.salary} 원
+              {job.salary.toLocaleString()} 원
             </Text>
           </Flex>
         </CardBody>

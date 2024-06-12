@@ -2,7 +2,6 @@ package com.backend.service.jobs;
 
 import com.backend.domain.jobs.Jobs;
 import com.backend.domain.jobs.JobsFile;
-import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
 import com.backend.mapper.jobs.JobsMapper;
 import com.backend.mapper.member.MemberMapper;
@@ -18,7 +17,6 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +61,11 @@ public class JobsService {
                         RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
         }
-        System.out.println("JobsService.insert.end");
+    }
+
+    public List<Store> findInsertData(Integer memberId) {
+        // storeList 반환하기.
+        return jobsMapper.selectStoreByJobsMemberId(memberId);
     }
 
     public void update(Jobs jobs, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
@@ -105,32 +107,17 @@ public class JobsService {
     }
 
     public Map<String, Object> selectByJobsId(Integer jobsId) {
+        // jobs, storeList 넣을 map 생성
         Map<String, Object> result = new HashMap<>();
+
+        // jobsId로 jobs 찾기
         Jobs jobs = jobsMapper.selectByJobsId(jobsId);
 
-        // store 에서 jobs의 storeId 기준으로 선택한 storeName 조회하여 Jobs 할당.
-        System.out.println("storeId: " + jobs.getStoreId());
-        Store dbStore = jobsMapper.selectStoreByJobStoreId(jobs.getStoreId());
-        jobs.setStoreName(dbStore.getName());
+        // jobs의 memberId로 storeList 찾기
+        List<Store> storeList = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
 
-        // store 에서 memberId 기준으로 storeName 조회
-        List<Store> stores = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
-        // jobs의 categoryId 기준으로 categoryName 설정.
-        Category category = jobsMapper.selectCategoryByCategoryId(jobs.getCategoryId());
-        jobs.setCategoryName(category.getName());
-
-        // store 의 이름들 관련 배열.
-        List<String> storeNames = new ArrayList<>();
-
-        Map<String, String> categoryMap = new HashMap<>();
-        for (Store store : stores) {
-            storeNames.add(store.getName());
-            Category dbCategory = jobsMapper.selectCategoryByCategoryId(store.getCategoryId());
-            categoryMap.put(store.getName(), dbCategory.getName());
-        }
-
+        // jobsId로 파일리스트 찾기
         List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
-        // 버킷객체URL/{id}/{name}
         List<JobsFile> files = fileNames.stream()
                 .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/\{jobsId}/\{fileName}"))
                 .toList();
@@ -138,8 +125,8 @@ public class JobsService {
 
 
         result.put("jobs", jobs);
-        result.put("storeNames", storeNames);
-        result.put("categoryMap", categoryMap);
+        result.put("storeList", storeList);
+
         return result;
 
     }
@@ -197,25 +184,6 @@ public class JobsService {
                 "jobsList", JobsList);
     }
 
-    public Map<String, Object> findInsertData(Integer memberId) {
-        List<Store> stores = jobsMapper.selectStoreByJobsMemberId(memberId);
 
-        List<String> storeNames = new ArrayList<>();
-        List<String> categoryNames = new ArrayList<>();
-
-        for (Store store : stores) {
-            Integer categoryId = store.getCategoryId();
-            Category category = jobsMapper.selectCategoryByCategoryId(categoryId);
-
-            categoryNames.add(category.getName());
-            storeNames.add(store.getName());
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("storeNames", storeNames);
-        result.put("categoryNames", categoryNames);
-        System.out.println("result = " + result);
-        return result;
-    }
 }
 

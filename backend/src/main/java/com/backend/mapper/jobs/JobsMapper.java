@@ -1,7 +1,6 @@
 package com.backend.mapper.jobs;
 
 import com.backend.domain.jobs.Jobs;
-import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
 import org.apache.ibatis.annotations.*;
 
@@ -12,10 +11,10 @@ public interface JobsMapper {
     @Insert("""
             INSERT INTO jobs
             (member_id, store_id, category_id, title, content,
-             salary, deadline, recruitment_number, store_name,start_time,end_time,x,y,marker_name)
+             salary, deadline, recruitment_number, store_name,start_time,end_time,marker_name,x,y)
             VALUES
             (#{memberId},#{storeId},#{categoryId},#{title},#{content},
-            #{salary},#{deadline},#{recruitmentNumber},#{storeName},#{startTime},#{endTime},#{x},#{y},#{markerName})
+            #{salary},#{deadline},#{recruitmentNumber},#{storeName},#{startTime},#{endTime},#{markerName},#{x},#{y})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Jobs jobs);
@@ -32,8 +31,12 @@ public interface JobsMapper {
     int update(Jobs jobs);
 
     @Select("""
-            SELECT * FROM jobs
-            WHERE id = #{id}
+            SELECT j.*,
+               s.cate_name AS categoryName, m.name AS memberName
+            FROM jobs j
+            JOIN store s ON s.id = j.store_id
+            JOIN member m ON m.id = j.member_id
+            WHERE j.id = #{id}
             """)
     Jobs selectByJobsId(Integer id);
 
@@ -130,23 +133,10 @@ public interface JobsMapper {
 
 
     @Select("""
-            SELECT * FROM category
-            WHERE id = #{categoryId}
-            """)
-    Category selectCategoryByCategoryId(Integer categoryId);
-
-    @Select("""
             SELECT id FROM category
             WHERE name = #{categoryName}
             """)
     Integer selectCategoryByCategoryName(String categoryName);
-
-
-    @Select("""
-            SELECT * FROM store
-            WHERE id = #{storeId}
-            """)
-    Store selectStoreByJobStoreId(Integer storeId);
 
 
     @Select("""

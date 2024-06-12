@@ -25,15 +25,14 @@ export function JobsCreate() {
   const account = useContext(LoginContext);
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
+  const [storeList, setStoreList] = useState([]);
   const [jobs, setJobs] = useState({
     title: "",
     content: "",
     salary: "",
     deadline: "",
     recruitmentNumber: "",
-    storeName: "default",
-    storeNames: [],
-    categoryNames: [],
+    storeName: "",
     categoryName: "",
     storeId: "8",
 
@@ -51,7 +50,7 @@ export function JobsCreate() {
   // file 목록 작성
   const fileNameList = [];
   for (let i = 0; i < files.length; i++) {
-    fileNameList.push(<li>{files[i].name}</li>);
+    fileNameList.push(<li key={i}>{files[i].name}</li>);
   }
 
   const handleMapSubmit = (x, y, markerName) => {
@@ -63,26 +62,41 @@ export function JobsCreate() {
     }));
   };
 
-  // useEffect(() => {}, [jobs]);
   useEffect(() => {
     axios
       .get("/api/jobs/insert", { params: { memberId: account.id } })
       .then((res) => {
+        setStoreList(res.data);
         setJobs((prev) => ({
           ...prev,
-          storeNames: res.data.storeNames,
-          categoryNames: res.data.categoryNames,
           name: account.name,
           memberId: account.id,
         }));
       })
-      .catch()
-      .finally(console.log(jobs));
+      .catch((error) => console.error(error));
   }, [account]);
 
-  function handleCreateInput(field, e) {
-    setJobs((prev) => ({ ...prev, [field]: e.target.value }));
-  }
+  const handleCreateInput = (field, event) => {
+    const value = event.target.value;
+    if (field === "storeName") {
+      const [storeName, categoryId] = value.split("-cateNo:");
+      const store = storeList.find(
+        (store) =>
+          store.name === storeName && store.categoryId === parseInt(categoryId),
+      );
+      setJobs((prev) => ({
+        ...prev,
+        storeName: storeName,
+        categoryName: store ? store.cateName : "",
+        categoryId: store ? store.categoryId : "",
+      }));
+    } else {
+      setJobs((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  };
 
   function handleSubmitCreateJobs() {
     axios
@@ -109,6 +123,10 @@ export function JobsCreate() {
     });
   }
 
+  const allFieldsFilled = Object.values(jobs).every(
+    (value) => value.length > 0,
+  );
+
   return (
     <Box>
       <Heading>알바공고 생성</Heading>
@@ -116,7 +134,6 @@ export function JobsCreate() {
         <Center w={"30%"}>
           <FormControl>
             <FormLabel>제목</FormLabel>
-
             <Input
               value={jobs.title}
               onChange={(e) => handleCreateInput("title", e)}
@@ -137,7 +154,7 @@ export function JobsCreate() {
               <Input
                 value={jobs.salary}
                 onChange={(e) => handleCreateInput("salary", e)}
-                type={"number"}
+                type={"text"}
                 placeholder={"시급을 입력해주세요"}
               />
             </InputGroup>
@@ -185,28 +202,30 @@ export function JobsCreate() {
                   />
                 </InputGroup>
               </Box>
-              <Box w={"50%"}>
-                <FormLabel>카테고리 선택</FormLabel>
-                <Select
-                  value={jobs.categoryName}
-                  onChange={(e) => handleCreateInput("categoryName", e)}
-                >
-                  {jobs.categoryNames.map((name) => (
-                    <option key={name.index}>{name}</option>
-                  ))}
-                </Select>
-              </Box>
             </Flex>
 
             <FormLabel>가게명</FormLabel>
             <Select
-              value={jobs.storeName}
+              value={`${jobs.storeName}-cateNo:${jobs.categoryId}`}
               onChange={(e) => handleCreateInput("storeName", e)}
             >
-              {jobs.storeNames.map((name) => (
-                <option key={name.index}>{name}</option>
+              {storeList.map((store) => (
+                <option
+                  key={store.id}
+                  value={`${store.name}-cateNo:${store.categoryId}`}
+                >
+                  {store.name}-cateNo:{store.categoryId}
+                </option>
               ))}
             </Select>
+            <Box w={"50%"}>
+              <FormLabel>카테고리 선택</FormLabel>
+              <Input
+                value={jobs.categoryName}
+                readOnly
+                placeholder={"가게명 선택 시 자동선택"}
+              />
+            </Box>
 
             <FormLabel>작성자</FormLabel>
             <Input
@@ -229,14 +248,13 @@ export function JobsCreate() {
                 }}
               ></Input>
               첨부파일 리스트:
-              {fileNameList}
+              <ul>{fileNameList}</ul>
             </Box>
           </FormControl>
         </Center>
       </Flex>
       <Center ml={"10px"}>
         <Button
-          // isDisabled={!allFieldsFilled}
           onClick={handleSubmitCreateJobs}
           colorScheme={"purple"}
           w={"200px"}

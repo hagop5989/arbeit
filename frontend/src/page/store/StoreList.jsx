@@ -1,4 +1,16 @@
-import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Tab,
+  Table,
+  TabList,
+  Tabs,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -38,14 +50,38 @@ export function StoreList() {
   };
 
   return (
-    <Box position="relative" p={4}>
+    <Box display="flex" flexDirection="row">
       <Box
-        ml={300}
-        maxHeight="1000px"
+        position="sticky"
+        top="0"
+        backgroundColor="white"
+        zIndex="1"
+        h="100vh"
+        overflowY="auto"
+      >
+        <Tabs variant="enclosed-colored" orientation="vertical">
+          <TabList ml={"10px"}>
+            <Tab w="200px" h="100px">
+              가게 목록
+            </Tab>
+            <Tab w="200px" h="100px">
+              무언가
+            </Tab>
+            <Tab w="200px" h="100px">
+              뭘하지
+            </Tab>
+          </TabList>
+        </Tabs>
+      </Box>
+
+      <Box
+        flex="1"
+        maxHeight="1300px"
         boxShadow="lg"
         borderRadius="md"
         bg="white"
         p={4}
+        ml="150px"
       >
         <Box fontSize="2xl" fontWeight="bold" mb={4}>
           가게 목록
@@ -71,8 +107,8 @@ export function StoreList() {
                   }}
                   cursor={"pointer"}
                   onClick={() => navigate(`/store/${store.id}`)}
-                  height="4cm" // 각 행의 높이 조절
-                  overflow="hidden" // 내용이 넘칠 경우 숨김 처리
+                  height="4cm"
+                  overflow="hidden"
                 >
                   <Td>{store.id}</Td>
                   <Td>{store.name}</Td>

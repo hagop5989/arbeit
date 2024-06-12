@@ -11,7 +11,7 @@ CREATE TABLE store
 
 
 ALTER TABLE store
-    ADD COLUMN phone VARCHAR(45) AFTER address;
+    ADD COLUMN cate_name VARCHAR(45) REFERENCES category (name) AFTER category_id;
 
 SELECT *
 FROM store;
@@ -56,3 +56,9 @@ CREATE TABLE store_file
     PRIMARY KEY (store_id, name)
 );
 
+ALTER TABLE category
+    MODIFY COLUMN name VARCHAR(45) NOT NULL;
+
+DESC store;
+
+DESC category;

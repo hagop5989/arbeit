@@ -69,9 +69,27 @@ VALUES ('bossStore2', 'bossStore2Contents', 'bossStore2Address', '010-1234-5678'
 select *
 FROM store;
 
+SELECT j.member_id,
+       m.name,
+       c.id,
+       s.category_id,
+#        j.category_id,
+       c.name,
+       s.name,
+       j.store_name
+FROM jobs j
+         JOIN store s ON s.id = j.store_id
+         JOIN category c ON s.category_id = c.id
+         JOIN member m ON j.member_id = m.id
+;
+
+SELECT c.id, c.name, s.name, s.member_id
+FROM category c
+         LEFT JOIN store s ON c.id = s.category_id
+
+WHERE s.name = 'bossStore1'
+;
+
 select *
 FROM category;
 DESC category;
-
-SELECT *
-FROM category;

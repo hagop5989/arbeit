@@ -14,8 +14,10 @@ public class Store {
     private String address;
     private String cate;
     private String phone;
+    private String cateName;
     private Integer memberId;
     private Integer categoryId;
+    private String cateName;
 
     private List<StoreImg> imageList;
 

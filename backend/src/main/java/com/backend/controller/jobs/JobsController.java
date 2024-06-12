@@ -1,6 +1,7 @@
 package com.backend.controller.jobs;
 
 import com.backend.domain.jobs.Jobs;
+import com.backend.domain.store.Store;
 import com.backend.service.jobs.JobsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,7 @@ public class JobsController {
     private final JobsService service;
 
     @GetMapping("insert")
-    public Map<String, Object> findInsertData(Integer memberId) {
-        System.out.println("memberId = " + memberId);
+    public List<Store> findInsertData(Integer memberId) {
         return service.findInsertData(memberId);
     }
 
