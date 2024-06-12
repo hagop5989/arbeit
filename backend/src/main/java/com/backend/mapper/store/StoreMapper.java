@@ -45,7 +45,7 @@ public interface StoreMapper {
 
     @Update("""
                 UPDATE store
-                SET name= #{name}, content= #{content}, address= #{address}, phone= #{phone}, category_id= #{categoryId}
+                SET name= #{name}, content= #{content}, address= #{address}, phone= #{phone}, category_id= #{categoryId}, cate_name= #{cateName}
                 WHERE id = #{id}
             """)
     int update(Store store);

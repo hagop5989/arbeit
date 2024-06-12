@@ -51,14 +51,24 @@ export function StoreEdit() {
   }, [inputAddress]);
 
   useEffect(() => {
-    axios.get(`/api/store/${id}`).then((res) => {
-      setStore(res.data);
-    });
+    axios.get(`/api/store/${id}`).then((res) => setStore(res.data));
   }, [id]);
 
   if (!store) {
     return <div>Loading...</div>;
   }
+
+  const handleCategoryChange = (e) => {
+    const selectedId = e.target.value;
+    const selectedCategory = categories.find(
+      (cate) => cate.id.toString() === selectedId,
+    );
+    setStore({
+      ...store,
+      categoryId: selectedId,
+      cateName: selectedCategory ? selectedCategory.name : "",
+    });
+  };
 
   function handleClickSave() {
     axios
@@ -138,9 +148,7 @@ export function StoreEdit() {
                   <FormLabel>가게 카테고리</FormLabel>
                   <Select
                     value={store.categoryId || ""}
-                    onChange={(e) =>
-                      setStore({ ...store, categoryId: e.target.value })
-                    }
+                    onChange={handleCategoryChange}
                   >
                     <option value="" disabled>
                       카테고리 선택

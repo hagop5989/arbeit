@@ -15,7 +15,6 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DaumPostcode from "react-daum-postcode";
-
 import { useNavigate } from "react-router-dom";
 
 export function StoreRegister() {
@@ -25,7 +24,7 @@ export function StoreRegister() {
   const [phone, setPhone] = useState("");
   const [cateName, setCateName] = useState("");
   const [inputAddress, setInputAddress] = useState();
-  const [categoryId, setCategoryId] = useState("all");
+  const [categoryId, setCategoryId] = useState("");
   const [categories, setCategories] = useState([]);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -47,22 +46,27 @@ export function StoreRegister() {
 
   const handleCategoryChange = (e) => {
     const selectedId = e.target.value;
-    const selectedCategory = categories.find((cate) => cate.id === selectedId);
+    const selectedCategory = categories.find(
+      (cate) => cate.id.toString() === selectedId,
+    );
     setCategoryId(selectedId);
     setCateName(selectedCategory ? selectedCategory.name : "");
   };
 
   function handleSaveClick() {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("content", content);
+    formData.append("address", address);
+    formData.append("categoryId", categoryId);
+    formData.append("phone", phone);
+    formData.append("cateName", cateName);
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+
     axios
-      .postForm("/api/store/add", {
-        name: name,
-        content: content,
-        address: address,
-        categoryId: categoryId,
-        files: files,
-        phone: phone,
-        cateName: cateName,
-      })
+      .post("/api/store/add", formData)
       .then((response) => {
         toast({
           title: "가게 등록 성공",
@@ -101,7 +105,7 @@ export function StoreRegister() {
 
   const fileNameList = [];
   for (let i = 0; i < files.length; i++) {
-    fileNameList.push(<li>{files[i].name}</li>);
+    fileNameList.push(<li key={i}>{files[i].name}</li>);
   }
 
   const onCompletePost = (data) => {
