@@ -8,16 +8,21 @@ import {
   Heading,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function ResumeEdit() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate();
+  const toast = useToast();
+
   const account = useContext(LoginContext);
 
   useEffect(() => {
@@ -37,7 +42,14 @@ export function ResumeEdit() {
   function handleSaveBtn() {
     axios
       .put(`/api/resume/${id}`, resume)
-      .then()
+      .then((res) => {
+        toast({
+          status: "success",
+          description: "수정 완료",
+          position: "top",
+        });
+        navigate(`/resume/${id}`);
+      })
       .catch((err) => {
         setErrors(err.response.data);
       });

@@ -20,9 +20,16 @@ export function ResumeView() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/resume/${id}`).then((res) => {
-      setResume(res.data);
-    });
+    axios
+      .get(`/api/resume/${id}`)
+      .then((res) => {
+        setResume(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          navigate("/resume/list");
+        }
+      });
     if (resume.memberId !== undefined) {
       getProfilePicture();
     }

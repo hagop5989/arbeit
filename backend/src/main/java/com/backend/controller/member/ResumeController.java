@@ -50,10 +50,19 @@ public class ResumeController {
 
     @GetMapping("/resume/{id}")
     @PreAuthorize("isAuthenticated()")
-    public Resume view(@PathVariable("id") Integer id,
-                       Authentication authentication) {
+    public ResponseEntity view(@PathVariable("id") Integer id,
+                               Authentication authentication) {
+        Resume resume = resumeService.findById(id);
 
-        return resumeService.findById(id);
+        if (resume == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!resumeService.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok().body(resume);
     }
 
     @PutMapping("/resume/{id}")
@@ -82,6 +91,7 @@ public class ResumeController {
         if (!resumeService.hasAccess(ids, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         resumeService.delete(ids);
         return ResponseEntity.ok().build();
     }

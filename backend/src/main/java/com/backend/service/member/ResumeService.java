@@ -4,6 +4,7 @@ import com.backend.domain.member.resume.Resume;
 import com.backend.domain.member.resume.ResumeForm;
 import com.backend.mapper.member.ResumeMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
+@Slf4j
 public class ResumeService {
     private final ResumeMapper mapper;
 
@@ -46,6 +48,7 @@ public class ResumeService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
+
         Resume dbResume = mapper.selectById(id);
         String dbMemberId = String.valueOf(dbResume.getMemberId());
         String authId = authentication.getName();
