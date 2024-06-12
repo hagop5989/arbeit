@@ -24,10 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ResumeController {
     private final ResumeService resumeService;
 
-    @PostMapping("/resume/write")
+    @PostMapping("/resume/register")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
-    public ResponseEntity insert(@Validated @RequestBody Resume resume, BindingResult bindingResult,
-                                 Authentication authentication) {
+    public ResponseEntity register(@Validated @RequestBody Resume resume, BindingResult bindingResult,
+                                   Authentication authentication) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
@@ -37,7 +37,7 @@ public class ResumeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        resumeService.insert(resume, authentication);
+        resumeService.register(resume, authentication);
         return ResponseEntity.ok().build();
     }
 

@@ -16,7 +16,7 @@ import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 
-export function ResumeWrite() {
+export function ResumeRegister() {
   const [member, setMember] = useState(null);
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
@@ -46,7 +46,7 @@ export function ResumeWrite() {
 
   function handleWriteBtn() {
     axios
-      .post("/api/resume/write", resume)
+      .post("/api/resume/register", resume)
       .then(() => {
         toast({
           status: "success",

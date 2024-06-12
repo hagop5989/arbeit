@@ -15,7 +15,7 @@ import java.util.List;
 public class ResumeService {
     private final ResumeMapper mapper;
 
-    public void insert(Resume resume, Authentication authentication) {
+    public void register(Resume resume, Authentication authentication) {
         resume.setMemberId(Integer.valueOf(authentication.getName()));
         mapper.insert(resume);
     }
