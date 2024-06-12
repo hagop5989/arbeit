@@ -26,9 +26,21 @@ export function ResumeEdit() {
   const account = useContext(LoginContext);
 
   useEffect(() => {
-    axios.get(`/api/resume/${id}`).then((res) => {
-      setResume(res.data);
-    });
+    axios
+      .get(`/api/resume/${id}`)
+      .then((res) => {
+        setResume(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404 || err.response.status === 403) {
+          toast({
+            status: "warning",
+            description: "접근 권한이 없습니다.",
+            position: "top",
+          });
+          navigate("/resume/list");
+        }
+      });
   }, []);
 
   function handleRookieBtn(prop) {
@@ -42,7 +54,7 @@ export function ResumeEdit() {
   function handleSaveBtn() {
     axios
       .put(`/api/resume/${id}`, resume)
-      .then((res) => {
+      .then(() => {
         toast({
           status: "success",
           description: "수정 완료",

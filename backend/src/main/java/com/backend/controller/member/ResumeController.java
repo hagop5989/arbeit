@@ -76,7 +76,6 @@ public class ResumeController {
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
-            log.info("errors={}", errors);
             return ResponseEntity.badRequest().body(errors);
         }
 
