@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Heading,
   Table,
@@ -12,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPen } from "@fortawesome/free-solid-svg-icons";
+import { faComments, faUserPen } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -50,7 +51,15 @@ export function BoardList() {
                 key={board.id}
               >
                 <Td>{board.id}</Td>
-                <Td>{board.title}</Td>
+                <Td>
+                  {board.title}
+                  {board.numberOfComments > 0 && (
+                    <Badge>
+                      <FontAwesomeIcon icon={faComments} />
+                      {board.numberOfComments}
+                    </Badge>
+                  )}
+                </Td>
                 <Td>{board.name}</Td>
                 <Td>{board.inserted}</Td>
               </Tr>
