@@ -1,6 +1,7 @@
 package com.backend.mapper.member;
 
 import com.backend.domain.member.resume.Resume;
+import com.backend.domain.member.resume.ResumeForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface ResumeMapper {
             VALUES (#{memberId}, #{title}, #{content}, #{isRookie})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    void insert(Resume resume);
+    void insert(ResumeForm form);
 
     @Select("""
             SELECT id, title, inserted FROM resume
@@ -53,10 +54,11 @@ public interface ResumeMapper {
     @Update("""
             UPDATE resume
             SET
-            title = #{title},
-            content = #{content}
+            title=#{title},
+            content=#{content},
+            is_rookie=#{isRookie}
             WHERE id = #{id}
             """)
-    int update(Resume resume);
+    int update(ResumeForm form);
 
 }

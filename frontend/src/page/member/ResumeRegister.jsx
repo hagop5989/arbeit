@@ -16,11 +16,11 @@ import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 
-export function ResumeWrite() {
+export function ResumeRegister() {
   const [member, setMember] = useState(null);
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
-  const [isRookie, setIsRookie] = useState(1);
+  const [isRookie, setIsRookie] = useState(0);
   const account = useContext(LoginContext);
   const navigate = useNavigate();
   const toast = useToast();
@@ -28,6 +28,7 @@ export function ResumeWrite() {
   useEffect(() => {
     if (account.id !== "") {
       axios.get(`/api/member/${account.id}`).then((res) => setMember(res.data));
+      setResume({ ...resume, isRookie });
     }
   }, [account.id]);
 
@@ -46,7 +47,7 @@ export function ResumeWrite() {
 
   function handleWriteBtn() {
     axios
-      .post("/api/resume/write", resume)
+      .post("/api/resume/register", resume)
       .then(() => {
         toast({
           status: "success",

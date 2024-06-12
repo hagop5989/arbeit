@@ -10,8 +10,6 @@ CREATE TABLE resume
     inserted  DATETIME      NOT NULL DEFAULT NOW()
 );
 
-DROP TABLE resume_photo;
-# 이력서 사진
 CREATE TABLE resume_photo
 (
     resume_id INT          NOT NULL REFERENCES resume (id),

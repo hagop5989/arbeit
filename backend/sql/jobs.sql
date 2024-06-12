@@ -1,5 +1,5 @@
 DROP TABLE jobs;
-# 최신 DB 기준
+# 최신 DB 기준 240612
 create table jobs
 (
     id                 int auto_increment primary key,
@@ -25,3 +25,5 @@ create table jobs
     constraint jobs_ibfk_3
         foreign key (category_id) references category (id)
 );
+
+
