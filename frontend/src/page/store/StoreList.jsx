@@ -1,4 +1,16 @@
-import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Tab,
+  Table,
+  TabList,
+  Tabs,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -39,6 +51,19 @@ export function StoreList() {
 
   return (
     <Box position="relative" p={4}>
+      <Tabs variant="enclosed-colored" orientation="vertical">
+        <TabList>
+          <Tab w={"130px"} h={"50px"}>
+            시급
+          </Tab>
+          <Tab w={"130px"} h={"50px"}>
+            일급
+          </Tab>
+          <Tab w={"130px"} h={"50px"}>
+            일급
+          </Tab>
+        </TabList>
+      </Tabs>
       <Box
         ml={300}
         maxHeight="1000px"

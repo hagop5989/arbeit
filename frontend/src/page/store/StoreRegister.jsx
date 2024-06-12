@@ -23,6 +23,7 @@ export function StoreRegister() {
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [cateName, setCateName] = useState("");
   const [inputAddress, setInputAddress] = useState();
   const [categoryId, setCategoryId] = useState("all");
   const [categories, setCategories] = useState([]);
@@ -44,6 +45,13 @@ export function StoreRegister() {
     }
   }, [inputAddress]);
 
+  const handleCategoryChange = (e) => {
+    const selectedId = e.target.value;
+    const selectedCategory = categories.find((cate) => cate.id === selectedId);
+    setCategoryId(selectedId);
+    setCateName(selectedCategory ? selectedCategory.name : "");
+  };
+
   function handleSaveClick() {
     axios
       .postForm("/api/store/add", {
@@ -53,6 +61,7 @@ export function StoreRegister() {
         categoryId: categoryId,
         files: files,
         phone: phone,
+        cateName: cateName,
       })
       .then((response) => {
         toast({
@@ -169,7 +178,7 @@ export function StoreRegister() {
           <FormLabel>가게 카테고리</FormLabel>
           <Select
             value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+            onChange={handleCategoryChange}
             placeholder="카테고리 선택"
           >
             {categories.map((cate) => (
