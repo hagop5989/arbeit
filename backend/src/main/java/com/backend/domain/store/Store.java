@@ -19,5 +19,5 @@ public class Store {
     private Integer categoryId;
 
     private List<StoreImg> imageList;
-
+    private List<StoreFile> fileList;
 }

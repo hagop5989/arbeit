@@ -36,21 +36,16 @@ public class JobsService {
     String srcPrefix;
 
     public void insert(Jobs jobs, MultipartFile[] files) throws IOException {
-        // 카테고리 id 찾고 jobs에 설정
-        Integer categoryId = jobsMapper.selectCategoryByCategoryName(jobs.getCategoryName());
-        jobs.setCategoryId(categoryId);
-
-        // storeName 기반으로 store id 할당
-        Store dbStore = jobsMapper.selectStoreByStoreName(jobs.getStoreName());
-        jobs.setStoreId(dbStore.getId());
 
         // db에 jobs 입력
         jobsMapper.insert(jobs);
+
+        // 파일 입력
         if (files != null) {
             for (MultipartFile file : files) {
                 jobsMapper.insertFileName(jobs.getId(), file.getOriginalFilename());
                 // 실제 파일 저장 (s3)
-                String key = STR."arbeit/\{jobs.getId()}/\{file.getOriginalFilename()}";
+                String key = STR."arbeit/jobs/\{jobs.getId()}/\{file.getOriginalFilename()}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -72,7 +67,7 @@ public class JobsService {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
                 // s3의 파일 삭제
-                String key = STR."arbeit/\{jobs.getId()}/\{fileName}";
+                String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -93,7 +88,7 @@ public class JobsService {
                     jobsMapper.insertFileName(jobs.getId(), fileName);
                 }
                 // s3 에 쓰기
-                String key = STR."arbeit/\{jobs.getId()}/\{fileName}";
+                String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -119,7 +114,7 @@ public class JobsService {
         // jobsId로 파일리스트 찾기
         List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
         List<JobsFile> files = fileNames.stream()
-                .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/\{jobsId}/\{fileName}"))
+                .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/jobs/\{jobsId}/\{fileName}"))
                 .toList();
         jobs.setFileList(files);
 

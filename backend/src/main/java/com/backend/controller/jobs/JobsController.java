@@ -38,7 +38,7 @@ public class JobsController {
     }
 
     @GetMapping("{id}")
-    public Map<String, Object> selectByPostId(@PathVariable Integer id) {
+    public Map<String, Object> selectByJobsId(@PathVariable Integer id) {
         return service.selectByJobsId(id);
     }
 
