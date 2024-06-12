@@ -90,16 +90,6 @@ FROM category c
 WHERE s.name = 'bossStore1'
 ;
 
-
-
 select *
 FROM category;
 DESC category;
-
-SELECT *
-FROM jobs j;
-
-SELECT j.*, s.category_id, s.cate_name
-FROM jobs j
-         JOIN store s ON s.id = j.store_id
-WHERE j.id = 31;

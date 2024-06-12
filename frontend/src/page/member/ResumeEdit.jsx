@@ -8,22 +8,39 @@ import {
   Heading,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function ResumeEdit() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate();
+  const toast = useToast();
+
   const account = useContext(LoginContext);
 
   useEffect(() => {
-    axios.get(`/api/resume/${id}`).then((res) => {
-      setResume(res.data);
-    });
+    axios
+      .get(`/api/resume/${id}`)
+      .then((res) => {
+        setResume(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404 || err.response.status === 403) {
+          toast({
+            status: "warning",
+            description: "접근 권한이 없습니다.",
+            position: "top",
+          });
+          navigate("/resume/list");
+        }
+      });
   }, []);
 
   function handleRookieBtn(prop) {
@@ -36,8 +53,15 @@ export function ResumeEdit() {
 
   function handleSaveBtn() {
     axios
-      .put(`/api/resume/${id}`)
-      .then()
+      .put(`/api/resume/${id}`, resume)
+      .then(() => {
+        toast({
+          status: "success",
+          description: "수정 완료",
+          position: "top",
+        });
+        navigate(`/resume/${id}`);
+      })
       .catch((err) => {
         setErrors(err.response.data);
       });

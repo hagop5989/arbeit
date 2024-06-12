@@ -20,6 +20,7 @@ export function ResumeList() {
   const account = useContext(LoginContext);
   const [resumeList, setResumeList] = useState([]);
   const [check, setCheck] = useState([]);
+  const [refresh, setRefresh] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,11 +29,23 @@ export function ResumeList() {
         setResumeList(res.data);
       });
     }
-  }, [account]);
+  }, [account.id, refresh]);
 
-  function handleCheckChange(resumeId) {
-    setCheck({ ...check, resumeId });
-    console.log(check);
+  const handleCheckBoxChange = (e) => {
+    const value = e.target.value;
+
+    if (e.target.checked) {
+      setCheck([...check, value]);
+    } else {
+      setCheck(check.filter((item) => item !== value));
+    }
+  };
+
+  function handleRemoveBtn() {
+    axios.post("/api/resume/delete", check).then(() => {
+      setRefresh(check);
+      setCheck([]);
+    });
   }
 
   return (
@@ -42,7 +55,7 @@ export function ResumeList() {
           <Heading>이력서 목록</Heading>
         </Box>
         <Button
-          onClick={() => navigate("/resume/write")}
+          onClick={() => navigate("/resume/register")}
           colorScheme={"green"}
           w={120}
           my={3}
@@ -63,7 +76,10 @@ export function ResumeList() {
               {resumeList.map((resume) => (
                 <Tr key={resume.id}>
                   <Td>
-                    <Checkbox onChange={() => handleCheckChange(resume.id)} />
+                    <Checkbox
+                      value={resume.id}
+                      onChange={handleCheckBoxChange}
+                    />
                   </Td>
                   <Td
                     cursor={"pointer"}
@@ -83,7 +99,9 @@ export function ResumeList() {
               ))}
             </Tbody>
           </Table>
-          <Button colorScheme={"red"}>삭제</Button>
+          <Button colorScheme={"red"} onClick={handleRemoveBtn}>
+            삭제
+          </Button>
         </Box>
       </Box>
     </Center>
