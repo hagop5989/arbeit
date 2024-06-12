@@ -26,3 +26,6 @@ CREATE TABLE authority
 SELECT *
 FROM member;
 DESC member;
+
+SELECT *
+FROM authority;
