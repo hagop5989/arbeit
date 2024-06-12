@@ -17,6 +17,9 @@ public class Store {
     private String cateName;
     private Integer memberId;
     private Integer categoryId;
+    private Double x;
+    private Double y;
+    
 
     private List<StoreFile> fileList;
 }

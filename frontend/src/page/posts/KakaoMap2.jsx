@@ -1,20 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Input, useDisclosure } from "@chakra-ui/react";
 
 const { kakao } = window;
 
-function KakaoMap2({ onSubmit }) {
+function KakaoMap2({ onSubmit, mName }) {
   const [search, setSearch] = useState("");
   const [markerName, setMarkerName] = useState("검색결과");
   const [x, setX] = useState(126.945190775648); // 기본 좌표 (학원)
@@ -82,6 +71,7 @@ function KakaoMap2({ onSubmit }) {
 
     script.onload = () => {
       kakao.maps.load(() => {
+        setMarkerName(mName);
         reloadMap(y, x, markerName);
       });
     };
@@ -111,21 +101,6 @@ function KakaoMap2({ onSubmit }) {
       <Button colorScheme={"blue"} onClick={handleSubmitMap}>
         주소 저장하기
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>가게명 입력</ModalHeader>
-          <ModalBody>
-            <Input
-              value={markerName}
-              onChange={(e) => {
-                setMarkerName(e.target.value);
-              }}
-            />
-            <Button onClick={handleClose}>설정</Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </>
   );
 }

@@ -39,9 +39,7 @@ public class StoreService {
     public void add(Store store, MultipartFile[] files, Authentication authentication) throws IOException {
         store.setMemberId(Integer.valueOf(authentication.getName()));
         mapper.insert(store);
-        System.out.println("저장 store = " + store);
         if (files != null) {
-            System.out.println("저장 files = " + files);
             for (MultipartFile file : files) {
                 mapper.insertFileName(store.getId(), file.getOriginalFilename());
                 // 실제 파일 저장 (s3)

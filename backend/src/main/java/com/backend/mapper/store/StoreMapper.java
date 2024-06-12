@@ -9,8 +9,8 @@ import java.util.List;
 public interface StoreMapper {
 
     @Insert("""
-                INSERT INTO store (name, content, address, phone, category_id, member_id, cate_name)
-                VALUES (#{name}, #{content}, #{address}, #{phone}, #{categoryId}, #{memberId}, #{cateName})
+                INSERT INTO store (name, content, address, phone, category_id, member_id, cate_name,x,y)
+                VALUES (#{name}, #{content}, #{address}, #{phone}, #{categoryId}, #{memberId}, #{cateName},#{x},#{y})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     public int insert(Store store);
@@ -37,7 +37,9 @@ public interface StoreMapper {
                    c.name cate,
                    s.member_id,
                    c.icon,
-                   s.category_id
+                   s.category_id,
+                   s.x
+                  ,s.y
             FROM store s JOIN member m ON s.member_id = m.id JOIN category c ON s.category_id = c.id
             WHERE s.id = #{id}
             """)

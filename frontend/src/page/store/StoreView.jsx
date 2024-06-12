@@ -32,6 +32,7 @@ import {
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { KakaoMap1 } from "../posts/KakaoMap1.jsx";
 
 export function StoreView() {
   const { id } = useParams();
@@ -92,10 +93,6 @@ export function StoreView() {
     briefcase: faBriefcase,
     industry: faIndustry,
     ellipsis: faEllipsisH,
-  };
-
-  const handleImageClick = (src) => {
-    window.open(src, "_blank");
   };
 
   return (
@@ -162,7 +159,7 @@ export function StoreView() {
         </Box>
         <Box>
           {store.fileList.map((file) => (
-            <Box key={file.index}>
+            <Box key={file.name}>
               <Image w={"100%"} h={"100%"} src={file.src} />
             </Box>
           ))}
@@ -187,6 +184,9 @@ export function StoreView() {
         <FormControl>
           <FormLabel>가게 별점</FormLabel>
         </FormControl>
+      </Box>
+      <Box>
+        <KakaoMap1 x={store.y} y={store.x} markerName={store.name} />
       </Box>
       <Flex justifyContent="space-between">
         <Button
