@@ -5,6 +5,7 @@ import com.backend.mapper.member.ProfilePictureMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,5 +82,9 @@ public class ProfilePictureService {
 
         s3Client.putObject(objectRequest,
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+    }
+
+    public boolean hasAccess(Integer memberId, Authentication authentication) {
+        return String.valueOf(memberId).equals(authentication.getName());
     }
 }

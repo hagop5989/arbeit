@@ -11,9 +11,10 @@ import {
   Spinner,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
@@ -24,6 +25,8 @@ export function MemberInfo() {
   const fileInputRef = useRef({});
   const navigate = useNavigate();
   const toast = useToast();
+
+  const account = useContext(LoginContext);
 
   function getProfilePicture() {
     axios
@@ -112,22 +115,26 @@ export function MemberInfo() {
                     : profileSrc
                 }
               />
-              <Center
-                boxSize={"50px"}
-                bgColor="gray.100"
-                borderRadius={100}
-                mt={"-30px"}
-                cursor="pointer"
-                onClick={handleProfilePictureBtn}
-              >
-                <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
-              </Center>
-              <Input
-                type={"file"}
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
+              {account.hasAccess(id) && (
+                <Box>
+                  <Center
+                    boxSize={"50px"}
+                    bgColor="gray.100"
+                    borderRadius={100}
+                    mt={"-30px"}
+                    cursor="pointer"
+                    onClick={handleProfilePictureBtn}
+                  >
+                    <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
+                  </Center>
+                  <Input
+                    type={"file"}
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              )}
             </FormControl>
             {/* 회원 정보 */}
             <FormControl>
@@ -143,12 +150,14 @@ export function MemberInfo() {
               <Input value={member.address} isReadOnly />
               <FormLabel>전화번호</FormLabel>
               <Input value={member.phone} isReadOnly />
-              <Flex>
-                <Button onClick={() => navigate(`/member/${id}/edit`)}>
-                  회원 수정
-                </Button>
-                <Button onClick={handleRemoveBtn}>회원 삭제</Button>
-              </Flex>
+              {account.hasAccess(id) && (
+                <Flex>
+                  <Button onClick={() => navigate(`/member/${id}/edit`)}>
+                    회원 수정
+                  </Button>
+                  <Button onClick={handleRemoveBtn}>회원 삭제</Button>
+                </Flex>
+              )}
             </FormControl>
           </Box>
         </Box>

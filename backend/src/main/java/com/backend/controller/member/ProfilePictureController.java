@@ -3,6 +3,7 @@ package com.backend.controller.member;
 import com.backend.service.member.ProfilePictureService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,13 @@ public class ProfilePictureController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestParam("files[]") MultipartFile files, @RequestParam("id") Integer memberId,
                                    Authentication authentication) throws IOException {
+
+        if (!service.hasAccess(memberId, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         service.register(files, memberId);
-        return null;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{memberId}")

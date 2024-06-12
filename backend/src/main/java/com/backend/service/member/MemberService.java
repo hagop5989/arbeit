@@ -114,6 +114,10 @@ public class MemberService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
+        String auth = mapper.selectAuthById(Integer.valueOf(authentication.getName()));
+        if (auth.equals("ADMIN")) {
+            return true;
+        }
         Integer loginId = Integer.valueOf(authentication.getName());
         if (!id.equals(loginId)) {
             return false;
