@@ -45,6 +45,7 @@ public class CommentController {
         return service.list(boardId);
     }
 
+
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity remove(@PathVariable Integer id,
@@ -57,7 +58,7 @@ public class CommentController {
     }
 
 
-    @PutMapping("edit/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated @RequestBody CommentEditForm form, BindingResult bindingResult,
                                @PathVariable Integer id,
