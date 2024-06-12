@@ -6,14 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class BoardEditForm {
+@NoArgsConstructor
+public class CommentEditForm {
+    private int id;
 
     @NotBlank
-    private String title;
-    @NotBlank
-    private String content;
-    private String files;
+    private String comment;
 
 }
