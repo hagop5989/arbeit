@@ -15,9 +15,15 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+import KakaoMap2 from "../posts/KakaoMap2.jsx";
+
 import DaumPostcodeEmbed from "react-daum-postcode";
 
+
 export function StoreRegister() {
+  const [kakaoMapData, setKakaoMapData] = useState({});
+
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");
@@ -63,6 +69,7 @@ export function StoreRegister() {
         phone,
         cateName,
         files,
+        ...kakaoMapData,
       })
       .then((response) => {
         toast({
@@ -90,6 +97,16 @@ export function StoreRegister() {
         });
       });
   }
+
+  const handleMapSubmit = (x, y, name) => {
+    setKakaoMapData((prev) => ({
+      ...prev,
+      x: x,
+      y: y,
+      markerName: name,
+    }));
+    console.log(kakaoMapData);
+  };
 
   let disableSaveButton = false;
   if (
@@ -190,7 +207,7 @@ export function StoreRegister() {
           </Select>
         </FormControl>
       </Box>
-
+      <KakaoMap2 onSubmit={handleMapSubmit} mName={name} />
       <Button
         isDisabled={disableSaveButton}
         colorScheme="blue"

@@ -27,3 +27,11 @@ create table jobs
 );
 
 
+SELECT *
+FROM store;
+
+
+
+
+
+
