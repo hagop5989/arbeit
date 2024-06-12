@@ -1,37 +1,16 @@
 use arbeit;
-
-
-use arbeit;
-
-DROP TABLE
-    board;
-
-CREATE TABLE board
+create table board
 (
-    id        INT PRIMARY KEY AUTO_INCREMENT,
-    member_id INT REFERENCES member (id),
-    title     VARCHAR(100),
-    content   VARCHAR(3000),
-    files     VARCHAR(300),
-    inserted  DATETIME NOT NULL DEFAULT NOW()
+    id        int auto_increment
+        primary key,
+    member_id int                                  null,
+    title     varchar(100)                         null,
+    content   varchar(3000)                        null,
+    files     varchar(300)                         null,
+    inserted  datetime default current_timestamp() not null,
+    constraint board_ibfk_1
+        foreign key (member_id) references member (id)
 );
-
-SELECT *
-FROM board;
-
-USE arbeit;
-DESC board;
-
-# board_like 만들기
-CREATE TABLE board_like
-(
-    board_id  INT NOT NULL REFERENCES board (id),
-    member_id INT NOT NULL REFERENCES member (id),
-    PRIMARY KEY (board_id, member_id)
-);
-
-SELECT *
-FROM board_like;
 
 
 

@@ -14,9 +14,12 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
+
 import KakaoMap2 from "../posts/KakaoMap2.jsx";
+
+import DaumPostcodeEmbed from "react-daum-postcode";
+
 
 export function StoreRegister() {
   const [kakaoMapData, setKakaoMapData] = useState({});
@@ -158,7 +161,7 @@ export function StoreRegister() {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <DaumPostcode onComplete={onCompletePost} height="100%" />
+              <DaumPostcodeEmbed onComplete={onCompletePost} height="100%" />
             </ModalContent>
           </Modal>
         </FormControl>

@@ -31,7 +31,6 @@ import {
 } from "@chakra-ui/react";
 import { faPhone, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import DaumPostcode from "react-daum-postcode";
 
 export function StoreEdit() {
   const { id } = useParams();
