@@ -9,18 +9,3 @@ CREATE TABLE resume
     is_rookie BOOLEAN       NOT NULL,
     inserted  DATETIME      NOT NULL DEFAULT NOW()
 );
-
-CREATE TABLE resume_photo
-(
-    resume_id INT          NOT NULL REFERENCES resume (id),
-    id_photo  VARCHAR(500) NOT NULL,
-    PRIMARY KEY (resume_id)
-);
-
-SELECT *
-FROM resume;
-DESC resume;
-
-ALTER TABLE resume
-    MODIFY COLUMN is_rookie BOOLEAN NOT NULL;
-
