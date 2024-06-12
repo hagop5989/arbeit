@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -93,6 +94,10 @@ export function StoreView() {
     ellipsis: faEllipsisH,
   };
 
+  const handleImageClick = (src) => {
+    window.open(src, "_blank");
+  };
+
   return (
     <Box
       p={8}
@@ -154,6 +159,13 @@ export function StoreView() {
           color="gray.400"
         >
           사진
+        </Box>
+        <Box>
+          {store.fileList.map((file) => (
+            <Box key={file.index}>
+              <Image w={"100%"} h={"100%"} src={file.src} />
+            </Box>
+          ))}
         </Box>
       </Flex>
       <Box mb={6}>

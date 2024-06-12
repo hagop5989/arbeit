@@ -2,12 +2,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
+  Badge,
   Box,
   Button,
+  Card,
+  CardBody,
+  CardHeader,
   Flex,
   FormControl,
   FormLabel,
   Heading,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -16,18 +21,26 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Stack,
+  StackDivider,
+  Switch,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faPhone, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DaumPostcode from "react-daum-postcode";
 
 export function StoreEdit() {
   const { id } = useParams();
   const [store, setStore] = useState(null);
   const [categories, setCategories] = useState([]);
   const [inputAddress, setInputAddress] = useState("");
+  const [removeFileList, setRemoveFileList] = useState([]);
+  const [addFileList, setAddFileList] = useState([]);
+  const [fileList, setFileList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -50,7 +63,10 @@ export function StoreEdit() {
   }, [inputAddress]);
 
   useEffect(() => {
-    axios.get(`/api/store/${id}`).then((res) => setStore(res.data));
+    axios.get(`/api/store/${id}`).then((res) => {
+      setFileList(res.data.fileList);
+      setStore(res.data);
+    });
   }, [id]);
 
   if (!store) {
@@ -70,12 +86,10 @@ export function StoreEdit() {
   };
 
   function handleClickSave() {
+    const copyStore = { ...store };
+    delete copyStore.fileList;
     axios
-      .put("/api/store/edit", store, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      .putForm("/api/store/edit", { ...copyStore, removeFileList, addFileList })
       .then(() => {
         toast({
           status: "success",
@@ -102,6 +116,34 @@ export function StoreEdit() {
     setInputAddress(data.address);
     DonClose();
   };
+
+  const fileNameList = [];
+  for (let addFile of addFileList) {
+    // 이미 있는 파일과 중복된 파일명인지?
+    let duplicate = false;
+    for (let file of fileList) {
+      if (file.name === addFile.name) {
+        duplicate = true;
+        break;
+      }
+    }
+    fileNameList.push(
+      <Flex key={addFile.name}>
+        <Text fontSize={"md"} mr={3}>
+          {addFile.name}
+        </Text>
+        <Box>{duplicate && <Badge colorScheme="red">override</Badge>}</Box>
+      </Flex>,
+    );
+  }
+
+  function handleRemoveSwitchChange(name, checked) {
+    if (checked) {
+      setRemoveFileList([...removeFileList, name]);
+    } else {
+      setRemoveFileList(removeFileList.filter((item) => item !== name));
+    }
+  }
 
   return (
     <Box>
@@ -175,7 +217,62 @@ export function StoreEdit() {
           >
             사진
           </Box>
+
+          <Box>
+            {store.fileList &&
+              fileList.map((file) => (
+                <Card m={3} key={file.name}>
+                  <CardBody w={"100%"} h={"100%"} alignItems="center">
+                    <Box>
+                      <Flex>
+                        <FontAwesomeIcon color="red" icon={faTrashCan} />
+                        <Switch
+                          colorScheme={"red"}
+                          onChange={(e) =>
+                            handleRemoveSwitchChange(
+                              file.name,
+                              e.target.checked,
+                            )
+                          }
+                        />
+                      </Flex>
+                    </Box>
+                    <Image
+                      cursor="pointer"
+                      w={"100%"}
+                      h={"100%"}
+                      src={file.src}
+                      sx={
+                        removeFileList.includes(file.name)
+                          ? { filter: "blur(8px)" }
+                          : {}
+                      }
+                    />
+                  </CardBody>
+                </Card>
+              ))}
+          </Box>
         </Flex>
+        <Input
+          multiple
+          type="file"
+          accept="image/*"
+          onChange={(e) => setAddFileList(e.target.files)}
+        />
+        {fileNameList.length > 0 && (
+          <Box mb={7}>
+            <Card>
+              <CardHeader>
+                <Heading size="md">추가 선택된 파일 목록</Heading>
+              </CardHeader>
+              <CardBody>
+                <Stack divider={<StackDivider />} spacing={4}>
+                  {fileNameList}
+                </Stack>
+              </CardBody>
+            </Card>
+          </Box>
+        )}
         <Box mb={7}>
           <FormControl>
             <FormLabel>가게 주소</FormLabel>

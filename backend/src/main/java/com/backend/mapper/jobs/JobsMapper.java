@@ -132,17 +132,4 @@ public interface JobsMapper {
     List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
 
 
-    @Select("""
-            SELECT id FROM category
-            WHERE name = #{categoryName}
-            """)
-    Integer selectCategoryByCategoryName(String categoryName);
-
-
-    @Select("""
-            SELECT * FROM store
-            WHERE name = #{storeName}
-            """)
-    Store selectStoreByStoreName(String storeName);
-
 }

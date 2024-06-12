@@ -1,105 +1,27 @@
 DROP TABLE jobs;
 # 최신 DB 기준
-CREATE TABLE jobs
+create table jobs
 (
-    id                 INT AUTO_INCREMENT PRIMARY KEY,
-    member_id          INT           NOT NULL REFERENCES member (id),
-    store_id           INT           NOT NULL REFERENCES store (id),
-    category_id        INT           NOT NULL REFERENCES category (id),
-    title              VARCHAR(100)  NOT NULL,
-    content            VARCHAR(3000) NOT NULL,
-    salary             INT           NOT NULL,
-    deadline           DATETIME      NOT NULL,
-    recruitment_number INT           NOT NULL,
-    store_name         VARCHAR(45)   NOT NULL,
-    inserted           DATETIME      NOT NULL DEFAULT NOW()
+    id                 int auto_increment primary key,
+    member_id          int                                  not null,
+    store_id           int                                  not null,
+    category_id        int                                  not null,
+    title              varchar(100)                         not null,
+    content            varchar(3000)                        not null,
+    salary             int                                  not null,
+    deadline           datetime                             not null,
+    recruitment_number int                                  not null,
+    store_name         varchar(45)                          not null,
+    inserted           datetime default current_timestamp() not null,
+    start_time         time                                 not null,
+    end_time           time                                 not null,
+    marker_name        varchar(30)                          not null,
+    y                  double                               not null,
+    x                  double                               not null,
+    constraint jobs_ibfk_1
+        foreign key (member_id) references member (id),
+    constraint jobs_ibfk_2
+        foreign key (store_id) references store (id),
+    constraint jobs_ibfk_3
+        foreign key (category_id) references category (id)
 );
-
-DESC jobs;
-
-SELECT *
-FROM jobs;
-
-
-# 게시글 여러개 입력.
-INSERT INTO jobs
-    (title, content, store_name, store_id, boss_id)
-SELECT title, content, store_name, store_id, boss_id
-FROM jobs;
-
-
-# 변경
-ALTER TABLE jobs
-    ADD CONSTRAINT fk_member
-        FOREIGN KEY (member_id)
-            REFERENCES member (id);
-
-SELECT *
-FROM category;
-SELECT *
-FROM store;
-SELECT *
-FROM jobs;
-
-ALTER TABLE jobs
-    ADD start_time TIME NOT NULL;
-ALTER TABLE jobs
-    ADD end_time TIME NOT NULL;
-ALTER TABLE jobs
-    ADD x DOUBLE NOT NULL;
-ALTER TABLE jobs
-    ADD y DOUBLE NOT NULL;
-ALTER TABLE jobs
-    ADD marker_name VARCHAR(30) NOT NULL;
-
-# 삽입
-INSERT INTO jobs
-(member_id, store_id, category_id, title, content,
- salary, deadline, recruitment_number, store_name)
-VALUES (28, 8, 2, '테스트중', '테스트용 내용입니다. 테스트용 내용입니다. 테스트용 내용입니다.', '9500', '2024-06-10 09:00:00', '10', '배달의민족');
-
-INSERT INTO store
-    (name, content, address, phone, member_id, category_id)
-VALUES ('bossStore1', 'bossStore1Contents', 'bossStore1Address', '010-1234-5678', 28, 1);
-
-INSERT INTO store
-    (name, content, address, phone, member_id, category_id)
-VALUES ('bossStore2', 'bossStore2Contents', 'bossStore2Address', '010-1234-5678', 28, 2);
-
-select *
-FROM store;
-
-SELECT j.member_id,
-       m.name,
-       c.id,
-       s.category_id,
-#        j.category_id,
-       c.name,
-       s.name,
-       j.store_name
-FROM jobs j
-         JOIN store s ON s.id = j.store_id
-         JOIN category c ON s.category_id = c.id
-         JOIN member m ON j.member_id = m.id
-;
-
-SELECT c.id, c.name, s.name, s.member_id
-FROM category c
-         LEFT JOIN store s ON c.id = s.category_id
-
-WHERE s.name = 'bossStore1'
-;
-
-
-
-select *
-FROM category;
-DESC category;
-
-SELECT *
-FROM jobs j;
-
-SELECT j.*, s.category_id, s.cate_name
-FROM jobs j
-         JOIN store s ON s.id = j.store_id
-WHERE j.id = 31;

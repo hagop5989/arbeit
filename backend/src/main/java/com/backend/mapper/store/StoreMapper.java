@@ -54,7 +54,7 @@ public interface StoreMapper {
             INSERT INTO store_file (store_id, name)
             VALUES (#{storeId}, #{name})
             """)
-    int insertFileName(Integer storeid, String name);
+    int insertFileName(Integer storeId, String name);
 
 
     @Select("""
@@ -65,8 +65,23 @@ public interface StoreMapper {
     List<Store> setcate();
 
     @Select("""
-            SELECT name
-            FROM 
+            SELECT name FROM store_file
+            WHERE store_id = #{id}
             """)
-    List<String> StoreImageByStoreId(Integer id);
+    List<String> selectFileNameByStoreId(Integer id);
+
+    @Delete("""
+            DELETE FROM store_file
+            WHERE store_id = #{id}
+            """
+    )
+    int deleteFileByStoreId(Integer id);
+
+    @Delete("""
+            DELETE FROM store_file
+            WHERE store_id = #{id}
+            AND name = #{fileName}
+            """)
+    int deleteFileByStoreIdAndName(Integer id, String fileName);
+
 }
