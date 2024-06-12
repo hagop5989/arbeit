@@ -8,6 +8,7 @@ export function LoginProvider({ children }) {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [authority, setAuthority] = useState("");
   const [expired, setExpired] = useState(0);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export function LoginProvider({ children }) {
     setId(payload.sub);
     setEmail(payload.email);
     setName(payload.name);
+    setAuthority(payload.scope);
   }
 
   // 권한
@@ -46,16 +48,33 @@ export function LoginProvider({ children }) {
     setName("");
   }
 
+  // 권한 확인
+  function isAlba() {
+    return authority === "ALBA";
+  }
+
+  function isBoss() {
+    return authority === "BOSS";
+  }
+
+  function isAdmin() {
+    return authority === "ADMIN";
+  }
+
   return (
     <LoginContext.Provider
       value={{
         id,
         email,
         name,
+        authority,
         login,
         logout,
         isLoggedIn,
         hasAccess,
+        isAlba,
+        isBoss,
+        isAdmin,
       }}
     >
       {children}
