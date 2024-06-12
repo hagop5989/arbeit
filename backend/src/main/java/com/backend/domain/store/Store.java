@@ -16,6 +16,7 @@ public class Store {
     private String phone;
     private Integer memberId;
     private Integer categoryId;
+    private String cateName;
 
     private List<StoreImg> imageList;
 

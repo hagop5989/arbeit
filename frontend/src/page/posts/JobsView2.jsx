@@ -39,6 +39,7 @@ export function JobsView2() {
   const [removeFileList, setRemoveFileList] = useState([]);
   const [addFileList, setAddFileList] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [storeList, setStoreList] = useState([]);
   const [editJobs, setEditJobs] = useState({
     title: "",
     content: "",
@@ -46,15 +47,12 @@ export function JobsView2() {
     deadline: "",
     recruitmentNumber: "",
     storeName: "",
-    storeNames: [],
-    categoryId: "",
     categoryName: "",
-    categoryNames: [],
-    categoryMap: {},
+    categoryId: "",
     storeId: "",
 
     memberId: account.id,
-    name: account.name,
+    memberName: "",
 
     startTime: "",
     endTime: "",
@@ -65,12 +63,22 @@ export function JobsView2() {
 
   function handleEditInput(field, e) {
     const value = e.target.value;
-    setEditJobs((prev) => ({ ...prev, [field]: value }));
-
     if (field === "storeName") {
+      const [storeName, categoryId] = value.split("-cateNo:");
+      const store = storeList.find(
+        (store) =>
+          store.name === storeName && store.categoryId === parseInt(categoryId),
+      );
       setEditJobs((prev) => ({
         ...prev,
-        categoryName: prev.categoryMap[value] || "",
+        storeName: storeName,
+        categoryName: store ? store.cateName : "",
+        categoryId: store ? store.categoryId : "",
+      }));
+    } else {
+      setEditJobs((prev) => ({
+        ...prev,
+        [field]: value,
       }));
     }
   }
@@ -105,12 +113,8 @@ export function JobsView2() {
     axios
       .get(`/api/jobs/${id}`)
       .then((res) => {
+        setStoreList(res.data.storeList);
         setEditJobs(res.data.jobs);
-        setEditJobs((prev) => ({
-          ...prev,
-          storeNames: res.data.storeNames,
-          categoryMap: res.data.categoryMap,
-        }));
         setFileList(res.data.jobs.fileList);
         delete res.data.jobs.fileList;
       })
@@ -250,7 +254,7 @@ export function JobsView2() {
                 </InputGroup>
               </Box>
               <Box w={"50%"}>
-                <FormLabel>카테고리 선택</FormLabel>
+                <FormLabel>카테고리(자동선택)</FormLabel>
                 <Input value={editJobs.categoryName} readOnly />
               </Box>
             </Flex>
@@ -260,16 +264,19 @@ export function JobsView2() {
               value={editJobs.storeName}
               onChange={(e) => handleEditInput("storeName", e)}
             >
-              {editJobs.storeNames.map((name, index) => (
-                <option key={index} value={name}>
-                  {name}
+              {storeList.map((store) => (
+                <option
+                  key={store.id}
+                  value={`${store.name}-cateNo:${store.categoryId}`}
+                >
+                  {store.name}-cateNo:{store.categoryId}
                 </option>
               ))}
             </Select>
             <FormLabel>작성자</FormLabel>
             <Input
-              value={editJobs.name}
-              onChange={(e) => handleEditInput("name", e)}
+              value={editJobs.memberName}
+              onChange={(e) => handleEditInput("memberName", e)}
               type={"text"}
               readOnly
             />
