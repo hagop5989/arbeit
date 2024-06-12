@@ -21,6 +21,6 @@ public class Resume {
 
     private String title;
     private String content;
-    private boolean isRookie;
+    private Integer isRookie;
     private LocalDate inserted;
 }

@@ -79,7 +79,7 @@ export function MemberInfo() {
               <FormLabel>전화번호</FormLabel>
               <Input value={member.phone} isReadOnly />
               <Flex>
-                <Button onClick={() => navigate(`/member/edit/${id}`)}>
+                <Button onClick={() => navigate(`/member/${id}/edit`)}>
                   회원 수정
                 </Button>
                 <Button onClick={handleRemoveBtn}>회원 삭제</Button>

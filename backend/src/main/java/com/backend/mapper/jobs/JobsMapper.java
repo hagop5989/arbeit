@@ -1,6 +1,7 @@
 package com.backend.mapper.jobs;
 
 import com.backend.domain.jobs.Jobs;
+import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
 import org.apache.ibatis.annotations.*;
 
@@ -132,5 +133,26 @@ public interface JobsMapper {
             SELECT * FROM category
             WHERE id = #{categoryId}
             """)
-    void selectCategoryByCategoryId(Integer categoryId);
+    Category selectCategoryByCategoryId(Integer categoryId);
+
+    @Select("""
+            SELECT id FROM category
+            WHERE name = #{categoryName}
+            """)
+    Integer selectCategoryByCategoryName(String categoryName);
+
+
+    @Select("""
+            SELECT * FROM store
+            WHERE id = #{storeId}
+            """)
+    Store selectStoreByJobStoreId(Integer storeId);
+
+
+    @Select("""
+            SELECT * FROM store
+            WHERE name = #{storeName}
+            """)
+    Store selectStoreByStoreName(String storeName);
+
 }

@@ -25,9 +25,7 @@ public class JobsController {
     @PostMapping("insert")
     public void insert(@ModelAttribute Jobs jobs,
                        @RequestParam(value = "files[]", required = false) MultipartFile[] files) throws IOException {
-        System.out.println("JobsController.insert");
         service.insert(jobs, files);
-        System.out.println("JobsController.insert.end");
     }
 
     @PutMapping("update")

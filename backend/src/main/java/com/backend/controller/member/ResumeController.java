@@ -4,6 +4,7 @@ import com.backend.domain.member.resume.Resume;
 import com.backend.service.member.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ResumeController {
-    private final ResumeService service;
+    private final ResumeService resumeService;
 
     @PostMapping("/resume/write")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
@@ -32,29 +33,36 @@ public class ResumeController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        service.insert(resume, authentication);
+        if (!resumeService.isMaxedInsert(authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        resumeService.insert(resume, authentication);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/resume/list")
     @PreAuthorize("isAuthenticated()")
-    public List<Resume> list(@PathVariable("id") Integer memberId) {
-        return service.list(memberId);
+    public List<Resume> list(@PathVariable("id") Integer memberId, Authentication authentication) {
+        return resumeService.findAllByMemberId(memberId);
     }
 
-    @GetMapping("{id}")
-    public Resume select(@PathVariable Integer id) {
-        return service.select(id);
+    @GetMapping("/resume/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public Resume view(@PathVariable("id") Integer id,
+                       Authentication authentication) {
+
+        return resumeService.findById(id);
     }
 
-    @PutMapping("update")
-    public void update(@RequestBody Resume resume) {
-        service.update(resume);
+    @PutMapping("/resume/{id}")
+    public void edit(@RequestBody Resume resume) {
+        resumeService.update(resume);
     }
 
     @DeleteMapping("delete")
     public void delete(@RequestParam Integer id) {
-        service.delete(id);
+        resumeService.delete(id);
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {

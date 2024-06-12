@@ -46,7 +46,11 @@ export function JobsView2() {
     deadline: "",
     recruitmentNumber: "",
     storeName: "default",
+    storeNames: [],
     categoryId: "1",
+    categoryName: "",
+    categoryNames: [],
+    categoryMap: {},
     storeId: "8",
 
     memberId: account.id,
@@ -104,6 +108,11 @@ export function JobsView2() {
       .get(`/api/jobs/${id}`)
       .then((res) => {
         setEditJobs(res.data.jobs);
+        setEditJobs((prev) => ({
+          ...prev,
+          storeNames: res.data.storeNames,
+          categoryMap: res.data.categoryMap,
+        }));
         setFileList(res.data.jobs.fileList);
         delete res.data.jobs.fileList;
       })
@@ -163,6 +172,10 @@ export function JobsView2() {
     } else {
       setRemoveFileList(removeFileList.filter((item) => item !== name));
     }
+  }
+
+  function handleCategory() {
+    /*todo: storeName*/
   }
 
   return (
@@ -243,20 +256,23 @@ export function JobsView2() {
               </Box>
               <Box w={"50%"}>
                 <FormLabel>카테고리 선택</FormLabel>
-                <Select onChange={(e) => handleEditInput("categoryId", e)}>
-                  <option>1</option>
-                  <option>2</option>
-                </Select>
+                <Input
+                  value={editJobs.categoryName}
+                  onChange={handleCategory}
+                  readOnly
+                />
               </Box>
             </Flex>
 
             <FormLabel>가게명</FormLabel>
-            <Input
+            <Select
               value={editJobs.storeName}
               onChange={(e) => handleEditInput("storeName", e)}
-              type={"text"}
-              readOnly
-            />
+            >
+              {editJobs.storeNames.map((name) => (
+                <option key={name.index}>{name}</option>
+              ))}
+            </Select>
             <FormLabel>작성자</FormLabel>
             <Input
               value={editJobs.name}
