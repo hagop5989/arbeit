@@ -20,7 +20,7 @@ export function ResumeRegister() {
   const [member, setMember] = useState(null);
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
-  const [isRookie, setIsRookie] = useState(1);
+  const [isRookie, setIsRookie] = useState(0);
   const account = useContext(LoginContext);
   const navigate = useNavigate();
   const toast = useToast();
@@ -28,6 +28,7 @@ export function ResumeRegister() {
   useEffect(() => {
     if (account.id !== "") {
       axios.get(`/api/member/${account.id}`).then((res) => setMember(res.data));
+      setResume({ ...resume, isRookie });
     }
   }, [account.id]);
 

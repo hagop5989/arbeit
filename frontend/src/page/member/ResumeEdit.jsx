@@ -36,7 +36,7 @@ export function ResumeEdit() {
 
   function handleSaveBtn() {
     axios
-      .put(`/api/resume/${id}`)
+      .put(`/api/resume/${id}`, resume)
       .then()
       .catch((err) => {
         setErrors(err.response.data);

@@ -72,3 +72,6 @@ FROM store;
 select *
 FROM category;
 DESC category;
+
+SELECT *
+FROM category;

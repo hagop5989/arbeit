@@ -1,6 +1,7 @@
 package com.backend.controller.member;
 
 import com.backend.domain.member.resume.Resume;
+import com.backend.domain.member.resume.ResumeForm;
 import com.backend.service.member.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class ResumeController {
 
     @PostMapping("/resume/register")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
-    public ResponseEntity register(@Validated @RequestBody Resume resume, BindingResult bindingResult,
+    public ResponseEntity register(@Validated @RequestBody ResumeForm form, BindingResult bindingResult,
                                    Authentication authentication) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
@@ -37,7 +38,7 @@ public class ResumeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        resumeService.register(resume, authentication);
+        resumeService.register(form, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -56,13 +57,33 @@ public class ResumeController {
     }
 
     @PutMapping("/resume/{id}")
-    public void edit(@RequestBody Resume resume) {
-        resumeService.update(resume);
+    @PreAuthorize("hasAuthority('SCOPE_ALBA')")
+    public ResponseEntity edit(@PathVariable Integer id, @Validated @RequestBody ResumeForm form,
+                               BindingResult bindingResult, Authentication authentication) {
+
+        if (!resumeService.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            log.info("errors={}", errors);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        resumeService.edit(id, form);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("delete")
-    public void delete(@RequestParam Integer id) {
-        resumeService.delete(id);
+    @PostMapping("/resume/delete")
+    @PreAuthorize("hasAuthority('SCOPE_ALBA')")
+    public ResponseEntity delete(@RequestBody List<Integer> ids, Authentication authentication) {
+
+        if (!resumeService.hasAccess(ids, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        resumeService.delete(ids);
+        return ResponseEntity.ok().build();
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {

@@ -6,19 +6,40 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Image,
   Input,
   Spinner,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberInfo() {
   const { id } = useParams();
   const [member, setMember] = useState(null);
+  const [profileSrc, setProfileSrc] = useState("");
+  const fileInputRef = useRef({});
   const navigate = useNavigate();
   const toast = useToast();
+
+  function getProfilePicture() {
+    axios
+      .get(`/api/profile/${id}`)
+      .then((res) => {
+        setProfileSrc(res.data);
+      })
+      .catch(() =>
+        toast({
+          status: "error",
+          description: "내부 오류 발생",
+          position: "top",
+        }),
+      )
+      .finally();
+  }
 
   useEffect(() => {
     axios
@@ -33,6 +54,7 @@ export function MemberInfo() {
         navigate("/member/list");
       })
       .finally();
+    getProfilePicture();
   }, []);
 
   function handleRemoveBtn() {
@@ -57,6 +79,17 @@ export function MemberInfo() {
     );
   }
 
+  function handleProfilePictureBtn() {
+    fileInputRef.current.click();
+  }
+
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+    axios.postForm("/api/profile/register", { files, id }).then(() => {
+      getProfilePicture();
+    });
+  };
+
   return (
     <Center>
       <Box>
@@ -65,6 +98,38 @@ export function MemberInfo() {
         </Box>
         <Box>
           <Box>
+            {/* 프로필 사진 */}
+            <FormControl>
+              <FormLabel>사진</FormLabel>
+              <Image
+                w={"240px"}
+                h={"240px"}
+                border={"1px solid gray"}
+                borderRadius={150}
+                src={
+                  profileSrc === ""
+                    ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
+                    : profileSrc
+                }
+              />
+              <Center
+                boxSize={"50px"}
+                bgColor="gray.100"
+                borderRadius={100}
+                mt={"-30px"}
+                cursor="pointer"
+                onClick={handleProfilePictureBtn}
+              >
+                <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
+              </Center>
+              <Input
+                type={"file"}
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </FormControl>
+            {/* 회원 정보 */}
             <FormControl>
               <FormLabel>이메일</FormLabel>
               <Input value={member.email} isReadOnly />

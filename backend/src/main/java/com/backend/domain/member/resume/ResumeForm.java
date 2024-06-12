@@ -11,9 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResumeWriteForm {
+public class ResumeForm {
     private Integer id;
     private Integer memberId;
+
     @NotBlank
     private String title;
     @NotBlank

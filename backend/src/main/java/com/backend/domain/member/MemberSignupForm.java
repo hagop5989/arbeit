@@ -21,6 +21,7 @@ public class MemberSignupForm {
     private String name;
     @NotBlank
     private String gender;
+    @NotNull
     private Date birthDate;
     @NotBlank
     private String address;

@@ -114,7 +114,6 @@ public class MemberService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
-
         Integer loginId = Integer.valueOf(authentication.getName());
         if (!id.equals(loginId)) {
             return false;
