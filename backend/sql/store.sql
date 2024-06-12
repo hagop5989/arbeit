@@ -1,64 +1,42 @@
 USE arbeit;
-CREATE TABLE store
+
+# 가게 테이블
+create table store
 (
-    id       INT PRIMARY KEY AUTO_INCREMENT,
-    name     VARCHAR(45)   NOT NULL,
-    content  VARCHAR(1000) NOT NULL,
-    address  VARCHAR(100)  NOT NULL,
-    category VARCHAR(45)   NOT NULL
+    id          int auto_increment
+        primary key,
+    name        varchar(45)   not null,
+    content     varchar(1000) not null,
+    address     varchar(100)  not null,
+    phone       varchar(45)   null,
+    member_id   int           null,
+    category_id int           null,
+    cate_name   varchar(45)   null,
+    constraint store_ibfk_1
+        foreign key (member_id) references member (id),
+    constraint store_ibfk_2
+        foreign key (category_id) references category (id),
+    constraint store_ibfk_3
+        foreign key (cate_name) references category (name)
 );
 
-
-
-ALTER TABLE store
-    ADD COLUMN cate_name VARCHAR(45) REFERENCES category (name) AFTER category_id;
-
-SELECT *
-FROM store;
-
-CREATE TABLE store_file
+# 가게 이미지
+create table store_file
 (
-    store_id INT         NOT NULL REFERENCES store (id),
-    name     VARCHAR(45) NOT NULL,
-    PRIMARY KEY (store_id, name)
+    store_id int         not null,
+    name     varchar(45) not null,
+    primary key (store_id, name),
+    constraint store_file_ibfk_1
+        foreign key (store_id) references store (id)
 );
 
-SELECT *
-FROM member;
-
-CREATE TABLE category
+# 카테고리
+create table category
 (
-    id   INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(45) NOT NULL
-
+    id   int auto_increment
+        primary key,
+    name varchar(45) not null,
+    icon varchar(45) not null,
+    constraint name
+        unique (name)
 );
-
-ALTER TABLE category
-    DROP COLUMN category_icon;
-
-ALTER TABLE category
-    ADD COLUMN icon VARCHAR(45);
-
-ALTER TABLE store
-    ADD COLUMN category_id INT REFERENCES category (id) AFTER member_id;
-
-
-INSERT INTO category (name)
-VALUES ('기타');
-
-SELECT *
-FROM category;
-
-CREATE TABLE store_file
-(
-    store_id INT          NOT NULL REFERENCES board (id),
-    name     VARCHAR(500) NOT NULL,
-    PRIMARY KEY (store_id, name)
-);
-
-ALTER TABLE category
-    MODIFY COLUMN name VARCHAR(45) NOT NULL;
-
-DESC store;
-
-DESC category;
