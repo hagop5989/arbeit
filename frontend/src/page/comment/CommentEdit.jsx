@@ -18,13 +18,10 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import * as PropTypes from "prop-types";
 
-function FormControll(props) {
+function FormControl(props) {
   return null;
 }
-
-FormControll.propTypes = { children: PropTypes.node };
 
 export function CommentEdit() {
   const { id } = useParams();
@@ -63,7 +60,7 @@ export function CommentEdit() {
       });
   }
 
-  const hendleChage = (prop) => (e) => {
+  const handleChange = (prop) => (e) => {
     setComment({ ...comment, [prop]: e.target.value });
   };
 
@@ -74,16 +71,14 @@ export function CommentEdit() {
   return (
     <Flex>
       <Box>
-        <FormControll>
+        <FormControl>
           <FormLabel>댓글</FormLabel>
-          <Box flex={1}>
-            <Textarea
-              defaultValue={comment.comment}
-              onChange={hendleChage("comment")}
-            />
-            {errors && <FormHelperText>{errors.comment}</FormHelperText>}
-          </Box>
-        </FormControll>
+          <Textarea
+            value={comment.comment}
+            onChange={handleChange("comment")}
+          />
+          {errors && <FormHelperText>{errors.comment}</FormHelperText>}
+        </FormControl>
         <Box>
           <Button onClick={onOpen}>저장</Button>
         </Box>
