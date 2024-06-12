@@ -39,22 +39,20 @@ export function JobsView2() {
   const [removeFileList, setRemoveFileList] = useState([]);
   const [addFileList, setAddFileList] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [storeList, setStoreList] = useState([]);
   const [editJobs, setEditJobs] = useState({
     title: "",
     content: "",
     salary: "",
     deadline: "",
     recruitmentNumber: "",
-    storeName: "default",
-    storeNames: [],
-    categoryId: "1",
+    storeName: "",
     categoryName: "",
-    categoryNames: [],
-    categoryMap: {},
-    storeId: "8",
+    categoryId: "",
+    storeId: "",
 
     memberId: account.id,
-    name: account.name,
+    memberName: "",
 
     startTime: "",
     endTime: "",
@@ -63,18 +61,26 @@ export function JobsView2() {
     resultName: "",
   });
 
-  function removeFileListProperties(obj) {
-    const newObj = { ...obj }; // 원본 객체를 복사합니다.
-    Object.keys(newObj).forEach((key) => {
-      if (key.startsWith("fileList")) {
-        delete newObj[key]; // fileList로 시작하는 모든 프로퍼티를 삭제합니다.
-      }
-    });
-    return newObj;
-  }
-
   function handleEditInput(field, e) {
-    setEditJobs((prev) => ({ ...prev, [field]: e.target.value }));
+    const value = e.target.value;
+    if (field === "storeName") {
+      const [storeName, categoryId] = value.split("-cateNo:");
+      const store = storeList.find(
+        (store) =>
+          store.name === storeName && store.categoryId === parseInt(categoryId),
+      );
+      setEditJobs((prev) => ({
+        ...prev,
+        storeName: storeName,
+        categoryName: store ? store.cateName : "",
+        categoryId: store ? store.categoryId : "",
+      }));
+    } else {
+      setEditJobs((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
   }
 
   function handleSubmitEditJobs() {
@@ -107,12 +113,8 @@ export function JobsView2() {
     axios
       .get(`/api/jobs/${id}`)
       .then((res) => {
+        setStoreList(res.data.storeList);
         setEditJobs(res.data.jobs);
-        setEditJobs((prev) => ({
-          ...prev,
-          storeNames: res.data.storeNames,
-          categoryMap: res.data.categoryMap,
-        }));
         setFileList(res.data.jobs.fileList);
         delete res.data.jobs.fileList;
       })
@@ -129,6 +131,7 @@ export function JobsView2() {
   }, [id, navigate]); // 여기에 의존성 배열을 추가합니다
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -157,7 +160,7 @@ export function JobsView2() {
       }
     }
     fileNameList.push(
-      <Flex>
+      <Flex key={addFile.name}>
         <Text fontSize={"md"} mr={3}>
           {addFile.name}
         </Text>
@@ -172,10 +175,6 @@ export function JobsView2() {
     } else {
       setRemoveFileList(removeFileList.filter((item) => item !== name));
     }
-  }
-
-  function handleCategory() {
-    /*todo: storeName*/
   }
 
   return (
@@ -255,12 +254,8 @@ export function JobsView2() {
                 </InputGroup>
               </Box>
               <Box w={"50%"}>
-                <FormLabel>카테고리 선택</FormLabel>
-                <Input
-                  value={editJobs.categoryName}
-                  onChange={handleCategory}
-                  readOnly
-                />
+                <FormLabel>카테고리(자동선택)</FormLabel>
+                <Input value={editJobs.categoryName} readOnly />
               </Box>
             </Flex>
 
@@ -269,14 +264,19 @@ export function JobsView2() {
               value={editJobs.storeName}
               onChange={(e) => handleEditInput("storeName", e)}
             >
-              {editJobs.storeNames.map((name) => (
-                <option key={name.index}>{name}</option>
+              {storeList.map((store) => (
+                <option
+                  key={store.id}
+                  value={`${store.name}-cateNo:${store.categoryId}`}
+                >
+                  {store.name}-cateNo:{store.categoryId}
+                </option>
               ))}
             </Select>
             <FormLabel>작성자</FormLabel>
             <Input
-              value={editJobs.name}
-              onChange={(e) => handleEditInput("name", e)}
+              value={editJobs.memberName}
+              onChange={(e) => handleEditInput("memberName", e)}
               type={"text"}
               readOnly
             />

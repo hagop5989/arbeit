@@ -17,6 +17,7 @@ public class Store {
     private String cateName;
     private Integer memberId;
     private Integer categoryId;
+    private String cateName;
 
     private List<StoreImg> imageList;
 

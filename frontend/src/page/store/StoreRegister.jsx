@@ -147,7 +147,7 @@ export function StoreRegister() {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <DaumPostcode onComplete={onCompletePost} height="100%" />
+              {/*<DaumPostcode onComplete={onCompletePost} height="100%" />*/}
             </ModalContent>
           </Modal>
         </FormControl>
