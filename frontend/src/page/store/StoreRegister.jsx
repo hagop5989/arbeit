@@ -1,8 +1,11 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
+  Heading,
   Input,
   Modal,
   ModalContent,
@@ -17,168 +20,81 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import KakaoMap2 from "../posts/KakaoMap2.jsx";
-
 import DaumPostcodeEmbed from "react-daum-postcode";
 
-
 export function StoreRegister() {
-  const [kakaoMapData, setKakaoMapData] = useState({});
-
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [cateName, setCateName] = useState("");
-  const [inputAddress, setInputAddress] = useState();
-  const [categoryId, setCategoryId] = useState("");
-  const [categories, setCategories] = useState([]);
-  const { isOpen, onClose, onOpen } = useDisclosure();
-
+  const [store, setStore] = useState({});
   const [files, setFiles] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [categories, setCategories] = useState([]);
+
   const toast = useToast();
   const navigate = useNavigate();
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   useEffect(() => {
-    axios.get(`/api/store/cate`).then((res) => {
+    axios.get(`/api/store/category`).then((res) => {
       setCategories(res.data);
     });
   }, []);
 
-  useEffect(() => {
-    if (inputAddress) {
-      setAddress(inputAddress);
-    }
-  }, [inputAddress]);
-
-  const handleCategoryChange = (e) => {
-    const selectedId = e.target.value;
-    const selectedCategory = categories.find(
-      (cate) => cate.id.toString() === selectedId,
-    );
-    setCategoryId(selectedId);
-    setCateName(selectedCategory ? selectedCategory.name : "");
-  };
-
   function handleSaveClick() {
     axios
-      .postForm("/api/store/add", {
-        name,
-        content,
-        address,
-        categoryId,
-        phone,
-        cateName,
-        files,
-        ...kakaoMapData,
-      })
-      .then((response) => {
+      .postForm("/api/store/register", { ...store, files })
+      .then(() => {
         toast({
           title: "가게 등록 성공",
           description: "새 가게가 등록되었습니다.",
           status: "success",
-          duration: 5000,
-          isClosable: true,
         });
         navigate("/store/list");
       })
-      .catch((error) => {
-        console.error(
-          "There was an error!",
-          error.response ? error.response.data : error.message,
-        );
-        toast({
-          title: "가게 등록 실패",
-          description: error.response
-            ? error.response.data
-            : "등록 중 오류가 발생했습니다.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+      .catch((err) => {
+        setErrors(err.response.data);
       });
   }
 
-  const handleMapSubmit = (x, y, name) => {
-    setKakaoMapData((prev) => ({
-      ...prev,
-      x: x,
-      y: y,
-      markerName: name,
-    }));
-    console.log(kakaoMapData);
+  let disableSaveButton = false;
+
+  // Input
+  const handleInputChange = (prop) => (e) => {
+    setStore({ ...store, [prop]: e.target.value });
   };
 
-  let disableSaveButton = false;
-  if (
-    name.trim().length === 0 ||
-    content.trim().length === 0 ||
-    address.trim().length === 0
-  ) {
-    disableSaveButton = true;
-  }
-
-  const fileNameList = [];
-  for (let i = 0; i < files.length; i++) {
-    fileNameList.push(<li key={i}>{files[i].name}</li>);
-  }
-
   const onCompletePost = (data) => {
-    setInputAddress(data.address);
+    setStore({ ...store, address: data.address });
     onClose();
   };
 
   return (
-    <Box p={4} maxWidth="600px" mx="auto">
-      <Box mb={4}>
-        <FormControl>
-          <FormLabel>가게 이름</FormLabel>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="가게 이름을 입력하세요."
-          />
-        </FormControl>
-      </Box>
-      <Box mb={4}>
-        <FormControl>
-          <FormLabel>가게 내용</FormLabel>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="가게 내용을 입력하세요."
-          />
-        </FormControl>
-      </Box>
-      <Box mb={4}>
-        <FormControl>
-          <FormLabel>가게 주소</FormLabel>
-          <Input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="가게 주소를 입력하세요."
-          />
-          <Button onClick={onOpen}>우편번호 검색</Button>
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <DaumPostcodeEmbed onComplete={onCompletePost} height="100%" />
-            </ModalContent>
-          </Modal>
-        </FormControl>
-      </Box>
-
-      <Box mb={4}>
-        <FormControl>
-          <FormLabel>전화 번호</FormLabel>
-          <Input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="전화 번호를 입력하세요."
-          />
-        </FormControl>
+    <Box>
+      <Box>
+        <Heading>가게 등록</Heading>
       </Box>
       <Box>
         <FormControl>
+          <FormLabel>가게 이름</FormLabel>
+          <Input
+            onChange={handleInputChange("name")}
+            placeholder="가게명을 입력하세요."
+          />
+          <FormHelperText>{errors.name}</FormHelperText>
+
+          <FormLabel>가게 설명</FormLabel>
+          <Textarea
+            onChange={handleInputChange("content")}
+            placeholder="가게 설명을 입력하세요."
+          />
+          <FormHelperText>{errors.content}</FormHelperText>
+
+          <FormLabel>가게 전화번호</FormLabel>
+          <Input
+            onChange={handleInputChange("phone")}
+            placeholder="전화 번호를 입력하세요."
+          />
+          <FormHelperText>{errors.phone}</FormHelperText>
+
           <FormLabel>사진</FormLabel>
           <Input
             multiple
@@ -186,35 +102,51 @@ export function StoreRegister() {
             accept="image/*"
             onChange={(e) => setFiles(e.target.files)}
           />
-        </FormControl>
-      </Box>
-      <Box>
-        <ul>{fileNameList}</ul>
-      </Box>
-      <Box mb={4}>
-        <FormControl>
+
           <FormLabel>가게 카테고리</FormLabel>
           <Select
-            value={categoryId}
-            onChange={handleCategoryChange}
+            onChange={handleInputChange("categoryId")}
             placeholder="카테고리 선택"
           >
-            {categories.map((cate) => (
-              <option key={cate.id} value={cate.id}>
-                {cate.name}
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
               </option>
             ))}
           </Select>
+          <FormHelperText>{errors.categoryId}</FormHelperText>
+
+          {/* 카카오 맵 */}
+          <FormLabel>주소</FormLabel>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <DaumPostcodeEmbed onComplete={onCompletePost} />
+            </ModalContent>
+          </Modal>
+          <Flex>
+            <Input w={"70%"} defaultValue={store.address} readOnly />
+            <Button onClick={onOpen}>우편번호 검색</Button>
+          </Flex>
+          <FormHelperText>{errors.address}</FormHelperText>
+
+          <Input
+            onChange={handleInputChange("detailAddress")}
+            placeholder={"상세 주소를 입력해주세요."}
+          />
+          <FormHelperText>{errors.detailAddress}</FormHelperText>
+
+          <KakaoMap2 address={store.address} />
+
+          <Button
+            isDisabled={disableSaveButton}
+            colorScheme="blue"
+            onClick={handleSaveClick}
+          >
+            가게 등록
+          </Button>
         </FormControl>
       </Box>
-      <KakaoMap2 onSubmit={handleMapSubmit} mName={name} />
-      <Button
-        isDisabled={disableSaveButton}
-        colorScheme="blue"
-        onClick={handleSaveClick}
-      >
-        저장
-      </Button>
     </Box>
   );
 }

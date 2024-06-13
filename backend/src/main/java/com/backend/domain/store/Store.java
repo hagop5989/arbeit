@@ -1,25 +1,38 @@
 package com.backend.domain.store;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-@Data
+@Getter
+@AllArgsConstructor
 public class Store {
 
-    private int id;
-    private String icon;
+    private Integer id;
     private String name;
     private String content;
     private String address;
-    private String cate;
+    private String detailAddress;
     private String phone;
-    private String cateName;
+    private LocalDateTime inserted;
     private Integer memberId;
     private Integer categoryId;
-    private Double x;
-    private Double y;
-    
+    private String categoryName;
 
-    private List<StoreFile> fileList;
+    public Store(String name, String content, String address, String detailAddress, String phone, Integer memberId, Integer categoryId) {
+        this.name = name;
+        this.content = content;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.phone = phone;
+        this.memberId = memberId;
+        this.categoryId = categoryId;
+    }
+
+    public String getInserted() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return inserted.format(formatter);
+    }
 }

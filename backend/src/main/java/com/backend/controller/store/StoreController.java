@@ -1,6 +1,8 @@
 package com.backend.controller.store;
 
+import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
+import com.backend.domain.store.StoreRegisterForm;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,11 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RestController
@@ -20,64 +27,72 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreController {
 
-    private final StoreService service;
+    private final StoreService storeService;
 
-    @GetMapping("cate")
-    public List<Store> getAllCate() {
-        return service.cate();
+    @GetMapping("category")
+    public List<Category> getCategory() {
+        return storeService.findAllCategory();
     }
 
-    @PostMapping("/add")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity add(Authentication authentication,
-                              @ModelAttribute Store store,
-                              @RequestParam(value = "files[]", required = false) MultipartFile[] files) throws IOException {
+    @PostMapping("/register")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity register(@Validated StoreRegisterForm form, BindingResult bindingResult,
+                                   @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+                                   Authentication authentication) throws IOException {
 
-        if (service.validate(store)) {
-            service.add(store, files, authentication);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().body("Validation failed");
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.badRequest().body(errors);
         }
+
+        storeService.register(form, files, authentication);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("list")
-    public List<Store> list() {
-
-        return service.list();
+    @GetMapping("/list")
+    public List<Store> list(Authentication authentication) {
+        return storeService.findAllByMemberId(authentication);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity get(@PathVariable Integer id) {
-        Store store = service.get(id);
-        return ResponseEntity.ok().body(store);
+    @GetMapping("/{id}")
+    public ResponseEntity view(@PathVariable Integer id) {
+        Map<String, Object> result = storeService.findStoreInfoById(id);
+        return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
-
-        if (service.hasAccess(id, authentication)) {
-            service.remove(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
-
-    @PutMapping("edit")
-    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
     public ResponseEntity edit(Store store,
                                @RequestParam(value = "removeFileList[]", required = false)
                                List<String> removeFileList,
                                @RequestParam(value = "addFileList[]", required = false)
                                MultipartFile[] addFileList,
                                Authentication authentication) throws IOException {
-        log.info("store={}", store);
-        if (!service.hasAccess(store.getId(), authentication)) {
+        
+        if (!storeService.hasAccess(store.getId(), authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        service.edit(store, removeFileList, addFileList);
+        storeService.edit(store, removeFileList, addFileList);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
+
+        if (storeService.hasAccess(id, authentication)) {
+            storeService.remove(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
+        Map<String, String> errors = new ConcurrentHashMap<>();
+        for (FieldError error : bindingResult.getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        return errors;
     }
 
 }
