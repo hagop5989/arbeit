@@ -14,7 +14,7 @@ public interface JobsConditionMapper {
     int insert(JobsCondition jobsCondition);
 
     @Select("""
-            SELECT * FROM jobs_condition 
+            SELECT * FROM jobs_condition
             WHERE alba_posts_id = #{jobsId}
             """)
     JobsCondition selectByJobsId(Integer jobsId);
@@ -30,6 +30,7 @@ public interface JobsConditionMapper {
             work_period = #{workPeriod},
             work_week = #{workWeek},
             work_time = #{workTime}
+            WHERE alba_posts_id = #{albaPostsId}
             """)
     int update(JobsCondition condition);
 

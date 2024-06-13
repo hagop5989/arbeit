@@ -1,3 +1,4 @@
+/* condition 관련 선택 값들 리스트 */
 export const eduList = [
   "무관",
   "초등학교",

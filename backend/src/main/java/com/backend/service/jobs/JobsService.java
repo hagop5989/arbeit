@@ -5,6 +5,7 @@ import com.backend.domain.jobs.JobsCondition;
 import com.backend.domain.jobs.JobsFile;
 import com.backend.domain.store.Store;
 import com.backend.mapper.jobs.JobsConditionMapper;
+import com.backend.mapper.jobs.JobsFileMapper;
 import com.backend.mapper.jobs.JobsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import java.util.Map;
 public class JobsService {
     private final JobsMapper jobsMapper;
     private final JobsConditionMapper conditionMapper;
+    private final JobsFileMapper fileMapper;
     final S3Client s3Client;
 
     @Value("${aws.s3.bucket.name}")
@@ -79,7 +81,7 @@ public class JobsService {
         // jobs의 memberId로 storeList 찾기
         List<Store> storeList = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
         // jobsId로 파일리스트 찾기
-        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
+        List<String> fileNames = fileMapper.selectFileNameByJobsId(jobsId);
         List<JobsFile> files = fileNames.stream()
                 .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/jobs/\{jobsId}/\{fileName}"))
                 .toList();
@@ -95,7 +97,7 @@ public class JobsService {
 
     public void deleteByJobsId(Integer jobsId) {
         // file 명 조회
-        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
+        List<String> fileNames = fileMapper.selectFileNameByJobsId(jobsId);
         Jobs jobs = jobsMapper.selectByJobsId(jobsId);
 
         // s3,db jobsFile 삭제
@@ -122,12 +124,12 @@ public class JobsService {
     // db, s3 에 입력
     private void addFileList(Jobs jobs, MultipartFile[] addFileList) throws IOException {
         if (addFileList != null && addFileList.length > 0) {
-            List<String> fileNameList = jobsMapper.selectFileNameByJobsId(jobs.getId());
+            List<String> fileNameList = fileMapper.selectFileNameByJobsId(jobs.getId());
             for (MultipartFile file : addFileList) {
                 String fileName = file.getOriginalFilename();
                 if (!fileNameList.contains(fileName)) {
                     // 새 파일이 기존에 없을 때만 db에 추가
-                    jobsMapper.insertFileName(jobs.getId(), fileName);
+                    fileMapper.insertFileName(jobs.getId(), fileName);
                 }
                 // s3 에 쓰기
                 String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
@@ -155,7 +157,7 @@ public class JobsService {
                 s3Client.deleteObject(objectRequest);
 
                 // db jobsFile 삭제
-                jobsMapper.deleteFileByJobsIdAndName(jobs.getId(), fileName);
+                fileMapper.deleteFileByJobsIdAndName(jobs.getId(), fileName);
             }
         }
     }

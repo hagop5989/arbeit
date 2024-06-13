@@ -13,6 +13,14 @@ CREATE TABLE jobs_condition
 );
 SELECT *
 FROM jobs_condition;
+SELECT *
+FROM jobs;
+DELETE
+FROM jobs
+WHERE id = 38;
+
+
+
 DESC jobs_condition;
 
 

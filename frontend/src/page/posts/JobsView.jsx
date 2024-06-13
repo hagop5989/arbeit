@@ -2,9 +2,6 @@ import {
   Badge,
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Center,
   Checkbox,
   Flex,
@@ -13,45 +10,42 @@ import {
   Heading,
   Image,
   Input,
-  InputGroup,
-  InputRightElement,
+  List,
   Select,
   Spinner,
-  Stack,
-  StackDivider,
   Switch,
   Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   eduDetailList,
   eduList,
   workPeriodList,
   workTimeList,
   workWeekList,
-} from "./const.jsx";
+} from "./conditionConst.jsx";
 
 export function JobsView() {
   const { id } = useParams();
-  const account = useContext(LoginContext);
-  const [isAgeLimitChecked, setIsAgeLimitChecked] = useState(false);
-  const fileNameList = [];
-  const [fileList, setFileList] = useState([]);
-  const [removeFileList, setRemoveFileList] = useState([]);
-  const [addFileList, setAddFileList] = useState([]);
-  const [storeList, setStoreList] = useState([]);
+
   const [editJobs, setEditJobs] = useState({});
   const [jobsCondition, setJobsCondition] = useState({});
+  const [isAgeLimitChecked, setIsAgeLimitChecked] = useState(false);
+  const [storeList, setStoreList] = useState([]);
+
+  const fileNameList = [];
+  const [fileList, setFileList] = useState([]);
+  const [addFileList, setAddFileList] = useState([]);
+  const [removeFileList, setRemoveFileList] = useState([]);
+
   const toast = useToast();
   const navigate = useNavigate();
 
+  // Read
   useEffect(() => {
     axios
       .get(`/api/jobs/${id}`)
@@ -71,6 +65,7 @@ export function JobsView() {
       });
   }, [id, navigate]);
 
+  // Update
   function handleSubmitEditJobs() {
     axios
       .putForm("/api/jobs/update", {
@@ -89,6 +84,7 @@ export function JobsView() {
       .finally(() => {});
   }
 
+  // Delete
   function handleSubmitDeleteJobs() {
     axios
       .delete(`/api/jobs/delete?id=${id}`)
@@ -135,6 +131,7 @@ export function JobsView() {
     }));
   };
 
+  // toast 커스텀
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -143,14 +140,15 @@ export function JobsView() {
       duration: "700",
     });
   }
-
+  // 스피너
   if (editJobs === null) {
     return <Spinner />;
   }
 
-  // 파일 관련 함수들 (handleRemoveSwitchChange 포함)
+  /* 파일 관련 함수들 (handleRemoveSwitchChange 포함) */
+
+  // 중복체크
   for (let addFile of addFileList) {
-    // 이미 있는 파일과 중복된 파일명인지?
     let duplicate = false;
     for (let file of fileList) {
       if (file.name === addFile.name) {
@@ -158,6 +156,7 @@ export function JobsView() {
         break;
       }
     }
+    // 입력한 fileNameList 관리
     fileNameList.push(
       <Flex key={addFile.name}>
         <Text fontSize={"md"} mr={3}>
@@ -168,6 +167,7 @@ export function JobsView() {
     );
   }
 
+  // file 삭제 스위치
   function handleRemoveSwitchChange(name, checked) {
     if (checked) {
       setRemoveFileList([...removeFileList, name]);
@@ -175,7 +175,7 @@ export function JobsView() {
       setRemoveFileList(removeFileList.filter((item) => item !== name));
     }
   }
-
+  // 연령무관 체크박스
   const handleAgeLimitChange = (e) => {
     const isChecked = e.target.checked;
     setIsAgeLimitChecked(isChecked);
@@ -188,221 +188,170 @@ export function JobsView() {
   return (
     <Box>
       <Heading>알바공고 상세페이지</Heading>
-      <Flex justifyContent={"center"} alignItems={"center"}>
-        <Center w={"30%"}>
-          <FormControl>
-            <FormLabel>제목</FormLabel>
+      <Center w={"50%"} ml={"25%"}>
+        <FormControl>
+          <FormLabel>제목</FormLabel>
+          <Input
+            value={editJobs.title}
+            onChange={(e) => handleEditInput("title", e)}
+            type={"text"}
+          />
 
-            <Input
-              value={editJobs.title}
-              onChange={(e) => handleEditInput("title", e)}
-              type={"text"}
-              placeholder={"제목을 입력해주세요"}
-            />
+          <FormLabel>내용</FormLabel>
+          <Textarea
+            value={editJobs.content}
+            onChange={(e) => handleEditInput("content", e)}
+            type={"text"}
+          />
+          <FormLabel>시급</FormLabel>
+          <Input
+            value={editJobs.salary}
+            onChange={(e) => handleEditInput("salary", e)}
+            type={"number"}
+          />
 
-            <FormLabel>내용</FormLabel>
-            <Textarea
-              value={editJobs.content}
-              onChange={(e) => handleEditInput("content", e)}
-              type={"text"}
-              placeholder={"내용을 입력해주세요"}
-            />
-            <FormLabel>시급</FormLabel>
-            <InputGroup>
-              <InputRightElement w={"15%"}>(원)</InputRightElement>
-              <Input
-                value={editJobs.salary}
-                onChange={(e) => handleEditInput("salary", e)}
-                type={"number"}
-                placeholder={"시급을 입력해주세요"}
-              />
-            </InputGroup>
+          <FormLabel>마감일</FormLabel>
+          <Input
+            value={editJobs.deadline}
+            onChange={(e) => handleEditInput("deadline", e)}
+            type={"datetime-local"}
+          />
 
-            <FormLabel>마감일</FormLabel>
-            <Input
-              value={editJobs.deadline}
-              onChange={(e) => handleEditInput("deadline", e)}
-              type={"datetime-local"}
-              placeholder={"마감일을 입력해주세요"}
-            />
+          <FormLabel>모집인원</FormLabel>
+          <Input
+            value={editJobs.recruitmentNumber}
+            onChange={(e) => handleEditInput("recruitmentNumber", e)}
+            type={"number"}
+          />
+          <FormLabel>카테고리(자동선택)</FormLabel>
+          <Input value={editJobs.categoryName} readOnly />
 
-            <Flex gap={3}>
-              <Box w={"50%"}>
-                <FormLabel>모집인원</FormLabel>
-                <InputGroup>
-                  <InputRightElement w={"15%"}>(명)</InputRightElement>
-                  <Input
-                    value={editJobs.recruitmentNumber}
-                    onChange={(e) => handleEditInput("recruitmentNumber", e)}
-                    type={"number"}
-                    placeholder={"모집인원"}
+          <FormLabel>가게명</FormLabel>
+          <Select
+            value={
+              editJobs.storeName
+                ? `${editJobs.storeName}-cateNo:${editJobs.categoryId}`
+                : ""
+            }
+            onChange={(e) => handleEditInput("storeName", e)}
+          >
+            {storeList.map((store) => (
+              <option
+                key={store.id}
+                value={`${store.name}-cateNo:${store.categoryId}`}
+              >
+                {store.name}-cateNo:{store.categoryId}
+              </option>
+            ))}
+          </Select>
+
+          <FormLabel>작성자</FormLabel>
+          <Input
+            value={editJobs.memberName}
+            onChange={(e) => handleEditInput("memberName", e)}
+            type={"text"}
+            readOnly
+          />
+
+          <FormLabel>첨부사진</FormLabel>
+          <Input
+            multiple
+            type="file"
+            accept="image/*"
+            onChange={(e) => setAddFileList(e.target.files)}
+          />
+          {fileNameList.length > 0 && (
+            <>
+              <Heading size="md">추가 선택된 파일 목록</Heading>
+              <List>{fileNameList}</List>
+            </>
+          )}
+
+          <Box>
+            {fileList &&
+              fileList.map((file) => (
+                <Box key={file.name}>
+                  <Switch
+                    onChange={(e) =>
+                      handleRemoveSwitchChange(file.name, e.target.checked)
+                    }
                   />
-                </InputGroup>
-              </Box>
-              <Box w={"50%"}>
-                <FormLabel>카테고리(자동선택)</FormLabel>
-                <Input value={editJobs.categoryName} readOnly />
-              </Box>
-            </Flex>
-
-            <FormLabel>가게명</FormLabel>
-            <Select
-              value={`${editJobs.storeName || ""}-cateNo:${editJobs.categoryId || ""}`}
-              onChange={(e) => handleEditInput("storeName", e)}
-            >
-              {storeList.map((store) => (
-                <option
-                  key={store.id}
-                  value={`${store.name}-cateNo:${store.categoryId}`}
-                >
-                  {store.name}-cateNo:{store.categoryId}
-                </option>
+                  <Image src={file.src} />
+                </Box>
               ))}
-            </Select>
-
-            <FormLabel>작성자</FormLabel>
-            <Input
-              value={editJobs.memberName}
-              onChange={(e) => handleEditInput("memberName", e)}
-              type={"text"}
-              readOnly
-            />
-
-            <FormLabel>첨부사진</FormLabel>
-            <Input
-              multiple
-              type="file"
-              accept="image/*"
-              onChange={(e) => setAddFileList(e.target.files)}
-            />
-            {fileNameList.length > 0 && (
-              <Box mb={7}>
-                <Card>
-                  <CardHeader>
-                    <Heading size="md">추가 선택된 파일 목록</Heading>
-                  </CardHeader>
-                  <CardBody>
-                    <Stack divider={<StackDivider />} spacing={4}>
-                      {fileNameList}
-                    </Stack>
-                  </CardBody>
-                </Card>
-              </Box>
-            )}
-
+          </Box>
+          <Box>
+            <Text>상세 조건</Text>
             <Box>
-              {fileList &&
-                fileList.map((file) => (
-                  <Card m={3} key={file.name}>
-                    <CardBody w={"100%"} h={"100%"} alignItems="center">
-                      <Box>
-                        <Flex>
-                          <FontAwesomeIcon color="red" icon={faTrashCan} />
-                          <Switch
-                            colorScheme={"red"}
-                            onChange={(e) =>
-                              handleRemoveSwitchChange(
-                                file.name,
-                                e.target.checked,
-                              )
-                            }
-                          />
-                        </Flex>
-                      </Box>
-                      <Image
-                        cursor="pointer"
-                        w={"100%"}
-                        h={"100%"}
-                        src={file.src}
-                        sx={
-                          removeFileList.includes(file.name)
-                            ? { filter: "blur(8px)" }
-                            : {}
-                        }
-                      />
-                    </CardBody>
-                  </Card>
-                ))}
-            </Box>
-            <Box>
-              <Text>상세 조건</Text>
-              <Box>
-                <FormLabel>최소학력</FormLabel>
-                <Flex>
-                  <Select
-                    w={"50%"}
-                    value={jobsCondition.education || ""}
-                    onChange={handleConditionInput("education")}
-                    type={"text"}
-                  >
-                    <option value="" disabled>
-                      선택
-                    </option>
-                    {eduList.map((education, index) => (
-                      <option key={index} value={education}>
-                        {education}
-                      </option>
-                    ))}
-                  </Select>
-                  <Select
-                    w={"50%"}
-                    value={jobsCondition.educationDetail || ""}
-                    onChange={handleConditionInput("educationDetail")}
-                    type={"text"}
-                  >
-                    <option value="" disabled>
-                      선택
-                    </option>
-                    {eduDetailList.map((eduDetail, index) => (
-                      <option key={index} value={eduDetail}>
-                        {eduDetail}
-                      </option>
-                    ))}
-                  </Select>
-                </Flex>
-
-                <FormLabel>연령제한</FormLabel>
-                <Checkbox
-                  isChecked={isAgeLimitChecked}
-                  onChange={handleAgeLimitChange}
-                >
-                  연령무관
-                </Checkbox>
-                <InputGroup>
-                  <InputRightElement color={"gray"} w={"70px"}>
-                    세 이상
-                  </InputRightElement>
-                  <Input
-                    value={jobsCondition.age}
-                    onChange={handleConditionInput("age")}
-                    type={"number"}
-                    placeholder={"나이를 입력해주세요"}
-                    disabled={isAgeLimitChecked}
-                  />
-                </InputGroup>
-                <FormLabel>우대사항</FormLabel>
-                <Input
-                  value={jobsCondition.preferred || ""}
-                  onChange={handleConditionInput("preferred")}
-                  type={"text"}
-                  placeholder={"예) 유사업무 경험, 인근 거주 우대"}
-                />
-                <FormLabel>근무기간</FormLabel>
-                <Select
-                  value={jobsCondition.workPeriod || ""}
-                  onChange={handleConditionInput("workPeriod")}
-                  type={"text"}
-                >
-                  <option value="" disabled>
-                    선택
+              <FormLabel>학력</FormLabel>
+              <Select
+                value={jobsCondition.education || ""}
+                onChange={handleConditionInput("education")}
+                type={"text"}
+              >
+                <option value="" disabled>
+                  선택
+                </option>
+                {eduList.map((education, index) => (
+                  <option key={index} value={education}>
+                    {education}
                   </option>
-                  {workPeriodList.map((workPeriod, index) => (
-                    <option key={index} value={workPeriod}>
-                      {workPeriod}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
+                ))}
+              </Select>
+
+              <FormLabel>학력상세</FormLabel>
+              <Select
+                value={jobsCondition.educationDetail || ""}
+                onChange={handleConditionInput("educationDetail")}
+                type={"text"}
+              >
+                <option value="" disabled>
+                  선택
+                </option>
+                {eduDetailList.map((eduDetail, index) => (
+                  <option key={index} value={eduDetail}>
+                    {eduDetail}
+                  </option>
+                ))}
+              </Select>
+
+              <FormLabel>연령제한</FormLabel>
+              <Checkbox
+                isChecked={isAgeLimitChecked}
+                onChange={handleAgeLimitChange}
+              >
+                연령무관
+              </Checkbox>
+
+              <Input
+                value={jobsCondition.age}
+                onChange={handleConditionInput("age")}
+                type={"number"}
+                disabled={isAgeLimitChecked}
+              />
+
+              <FormLabel>우대사항</FormLabel>
+              <Input
+                value={jobsCondition.preferred || ""}
+                onChange={handleConditionInput("preferred")}
+                type={"text"}
+              />
+
+              <FormLabel>근무기간</FormLabel>
+              <Select
+                value={jobsCondition.workPeriod || ""}
+                onChange={handleConditionInput("workPeriod")}
+                type={"text"}
+              >
+                <option value="" disabled>
+                  선택
+                </option>
+                {workPeriodList.map((workPeriod, index) => (
+                  <option key={index} value={workPeriod}>
+                    {workPeriod}
+                  </option>
+                ))}
+              </Select>
 
               <FormLabel>근무요일</FormLabel>
               <Select
@@ -419,6 +368,7 @@ export function JobsView() {
                   </option>
                 ))}
               </Select>
+
               <FormLabel>근무시간</FormLabel>
               <Select
                 value={jobsCondition.workTime || ""}
@@ -435,44 +385,15 @@ export function JobsView() {
                 ))}
               </Select>
             </Box>
-            <Flex justifyContent="center">
-              <Button
-                // isDisabled={!allFieldsFilled}
-                // onClick={handleSubmitEditJobs}
-                colorScheme={"teal"}
-                w={120}
-                my={3}
-              >
-                지원
-              </Button>
-              <Button
-                onClick={handleSubmitEditJobs}
-                colorScheme={"purple"}
-                w={120}
-                my={3}
-              >
-                수정
-              </Button>
-              <Button
-                onClick={handleSubmitDeleteJobs}
-                colorScheme={"red"}
-                w={120}
-                my={3}
-              >
-                삭제
-              </Button>
-              <Button
-                onClick={() => navigate("/jobs/list")}
-                colorScheme={"green"}
-                w={120}
-                my={3}
-              >
-                이전
-              </Button>
-            </Flex>
-          </FormControl>
-        </Center>
-      </Flex>
+          </Box>
+          <Flex justifyContent="center">
+            <Button>지원</Button>
+            <Button onClick={handleSubmitEditJobs}>수정</Button>
+            <Button onClick={handleSubmitDeleteJobs}>삭제</Button>
+            <Button onClick={() => navigate("/jobs/list")}>이전</Button>
+          </Flex>
+        </FormControl>
+      </Center>
     </Box>
   );
 }

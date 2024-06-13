@@ -19,12 +19,7 @@ create table jobs
         foreign key (category_id) references category (id)
 );
 
-ALTER TABLE jobs ADD education
+
 
 SELECT *
-FROM store_images;
-
-
-
-
-
+FROM jobs_file;

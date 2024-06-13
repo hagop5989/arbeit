@@ -8,6 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface JobsMapper {
+    // Create
     @Insert("""
             INSERT INTO jobs 
             (member_id, store_id, category_id, title, content,
@@ -19,16 +20,7 @@ public interface JobsMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Jobs jobs);
 
-    @Update("""
-            UPDATE jobs SET
-            title = #{title},
-            content = #{content},
-            store_id = #{storeId},
-            member_id = #{memberId}
-            WHERE id = #{id}
-            """)
-    int update(Jobs jobs);
-
+    // Read
     @Select("""
             SELECT j.*,
             c.name AS categoryName,c.id AS categoryId,
@@ -41,13 +33,14 @@ public interface JobsMapper {
             """)
     Jobs selectByJobsId(Integer id);
 
-
-    @Delete("""
-            DELETE FROM jobs
-            WHERE id=#{id}
+    @Select("""
+            SELECT s.*, c.name AS cateName FROM store s
+            JOIN category c ON c.id = s.category_id
+            WHERE member_id = #{jobsMemberId}
             """)
-    int deleteByJobsId(Integer id);
+    List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
 
+    // Paging
     @Select("""
             <script>
             SELECT COUNT(j.id) 
@@ -67,7 +60,6 @@ public interface JobsMapper {
             </script>
             """)
     Integer countAllWithSearch(String searchType, String keyword);
-
 
     @Select("""
             <script>
@@ -99,34 +91,23 @@ public interface JobsMapper {
                 """)
     List<Jobs> selectAllPaging(int offset, String searchType, String keyword);
 
-    @Insert("""
-            INSERT INTO jobs_file (jobs_id, name)
-            VALUES (#{jobsId},#{name})
+    // Update
+    @Update("""
+            UPDATE jobs SET
+            category_id = #{categoryId},
+            title = #{title},
+            content = #{content},
+            store_id = #{storeId},
+            member_id = #{memberId}
+            WHERE id = #{id}
             """)
-    int insertFileName(Integer jobsId, String name);
+    int update(Jobs jobs);
 
-    @Select("""
-            SELECT name 
-            FROM jobs_file 
-            WHERE jobs_id = #{jobsId}
-            """)
-    List<String> selectFileNameByJobsId(Integer jobsId);
-
-
+    // Delete
     @Delete("""
-            DELETE FROM jobs_file
-            WHERE jobs_id = #{jobsId}
-            AND name = #{fileName}
+            DELETE FROM jobs
+            WHERE id=#{id}
             """)
-    int deleteFileByJobsIdAndName(Integer jobsId, String fileName);
-
-
-    @Select("""
-            SELECT s.*, c.name AS cateName FROM store s
-            JOIN category c ON c.id = s.category_id
-            WHERE member_id = #{jobsMemberId}
-            """)
-    List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
-
+    int deleteByJobsId(Integer id);
 
 }
