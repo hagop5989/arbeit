@@ -6,7 +6,7 @@ import { StoreEdit } from "../page/store/StoreEdit.jsx";
 
 const storeRoutes = [
   { path: "store/list", element: <StoreList /> },
-  { path: "store/add", element: <StoreRegister /> },
+  { path: "store/register", element: <StoreRegister /> },
   { path: "store/:id", element: <StoreView /> },
   { path: "store/edit/:id", element: <StoreEdit /> },
   // TODO : Git add 해야함

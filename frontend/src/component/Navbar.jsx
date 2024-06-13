@@ -54,7 +54,9 @@ export function Navbar() {
       )}
       <CustomBox onClick={() => navigate("/jobs/list")}>공고글 목록</CustomBox>
       {account.isBoss() && (
-        <CustomBox onClick={() => navigate("/store/add")}>가게 등록</CustomBox>
+        <CustomBox onClick={() => navigate("/store/register")}>
+          가게 등록
+        </CustomBox>
       )}
       {account.isBoss() && (
         <CustomBox onClick={() => navigate("/store/list")}>가게 목록</CustomBox>
