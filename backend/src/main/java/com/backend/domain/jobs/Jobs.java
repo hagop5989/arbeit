@@ -3,7 +3,6 @@ package com.backend.domain.jobs;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -18,18 +17,15 @@ public class Jobs {
     private LocalDateTime deadline;
     private Integer recruitmentNumber;
 
+    // store 에서 가져옴
     private String storeName;
-    private LocalDateTime inserted;
 
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private String markerName;
-    private Double x;
-    private Double y;
-
-
-    // 아래는 db에 없음.
+    // category 에서 가져옴
     private String categoryName;
+
+    // account 에서 가져옴
     private String memberName;
+
+    // jobsFile 에서 가져옴
     List<JobsFile> fileList;
 }

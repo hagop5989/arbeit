@@ -1,6 +1,7 @@
 package com.backend.controller.jobs;
 
 import com.backend.domain.jobs.Jobs;
+import com.backend.domain.jobs.JobsCondition;
 import com.backend.domain.store.Store;
 import com.backend.service.jobs.JobsService;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +25,19 @@ public class JobsController {
 
     @PostMapping("insert")
     public void insert(@ModelAttribute Jobs jobs,
-                       @RequestParam(value = "files[]", required = false) MultipartFile[] files) throws IOException {
-        service.insert(jobs, files);
+                       @ModelAttribute JobsCondition jobsCondition,
+                       @RequestParam(value = "files", required = false) MultipartFile[] files) throws IOException {
+        service.insert(jobs, jobsCondition, files);
     }
 
     @PutMapping("update")
-    public void update(Jobs jobs,
+    public void update(@ModelAttribute Jobs jobs,
+                       @ModelAttribute JobsCondition jobsCondition,
                        @RequestParam(value = "removeFileList[]", required = false)
                        List<String> removeFileList,
                        @RequestParam(value = "addFileList[]", required = false)
                        MultipartFile[] addFileList) throws IOException {
-        service.update(jobs, removeFileList, addFileList);
+        service.update(jobs, jobsCondition, removeFileList, addFileList);
     }
 
     @GetMapping("{id}")

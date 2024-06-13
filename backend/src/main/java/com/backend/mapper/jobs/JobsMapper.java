@@ -8,45 +8,39 @@ import java.util.List;
 
 @Mapper
 public interface JobsMapper {
+    // Create
     @Insert("""
-            INSERT INTO jobs
+            INSERT INTO jobs 
             (member_id, store_id, category_id, title, content,
-             salary, deadline, recruitment_number, store_name,start_time,end_time,marker_name,x,y)
+             salary, deadline, recruitment_number)
             VALUES
             (#{memberId},#{storeId},#{categoryId},#{title},#{content},
-            #{salary},#{deadline},#{recruitmentNumber},#{storeName},#{startTime},#{endTime},#{markerName},#{x},#{y})
+            #{salary},#{deadline},#{recruitmentNumber})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Jobs jobs);
 
-    @Update("""
-            UPDATE jobs SET
-            title = #{title},
-            content = #{content},
-            store_name = #{storeName},
-            store_id = #{storeId},
-            member_id = #{memberId}
-            WHERE id = #{id}
-            """)
-    int update(Jobs jobs);
-
+    // Read
     @Select("""
             SELECT j.*,
-               s.cate_name AS categoryName, m.name AS memberName
-            FROM jobs j
+            c.name AS categoryName,c.id AS categoryId,
+            m.name AS memberName, s.name AS storeName
+            FROM jobs j 
             JOIN store s ON s.id = j.store_id
             JOIN member m ON m.id = j.member_id
+            JOIN category c ON c.id = j.category_id
             WHERE j.id = #{id}
             """)
     Jobs selectByJobsId(Integer id);
 
-
-    @Delete("""
-            DELETE FROM jobs
-            WHERE id=#{id}
+    @Select("""
+            SELECT s.*, c.name AS cateName FROM store s
+            JOIN category c ON c.id = s.category_id
+            WHERE member_id = #{jobsMemberId}
             """)
-    int deleteByJobsId(Integer id);
+    List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
 
+    // Paging
     @Select("""
             <script>
             SELECT COUNT(j.id) 
@@ -67,17 +61,17 @@ public interface JobsMapper {
             """)
     Integer countAllWithSearch(String searchType, String keyword);
 
-
     @Select("""
             <script>
             SELECT j.id,
                    j.title,
                    j.content,
                    j.salary,
-                   j.store_name,
-                   j.inserted,
+                   s.name AS storeName,
                    m.name AS memberName
-            FROM jobs j JOIN member m ON j.member_id = m.id
+            FROM jobs j 
+            JOIN member m ON j.member_id = m.id 
+            JOIN store s ON s.id = j.store_id
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
                        <bind name="pattern" value="'%' + keyword + '%'" />
@@ -97,39 +91,23 @@ public interface JobsMapper {
                 """)
     List<Jobs> selectAllPaging(int offset, String searchType, String keyword);
 
-    @Insert("""
-            INSERT INTO jobs_file (jobs_id, name)
-            VALUES (#{jobsId},#{name})
+    // Update
+    @Update("""
+            UPDATE jobs SET
+            category_id = #{categoryId},
+            title = #{title},
+            content = #{content},
+            store_id = #{storeId},
+            member_id = #{memberId}
+            WHERE id = #{id}
             """)
-    int insertFileName(Integer jobsId, String name);
+    int update(Jobs jobs);
 
-    @Select("""
-            SELECT name 
-            FROM jobs_file 
-            WHERE jobs_id = #{jobsId}
-            """)
-    List<String> selectFileNameByJobsId(Integer jobsId);
-
-
+    // Delete
     @Delete("""
-            DELETE FROM jobs_file
-            WHERE jobs_id = #{jobsId}
-            AND name = #{fileName}
+            DELETE FROM jobs
+            WHERE id=#{id}
             """)
-    int deleteFileByJobsIdAndName(Integer jobsId, String fileName);
-
-    @Delete("""
-            DELETE FROM jobs_file 
-            WHERE jobs_id = #{jobsId}
-            """)
-    int deleteFileByJobsId(Integer jobsId);
-
-
-    @Select("""
-            SELECT * FROM store
-            WHERE member_id = #{jobsMemberId}
-            """)
-    List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
-
+    int deleteByJobsId(Integer id);
 
 }

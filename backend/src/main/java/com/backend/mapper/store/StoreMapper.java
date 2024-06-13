@@ -16,8 +16,8 @@ public interface StoreMapper {
     List<Category> selectAllCategory();
 
     @Insert("""
-                INSERT INTO store (name, content, address, detail_address, phone, member_id, category_id)
-                VALUES (#{name}, #{content}, #{address}, #{detailAddress}, #{phone}, #{memberId}, #{categoryId})
+            INSERT INTO store (name, content, address, detail_address, phone, member_id, category_id)
+            VALUES (#{name}, #{content}, #{address}, #{detailAddress}, #{phone}, #{memberId}, #{categoryId})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Store store);
@@ -83,14 +83,14 @@ public interface StoreMapper {
     int insertImage(Integer storeId, String name);
 
     @Delete("""
-            DELETE FROM store_file
+            DELETE FROM store_images
             WHERE store_id = #{id}
             """
     )
     int deleteFileByStoreId(Integer id);
 
     @Delete("""
-            DELETE FROM store_file
+            DELETE FROM store_images
             WHERE store_id = #{id}
             AND name = #{fileName}
             """)
