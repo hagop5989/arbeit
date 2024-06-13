@@ -9,12 +9,12 @@ import java.util.List;
 @Mapper
 public interface JobsMapper {
     @Insert("""
-            INSERT INTO jobs
+            INSERT INTO jobs 
             (member_id, store_id, category_id, title, content,
-             salary, deadline, recruitment_number, store_name,start_time,end_time,marker_name,x,y)
+             salary, deadline, recruitment_number)
             VALUES
             (#{memberId},#{storeId},#{categoryId},#{title},#{content},
-            #{salary},#{deadline},#{recruitmentNumber},#{storeName},#{startTime},#{endTime},#{markerName},#{x},#{y})
+            #{salary},#{deadline},#{recruitmentNumber})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Jobs jobs);
@@ -23,7 +23,6 @@ public interface JobsMapper {
             UPDATE jobs SET
             title = #{title},
             content = #{content},
-            store_name = #{storeName},
             store_id = #{storeId},
             member_id = #{memberId}
             WHERE id = #{id}
@@ -32,10 +31,12 @@ public interface JobsMapper {
 
     @Select("""
             SELECT j.*,
-               s.cate_name AS categoryName, m.name AS memberName
-            FROM jobs j
+            c.name AS categoryName,c.id AS categoryId,
+            m.name AS memberName, s.name AS storeName
+            FROM jobs j 
             JOIN store s ON s.id = j.store_id
             JOIN member m ON m.id = j.member_id
+            JOIN category c ON c.id = j.category_id
             WHERE j.id = #{id}
             """)
     Jobs selectByJobsId(Integer id);
@@ -74,10 +75,11 @@ public interface JobsMapper {
                    j.title,
                    j.content,
                    j.salary,
-                   j.store_name,
-                   j.inserted,
+                   s.name AS storeName,
                    m.name AS memberName
-            FROM jobs j JOIN member m ON j.member_id = m.id
+            FROM jobs j 
+            JOIN member m ON j.member_id = m.id 
+            JOIN store s ON s.id = j.store_id
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
                        <bind name="pattern" value="'%' + keyword + '%'" />
@@ -118,15 +120,10 @@ public interface JobsMapper {
             """)
     int deleteFileByJobsIdAndName(Integer jobsId, String fileName);
 
-    @Delete("""
-            DELETE FROM jobs_file 
-            WHERE jobs_id = #{jobsId}
-            """)
-    int deleteFileByJobsId(Integer jobsId);
-
 
     @Select("""
-            SELECT * FROM store
+            SELECT s.*, c.name AS cateName FROM store s
+            JOIN category c ON c.id = s.category_id
             WHERE member_id = #{jobsMemberId}
             """)
     List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);

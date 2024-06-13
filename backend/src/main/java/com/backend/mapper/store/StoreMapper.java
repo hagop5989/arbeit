@@ -9,11 +9,11 @@ import java.util.List;
 public interface StoreMapper {
 
     @Insert("""
-                INSERT INTO store (name, content, address, phone, category_id, member_id, cate_name,x,y)
-                VALUES (#{name}, #{content}, #{address}, #{phone}, #{categoryId}, #{memberId}, #{cateName},#{x},#{y})
+                INSERT INTO store (name, content, address, phone, category_id, member_id,x,y)
+                VALUES (#{name}, #{content}, #{address}, #{phone}, #{categoryId}, #{memberId}, #{x},#{y})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    public int insert(Store store);
+    int insert(Store store);
 
     @Select("""
             SELECT s.id, s.name, s.content, s.address, s.phone, c.name cate, s.member_id, c.icon
@@ -53,7 +53,7 @@ public interface StoreMapper {
     int update(Store store);
 
     @Insert("""
-            INSERT INTO store_file (store_id, name)
+            INSERT INTO store_images (store_id, name)
             VALUES (#{storeId}, #{name})
             """)
     int insertFileName(Integer storeId, String name);
@@ -67,20 +67,20 @@ public interface StoreMapper {
     List<Store> setcate();
 
     @Select("""
-            SELECT name FROM store_file
+            SELECT name FROM store_images
             WHERE store_id = #{id}
             """)
     List<String> selectFileNameByStoreId(Integer id);
 
     @Delete("""
-            DELETE FROM store_file
+            DELETE FROM store_images
             WHERE store_id = #{id}
             """
     )
     int deleteFileByStoreId(Integer id);
 
     @Delete("""
-            DELETE FROM store_file
+            DELETE FROM store_images
             WHERE store_id = #{id}
             AND name = #{fileName}
             """)

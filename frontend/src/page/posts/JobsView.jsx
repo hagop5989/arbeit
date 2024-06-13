@@ -6,9 +6,9 @@ import {
   CardBody,
   CardHeader,
   Center,
+  Checkbox,
   Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
   Image,
@@ -28,64 +28,57 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
-import { KakaoMap1 } from "./KakaoMap1.jsx";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  eduDetailList,
+  eduList,
+  workPeriodList,
+  workTimeList,
+  workWeekList,
+} from "./const.jsx";
 
-export function JobsView2() {
+export function JobsView() {
   const { id } = useParams();
   const account = useContext(LoginContext);
-  const navigate = useNavigate();
+  const [isAgeLimitChecked, setIsAgeLimitChecked] = useState(false);
+  const fileNameList = [];
+  const [fileList, setFileList] = useState([]);
   const [removeFileList, setRemoveFileList] = useState([]);
   const [addFileList, setAddFileList] = useState([]);
-  const [fileList, setFileList] = useState([]);
   const [storeList, setStoreList] = useState([]);
-  const [editJobs, setEditJobs] = useState({
-    title: "",
-    content: "",
-    salary: "",
-    deadline: "",
-    recruitmentNumber: "",
-    storeName: "",
-    categoryName: "",
-    categoryId: "",
-    storeId: "",
+  const [editJobs, setEditJobs] = useState({});
+  const [jobsCondition, setJobsCondition] = useState({});
+  const toast = useToast();
+  const navigate = useNavigate();
 
-    memberId: account.id,
-    memberName: "",
-
-    startTime: "",
-    endTime: "",
-    x: "",
-    y: "",
-    resultName: "",
-  });
-
-  function handleEditInput(field, e) {
-    const value = e.target.value;
-    if (field === "storeName") {
-      const [storeName, categoryId] = value.split("-cateNo:");
-      const store = storeList.find(
-        (store) =>
-          store.name === storeName && store.categoryId === parseInt(categoryId),
-      );
-      setEditJobs((prev) => ({
-        ...prev,
-        storeName: storeName,
-        categoryName: store ? store.cateName : "",
-        categoryId: store ? store.categoryId : "",
-      }));
-    } else {
-      setEditJobs((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-    }
-  }
+  useEffect(() => {
+    axios
+      .get(`/api/jobs/${id}`)
+      .then((res) => {
+        setStoreList(res.data.storeList);
+        setEditJobs(res.data.jobs);
+        setJobsCondition(res.data.jobsCondition);
+        setFileList(res.data.jobs.fileList || []);
+        delete res.data.jobs.fileList;
+        console.log(editJobs.storeName);
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 404) {
+          myToast("해당 게시물이 존재하지 않습니다", "error");
+          navigate("/jobs/list");
+        }
+      });
+  }, [id, navigate]);
 
   function handleSubmitEditJobs() {
     axios
-      .putForm("/api/jobs/update", { ...editJobs, removeFileList, addFileList })
+      .putForm("/api/jobs/update", {
+        ...editJobs,
+        ...jobsCondition,
+        removeFileList,
+        addFileList,
+      })
       .then((res) => {
         myToast("수정 완료 되었습니다", "success");
         navigate("/jobs/list");
@@ -109,28 +102,38 @@ export function JobsView2() {
       .finally(() => {});
   }
 
-  useEffect(() => {
-    axios
-      .get(`/api/jobs/${id}`)
-      .then((res) => {
-        setStoreList(res.data.storeList);
-        setEditJobs(res.data.jobs);
-        setFileList(res.data.jobs.fileList);
-        delete res.data.jobs.fileList;
-      })
-      .catch((err) => {
-        if (err.response.status === 404) {
-          toast({
-            status: "info",
-            description: "해당 게시물이 존재하지 않습니다.",
-            position: "top",
-          });
-          navigate("/api/jobs/list");
-        }
-      });
-  }, [id, navigate]); // 여기에 의존성 배열을 추가합니다
+  // Input 값 관리
+  function handleEditInput(field, e) {
+    const value = e.target.value;
+    if (field === "storeName") {
+      const [storeName, categoryId] = value.split("-cateNo:");
+      console.log(storeName);
+      const store = storeList.find(
+        (store) =>
+          store.name === storeName && store.categoryId === parseInt(categoryId),
+      );
+      setEditJobs((prev) => ({
+        ...prev,
+        storeName: storeName,
+        storeId: store ? store.id : null,
+        categoryName: store ? store.cateName : "",
+        categoryId: store ? store.categoryId : "",
+      }));
+    } else {
+      setEditJobs((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  }
 
-  const toast = useToast();
+  // condition input 관리
+  const handleConditionInput = (field) => (e) => {
+    setJobsCondition((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
 
   function myToast(text, status) {
     toast({
@@ -141,15 +144,11 @@ export function JobsView2() {
     });
   }
 
-  const handleImageClick = (src) => {
-    window.open(src, "_blank");
-  };
-
   if (editJobs === null) {
     return <Spinner />;
   }
 
-  const fileNameList = [];
+  // 파일 관련 함수들 (handleRemoveSwitchChange 포함)
   for (let addFile of addFileList) {
     // 이미 있는 파일과 중복된 파일명인지?
     let duplicate = false;
@@ -176,6 +175,15 @@ export function JobsView2() {
       setRemoveFileList(removeFileList.filter((item) => item !== name));
     }
   }
+
+  const handleAgeLimitChange = (e) => {
+    const isChecked = e.target.checked;
+    setIsAgeLimitChecked(isChecked);
+    setJobsCondition((prev) => ({
+      ...prev,
+      age: isChecked ? 0 : prev.age,
+    }));
+  };
 
   return (
     <Box>
@@ -210,28 +218,6 @@ export function JobsView2() {
               />
             </InputGroup>
 
-            <Flex justifyContent={"space-between"} my={3}>
-              <Box w={"50%"} borderRadius={"5px"}>
-                <FormLabel>근무시작</FormLabel>
-                <Input
-                  type="time"
-                  value={editJobs.startTime}
-                  onChange={(e) => handleEditInput("startTime", e)}
-                />
-              </Box>
-              <Box w={"50%"} borderRadius={"5px"} ml={1}>
-                <FormLabel>근무종료</FormLabel>
-                <Input
-                  type="time"
-                  value={editJobs.endTime}
-                  onChange={(e) => handleEditInput("endTime", e)}
-                />
-              </Box>
-            </Flex>
-            <FormHelperText my={2}>
-              시계 모양을 클릭하여 선택해주세요
-            </FormHelperText>
-
             <FormLabel>마감일</FormLabel>
             <Input
               value={editJobs.deadline}
@@ -261,7 +247,7 @@ export function JobsView2() {
 
             <FormLabel>가게명</FormLabel>
             <Select
-              value={editJobs.storeName}
+              value={`${editJobs.storeName || ""}-cateNo:${editJobs.categoryId || ""}`}
               onChange={(e) => handleEditInput("storeName", e)}
             >
               {storeList.map((store) => (
@@ -273,6 +259,7 @@ export function JobsView2() {
                 </option>
               ))}
             </Select>
+
             <FormLabel>작성자</FormLabel>
             <Input
               value={editJobs.memberName}
@@ -280,13 +267,7 @@ export function JobsView2() {
               type={"text"}
               readOnly
             />
-            <FormLabel>가게위치</FormLabel>
 
-            <KakaoMap1
-              x={editJobs.y}
-              y={editJobs.x}
-              markerName={editJobs.markerName}
-            />
             <FormLabel>첨부사진</FormLabel>
             <Input
               multiple
@@ -330,7 +311,6 @@ export function JobsView2() {
                       </Box>
                       <Image
                         cursor="pointer"
-                        onClick={() => handleImageClick(file.src)}
                         w={"100%"}
                         h={"100%"}
                         src={file.src}
@@ -343,6 +323,117 @@ export function JobsView2() {
                     </CardBody>
                   </Card>
                 ))}
+            </Box>
+            <Box>
+              <Text>상세 조건</Text>
+              <Box>
+                <FormLabel>최소학력</FormLabel>
+                <Flex>
+                  <Select
+                    w={"50%"}
+                    value={jobsCondition.education || ""}
+                    onChange={handleConditionInput("education")}
+                    type={"text"}
+                  >
+                    <option value="" disabled>
+                      선택
+                    </option>
+                    {eduList.map((education, index) => (
+                      <option key={index} value={education}>
+                        {education}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select
+                    w={"50%"}
+                    value={jobsCondition.educationDetail || ""}
+                    onChange={handleConditionInput("educationDetail")}
+                    type={"text"}
+                  >
+                    <option value="" disabled>
+                      선택
+                    </option>
+                    {eduDetailList.map((eduDetail, index) => (
+                      <option key={index} value={eduDetail}>
+                        {eduDetail}
+                      </option>
+                    ))}
+                  </Select>
+                </Flex>
+
+                <FormLabel>연령제한</FormLabel>
+                <Checkbox
+                  isChecked={isAgeLimitChecked}
+                  onChange={handleAgeLimitChange}
+                >
+                  연령무관
+                </Checkbox>
+                <InputGroup>
+                  <InputRightElement color={"gray"} w={"70px"}>
+                    세 이상
+                  </InputRightElement>
+                  <Input
+                    value={jobsCondition.age}
+                    onChange={handleConditionInput("age")}
+                    type={"number"}
+                    placeholder={"나이를 입력해주세요"}
+                    disabled={isAgeLimitChecked}
+                  />
+                </InputGroup>
+                <FormLabel>우대사항</FormLabel>
+                <Input
+                  value={jobsCondition.preferred || ""}
+                  onChange={handleConditionInput("preferred")}
+                  type={"text"}
+                  placeholder={"예) 유사업무 경험, 인근 거주 우대"}
+                />
+                <FormLabel>근무기간</FormLabel>
+                <Select
+                  value={jobsCondition.workPeriod || ""}
+                  onChange={handleConditionInput("workPeriod")}
+                  type={"text"}
+                >
+                  <option value="" disabled>
+                    선택
+                  </option>
+                  {workPeriodList.map((workPeriod, index) => (
+                    <option key={index} value={workPeriod}>
+                      {workPeriod}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+
+              <FormLabel>근무요일</FormLabel>
+              <Select
+                value={jobsCondition.workWeek || ""}
+                onChange={handleConditionInput("workWeek")}
+                type={"text"}
+              >
+                <option value="" disabled>
+                  선택
+                </option>
+                {workWeekList.map((workWeek, index) => (
+                  <option key={index} value={workWeek}>
+                    {workWeek}
+                  </option>
+                ))}
+              </Select>
+              <FormLabel>근무시간</FormLabel>
+              <Select
+                value={jobsCondition.workTime || ""}
+                onChange={handleConditionInput("workTime")}
+                type={"text"}
+              >
+                <option value="" disabled>
+                  선택
+                </option>
+                {workTimeList.map((workTime, index) => (
+                  <option key={index} value={workTime}>
+                    {workTime}
+                  </option>
+                ))}
+              </Select>
             </Box>
             <Flex justifyContent="center">
               <Button

@@ -1,10 +1,11 @@
 package com.backend.service.jobs;
 
 import com.backend.domain.jobs.Jobs;
+import com.backend.domain.jobs.JobsCondition;
 import com.backend.domain.jobs.JobsFile;
 import com.backend.domain.store.Store;
+import com.backend.mapper.jobs.JobsConditionMapper;
 import com.backend.mapper.jobs.JobsMapper;
-import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JobsService {
     private final JobsMapper jobsMapper;
-    private final MemberMapper memberMapper;
+    private final JobsConditionMapper conditionMapper;
     final S3Client s3Client;
 
     @Value("${aws.s3.bucket.name}")
@@ -35,50 +36,91 @@ public class JobsService {
     @Value("${image.src.prefix}")
     String srcPrefix;
 
-    public void insert(Jobs jobs, MultipartFile[] files) throws IOException {
-
+    public void insert(Jobs jobs, JobsCondition condition, MultipartFile[] fileList) throws IOException {
         // db에 jobs 입력
         jobsMapper.insert(jobs);
 
-        // 파일 입력
-        if (files != null) {
-            for (MultipartFile file : files) {
-                jobsMapper.insertFileName(jobs.getId(), file.getOriginalFilename());
-                // 실제 파일 저장 (s3)
-                String key = STR."arbeit/jobs/\{jobs.getId()}/\{file.getOriginalFilename()}";
-                PutObjectRequest objectRequest = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .acl(ObjectCannedACL.PUBLIC_READ)
-                        .build();
+        // mapper로 인해 생성된 jobs의 id를 condition에 부여 (현재 null)
+        Jobs dbJobs = jobsMapper.selectByJobsId(jobs.getId());
+        condition.setAlbaPostsId(dbJobs.getId());
 
-                s3Client.putObject(objectRequest,
-                        RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            }
-        }
+        // db에 condition 입력
+        conditionMapper.insert(condition);
+        // db, s3에 파일 입력
+        addFileList(jobs, fileList);
     }
 
     public List<Store> findInsertData(Integer memberId) {
-        // storeList 반환하기.
+        // storeList 반환(카테고리 포함).
         return jobsMapper.selectStoreByJobsMemberId(memberId);
     }
 
-    public void update(Jobs jobs, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
-        if (removeFileList != null && removeFileList.size() > 0) {
-            for (String fileName : removeFileList) {
-                // s3의 파일 삭제
-                String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
-                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build();
-                s3Client.deleteObject(objectRequest);
+    public void update(Jobs jobs, JobsCondition condition, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
+        // db에 condition 입력
+        conditionMapper.update(condition);
+        // s3,db jobsFile 삭제
+        deleteFileList(jobs, removeFileList);
+        // db, s3 에 입력
+        addFileList(jobs, addFileList);
+        // db에 jobs 입력
+        jobsMapper.update(jobs);
+    }
 
-                // db records 삭제
-                jobsMapper.deleteFileByJobsIdAndName(jobs.getId(), fileName);
-            }
-        }
 
+    public Map<String, Object> selectByJobsId(Integer jobsId) {
+        // jobs, storeList 넣을 map 생성
+        Map<String, Object> result = new HashMap<>();
+
+        // jobsId로 jobs 찾기
+        Jobs jobs = jobsMapper.selectByJobsId(jobsId);
+        JobsCondition condition = conditionMapper.selectByJobsId(jobsId);
+
+
+        // jobs의 memberId로 storeList 찾기
+        List<Store> storeList = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
+        // jobsId로 파일리스트 찾기
+        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
+        List<JobsFile> files = fileNames.stream()
+                .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/jobs/\{jobsId}/\{fileName}"))
+                .toList();
+        jobs.setFileList(files);
+
+        // map 에 넣고 반환
+
+        result.put("jobs", jobs);
+        result.put("jobsCondition", condition);
+        result.put("storeList", storeList);
+        return result;
+    }
+
+    public void deleteByJobsId(Integer jobsId) {
+        // file 명 조회
+        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
+        Jobs jobs = jobsMapper.selectByJobsId(jobsId);
+
+        // s3,db jobsFile 삭제
+        deleteFileList(jobs, fileNames);
+        // db의 condition 삭제
+        conditionMapper.deleteByJobsId(jobsId);
+        // db의 jobs 삭제
+        jobsMapper.deleteByJobsId(jobsId);
+    }
+
+    public Map<String, Object> list(Integer memberId, Integer page,
+                                    String searchType, String keyword) {
+        Map pageInfo = new HashMap();
+        Integer offset = paging(page, searchType, keyword, pageInfo);
+        List<Jobs> JobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
+
+        return Map.of("pageInfo", pageInfo,
+                "jobsList", JobsList);
+    }
+
+
+    // 추출한 메소드 들
+
+    // db, s3 에 입력
+    private void addFileList(Jobs jobs, MultipartFile[] addFileList) throws IOException {
         if (addFileList != null && addFileList.length > 0) {
             List<String> fileNameList = jobsMapper.selectFileNameByJobsId(jobs.getId());
             for (MultipartFile file : addFileList) {
@@ -98,57 +140,28 @@ public class JobsService {
                 s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
         }
-        jobsMapper.update(jobs);
     }
 
-    public Map<String, Object> selectByJobsId(Integer jobsId) {
-        // jobs, storeList 넣을 map 생성
-        Map<String, Object> result = new HashMap<>();
+    // s3,db jobsFile 삭제
+    private void deleteFileList(Jobs jobs, List<String> removeFileList) {
+        if (removeFileList != null && removeFileList.size() > 0) {
+            for (String fileName : removeFileList) {
+                // s3의 파일 삭제
+                String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
+                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                s3Client.deleteObject(objectRequest);
 
-        // jobsId로 jobs 찾기
-        Jobs jobs = jobsMapper.selectByJobsId(jobsId);
-
-        // jobs의 memberId로 storeList 찾기
-        List<Store> storeList = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
-
-        // jobsId로 파일리스트 찾기
-        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
-        List<JobsFile> files = fileNames.stream()
-                .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/jobs/\{jobsId}/\{fileName}"))
-                .toList();
-        jobs.setFileList(files);
-
-
-        result.put("jobs", jobs);
-        result.put("storeList", storeList);
-
-        return result;
-
-    }
-
-    public void deleteByJobsId(Integer jobsId) {
-        // file 명 조회
-        List<String> fileNames = jobsMapper.selectFileNameByJobsId(jobsId);
-
-        // aws s3의 file 삭제
-        for (String fileName : fileNames) {
-            String key = STR."\{srcPrefix}/\{jobsId}/\{fileName}";
-            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .build();
-
-            s3Client.deleteObject(objectRequest);
+                // db jobsFile 삭제
+                jobsMapper.deleteFileByJobsIdAndName(jobs.getId(), fileName);
+            }
         }
-        // db의 jobsFile 삭제
-        jobsMapper.deleteFileByJobsId(jobsId);
-        // db의 jobs 삭제
-        jobsMapper.deleteByJobsId(jobsId);
     }
 
-    public Map<String, Object> list(Integer memberId, Integer page,
-                                    String searchType, String keyword) {
-        Map pageInfo = new HashMap();
+    // 페이징
+    private Integer paging(Integer page, String searchType, String keyword, Map pageInfo) {
         Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword);
 
         Integer offset = (page - 1) * 10;
@@ -173,10 +186,7 @@ public class JobsService {
         pageInfo.put("lastPageNum", lastPageNum);
         pageInfo.put("leftPageNum", leftPageNum);
         pageInfo.put("rightPageNum", rightPageNum);
-        List<Jobs> JobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
-
-        return Map.of("pageInfo", pageInfo,
-                "jobsList", JobsList);
+        return offset;
     }
 
 

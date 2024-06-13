@@ -31,6 +31,7 @@ import {
 } from "@chakra-ui/react";
 import { faPhone, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 export function StoreEdit() {
   const { id } = useParams();
@@ -283,7 +284,7 @@ export function StoreEdit() {
             <Modal isOpen={DisOpen} onClose={DonClose}>
               <ModalOverlay />
               <ModalContent>
-                <DaumPostcode onComplete={onCompletePost} height="100%" />
+                <DaumPostcodeEmbed onComplete={onCompletePost} height="100%" />
               </ModalContent>
             </Modal>
           </FormControl>
