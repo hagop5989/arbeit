@@ -17,3 +17,17 @@ FROM comment;
 
 
 
+SELECT c.id, c.member_id, c.comment, c.inserted
+FROM comment c
+         JOIN member m ON m.id = c.member_id
+WHERE board_Id = 1
+ORDER BY id
+;
+
+
+
+SELECT c.id, c.member_id, c.comment, c.inserted
+FROM comment c
+         JOIN member m ON m.id = c.member_id
+WHERE board_Id = 8
+ORDER BY c.id;
