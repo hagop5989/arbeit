@@ -1,42 +1,34 @@
 USE arbeit;
 
 # 가게 테이블
-create table store
+CREATE TABLE store
 (
-    id          int auto_increment
-        primary key,
-    name        varchar(45)   not null,
-    content     varchar(1000) not null,
-    address     varchar(100)  not null,
-    phone       varchar(45)   null,
-    member_id   int           null,
-    category_id int           null,
-    cate_name   varchar(45)   null,
-    constraint store_ibfk_1
-        foreign key (member_id) references member (id),
-    constraint store_ibfk_2
-        foreign key (category_id) references category (id),
-    constraint store_ibfk_3
-        foreign key (cate_name) references category (name)
+    id             INT PRIMARY KEY AUTO_INCREMENT,
+    name           VARCHAR(45)   NOT NULL,
+    content        VARCHAR(3000) NOT NULL,
+    address        VARCHAR(200)  NOT NULL,
+    detail_address VARCHAR(200)  NOT NULL,
+    phone          VARCHAR(45)   NOT NULL,
+    inserted       DATETIME      NOT NULL DEFAULT NOW(),
+    member_id      INT REFERENCES member (id),
+    category_id    INT REFERENCES category (id)
 );
-
+SELECT *
+FROM store;
 # 가게 이미지
-create table store_file
+CREATE TABLE store_images
 (
-    store_id int         not null,
-    name     varchar(45) not null,
-    primary key (store_id, name),
-    constraint store_file_ibfk_1
-        foreign key (store_id) references store (id)
+    store_id INT REFERENCES store (id),
+    name     VARCHAR(200) NOT NULL,
+    PRIMARY KEY (store_id, name)
 );
+SELECT *
+FROM store_images;
 
 # 카테고리
-create table category
+CREATE TABLE category
 (
-    id   int auto_increment
-        primary key,
-    name varchar(45) not null,
-    icon varchar(45) not null,
-    constraint name
-        unique (name)
+    id   INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(45) NOT NULL UNIQUE,
+    icon VARCHAR(45) NOT NULL
 );
