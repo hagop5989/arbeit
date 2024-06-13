@@ -13,7 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
-export function CommentWrite() {
+export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState({});
   const account = useContext(LoginContext);
@@ -33,8 +33,13 @@ export function CommentWrite() {
     }
 
     axios
-      .post("/api/comment/add", { ...comment, memberId: account.id })
+      .post("/api/comment/add", {
+        ...comment,
+        boardId: boardId,
+        memberId: account.id,
+      })
       .then((res) => {
+        setComment("");
         toast({
           status: "success",
           description: "댓글 등록 하였습니다 ",
@@ -53,7 +58,9 @@ export function CommentWrite() {
           });
         }
       })
-      .finally();
+      .finally(() => {
+        setIsProcessing(false);
+      });
   }
 
   function handlecancel() {

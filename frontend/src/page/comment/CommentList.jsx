@@ -1,31 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardBody } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Table,
+  Tbody,
+  Td,
+  Tr,
+} from "@chakra-ui/react";
 import axios from "axios";
-import { CommentItem } from "./CommentItem.jsx";
+import { useNavigate } from "react-router-dom";
 
-export function CommentList(boardId) {
+export function CommentList({ boardId }) {
   const [commentList, setCommentList] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (!boardId) return;
+
     axios
-      .get(`/api/comment/list${boardId}`)
+      .get(`/api/comment/list/${boardId}`)
       .then((res) => {
         setCommentList(res.data);
       })
-      .catch((err) => console.log(err))
-      .finally(() => {});
-  }, []);
+      .catch((err) => console.log(err));
+  }, [boardId]);
 
-  if (commentList.length === 0) {
-    return <Box>댓글이 없습니다. 첫 댓글을 작성해보세요.</Box>;
-  }
+  function handleEdit(id) {}
 
   return (
-    <Card>
-      <CardBody>
-        {commentList.map((comment) => (
-          <CommentItem comment={{ comment }} key={comment.id} />
-        ))}
-      </CardBody>
-    </Card>
+    <Box>
+      <FormControl>
+        <FormLabel>댓글목록</FormLabel>
+        <Box>
+          <Table>
+            <Tbody>
+              {commentList.map((comment) => (
+                <Tr>
+                  <Td>{comment.id}</Td>
+                  <Td>{comment.comment}</Td>
+                  <Td>{comment.memberId}</Td>
+                  <Td>{comment.inserted}</Td>
+                  <Td>
+                    <Button
+                      colorScheme="blue"
+                      onClick={() => {
+                        handleEdit(comment.id);
+                      }}
+                    ></Button>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </FormControl>
+    </Box>
   );
 }

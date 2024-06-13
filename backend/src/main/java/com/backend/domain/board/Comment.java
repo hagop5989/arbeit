@@ -21,7 +21,7 @@ public class Comment {
 
     public Comment(Integer id, Integer boardId, Integer memberId, String comment) {
         this.id = id;
-        this.boardId = id;
+        this.boardId = boardId;
         this.memberId = memberId;
         this.comment = comment;
     }

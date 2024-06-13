@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function FormControl(props) {
   return null;
@@ -26,26 +26,27 @@ function FormControl(props) {
 export function CommentEdit() {
   const { id } = useParams();
   const [errors, setErrors] = useState(null);
-  const [comment, setComment] = useState(comment);
+  const [comment, setComment] = useState(null);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`/api/comment/${id}`).then((res) => {
       setComment(res.data);
     });
-  }, []);
+  }, [id]);
 
   function handleCommentSubmit() {
     axios
-      .put(`/api/comment/${id}`, comment)
+      .put(`/api/comment/${id}`, ...comment)
       .then(() => {
         toast({
           description: "댓글이 수정되었습니다.",
           position: "top",
           status: "success",
         });
-        navigator(`/comment/${comment.id}`);
+        navigate(`/board/list`);
       })
       .catch((err) => {
         setErrors(err.response.data);
@@ -64,7 +65,7 @@ export function CommentEdit() {
     setComment({ ...comment, [prop]: e.target.value });
   };
 
-  if (comment == null) {
+  if (!comment == null) {
     return <Spinner />;
   }
 
