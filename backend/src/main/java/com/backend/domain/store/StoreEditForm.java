@@ -1,28 +1,32 @@
 package com.backend.domain.store;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class Store {
+public class StoreEditForm {
 
+    @NotNull
     private Integer id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String content;
+    @NotBlank
     private String address;
+    @NotBlank
     private String detailAddress;
+    @NotBlank
     private String phone;
-    private LocalDateTime inserted;
+    @NotNull
     private Integer memberId;
+    @NotNull
     private Integer categoryId;
+    @NotNull
     private String categoryName;
-
-    public String getInsertedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return inserted.format(formatter);
-    }
 }

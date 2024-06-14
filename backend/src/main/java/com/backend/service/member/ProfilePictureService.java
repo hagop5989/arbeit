@@ -64,16 +64,7 @@ public class ProfilePictureService {
         return STR."\{srcPrefix}/profile/\{memberId}/\{src}";
     }
 
-    private void removeProfilePicture(String oldKey) {
-        DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(oldKey)
-                .build();
-        s3Client.deleteObject(objectRequest);
-    }
-
     private void saveProfilePicture(MultipartFile file, String newKey) throws IOException {
-        log.info("s3 등록");
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(newKey)
@@ -82,6 +73,14 @@ public class ProfilePictureService {
 
         s3Client.putObject(objectRequest,
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+    }
+
+    private void removeProfilePicture(String oldKey) {
+        DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(oldKey)
+                .build();
+        s3Client.deleteObject(objectRequest);
     }
 
     public boolean hasAccess(Integer memberId, Authentication authentication) {
