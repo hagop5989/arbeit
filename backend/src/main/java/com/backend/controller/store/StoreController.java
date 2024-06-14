@@ -2,6 +2,7 @@ package com.backend.controller.store;
 
 import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
+import com.backend.domain.store.StoreEditForm;
 import com.backend.domain.store.StoreRegisterForm;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -56,35 +57,47 @@ public class StoreController {
 
     @GetMapping("/{id}")
     public ResponseEntity view(@PathVariable Integer id) {
-        Map<String, Object> result = storeService.findStoreInfoById(id);
+        Map<String, Object> result = storeService.findStoreById(id);
+
+        if (result == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok().body(result);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
-    public ResponseEntity edit(Store store,
-                               @RequestParam(value = "removeFileList[]", required = false)
-                               List<String> removeFileList,
-                               @RequestParam(value = "addFileList[]", required = false)
-                               MultipartFile[] addFileList,
+    public ResponseEntity edit(@Validated StoreEditForm form, BindingResult bindingResult,
+                               @RequestParam(value = "removeImages[]", required = false)
+                               List<String> removeImages,
+                               @RequestParam(value = "addImages[]", required = false)
+                               MultipartFile[] addImages,
                                Authentication authentication) throws IOException {
-        
-        if (!storeService.hasAccess(store.getId(), authentication)) {
+
+        if (!storeService.hasAccess(form.getId(), authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        storeService.edit(store, removeFileList, addFileList);
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        storeService.edit(form, removeImages, addImages);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity remove(@PathVariable Integer id, Authentication authentication) {
 
-        if (storeService.hasAccess(id, authentication)) {
-            storeService.remove(id);
-            return ResponseEntity.ok().build();
+        if (!storeService.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        storeService.removeById(id);
+        return ResponseEntity.ok().build();
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {

@@ -1,9 +1,6 @@
 package com.backend.service.store;
 
-import com.backend.domain.store.Category;
-import com.backend.domain.store.Store;
-import com.backend.domain.store.StoreImage;
-import com.backend.domain.store.StoreRegisterForm;
+import com.backend.domain.store.*;
 import com.backend.mapper.member.MemberMapper;
 import com.backend.mapper.store.StoreMapper;
 import lombok.RequiredArgsConstructor;
@@ -43,13 +40,16 @@ public class StoreService {
     public void register(StoreRegisterForm form, MultipartFile[] files, Authentication authentication) throws IOException {
 
         Store store = new Store(
+                null,
                 form.getName(),
                 form.getContent(),
                 form.getAddress(),
                 form.getDetailAddress(),
                 form.getPhone(),
+                null,
                 Integer.valueOf(authentication.getName()),
-                form.getCategoryId()
+                form.getCategoryId(),
+                null
         );
 
         mapper.insert(store);
@@ -66,16 +66,24 @@ public class StoreService {
         }
     }
 
+    public List<Category> findAllCategory() {
+        return mapper.selectAllCategory();
+    }
+
     public List<Store> findAllByMemberId(Authentication authentication) {
         return mapper.selectAllByMemberId(authentication.getName());
     }
 
-    public Map<String, Object> findStoreInfoById(Integer id) {
+    public Map<String, Object> findStoreById(Integer id) {
 
         Map<String, Object> result = new HashMap<>();
 
         Store store = mapper.selectById(id);
-        List<String> imageNames = mapper.selectImagesByStoreId(id);
+        if (store == null) {
+            return null;
+        }
+
+        List<String> imageNames = mapper.selectImagesById(id);
 
         List<StoreImage> images = imageNames.stream()
                 .map(imageName -> new StoreImage(imageName, STR."\{srcPrefix}/store/\{id}/\{imageName}"))
@@ -87,66 +95,50 @@ public class StoreService {
         return result;
     }
 
-    public void remove(Integer id) {
-        // file 명 조회
-        List<String> fileNames = mapper.selectImagesByStoreId(id);
+    public void edit(StoreEditForm form, List<String> removeImages, MultipartFile[] addImages) throws IOException {
 
-        // aws s3의 file 삭제
-        for (String fileName : fileNames) {
-            String key = STR."\{srcPrefix}/store/\{id}/\{fileName}";
-            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .build();
+        Integer storeId = form.getId();
 
-            s3Client.deleteObject(objectRequest);
+        if (removeImages != null && !removeImages.isEmpty()) {
+            for (String imageName : removeImages) {
+                // s3의 파일 삭제
+                removeStoreImageToS3(storeId, imageName);
+                mapper.deleteImageByIdAndName(storeId, imageName);
+            }
         }
-        // db의 storeFile 삭제
-        mapper.deleteFileByStoreId(id);
 
-        mapper.deleteById(id);
+        if (addImages != null && addImages.length > 0) {
+            List<String> imageNames = mapper.selectImagesById(storeId);
+
+            for (MultipartFile image : addImages) {
+                String imageName = image.getOriginalFilename();
+
+                if (!imageNames.contains(imageName)) {
+                    mapper.insertImage(storeId, imageName);
+                }
+                saveStoreImageToS3(image, storeId, imageName);
+            }
+        }
+
+        mapper.update(form);
     }
 
-    public void edit(Store store, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
-        if (removeFileList != null && removeFileList.size() > 0) {
-            for (String fileName : removeFileList) {
-                // s3의 파일 삭제
-                String key = STR."arbeit/store/\{store.getId()}/\{fileName}";
-                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build();
-                s3Client.deleteObject(objectRequest);
+    public void removeById(Integer id) {
+        // file 명 조회
+        List<String> imageNames = mapper.selectImagesById(id);
 
-                // db records 삭제
-                mapper.deleteFileByStoreIdAndName(store.getId(), fileName);
-            }
+        // aws s3의 file 삭제
+        for (String imageName : imageNames) {
+            removeStoreImageToS3(id, imageName);
         }
-
-        if (addFileList != null && addFileList.length > 0) {
-            List<String> fileNameList = mapper.selectImagesByStoreId(store.getId());
-            for (MultipartFile file : addFileList) {
-                String fileName = file.getOriginalFilename();
-                if (!fileNameList.contains(fileName)) {
-                    // 새 파일이 기존에 없을 때만 db에 추가
-                    mapper.insertImage(store.getId(), fileName);
-                }
-                // s3 에 쓰기
-                saveStoreImageToS3(file, store.getId(), fileName);
-            }
-        }
-
-        mapper.update(store);
+        // db의 storeFile 삭제
+        mapper.deleteImagesById(id);
+        mapper.deleteById(id);
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
         Store store = mapper.selectById(id);
-        log.info("store={}", store);
         return store.getMemberId().equals(Integer.valueOf(authentication.getName()));
-    }
-
-    public List<Category> findAllCategory() {
-        return mapper.selectAllCategory();
     }
 
     private void saveStoreImageToS3(MultipartFile image, int storeId, String filename) throws IOException {
@@ -159,5 +151,14 @@ public class StoreService {
 
         s3Client.putObject(objectRequest,
                 RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
+    }
+
+    private void removeStoreImageToS3(Integer storeId, String imageName) {
+        String key = STR."arbeit/store/\{storeId}/\{imageName}";
+        DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        s3Client.deleteObject(objectRequest);
     }
 }
