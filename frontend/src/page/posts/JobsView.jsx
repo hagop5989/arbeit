@@ -387,7 +387,7 @@ export function JobsView() {
             </Box>
           </Box>
           <Flex justifyContent="center">
-            <Button>지원</Button>
+            <Button onClick={() => navigate(`/jobs/${id}/apply`)}>지원</Button>
             <Button onClick={handleSubmitEditJobs}>수정</Button>
             <Button onClick={handleSubmitDeleteJobs}>삭제</Button>
             <Button onClick={() => navigate("/jobs/list")}>이전</Button>
