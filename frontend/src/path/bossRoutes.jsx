@@ -4,13 +4,15 @@ import { ResumeRegister } from "../page/member/ResumeRegister.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
 import { ResumeEdit } from "../page/member/ResumeEdit.jsx";
 import { JobsView } from "../page/posts/JobsView.jsx";
-import { ResumeView } from "../page/member/ResumeView.jsx"; // list : jobs , view : detail
+import { ResumeView } from "../page/member/ResumeView.jsx";
+import { ApplicationWrite } from "../page/application/applicationWrite.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
   { path: "jobs/create", element: <JobsCreate /> },
   { path: "jobs/list", element: <JobsList /> },
   { path: "jobs/:id", element: <JobsView /> },
+  { path: "jobs/:id/apply", element: <ApplicationWrite /> },
   { path: "resume/register", element: <ResumeRegister /> },
   { path: "resume/list", element: <ResumeList /> },
   { path: "resume/:id", element: <ResumeView /> },
