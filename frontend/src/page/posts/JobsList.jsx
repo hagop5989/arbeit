@@ -19,17 +19,28 @@ import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  addressList,
+  workPeriodList,
+  workTimeList,
+  workWeekList,
+} from "./jobsConst.jsx";
+import {
   faAngleLeft,
   faAngleRight,
-  faAnglesLeft,
   faAnglesRight,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function JobsList() {
   const account = useContext(LoginContext);
+  const [selectedWorkPeriod, setSelectedWorkPeriod] = useState("");
+  const [selectedWorkWeek, setSelectedWorkWeek] = useState("");
+  const [selectedWorkTime, setSelectedWorkTime] = useState("");
   const [filterType, setFilterType] = useState("최신등록");
+  const [selectedRegion, setSelectedRegion] = useState("");
   const [jobsList, setJobsList] = useState([]);
+  const [categoryNames, setCategoryNames] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const pageNums = [];
   const [pageInfo, setPageInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +48,45 @@ export function JobsList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  // 필터링 함수
+  const filterJobsList = (
+    jobs,
+    filterType,
+    selectedRegion,
+    selectedCategory,
+    selectedWorkPeriod,
+    selectedWorkWeek,
+    selectedWorkTime,
+  ) => {
+    let filteredJobs = [...jobs];
+    if (filterType === "마감임박") {
+      filteredJobs.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+    } else if (filterType === "최신등록") {
+      filteredJobs.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
+    } else if (filterType === "지역" && selectedRegion) {
+      filteredJobs = filteredJobs.filter((job) =>
+        job.address.startsWith(selectedRegion),
+      );
+    } else if (filterType === "직종" && selectedCategory) {
+      filteredJobs = filteredJobs.filter(
+        (job) => job.categoryName === selectedCategory,
+      );
+    } else if (filterType === "근무기간" && selectedWorkPeriod) {
+      filteredJobs = filteredJobs.filter(
+        (job) => job.workPeriod === selectedWorkPeriod,
+      );
+    } else if (filterType === "근무요일" && selectedWorkWeek) {
+      filteredJobs = filteredJobs.filter(
+        (job) => job.workWeek === selectedWorkWeek,
+      );
+    } else if (filterType === "근무시간" && selectedWorkTime) {
+      filteredJobs = filteredJobs.filter(
+        (job) => job.workTime === selectedWorkTime,
+      );
+    }
+    return filteredJobs;
+  };
 
   // Read
   useEffect(() => {
@@ -58,10 +108,34 @@ export function JobsList() {
     }
 
     axios.get("/api/jobs/list", { params }).then((res) => {
-      setJobsList(res.data.jobsList);
+      const sortedJobs = filterJobsList(
+        res.data.jobsList,
+        filterType,
+        selectedRegion,
+        selectedCategory,
+        selectedWorkPeriod,
+        selectedWorkWeek,
+        selectedWorkTime,
+      );
+      setJobsList(sortedJobs);
+      // categoryName 추출해서 배열에 담기 (중복값 제거)
+      const categoryNames = Array.from(
+        new Set(res.data.jobsList.map((job) => job.categoryName)),
+      );
+      setCategoryNames(categoryNames);
       setPageInfo(res.data.pageInfo);
     });
-  }, [currentPage, searchParams, account]);
+  }, [
+    currentPage,
+    searchParams,
+    account,
+    filterType,
+    selectedRegion,
+    selectedCategory,
+    selectedWorkPeriod,
+    selectedWorkWeek,
+    selectedWorkTime,
+  ]);
 
   useEffect(() => {
     let sortJobs = [...jobsList];
@@ -82,23 +156,124 @@ export function JobsList() {
     navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
   }
 
+  function handleFilterChange(e) {
+    setFilterType(e.target.value);
+    setSelectedRegion("");
+    setSelectedCategory("");
+    setSelectedWorkPeriod("");
+    setSelectedWorkWeek("");
+    setSelectedWorkTime("");
+  }
+
+  function handleRegionChange(e) {
+    setSelectedRegion(e.target.value);
+  }
+
+  function handleCategoryChange(e) {
+    setSelectedCategory(e.target.value);
+  }
+
+  function handleWorkPeriodChange(e) {
+    setSelectedWorkPeriod(e.target.value);
+  }
+
+  function handleWorkWeekChange(e) {
+    setSelectedWorkWeek(e.target.value);
+  }
+
+  function handleWorkTimeChange(e) {
+    setSelectedWorkTime(e.target.value);
+  }
+
   return (
     <Box>
       <Center>
         필터링
-        <Select w={150}>
-          <option>최신등록</option>
-          <option>마감임박</option>
-          <option>지역</option>
-          <option>직종</option>
-          <option>근무기간</option>
-          <option>근무요일</option>
-          <option>근무시간</option>
+        <Select w={150} value={filterType} onChange={handleFilterChange}>
+          <option value="최신등록">최신등록</option>
+          <option value="마감임박">마감임박</option>
+          <option value="지역">지역</option>
+          <option value="직종">직종</option>
+          <option value="근무기간">근무기간</option>
+          <option value="근무요일">근무요일</option>
+          <option value="근무시간">근무시간</option>
         </Select>
-        <Select w={150}>
-          <option>시급</option>
-          <option>시급</option>
-        </Select>
+        {filterType === "지역" && (
+          <Select w={150} value={selectedRegion} onChange={handleRegionChange}>
+            <option value="" disabled>
+              선택
+            </option>
+            {addressList.map((address, index) => (
+              <option key={index} value={address}>
+                {address}
+              </option>
+            ))}
+          </Select>
+        )}
+        {filterType === "직종" && (
+          <Select
+            w={150}
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="" disabled>
+              선택
+            </option>
+            {categoryNames.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </Select>
+        )}
+        {filterType === "근무기간" && (
+          <Select
+            w={150}
+            value={selectedWorkPeriod}
+            onChange={handleWorkPeriodChange}
+          >
+            <option value="" disabled>
+              선택
+            </option>
+            {workPeriodList.map((period, index) => (
+              <option key={index} value={period}>
+                {period}
+              </option>
+            ))}
+          </Select>
+        )}
+        {filterType === "근무요일" && (
+          <Select
+            w={150}
+            value={selectedWorkWeek}
+            onChange={handleWorkWeekChange}
+          >
+            <option value="" disabled>
+              선택
+            </option>
+            {workWeekList.map((week, index) => (
+              <option key={index} value={week}>
+                {week}
+              </option>
+            ))}
+          </Select>
+        )}
+        {filterType === "근무시간" && (
+          <Select
+            w={150}
+            value={selectedWorkTime}
+            onChange={handleWorkTimeChange}
+          >
+            <option value="" disabled>
+              선택
+            </option>
+            {workTimeList.map((time, index) => (
+              <option key={index} value={time}>
+                {time}
+              </option>
+            ))}
+          </Select>
+        )}
       </Center>
       <Center>
         {/* 그리드로 공고 카드 보여주기 */}
@@ -200,7 +375,7 @@ export function JobsList() {
           </Center>
           <Flex mt="2">
             <Text color="gray.600" fontSize="sm">
-              서울 마포구
+              {job.address}
             </Text>
             <Text color="teal.500" fontWeight="bold" ml={2}>
               {" "}

@@ -11,6 +11,7 @@ export const eduList = [
 
 export const eduDetailList = ["무관", "졸업", "재학", "휴학", "중퇴", "수료"];
 
+/* 근무기간 */
 export const workPeriodList = [
   "기간협의",
   "하루",
@@ -21,7 +22,7 @@ export const workPeriodList = [
   "6개월 ~ 1년",
   "1년 이상",
 ];
-
+/* 근무요일 */
 export const workWeekList = [
   "요일협의",
   "월 ~ 일",
@@ -36,6 +37,7 @@ export const workWeekList = [
   "주1일",
 ];
 
+/* 근무시간 */
 export const workTimeList = [
   "시간협의",
   "오전 파트타임(06:00~12:00)",
@@ -43,4 +45,21 @@ export const workTimeList = [
   "저녁 파트타임(18:00~24:00)",
   "새벽 파트타임(00:00~06:00)",
   "풀타임",
+];
+
+export const addressList = [
+  "서울",
+  "경기",
+  "인천",
+  "강원",
+  "충청",
+  "세종",
+  "대전",
+  "경상",
+  "전라",
+  "광주",
+  "경상",
+  "울산",
+  "부산",
+  "제주",
 ];
