@@ -94,7 +94,6 @@ export function JobsList() {
     const keywordParam = searchParams.get("keyword");
 
     const params = {
-      memberId: account.id,
       page: currentPage,
       type: typeParam,
       keyword: keywordParam,
@@ -137,6 +136,7 @@ export function JobsList() {
     selectedWorkTime,
   ]);
 
+  // 마감임박 필터링
   useEffect(() => {
     let sortJobs = [...jobsList];
     if (filterType === "마감임박") {

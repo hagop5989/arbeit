@@ -44,10 +44,10 @@ export function JobsCreate() {
     fileNameList.push(<li key={i}>{files[i].name}</li>);
   }
 
-  // Create 관련 필요정보 얻기(store,category)
+  // Read - 필요정보 얻기(store,category)
   useEffect(() => {
     axios
-      .get("/api/jobs/insert", { params: { memberId: account.id } })
+      .get("/api/jobs/insert")
       .then((res) => {
         setStoreList(res.data);
         setJobs((prev) => ({

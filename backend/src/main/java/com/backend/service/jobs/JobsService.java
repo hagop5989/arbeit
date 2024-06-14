@@ -52,7 +52,7 @@ public class JobsService {
         addFileList(jobs, fileList);
     }
 
-    public List<Store> findInsertData(Integer memberId) {
+    public List<Store> getInsertData(Integer memberId) {
         // storeList 반환(카테고리 포함).
         return jobsMapper.selectStoreByJobsMemberId(memberId);
     }

@@ -23,4 +23,5 @@ public class Resume {
     private String content;
     private Integer isRookie;
     private LocalDate inserted;
+
 }

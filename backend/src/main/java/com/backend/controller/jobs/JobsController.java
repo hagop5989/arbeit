@@ -1,5 +1,6 @@
 package com.backend.controller.jobs;
 
+import com.backend.controller.application.MemberId;
 import com.backend.domain.jobs.Jobs;
 import com.backend.domain.jobs.JobsCondition;
 import com.backend.domain.store.Store;
@@ -19,8 +20,8 @@ public class JobsController {
     private final JobsService service;
 
     @GetMapping("insert")
-    public List<Store> findInsertData(Integer memberId) {
-        return service.findInsertData(memberId);
+    public List<Store> getInsertData(@MemberId Integer memberId) {
+        return service.getInsertData(memberId);
     }
 
     @PostMapping("insert")
@@ -51,7 +52,7 @@ public class JobsController {
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam Integer memberId,
+    public Map<String, Object> list(@MemberId Integer memberId,
                                     @RequestParam(value = "page", defaultValue = "1") Integer page,
                                     @RequestParam(value = "type", required = false) String searchType,
                                     @RequestParam(value = "keyword", defaultValue = "") String keyword
