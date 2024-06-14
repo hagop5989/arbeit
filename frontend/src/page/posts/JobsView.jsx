@@ -112,7 +112,7 @@ export function JobsView() {
         ...prev,
         storeName: storeName,
         storeId: store ? store.id : null,
-        categoryName: store ? store.cateName : "",
+        categoryName: store ? store.categoryName : "",
         categoryId: store ? store.categoryId : "",
       }));
     } else {

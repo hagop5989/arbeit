@@ -63,15 +63,14 @@ public interface JobsMapper {
 
     @Select("""
             <script>
-            SELECT j.id,
-                   j.title,
-                   j.content,
-                   j.salary,
+            SELECT j.*,
                    s.name AS storeName,
-                   m.name AS memberName
+                   m.name AS memberName,
+                   c.name AS categoryName
             FROM jobs j 
             JOIN member m ON j.member_id = m.id 
             JOIN store s ON s.id = j.store_id
+            JOIN category c ON c.id = j.category_id
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
                        <bind name="pattern" value="'%' + keyword + '%'" />

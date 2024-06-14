@@ -100,7 +100,7 @@ export function JobsCreate() {
         ...prev,
         storeName: storeName,
         storeId: store.id,
-        categoryName: store ? store.cateName : "",
+        categoryName: store ? store.categoryName : "",
         categoryId: store ? store.categoryId : "",
       }));
     } else {
@@ -193,7 +193,10 @@ export function JobsCreate() {
                 key={store.id}
                 value={`${store.name}-cateNo:${store.categoryId}`}
               >
-                {store.name}-cateNo:{store.categoryId}
+                {store.name}
+                <Text as="span" visibility="hidden">
+                  -cateNo:{store.categoryId}
+                </Text>
               </option>
             ))}
           </Select>
@@ -326,7 +329,6 @@ export function JobsCreate() {
           </Box>
         </FormControl>
       </Center>
-
       <Button onClick={handleSubmitCreateJobs}>공고생성</Button>
     </Box>
   );
