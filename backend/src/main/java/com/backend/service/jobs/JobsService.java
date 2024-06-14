@@ -112,10 +112,10 @@ public class JobsService {
                                     String searchType, String keyword) {
         Map pageInfo = new HashMap();
         Integer offset = paging(page, searchType, keyword, pageInfo);
-        List<Jobs> JobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
+        List<Jobs> jobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
 
         return Map.of("pageInfo", pageInfo,
-                "jobsList", JobsList);
+                "jobsList", jobsList);
     }
 
 

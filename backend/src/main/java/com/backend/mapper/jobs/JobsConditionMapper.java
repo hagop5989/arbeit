@@ -3,6 +3,8 @@ package com.backend.mapper.jobs;
 import com.backend.domain.jobs.JobsCondition;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface JobsConditionMapper {
     @Insert("""
@@ -39,5 +41,10 @@ public interface JobsConditionMapper {
             WHERE alba_posts_id = #{jobsId}
             """)
     int deleteByJobsId(Integer jobsId);
+
+    @Select("""
+            SELECT * FROM jobs_condition
+            """)
+    List<JobsCondition> selectAll();
 
 }

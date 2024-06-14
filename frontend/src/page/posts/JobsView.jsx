@@ -27,7 +27,7 @@ import {
   workPeriodList,
   workTimeList,
   workWeekList,
-} from "./conditionConst.jsx";
+} from "./jobsConst.jsx";
 
 export function JobsView() {
   const { id } = useParams();
@@ -245,13 +245,13 @@ export function JobsView() {
             ))}
           </Select>
 
-          <FormLabel>작성자</FormLabel>
-          <Input
-            value={editJobs.memberName}
-            onChange={(e) => handleEditInput("memberName", e)}
-            type={"text"}
-            readOnly
-          />
+          {/*<FormLabel>작성자</FormLabel>*/}
+          {/*<Input*/}
+          {/*  value={editJobs.memberName}*/}
+          {/*  onChange={(e) => handleEditInput("memberName", e)}*/}
+          {/*  type={"text"}*/}
+          {/*  readOnly*/}
+          {/*/>*/}
 
           <FormLabel>첨부사진</FormLabel>
           <Input

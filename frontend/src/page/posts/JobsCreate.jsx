@@ -23,7 +23,7 @@ import {
   workPeriodList,
   workTimeList,
   workWeekList,
-} from "./conditionConst.jsx";
+} from "./jobsConst.jsx";
 
 export function JobsCreate() {
   const account = useContext(LoginContext);
@@ -203,14 +203,13 @@ export function JobsCreate() {
           <FormLabel>카테고리(자동선택)</FormLabel>
           <Input value={jobs.categoryName} readOnly />
 
-          <FormLabel>작성자</FormLabel>
-          <Input
-            value={jobs.name}
-            onChange={(e) => handleCreateInput("memberName", e)}
-            type={"text"}
-            readOnly
-          />
-          <FormLabel>가게위치</FormLabel>
+          {/*<FormLabel>작성자</FormLabel>*/}
+          {/*<Input*/}
+          {/*  value={jobs.name}*/}
+          {/*  onChange={(e) => handleCreateInput("memberName", e)}*/}
+          {/*  type={"text"}*/}
+          {/*  readOnly*/}
+          {/*/>*/}
 
           <Box>
             <Text>사진첨부</Text>

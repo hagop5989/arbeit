@@ -19,6 +19,7 @@ public class Jobs {
 
     // store 에서 가져옴
     private String storeName;
+    private String address;
 
     // category 에서 가져옴
     private String categoryName;
@@ -28,4 +29,15 @@ public class Jobs {
 
     // jobsFile 에서 가져옴
     List<JobsFile> fileList;
+
+    // 임시 사용(JobsCondition)
+    private Integer albaPostsId;
+    private String education;
+    private String educationDetail;
+    private Integer age;
+    private String preferred;
+    private String workPeriod;
+    private String workWeek;
+    private String workTime;
+
 }
