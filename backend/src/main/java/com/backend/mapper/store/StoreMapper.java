@@ -2,6 +2,7 @@ package com.backend.mapper.store;
 
 import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
+import com.backend.domain.store.StoreEditForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -9,18 +10,30 @@ import java.util.List;
 @Mapper
 public interface StoreMapper {
 
-    @Select("""
-            SELECT *
-            FROM category
-            """)
-    List<Category> selectAllCategory();
-
+    /**
+     * INSERT
+     */
     @Insert("""
             INSERT INTO store (name, content, address, detail_address, phone, member_id, category_id)
             VALUES (#{name}, #{content}, #{address}, #{detailAddress}, #{phone}, #{memberId}, #{categoryId})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Store store);
+
+    @Insert("""
+            INSERT INTO store_images (store_id, name)
+            VALUES (#{storeId}, #{name})
+            """)
+    int insertImage(Integer storeId, String name);
+
+    /**
+     * SELECT
+     */
+    @Select("""
+            SELECT *
+            FROM category
+            """)
+    List<Category> selectAllCategory();
 
     @Select("""
             SELECT
@@ -59,41 +72,45 @@ public interface StoreMapper {
 
     @Select("""
             SELECT name FROM store_images
-            WHERE store_id = #{id}
+            WHERE store_id = #{storeId}
             """)
-    List<String> selectImagesByStoreId(Integer id);
+    List<String> selectImagesById(Integer storeId);
 
+    /**
+     * UPDATE
+     */
+    @Update("""
+            UPDATE store
+            SET
+                name= #{name},
+                content= #{content},
+                address= #{address},
+                detail_address=#{detailAddress},
+                phone= #{phone},
+                category_id= #{categoryId}
+            WHERE id = #{id}
+            """)
+    int update(StoreEditForm form);
+
+    /**
+     * DELETE
+     */
     @Delete("""
             DELETE FROM store
             WHERE id = #{id}
             """)
     int deleteById(Integer id);
 
-    @Update("""
-                UPDATE store
-                SET name= #{name}, content= #{content}, address= #{address}, phone= #{phone}, category_id= #{categoryId}, cate_name= #{cateName}
-                WHERE id = #{id}
+    @Delete("""
+            DELETE FROM store_images
+            WHERE store_id = #{storeId}
             """)
-    int update(Store store);
-
-    @Insert("""
-            INSERT INTO store_images (store_id, name)
-            VALUES (#{storeId}, #{name})
-            """)
-    int insertImage(Integer storeId, String name);
+    int deleteImagesById(Integer storeId);
 
     @Delete("""
             DELETE FROM store_images
-            WHERE store_id = #{id}
-            """
-    )
-    int deleteFileByStoreId(Integer id);
-
-    @Delete("""
-            DELETE FROM store_images
-            WHERE store_id = #{id}
-            AND name = #{fileName}
+            WHERE store_id = #{storeId} AND name = #{name}
             """)
-    int deleteFileByStoreIdAndName(Integer id, String fileName);
+    int deleteImageByIdAndName(Integer storeId, String name);
 
 }

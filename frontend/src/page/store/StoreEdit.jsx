@@ -10,6 +10,7 @@ import {
   CardHeader,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Image,
@@ -34,9 +35,10 @@ export function StoreEdit() {
   const { id } = useParams();
   const [store, setStore] = useState({});
   const [categories, setCategories] = useState([]);
+  const [errors, setErrors] = useState({});
   const [imageList, setImageList] = useState([]);
-  const [removeFileList, setRemoveFileList] = useState([]);
-  const [addFileList, setAddFileList] = useState([]);
+  const [removeImages, setRemoveImages] = useState([]);
+  const [addImages, setAddImages] = useState([]);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -49,17 +51,22 @@ export function StoreEdit() {
   }, []);
 
   useEffect(() => {
-    axios.get(`/api/store/${id}`).then((res) => {
-      setStore(res.data.store);
-      setImageList(res.data.images);
-    });
+    axios
+      .get(`/api/store/${id}`)
+      .then((res) => {
+        setStore(res.data.store);
+        setImageList(res.data.images);
+      })
+      .catch(() => navigate(-1));
   }, []);
 
   function handleClickSave() {
-    const copyStore = { ...store };
-    delete copyStore.fileList;
     axios
-      .putForm("/api/store/edit", { ...copyStore, removeFileList, addFileList })
+      .putForm(`/api/store/${id}`, {
+        ...store,
+        removeImages,
+        addImages,
+      })
       .then(() => {
         toast({
           status: "success",
@@ -68,14 +75,16 @@ export function StoreEdit() {
         });
         navigate(`/store/${store.id}`);
       })
-      .catch()
+      .catch((err) => {
+        setErrors(err.response.data);
+      })
       .finally(() => {
         onClose();
       });
   }
 
   const fileNameList = [];
-  for (let addFile of addFileList) {
+  for (let addFile of addImages) {
     // 이미 있는 파일과 중복된 파일명인지?
     let duplicate = false;
     for (let file of imageList) {
@@ -104,6 +113,7 @@ export function StoreEdit() {
   };
 
   function handleRemoveImage(imageName) {
+    setRemoveImages([...removeImages, imageName]);
     setImageList((prevList) => {
       const index = prevList.findIndex((image) => image.name === imageName);
       if (index !== -1) {
@@ -145,7 +155,7 @@ export function StoreEdit() {
             multiple
             type="file"
             accept="image/*"
-            onChange={(e) => setAddFileList(e.target.files)}
+            onChange={(e) => setAddImages(e.target.files)}
           />
           {fileNameList.length > 0 && (
             <Box>
@@ -164,12 +174,20 @@ export function StoreEdit() {
         </FormControl>
         <FormControl>
           <FormLabel>가게 이름</FormLabel>
-          <Input value={store.name} onChange={handleInputChange("name")} />
+          <Input
+            defaultValue={store.name}
+            onChange={handleInputChange("name")}
+          />
+          <FormHelperText>{errors.name}</FormHelperText>
           <FormLabel>전화 번호</FormLabel>
-          <Input value={store.phone} onChange={handleInputChange("phone")} />
+          <Input
+            defaultValue={store.phone}
+            onChange={handleInputChange("phone")}
+          />
+          <FormHelperText>{errors.phone}</FormHelperText>
           <FormLabel>가게 카테고리</FormLabel>
           <Select
-            value={store.categoryName}
+            defaultValue={store.categoryName}
             onChange={handleInputChange("categoryId")}
           >
             {categories.map((category) => (
@@ -178,11 +196,13 @@ export function StoreEdit() {
               </option>
             ))}
           </Select>
+          <FormHelperText>{errors.categoryId}</FormHelperText>
           <FormLabel>본문</FormLabel>
           <Textarea
-            value={store.content}
+            defaultValue={store.content}
             onChange={handleInputChange("content")}
           />
+          <FormHelperText>{errors.content}</FormHelperText>
           <FormLabel>가게 주소</FormLabel>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
@@ -193,8 +213,13 @@ export function StoreEdit() {
           <Flex>
             <Input defaultValue={store.address} readOnly />
             <Button onClick={onOpen}>우편번호 검색</Button>
+            <FormHelperText>{errors.address}</FormHelperText>
           </Flex>
-
+          <Input
+            defaultValue={store.detailAddress}
+            onChange={handleInputChange("detailAddress")}
+          />
+          <FormHelperText>{errors.detailAddress}</FormHelperText>
           <KakaoMap2 address={store.address} />
 
           <Button colorScheme={"blue"} onClick={handleClickSave}>

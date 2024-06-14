@@ -9,19 +9,10 @@ import {
   Input,
   Spinner,
   Textarea,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  faBriefcase,
-  faEllipsisH,
-  faIndustry,
-  faScissors,
-  faTruck,
-  faUtensils,
-} from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 import KakaoMap2 from "../posts/KakaoMap2.jsx";
@@ -32,15 +23,17 @@ export function StoreView() {
   const [imageList, setImageList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
-  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const account = useContext(LoginContext);
 
   useEffect(() => {
-    axios.get(`/api/store/${id}`).then((res) => {
-      setStore(res.data.store);
-      setImageList(res.data.images);
-    });
+    axios
+      .get(`/api/store/${id}`)
+      .then((res) => {
+        setStore(res.data.store);
+        setImageList(res.data.images);
+      })
+      .catch(() => navigate("/store/list"));
   }, [account.id]);
 
   if (store === null) {
@@ -51,14 +44,11 @@ export function StoreView() {
     );
   }
 
-  const iconMapping = {
-    utensils: faUtensils,
-    scissors: faScissors,
-    truck: faTruck,
-    briefcase: faBriefcase,
-    industry: faIndustry,
-    ellipsis: faEllipsisH,
-  };
+  function handleRemoveBtn() {
+    axios.delete(`/api/store/${id}`).then(() => {
+      navigate("/store/list");
+    });
+  }
 
   return (
     <Box>
@@ -106,7 +96,9 @@ export function StoreView() {
             >
               수정
             </Button>
-            <Button colorScheme="red">삭제</Button>
+            <Button colorScheme="red" onClick={handleRemoveBtn}>
+              삭제
+            </Button>
           </Flex>
         </FormControl>
       </Box>
