@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -23,10 +24,10 @@ public class CommentService {
     ) {
         Comment comment = new Comment(
                 null,
-                null,
+                form.getBoardId(),
                 Integer.valueOf(authentication.getName()),
                 form.getComment(),
-                null
+                LocalDateTime.now()
         );
         mapper.insert(comment);
 

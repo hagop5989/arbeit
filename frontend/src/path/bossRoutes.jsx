@@ -3,14 +3,14 @@ import { JobsList } from "../page/posts/JobsList.jsx";
 import { ResumeRegister } from "../page/member/ResumeRegister.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
 import { ResumeEdit } from "../page/member/ResumeEdit.jsx";
-import { JobsView2 } from "../page/posts/JobsView2.jsx";
+import { JobsView } from "../page/posts/JobsView.jsx";
 import { ResumeView } from "../page/member/ResumeView.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
   { path: "jobs/create", element: <JobsCreate /> },
   { path: "jobs/list", element: <JobsList /> },
-  { path: "jobs/:id", element: <JobsView2 /> },
+  { path: "jobs/:id", element: <JobsView /> },
   { path: "resume/register", element: <ResumeRegister /> },
   { path: "resume/list", element: <ResumeList /> },
   { path: "resume/:id", element: <ResumeView /> },

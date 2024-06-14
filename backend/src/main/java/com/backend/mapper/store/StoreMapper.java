@@ -14,8 +14,8 @@ public interface StoreMapper {
      * INSERT
      */
     @Insert("""
-                INSERT INTO store (name, content, address, detail_address, phone, member_id, category_id)
-                VALUES (#{name}, #{content}, #{address}, #{detailAddress}, #{phone}, #{memberId}, #{categoryId})
+            INSERT INTO store (name, content, address, detail_address, phone, member_id, category_id)
+            VALUES (#{name}, #{content}, #{address}, #{detailAddress}, #{phone}, #{memberId}, #{categoryId})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Store store);
