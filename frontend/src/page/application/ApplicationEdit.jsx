@@ -62,6 +62,16 @@ export function ApplicationEdit() {
       .finally();
   }
 
+  function handleDelete() {
+    axios
+      .delete(`/api/jobs/${id}/apply/delete`)
+      .then((res) => {
+        navigate("/jobs/apply/list");
+      })
+      .catch()
+      .finally();
+  }
+
   return (
     <Box>
       <Heading>지원서 수정</Heading>
@@ -93,12 +103,21 @@ export function ApplicationEdit() {
           />
           <Button
             onClick={() => {
+              navigate(`/jobs/apply/list`);
+            }}
+          >
+            목록
+          </Button>
+
+          <Button onClick={handleSubmitApply}>저장</Button>
+          <Button
+            onClick={() => {
               navigate(`/jobs/${id}/apply/select`);
             }}
           >
-            이전
+            뷰페이지
           </Button>
-          <Button onClick={handleSubmitApply}>수정</Button>
+          <Button onClick={handleDelete}>삭제하기</Button>
         </FormControl>
       </Center>
     </Box>

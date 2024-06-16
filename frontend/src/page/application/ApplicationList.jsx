@@ -35,7 +35,7 @@ export function ApplicationList() {
     <Center>
       <Box>
         <Box>
-          <Heading>지원내역</Heading>
+          <Heading>지원내역(알바)</Heading>
         </Box>
         <Button
           onClick={() => navigate("/resume/register")}

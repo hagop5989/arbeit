@@ -31,16 +31,6 @@ export function ApplicationView() {
     }
   }, [account.id, id, application.resumeId]);
 
-  function handleDelete() {
-    axios
-      .delete(`/api/jobs/${id}/apply/delete`)
-      .then((res) => {
-        navigate("/jobs/apply/list");
-      })
-      .catch()
-      .finally();
-  }
-
   return (
     <Box>
       <Heading>지원서 보기</Heading>
@@ -68,7 +58,6 @@ export function ApplicationView() {
           >
             수정하기
           </Button>
-          <Button onClick={handleDelete}>삭제하기</Button>
         </FormControl>
       </Center>
     </Box>

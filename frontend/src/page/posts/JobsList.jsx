@@ -28,6 +28,7 @@ import {
   faAngleLeft,
   faAngleRight,
   faAnglesRight,
+  faArrowDownWideShort,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -41,6 +42,7 @@ export function JobsList() {
   const [jobsList, setJobsList] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+
   const pageNums = [];
   const [pageInfo, setPageInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -116,6 +118,7 @@ export function JobsList() {
         selectedWorkWeek,
         selectedWorkTime,
       );
+
       setJobsList(sortedJobs);
       // categoryName 추출해서 배열에 담기 (중복값 제거)
       const categoryNames = Array.from(
@@ -156,6 +159,17 @@ export function JobsList() {
     navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
   }
 
+  // 시,구 기준으로 이후 주소 제거.
+  const trimAfterSiGu = (text) => {
+    const match = text.match(/(\S+시|\S+구)\s/);
+    if (match) {
+      let slice = text.slice(0, match.index + match[0].length - 1);
+      console.log(slice);
+      return slice;
+    }
+    return text;
+  };
+
   function handleFilterChange(e) {
     setFilterType(e.target.value);
     setSelectedRegion("");
@@ -187,8 +201,8 @@ export function JobsList() {
 
   return (
     <Box>
-      <Center>
-        필터링
+      <Center gap={2}>
+        <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"20px"} />
         <Select w={150} value={filterType} onChange={handleFilterChange}>
           <option value="최신등록">최신등록</option>
           <option value="마감임박">마감임박</option>
@@ -332,6 +346,12 @@ export function JobsList() {
 
   /* 공고 카드 형식 */
   function JobCard({ job }) {
+    // 주소가 시,구 로 끝나는 경우 뒤의 주소 날림 (ex. 서울 강남구)
+    const [trimmedAddress, setTrimmedAddress] = useState("");
+    useEffect(() => {
+      setTrimmedAddress(trimAfterSiGu(job.address));
+    }, []);
+
     return (
       <Card
         onClick={() => navigate(`/jobs/${job.id}`)}
@@ -364,7 +384,7 @@ export function JobsList() {
           <Center>
             <Text
               w={"250px"}
-              h={"50px"}
+              h={"30px"}
               overflow="hidden"
               fontWeight="bold"
               mt="2"
@@ -374,14 +394,20 @@ export function JobsList() {
             </Text>
           </Center>
           <Flex mt="2">
-            <Text color="gray.600" fontSize="sm">
-              {job.address}
+            <Text color="gray.600" w={"50%"} fontSize="sm">
+              {trimmedAddress}
             </Text>
-            <Text color="teal.500" fontWeight="bold" ml={2}>
+            <Text color="teal.500" w={"15%"} fontWeight="bold" ml={2}>
               {" "}
               시급
             </Text>
-            <Text fontWeight="bold" fontSize="sm" ml={1} color="gray.600">
+            <Text
+              fontWeight="bold"
+              w={"35%"}
+              fontSize="sm"
+              ml={1}
+              color="gray.600"
+            >
               {job.salary.toLocaleString()} 원
             </Text>
           </Flex>
