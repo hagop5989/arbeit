@@ -25,6 +25,7 @@ export function JobsView() {
   const [images, setImages] = useState([]);
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -33,6 +34,7 @@ export function JobsView() {
       duration: "700",
     });
   }
+
   const navigate = useNavigate();
 
   // Read
@@ -62,9 +64,9 @@ export function JobsView() {
   }
 
   return (
-    <Box>
+    <Box border={"1px solid red"}>
       <Heading>알바공고 상세페이지</Heading>
-      <Center w={"50%"} ml={"25%"}>
+      <Center w={"100%"}>
         <FormControl>
           <FormLabel>제목</FormLabel>
           <Input defaultValue={jobs.title} readOnly />

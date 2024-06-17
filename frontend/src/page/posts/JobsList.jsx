@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   Center,
   Flex,
   Grid,
@@ -200,99 +199,126 @@ export function JobsList() {
   }
 
   return (
-    <Box>
-      <Center gap={2}>
-        <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"20px"} />
-        <Select w={150} value={filterType} onChange={handleFilterChange}>
-          <option value="최신등록">최신등록</option>
-          <option value="마감임박">마감임박</option>
-          <option value="지역">지역</option>
-          <option value="직종">직종</option>
-          <option value="근무기간">근무기간</option>
-          <option value="근무요일">근무요일</option>
-          <option value="근무시간">근무시간</option>
-        </Select>
-        {filterType === "지역" && (
-          <Select w={150} value={selectedRegion} onChange={handleRegionChange}>
-            <option value="" disabled>
-              선택
-            </option>
-            {addressList.map((address, index) => (
-              <option key={index} value={address}>
-                {address}
-              </option>
-            ))}
+    <Box border={"1px solid red"}>
+      <Flex justifyContent={"space-between"}>
+        <Box display={"flex"}>
+          <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
+          <Select w={150} value={filterType} onChange={handleFilterChange}>
+            <option value="최신등록">최신등록</option>
+            <option value="마감임박">마감임박</option>
+            <option value="지역">지역</option>
+            <option value="직종">직종</option>
+            <option value="근무기간">근무기간</option>
+            <option value="근무요일">근무요일</option>
+            <option value="근무시간">근무시간</option>
           </Select>
-        )}
-        {filterType === "직종" && (
+          {filterType === "지역" && (
+            <Select
+              w={150}
+              value={selectedRegion}
+              onChange={handleRegionChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {addressList.map((address, index) => (
+                <option key={index} value={address}>
+                  {address}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "직종" && (
+            <Select
+              w={150}
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {categoryNames.map((category, index) => (
+                <option key={index} value={category}>
+                  {category}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "근무기간" && (
+            <Select
+              w={150}
+              value={selectedWorkPeriod}
+              onChange={handleWorkPeriodChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {workPeriodList.map((period, index) => (
+                <option key={index} value={period}>
+                  {period}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "근무요일" && (
+            <Select
+              w={150}
+              value={selectedWorkWeek}
+              onChange={handleWorkWeekChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {workWeekList.map((week, index) => (
+                <option key={index} value={week}>
+                  {week}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "근무시간" && (
+            <Select
+              w={150}
+              value={selectedWorkTime}
+              onChange={handleWorkTimeChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {workTimeList.map((time, index) => (
+                <option key={index} value={time}>
+                  {time}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Box>
+
+        {/* 검색 하는 곳*/}
+        <Box w={"500px"} display={"flex"}>
           <Select
-            w={150}
-            value={selectedCategory}
-            onChange={handleCategoryChange}
+            w={"150px"}
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
           >
-            <option value="" disabled>
-              선택
-            </option>
-            {categoryNames.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
-              </option>
-            ))}
+            <option value="all">전체</option>
+            <option value="text">글</option>
+            <option value="nickName">작성자</option>
           </Select>
-        )}
-        {filterType === "근무기간" && (
-          <Select
-            w={150}
-            value={selectedWorkPeriod}
-            onChange={handleWorkPeriodChange}
-          >
-            <option value="" disabled>
-              선택
-            </option>
-            {workPeriodList.map((period, index) => (
-              <option key={index} value={period}>
-                {period}
-              </option>
-            ))}
-          </Select>
-        )}
-        {filterType === "근무요일" && (
-          <Select
-            w={150}
-            value={selectedWorkWeek}
-            onChange={handleWorkWeekChange}
-          >
-            <option value="" disabled>
-              선택
-            </option>
-            {workWeekList.map((week, index) => (
-              <option key={index} value={week}>
-                {week}
-              </option>
-            ))}
-          </Select>
-        )}
-        {filterType === "근무시간" && (
-          <Select
-            w={150}
-            value={selectedWorkTime}
-            onChange={handleWorkTimeChange}
-          >
-            <option value="" disabled>
-              선택
-            </option>
-            {workTimeList.map((time, index) => (
-              <option key={index} value={time}>
-                {time}
-              </option>
-            ))}
-          </Select>
-        )}
-      </Center>
+          <Input
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            placeholder="검색어"
+          />
+          <Button onClick={handleSearchClick}>
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </Button>
+        </Box>
+      </Flex>
       <Center>
         {/* 그리드로 공고 카드 보여주기 */}
         <Box>
-          <Grid templateColumns="repeat(4,1fr)" gap={6}>
+          <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
             {jobsList.map((job) => (
               <GridItem key={job.id}>
                 <JobCard job={job} />
@@ -302,33 +328,6 @@ export function JobsList() {
 
           {/* 페이징 */}
           {Paging()}
-
-          <Center>
-            {/* 검색 하는 곳*/}
-            <Flex my={3} gap={1}>
-              <Box>
-                <Select
-                  w={100}
-                  value={searchType}
-                  onChange={(e) => setSearchType(e.target.value)}
-                >
-                  <option value="all">전체</option>
-                  <option value="text">글</option>
-                  <option value="nickName">작성자</option>
-                </Select>
-              </Box>
-              <Input
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                placeholder="검색어"
-              />
-              <Box>
-                <Button onClick={handleSearchClick}>
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </Button>
-              </Box>
-            </Flex>
-          </Center>
 
           {/* 공고 생성 */}
           <Button
@@ -359,68 +358,48 @@ export function JobsList() {
           navigate(`/jobs/${job.id}`);
           addRecentJob(`/jobs/${job.id}`); // 최근 본 공고 URL 추가
         }}
-        w={"300px"}
-        h={"230px"}
+        _hover={{ bgColor: "gray.100" }}
+        w={"1250px"}
+        h={"135px"}
+        p={5}
         cursor={"pointer"}
-        borderWidth="1px"
-        borderRadius="lg"
-        border={"1px solid lightgray"}
-        borderTop={"2px solid red"}
+        borderRadius="0"
+        borderY={"1px solid lightgray"}
         overflow="hidden"
-        p="5"
-        m="2"
       >
-        <Center>
-          <Image
-            w={"150px"}
-            h={"60px"}
-            src={
-              "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif"
-            }
-            alt={job.title}
-            objectFit="cover"
-          />
-        </Center>
-        <CardBody fontSize="sm">
-          <Text w={"220px"} h={"22px"} overflow="hidden" mt="2" fontSize="sm">
-            {job.title}
-          </Text>
-          <Center>
-            <Text
-              w={"250px"}
-              h={"30px"}
-              overflow="hidden"
-              fontWeight="bold"
-              mt="2"
-              fontSize="medium"
-            >
-              {job.content}
-            </Text>
-          </Center>
-          <Flex mt="2">
-            <Text color="gray.600" w={"50%"} fontSize="sm">
-              {trimmedAddress}
-            </Text>
-            <Text color="teal.500" w={"15%"} fontWeight="bold" ml={2}>
-              {" "}
-              시급
-            </Text>
-            <Text
-              fontWeight="bold"
-              w={"35%"}
-              fontSize="sm"
-              ml={1}
-              color="gray.600"
-            >
-              {job.salary.toLocaleString()} 원
-            </Text>
-          </Flex>
-        </CardBody>
-        <CardFooter>
-          <Button mt="2" colorScheme="teal" width="full">
-            신청하기
-          </Button>
-        </CardFooter>
+        <Flex alignItems={"center"}>
+          <Box w={"15%"}>
+            <Image
+              w={"150px"}
+              h={"60px"}
+              src={
+                "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif"
+              }
+              alt={job.title}
+              border={"1px solid lightgray"}
+              borderRadius={"5px"}
+              objectFit="cover"
+            />
+          </Box>
+          <Box w={"60%"} ml={"40px"}>
+            <CardBody>
+              <Text fontSize="xl" fontWeight="bold">
+                제목: {job.title}
+              </Text>
+              <Text overflow="hidden">내용: {job.content}</Text>
+            </CardBody>
+          </Box>
+          <Box w={"20%"}>
+            <Text color="gray.600">{trimmedAddress}</Text>
+            <Text fontSize="sm">분야 : {job.categoryName}</Text>
+            <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
+          </Box>
+          <Box w={"10%"}>
+            <Button borderWidth={"2px"} variant="outline" colorScheme="red">
+              지원하기
+            </Button>
+          </Box>
+        </Flex>
       </Card>
     );
   }

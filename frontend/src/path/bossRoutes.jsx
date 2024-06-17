@@ -3,7 +3,6 @@ import { JobsList } from "../page/posts/JobsList.jsx";
 import { ResumeRegister } from "../page/member/ResumeRegister.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
 import { ResumeEdit } from "../page/member/ResumeEdit.jsx";
-import { JobsView } from "../page/posts/JobsView.jsx";
 import { JobsEdit } from "../page/posts/JobsEdit.jsx";
 import { ResumeView } from "../page/member/ResumeView.jsx";
 import { ApplicationWrite } from "../page/application/ApplicationWrite.jsx";
@@ -13,13 +12,15 @@ import { ApplicationEdit } from "../page/application/ApplicationEdit.jsx";
 import { ManagementList } from "../page/management/ManagementList.jsx";
 import { ManagementView } from "../page/management/ManagementView.jsx";
 import Test1 from "../page/test)calendar/Test1.jsx";
-import VisitHistory from "../component/VisitHistory.jsx"; // list : jobs , view : detail
+import VisitHistory from "../component/VisitHistory.jsx";
+import JobsView2 from "../page/posts/JobsView2.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
   { path: "jobs/create", element: <JobsRegister /> },
   { path: "jobs/list", element: <JobsList /> },
-  { path: "jobs/:id", element: <JobsView /> },
+  // { path: "jobs/:id", element: <JobsView /> },
+  { path: "jobs/:id", element: <JobsView2 /> },
   { path: "jobs/:id/edit", element: <JobsEdit /> },
   { path: "jobs/:id/management/select", element: <ManagementView /> },
   { path: "jobs/management/list", element: <ManagementList /> },
