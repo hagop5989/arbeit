@@ -6,10 +6,15 @@ export function BossNav() {
 
   return (
     <>
-      <Box onClick={() => navigate(`/jobs/create`)}>/jobsCreate</Box>
-      <Box onClick={() => navigate(`/jobs/list`)}>/jobsList</Box>
-      <Box onClick={() => navigate(`/resume/register`)}>/resume/register</Box>
-      <Box onClick={() => navigate(`/resume/list`)}>/resume/list</Box>
+      <Box onClick={() => navigate(`/jobs/create`)}>공고생성</Box>
+      <Box onClick={() => navigate(`/jobs/list`)}>공고리스트</Box>
+      <Box onClick={() => navigate(`/resume/register`)}>이력서등록</Box>
+      <Box onClick={() => navigate(`/resume/list`)}>이력서리스트</Box>
+      <Box onClick={() => navigate(`/jobs/apply/list`)}>지원내역(알바)</Box>
+      <Box onClick={() => navigate(`/jobs/management/list`)}>
+        지원내역(사장)
+      </Box>
+      <Box onClick={() => navigate(`/test`)}>캘린더 테스트</Box>
     </>
   );
 }

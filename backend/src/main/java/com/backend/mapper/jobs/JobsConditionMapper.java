@@ -7,7 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface JobsConditionMapper {
-    // TODO : albaPostsId 를 jobsId로 바꾸기
     @Insert("""
             INSERT INTO jobs_condition
             (jobs_id, education,education_detail, age, preferred, work_period, work_week, work_time)
