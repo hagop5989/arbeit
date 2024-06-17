@@ -17,8 +17,9 @@ public class Jobs {
     private Integer salary;
     private LocalDateTime deadline;
     private Integer recruitmentNumber;
-    
+
     private String memberName;
     private String storeName;
+    private String address;
     private String categoryName;
 }

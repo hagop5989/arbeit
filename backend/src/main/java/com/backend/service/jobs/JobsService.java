@@ -52,7 +52,7 @@ public class JobsService {
                 form.getSalary(),
                 form.getDeadline(),
                 form.getRecruitmentNumber(),
-                null, null, null
+                null, null, null, null
 
         );
         jobsMapper.insert(jobs);
@@ -118,7 +118,7 @@ public class JobsService {
                 form.getSalary(),
                 form.getDeadline(),
                 form.getRecruitmentNumber(),
-                null, null, null
+                null, null, null, null
         );
         JobsCond jobsCond = new JobsCond(
                 jobsId,

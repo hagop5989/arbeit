@@ -31,6 +31,7 @@ public interface JobsMapper {
                 j.*,
                 m.name memberName,
                 s.name storeName,
+                s.address,
                 c.id categoryId,
                 c.name categoryName
             FROM jobs j

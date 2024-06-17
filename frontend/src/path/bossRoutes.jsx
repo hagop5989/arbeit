@@ -4,6 +4,7 @@ import { ResumeRegister } from "../page/member/ResumeRegister.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
 import { ResumeEdit } from "../page/member/ResumeEdit.jsx";
 import { JobsView } from "../page/posts/JobsView.jsx";
+import { JobsEdit } from "../page/posts/JobsEdit.jsx";
 import { ResumeView } from "../page/member/ResumeView.jsx";
 import { ApplicationWrite } from "../page/application/ApplicationWrite.jsx";
 import { ApplicationList } from "../page/application/ApplicationList.jsx";
