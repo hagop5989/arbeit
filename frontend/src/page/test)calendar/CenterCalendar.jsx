@@ -33,7 +33,8 @@ import {
   TodayDayBox,
 } from "./StyledComponents"; // import Calendar from "../Calendar.jsx";
 import DatePicker from "react-datepicker";
-import Calendar from "./Calendar.jsx"; // npm install react-datepicker
+import Calendar from "./Calendar.jsx";
+import axios from "axios"; // npm install react-datepicker
 
 // npm install react-datepicker
 // npm install @emotion/react @emotion/styled
@@ -66,17 +67,19 @@ const CenterCalendar = ({
   events,
   setEvents,
 }) => {
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [eventName, setEventName] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [memo, setMemo] = useState("");
+
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedColor, setSelectedColor] = useState("#00aaff");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [eventColors, setEventColors] = useState({});
 
+  // 이벤트 색상을 설정
   useEffect(() => {
     const newEventColors = {};
     events.forEach((event) => {
@@ -89,6 +92,7 @@ const CenterCalendar = ({
     setEventColors(newEventColors);
   }, [events, selectedColor]);
 
+  // 날짜 클릭 시 일정 추가 모달을 열기
   const handleDateClick = (day) => {
     const date = new Date(year, month, day);
     setSelectedDate(date);
@@ -96,16 +100,19 @@ const CenterCalendar = ({
     onOpen();
   };
 
+  // 시작 날짜 변경 핸들러
   const handleStartDateChange = (date) => {
     setStartDate(date);
     setShowStartDatePicker(false);
   };
 
+  // 종료 날짜 변경 핸들러
   const handleEndDateChange = (date) => {
     setEndDate(date);
     setShowEndDatePicker(false);
   };
 
+  // 일정 저장 핸들러
   const handleSaveEvent = () => {
     if (endDate < startDate) {
       alert("종료일보다 시작일이 빠를 수 없습니다.");
@@ -138,12 +145,16 @@ const CenterCalendar = ({
       setSelectedColor("#00aaff");
       onClose();
     }
+
+    handleSubmit();
   };
 
+  // 색상 변경 핸들러
   const handleColorChange = (color) => {
     setSelectedColor(color);
   };
 
+  // 달력의 날짜를 렌더링
   const renderDays = () => {
     const days = [];
     const eventMap = new Map();
@@ -264,11 +275,32 @@ const CenterCalendar = ({
     years.push(i);
   }
 
+  // 오늘 날짜로 이동
   const handleTodayClick = () => {
     const today = new Date();
     setMonth(today.getMonth());
     setYear(today.getFullYear());
   };
+
+  // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수
+  const formatDate = (date) => {
+    return format(date, "yyyy-MM-dd");
+  };
+
+  function handleSubmit() {
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
+    axios
+      .post("/api/calendar/insert", {
+        eventName,
+        formattedStartDate,
+        formattedEndDate,
+        memo,
+      })
+      .then()
+      .catch()
+      .finally();
+  }
 
   return (
     <ChakraProvider>

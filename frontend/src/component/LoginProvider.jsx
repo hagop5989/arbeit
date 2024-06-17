@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export const LoginContext = createContext(null);
 
@@ -10,6 +11,7 @@ export function LoginProvider({ children }) {
   const [email, setEmail] = useState("");
   const [authority, setAuthority] = useState("");
   const [expired, setExpired] = useState(0);
+  const [alarmNum, setAlarmNum] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,6 +19,18 @@ export function LoginProvider({ children }) {
       login(token);
     }
   }, []);
+
+  // boss 이면 지원 list 데이터 받아오기
+  useEffect(() => {
+    if (isBoss())
+      axios
+        .get("/api/jobs/management/alarm-count")
+        .then((res) => {
+          setAlarmNum(res.data);
+        })
+        .catch()
+        .finally(() => {});
+  }, [authority]);
 
   // isLoggedIn
   function isLoggedIn() {
@@ -46,6 +60,7 @@ export function LoginProvider({ children }) {
     setId("");
     setEmail("");
     setName("");
+    setAuthority("");
   }
 
   // 권한 확인
@@ -75,6 +90,7 @@ export function LoginProvider({ children }) {
         isAlba,
         isBoss,
         isAdmin,
+        alarmNum,
       }}
     >
       {children}

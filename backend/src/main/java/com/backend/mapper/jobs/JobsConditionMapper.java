@@ -9,7 +9,7 @@ import java.util.List;
 public interface JobsConditionMapper {
     @Insert("""
             INSERT INTO jobs_condition
-            (alba_posts_id, education,education_detail, age, preferred, work_period, work_week, work_time)
+            (jobs_id, education,education_detail, age, preferred, work_period, work_week, work_time)
             VALUES
             (#{albaPostsId},#{education},#{educationDetail},#{age},#{preferred},#{workPeriod},#{workWeek},#{workTime});
             """)
@@ -17,14 +17,13 @@ public interface JobsConditionMapper {
 
     @Select("""
             SELECT * FROM jobs_condition
-            WHERE alba_posts_id = #{jobsId}
+            WHERE jobs_id = #{jobsId}
             """)
     JobsCondition selectByJobsId(Integer jobsId);
 
     @Update("""
             UPDATE jobs_condition
             SET
-            alba_posts_id = #{albaPostsId},
             education = #{education},
             education_detail = #{educationDetail},
             age = #{age},
@@ -32,13 +31,13 @@ public interface JobsConditionMapper {
             work_period = #{workPeriod},
             work_week = #{workWeek},
             work_time = #{workTime}
-            WHERE alba_posts_id = #{albaPostsId}
+            WHERE jobs_id = #{albaPostsId}
             """)
     int update(JobsCondition condition);
 
     @Delete("""
             DELETE FROM jobs_condition
-            WHERE alba_posts_id = #{jobsId}
+            WHERE jobs_id = #{jobsId}
             """)
     int deleteByJobsId(Integer jobsId);
 

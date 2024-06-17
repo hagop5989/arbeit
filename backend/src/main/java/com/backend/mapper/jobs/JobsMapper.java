@@ -72,7 +72,7 @@ public interface JobsMapper {
             JOIN member m ON j.member_id = m.id 
             JOIN store s ON s.id = j.store_id
             JOIN category c ON c.id = j.category_id
-            JOIN jobs_condition jc ON jc.alba_posts_id = j.id
+            JOIN jobs_condition jc ON jc.jobs_id = j.id
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
                        <bind name="pattern" value="'%' + keyword + '%'" />
@@ -110,5 +110,6 @@ public interface JobsMapper {
             WHERE id=#{id}
             """)
     int deleteByJobsId(Integer id);
+
 
 }

@@ -11,20 +11,20 @@ import java.util.List;
 public interface JobsFileMapper {
 
     @Insert("""
-            INSERT INTO jobs_file (jobs_id, name)
+            INSERT INTO jobs_image (jobs_id, name)
             VALUES (#{jobsId},#{name})
             """)
     int insertFileName(Integer jobsId, String name);
 
     @Select("""
             SELECT name 
-            FROM jobs_file 
+            FROM jobs_image 
             WHERE jobs_id = #{jobsId}
             """)
     List<String> selectFileNameByJobsId(Integer jobsId);
 
     @Delete("""
-            DELETE FROM jobs_file
+            DELETE FROM jobs_image
             WHERE jobs_id = #{jobsId}
             AND name = #{fileName}
             """)
