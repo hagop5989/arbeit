@@ -165,7 +165,6 @@ export function JobsList() {
     const match = text.match(/(\S+시|\S+구)\s/);
     if (match) {
       let slice = text.slice(0, match.index + match[0].length - 1);
-      console.log(slice);
       return slice;
     }
     return text;
@@ -347,6 +346,7 @@ export function JobsList() {
 
   /* 공고 카드 형식 */
   function JobCard({ job }) {
+    const { addRecentJob } = useContext(LoginContext);
     // 주소가 시,구 로 끝나는 경우 뒤의 주소 날림 (ex. 서울 강남구)
     const [trimmedAddress, setTrimmedAddress] = useState("");
     useEffect(() => {
@@ -355,7 +355,10 @@ export function JobsList() {
 
     return (
       <Card
-        onClick={() => navigate(`/jobs/${job.id}`)}
+        onClick={() => {
+          navigate(`/jobs/${job.id}`);
+          addRecentJob(`/jobs/${job.id}`); // 최근 본 공고 URL 추가
+        }}
         w={"300px"}
         h={"230px"}
         cursor={"pointer"}

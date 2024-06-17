@@ -119,10 +119,11 @@ export function JobsView() {
             </Box>
           </Box>
           <Flex justifyContent="center">
+            <Button onClick={() => navigate("/jobs/list")}>목록</Button>
             <Button onClick={() => navigate(`/jobs/${id}/apply`)}>
               지원하기
             </Button>
-            <Button onClick={() => navigate("/jobs/89/edit")}>수정</Button>
+            <Button onClick={() => navigate(`/jobs/${id}/edit)`)}>수정</Button>
             <Button onClick={handleRemoveBtn}>삭제</Button>
           </Flex>
         </FormControl>

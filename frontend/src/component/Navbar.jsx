@@ -62,6 +62,9 @@ export function Navbar() {
         <CustomBox onClick={() => navigate("/store/list")}>가게 목록</CustomBox>
       )}
       <Spacer />
+      <CustomBox onClick={() => navigate(`/visit-history`)}>
+        최근페이지
+      </CustomBox>
       {account.isBoss() && (
         <CustomBox
           onClick={() => navigate(`/jobs/management/list`)}

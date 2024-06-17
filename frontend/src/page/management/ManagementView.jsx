@@ -100,11 +100,7 @@ export function ManagementView() {
       <Center w={"50%"} ml={"25%"}>
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
-          <Input
-            defaultValue={management.jobsTitle}
-            value={management.jobsTitle}
-            readOnly
-          />
+          <Input value={management.jobsTitle || ""} readOnly />
           <FormLabel>합격여부</FormLabel>
           <Box bgColor={"gray.100"}>
             {isPassedToString(management.isPassed)}
