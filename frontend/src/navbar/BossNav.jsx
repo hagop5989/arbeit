@@ -14,6 +14,7 @@ export function BossNav() {
       <Box onClick={() => navigate(`/jobs/management/list`)}>
         지원내역(사장)
       </Box>
+      <Box onClick={() => navigate(`/test`)}>캘린더 테스트</Box>
     </>
   );
 }

@@ -10,7 +10,8 @@ import { ApplicationList } from "../page/application/ApplicationList.jsx";
 import { ApplicationView } from "../page/application/ApplicationView.jsx";
 import { ApplicationEdit } from "../page/application/ApplicationEdit.jsx";
 import { ManagementList } from "../page/management/ManagementList.jsx";
-import { ManagementView } from "../page/management/ManagementView.jsx"; // list : jobs , view : detail
+import { ManagementView } from "../page/management/ManagementView.jsx";
+import Test1 from "../page/test)calendar/Test1.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
@@ -27,6 +28,7 @@ const bossRoutes = [
   { path: "resume/list", element: <ResumeList /> },
   { path: "resume/:id", element: <ResumeView /> },
   { path: "resume/:id/edit", element: <ResumeEdit /> },
+  { path: "test", element: <Test1 /> },
 ];
 
 export default bossRoutes;
