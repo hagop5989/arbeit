@@ -38,7 +38,7 @@ public interface ApplicationMapper {
     List<Application> list(Integer memberId);
 
     @Select("""
-            SELECT a.*,j.title AS jobsTitle 
+            SELECT a.*,j.title AS jobsTitle
             FROM application a
             JOIN jobs j ON a.jobs_id = j.id
             WHERE 
@@ -62,5 +62,13 @@ public interface ApplicationMapper {
             WHERE jobs_id = #{jobsId} AND member_id = #{memberId}
             """)
     int update(Application application);
+
+
+
+    @Delete("""
+    DELETE FROM management
+    WHERE jobs_id = #{jobsId} AND applied_member_id = #{memberId};
+    """)
+    int deleteFromManagement(Integer jobsId, Integer memberId);
 
 }

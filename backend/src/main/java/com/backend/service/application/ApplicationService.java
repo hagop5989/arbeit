@@ -48,8 +48,10 @@ public class ApplicationService {
     }
 
     public void delete(Integer jobsId, Integer memberId) {
+//        // 사장 지원 쪽 지원 data 삭제
+//        mapper.deleteFromManagement(jobsId,memberId);
+        // 알바 지원 쪽 지원 data 삭제
         mapper.deleteByJobsIdAndMemberId(jobsId, memberId);
-
     }
 
 
