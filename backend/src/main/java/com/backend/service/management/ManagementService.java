@@ -15,27 +15,24 @@ import java.util.List;
 public class ManagementService {
     private final ManagementMapper mapper;
 
-    public List<Management> list( Integer memberId) {
+    public List<Management> list(Integer memberId) {
         return mapper.list(memberId);
-
-    }
-
-    public void insert(Application application) {
-        mapper.insert(application);
-
     }
 
     public Application select(Integer jobsId, Integer resumeId) {
         return mapper.selectByResumeIdAndJobs(jobsId, resumeId);
-
     }
 
-    public void insertPassOrNot(Management management) {
-        int i = mapper.insertPassOrNot(management);
-        System.out.println("i = " + i);
+    public void insertDecision(Management management) {
+        mapper.insertDecision(management);
     }
 
     public void delete(Integer jobsId, Integer memberId) {
-        mapper.delete(jobsId,memberId);
+        mapper.delete(jobsId, memberId);
+    }
+
+    public Integer alarmCount(Integer memberId) {
+        // 합격 여부가 미정인 것 count
+        return mapper.alarmCount(memberId);
     }
 }

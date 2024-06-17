@@ -62,6 +62,14 @@ export function Navbar() {
         <CustomBox onClick={() => navigate("/store/list")}>가게 목록</CustomBox>
       )}
       <Spacer />
+      {account.isBoss() && (
+        <CustomBox
+          onClick={() => navigate(`/jobs/management/list`)}
+          bg={"blue.200"}
+        >
+          알람 : {account.alarmNum}개
+        </CustomBox>
+      )}
       {account.isLoggedIn() && (
         <CustomBox
           onClick={() => navigate(`/member/${account.id}`)}

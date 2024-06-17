@@ -6,14 +6,13 @@ import java.time.LocalDate;
 
 @Data
 public class Management {
-    private Integer id; // pk auto
 
-    private Integer jobsId; // fk
-    private Integer appliedMemberId; // fk
-    private Integer resumeId; // fk
-    private Integer isPassed; // 현재 fk 아님.
+    // application 테이블 사용.
+    private Integer jobsId;
+    private Integer appliedMemberId;
+    private Integer resumeId;
+    private Integer isPassed;
 
-    // db 에 없음
     private String jobsTitle;
     private String applicationTitle;
     private LocalDate applicationInserted;

@@ -24,7 +24,6 @@ public class ApplicationController {
     @PostMapping("{jobsId}/apply")
     public void insert(@RequestBody Application application) {
         service.insert(application);
-        managementService.insert(application);
     }
 
     @GetMapping("apply/list")
@@ -51,7 +50,7 @@ public class ApplicationController {
     @DeleteMapping("{jobsId}/apply/delete")
     // todo: management 관련 처리 시 한쪽 service에서 한번에 처리해서 Transaction 보호 받도록 하기.
     public void delete(@PathVariable Integer jobsId, @MemberId Integer memberId) {
-        managementService.delete(jobsId,memberId);
+        managementService.delete(jobsId, memberId);
         service.delete(jobsId, memberId);
     }
 }
