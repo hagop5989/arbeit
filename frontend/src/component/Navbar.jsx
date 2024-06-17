@@ -11,13 +11,14 @@ const NavLink = ({ href, children }) => (
 );
 
 // 공통 버튼 컴포넌트
-const NavbarButton = ({ children }) => (
+const NavbarButton = ({ children, onClick }) => (
   <Button
     variant="outline"
     ml={2}
     padding="10px 15px"
     fontSize="13px"
     border="1px solid #CCD4E0"
+    onClick={onClick}
   >
     {children}
   </Button>

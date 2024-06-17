@@ -16,7 +16,7 @@ import Test1 from "../page/test)calendar/Test1.jsx"; // list : jobs , view : det
 
 // list : jobs , view : detail
 const bossRoutes = [
-  { path: "jobs/create", element: <JobsRegister /> },
+  { path: "jobs/register", element: <JobsRegister /> },
   { path: "jobs/list", element: <JobsList /> },
   { path: "jobs/:id", element: <JobsView /> },
   { path: "jobs/:id/edit", element: <JobsEdit /> },
