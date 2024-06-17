@@ -1,10 +1,15 @@
 package com.backend.domain.jobs;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
-public class JobsCondition {
-    private Integer albaPostsId;
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class JobsCond {
+
+    private Integer jobsId;
     private String education;
     private String educationDetail;
     private Integer age;

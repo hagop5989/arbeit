@@ -1,6 +1,6 @@
 package com.backend.mapper.jobs;
 
-import com.backend.domain.jobs.JobsCondition;
+import com.backend.domain.jobs.JobsCond;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -11,19 +11,20 @@ public interface JobsConditionMapper {
             INSERT INTO jobs_condition
             (jobs_id, education,education_detail, age, preferred, work_period, work_week, work_time)
             VALUES
-            (#{albaPostsId},#{education},#{educationDetail},#{age},#{preferred},#{workPeriod},#{workWeek},#{workTime});
+            (#{jobsId},#{education},#{educationDetail},#{age},#{preferred},#{workPeriod},#{workWeek},#{workTime});
             """)
-    int insert(JobsCondition jobsCondition);
+    int insert(JobsCond jobsCond);
 
     @Select("""
             SELECT * FROM jobs_condition
             WHERE jobs_id = #{jobsId}
             """)
-    JobsCondition selectByJobsId(Integer jobsId);
+    JobsCond selectByJobsId(Integer jobsId);
 
     @Update("""
             UPDATE jobs_condition
             SET
+            jobs_id = #{jobsId},
             education = #{education},
             education_detail = #{educationDetail},
             age = #{age},
@@ -31,9 +32,9 @@ public interface JobsConditionMapper {
             work_period = #{workPeriod},
             work_week = #{workWeek},
             work_time = #{workTime}
-            WHERE jobs_id = #{albaPostsId}
+            WHERE jobs_id = #{jobsId}
             """)
-    int update(JobsCondition condition);
+    int updateByJobsId(JobsCond condition);
 
     @Delete("""
             DELETE FROM jobs_condition
@@ -44,6 +45,6 @@ public interface JobsConditionMapper {
     @Select("""
             SELECT * FROM jobs_condition
             """)
-    List<JobsCondition> selectAll();
+    List<JobsCond> selectAll();
 
 }

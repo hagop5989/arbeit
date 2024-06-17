@@ -2,7 +2,7 @@
 DROP TABLE jobs_condition;
 CREATE TABLE jobs_condition
 (
-    alba_posts_id    INT PRIMARY KEY REFERENCES jobs (id),
+    jobsId           INT PRIMARY KEY REFERENCES jobs (id),
     education        VARCHAR(50)  NOT NULL,
     education_detail VARCHAR(50)  NOT NULL,
     age              INT          NOT NULL DEFAULT 0,
@@ -13,15 +13,6 @@ CREATE TABLE jobs_condition
 );
 SELECT *
 FROM jobs_condition;
-SELECT *
-FROM jobs;
-DELETE
-FROM jobs
-WHERE id = 38;
-
-
-
-DESC jobs_condition;
 
 
 

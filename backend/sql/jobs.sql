@@ -18,7 +18,8 @@ create table jobs
     constraint jobs_ibfk_3
         foreign key (category_id) references category (id)
 );
-
+SELECT *
+FROM jobs;
 
 
 SELECT *

@@ -1,16 +1,18 @@
 package com.backend.mapper.jobs;
 
 import com.backend.domain.jobs.Jobs;
-import com.backend.domain.store.Store;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface JobsMapper {
-    // Create
+    /**
+     * CREATE
+     */
     @Insert("""
-            INSERT INTO jobs 
+            INSERT INTO jobs
             (member_id, store_id, category_id, title, content,
              salary, deadline, recruitment_number)
             VALUES
@@ -20,25 +22,31 @@ public interface JobsMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Jobs jobs);
 
-    // Read
+    /**
+     * READ
+     */
+    // TODO : Jobs 엔티티 수정해야함
     @Select("""
-            SELECT j.*,
-            c.name AS categoryName,c.id AS categoryId,
-            m.name AS memberName, s.name AS storeName
-            FROM jobs j 
-            JOIN store s ON s.id = j.store_id
-            JOIN member m ON m.id = j.member_id
-            JOIN category c ON c.id = j.category_id
+            SELECT
+                j.*,
+                m.name memberName,
+                s.name storeName,
+                c.id categoryId,
+                c.name categoryName
+            FROM jobs j
+                JOIN store s ON s.id = j.store_id
+                JOIN member m ON m.id = j.member_id
+                JOIN category c ON c.id = j.category_id
             WHERE j.id = #{id}
             """)
-    Jobs selectByJobsId(Integer id);
+    Jobs selectById(Integer id);
 
     @Select("""
-            SELECT s.*, c.name AS cateName FROM store s
-            JOIN category c ON c.id = s.category_id
-            WHERE member_id = #{jobsMemberId}
+            SELECT s.id, s.name, category_id categoryId, c.name categoryName
+            FROM store s JOIN category c ON c.id = s.category_id
+            WHERE member_id = #{memberId}
             """)
-    List<Store> selectStoreByJobsMemberId(Integer jobsMemberId);
+    List<Map<String, Object>> selectStoreNamesByMemberId(Integer memberId);
 
     // Paging
     @Select("""
@@ -94,22 +102,22 @@ public interface JobsMapper {
 
     // Update
     @Update("""
-            UPDATE jobs SET
-            category_id = #{categoryId},
-            title = #{title},
-            content = #{content},
-            store_id = #{storeId},
-            member_id = #{memberId}
+            UPDATE jobs
+            SET title=#{title},
+                content=#{content},
+                salary=#{salary},
+                deadline=#{deadline},
+                recruitment_number=#{recruitmentNumber}
             WHERE id = #{id}
             """)
-    int update(Jobs jobs);
+    int updateById(Jobs jobs);
 
     // Delete
     @Delete("""
             DELETE FROM jobs
             WHERE id=#{id}
             """)
-    int deleteByJobsId(Integer id);
+    int deleteById(Integer id);
 
 
 }

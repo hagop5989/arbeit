@@ -1,4 +1,4 @@
-import { JobsCreate } from "../page/posts/JobsCreate.jsx";
+import { JobsRegister } from "../page/posts/JobsRegister.jsx";
 import { JobsList } from "../page/posts/JobsList.jsx";
 import { ResumeRegister } from "../page/member/ResumeRegister.jsx";
 import { ResumeList } from "../page/member/ResumeList.jsx";
@@ -15,9 +15,10 @@ import Test1 from "../page/test)calendar/Test1.jsx"; // list : jobs , view : det
 
 // list : jobs , view : detail
 const bossRoutes = [
-  { path: "jobs/create", element: <JobsCreate /> },
+  { path: "jobs/create", element: <JobsRegister /> },
   { path: "jobs/list", element: <JobsList /> },
   { path: "jobs/:id", element: <JobsView /> },
+  { path: "jobs/:id/edit", element: <JobsEdit /> },
   { path: "jobs/:id/management/select", element: <ManagementView /> },
   { path: "jobs/management/list", element: <ManagementList /> },
   { path: "jobs/:id/apply", element: <ApplicationWrite /> },
