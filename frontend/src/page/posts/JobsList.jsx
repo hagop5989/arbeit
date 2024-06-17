@@ -27,6 +27,7 @@ import {
 import {
   faAngleLeft,
   faAngleRight,
+  faAnglesLeft,
   faAnglesRight,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
@@ -94,7 +95,6 @@ export function JobsList() {
     const keywordParam = searchParams.get("keyword");
 
     const params = {
-      memberId: account.id,
       page: currentPage,
       type: typeParam,
       keyword: keywordParam,
@@ -144,7 +144,7 @@ export function JobsList() {
     }
   }, []);
 
-  for (let i = pageInfo.leftPageNum; i <= pageInfo.rightPageNum; i++) {
+  for (let i = pageInfo.leftPage; i <= pageInfo.rightPage; i++) {
     pageNums.push(i);
   }
 
@@ -318,7 +318,7 @@ export function JobsList() {
 
           {/* 공고 생성 */}
           <Button
-            onClick={() => navigate("/jobs/create")}
+            onClick={() => navigate("/jobs/register")}
             colorScheme={"green"}
             w={120}
             my={3}
@@ -400,14 +400,12 @@ export function JobsList() {
     return (
       <Center gap={3} mt={2}>
         <Flex gap={2}>
-          {pageInfo.prevPageNum && (
+          {pageInfo.prevPage && (
             <>
               <Button onClick={() => handlePageButtonClick(1)}>
                 <FontAwesomeIcon icon={faAnglesLeft} />
               </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.prevPageNum)}
-              >
+              <Button onClick={() => handlePageButtonClick(pageInfo.prevPage)}>
                 <FontAwesomeIcon icon={faAngleLeft} />
               </Button>
             </>
@@ -417,23 +415,17 @@ export function JobsList() {
             <Button
               onClick={() => handlePageButtonClick(pageNum)}
               key={pageNum}
-              colorScheme={
-                pageNum === pageInfo.currentPageNum ? "blue" : "gray"
-              }
+              colorScheme={pageNum === pageInfo.currentPage ? "blue" : "gray"}
             >
               {pageNum}
             </Button>
           ))}
-          {pageInfo.nextPageNum && (
+          {pageInfo.nextPage && (
             <>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.nextPageNum)}
-              >
+              <Button onClick={() => handlePageButtonClick(pageInfo.nextPage)}>
                 <FontAwesomeIcon icon={faAngleRight} />
               </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.lastPageNum)}
-              >
+              <Button onClick={() => handlePageButtonClick(pageInfo.lastPage)}>
                 <FontAwesomeIcon icon={faAnglesRight} />
               </Button>
             </>

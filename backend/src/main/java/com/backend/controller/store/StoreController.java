@@ -30,7 +30,7 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @GetMapping("category")
+    @GetMapping("/category")
     public List<Category> getCategory() {
         return storeService.findAllCategory();
     }
