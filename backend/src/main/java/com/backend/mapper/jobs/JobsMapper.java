@@ -96,7 +96,7 @@ public interface JobsMapper {
                </trim>
             GROUP BY j.id
             ORDER BY j.id DESC
-            LIMIT #{offset}, 8
+            LIMIT #{offset}, 15
             </script>
                 """)
     List<Jobs> selectAllPaging(int offset, String searchType, String keyword);

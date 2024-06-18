@@ -64,7 +64,6 @@ export function ManagementView() {
 
   // 합격 데이터 제출
   function handleSubmit(updatedManagement) {
-    console.log(updatedManagement);
     axios
       .put(`/api/jobs/${id}/management/decision`, { ...updatedManagement })
       .then(myToast("처리 되었습니다.", "success"))
@@ -100,11 +99,7 @@ export function ManagementView() {
       <Center w={"50%"} ml={"25%"}>
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
-          <Input
-            defaultValue={management.jobsTitle}
-            value={management.jobsTitle}
-            readOnly
-          />
+          <Input value={management.jobsTitle || ""} readOnly />
           <FormLabel>합격여부</FormLabel>
           <Box bgColor={"gray.100"}>
             {isPassedToString(management.isPassed)}

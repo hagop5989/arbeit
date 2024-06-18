@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   Center,
   Flex,
   Grid,
@@ -13,7 +12,7 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
@@ -38,6 +37,7 @@ export function JobsList() {
   const [selectedWorkPeriod, setSelectedWorkPeriod] = useState("");
   const [selectedWorkWeek, setSelectedWorkWeek] = useState("");
   const [selectedWorkTime, setSelectedWorkTime] = useState("");
+  const [inputKeyword, setInputKeyword] = useState("");
   const [filterType, setFilterType] = useState("최신등록");
   const [selectedRegion, setSelectedRegion] = useState("");
   const [jobsList, setJobsList] = useState([]);
@@ -63,31 +63,45 @@ export function JobsList() {
     selectedWorkTime,
   ) => {
     let filteredJobs = [...jobs];
+
     if (filterType === "마감임박") {
       filteredJobs.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
     } else if (filterType === "최신등록") {
       filteredJobs.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
-    } else if (filterType === "지역" && selectedRegion) {
+    }
+
+    // 기존에는 필터 타입별로 필터링을 적용
+    // 아래는 필터 타입과 상관없이 선택된 필터를 모두 적용
+    if (selectedRegion) {
       filteredJobs = filteredJobs.filter((job) =>
         job.address.startsWith(selectedRegion),
       );
-    } else if (filterType === "직종" && selectedCategory) {
+    }
+
+    if (selectedCategory) {
       filteredJobs = filteredJobs.filter(
         (job) => job.categoryName === selectedCategory,
       );
-    } else if (filterType === "근무기간" && selectedWorkPeriod) {
+    }
+
+    if (selectedWorkPeriod) {
       filteredJobs = filteredJobs.filter(
         (job) => job.workPeriod === selectedWorkPeriod,
       );
-    } else if (filterType === "근무요일" && selectedWorkWeek) {
+    }
+
+    if (selectedWorkWeek) {
       filteredJobs = filteredJobs.filter(
         (job) => job.workWeek === selectedWorkWeek,
       );
-    } else if (filterType === "근무시간" && selectedWorkTime) {
+    }
+
+    if (selectedWorkTime) {
       filteredJobs = filteredJobs.filter(
         (job) => job.workTime === selectedWorkTime,
       );
     }
+
     return filteredJobs;
   };
 
@@ -105,9 +119,9 @@ export function JobsList() {
     if (typeParam) {
       setSearchType(typeParam);
     }
-    if (keywordParam) {
-      setSearchKeyword(keywordParam);
-    }
+    // if (keywordParam) {
+    //   setSearchKeyword(keywordParam);
+    // }
 
     axios.get("/api/jobs/list", { params }).then((res) => {
       const sortedJobs = filterJobsList(
@@ -157,7 +171,17 @@ export function JobsList() {
   }
 
   function handleSearchClick() {
-    navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
+    setSearchKeyword(inputKeyword);
+    const typeParam = searchType;
+    const keywordParam = inputKeyword;
+
+    const params = new URLSearchParams({
+      type: typeParam,
+      keyword: keywordParam,
+      page: 1,
+    });
+
+    navigate(`/jobs/list?${params.toString()}`);
   }
 
   // 시,구 기준으로 이후 주소 제거.
@@ -165,7 +189,6 @@ export function JobsList() {
     const match = text.match(/(\S+시|\S+구)\s/);
     if (match) {
       let slice = text.slice(0, match.index + match[0].length - 1);
-      console.log(slice);
       return slice;
     }
     return text;
@@ -201,99 +224,128 @@ export function JobsList() {
   }
 
   return (
-    <Box>
-      <Center gap={2}>
-        <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"20px"} />
-        <Select w={150} value={filterType} onChange={handleFilterChange}>
-          <option value="최신등록">최신등록</option>
-          <option value="마감임박">마감임박</option>
-          <option value="지역">지역</option>
-          <option value="직종">직종</option>
-          <option value="근무기간">근무기간</option>
-          <option value="근무요일">근무요일</option>
-          <option value="근무시간">근무시간</option>
-        </Select>
-        {filterType === "지역" && (
-          <Select w={150} value={selectedRegion} onChange={handleRegionChange}>
-            <option value="" disabled>
-              선택
-            </option>
-            {addressList.map((address, index) => (
-              <option key={index} value={address}>
-                {address}
-              </option>
-            ))}
+    <Box
+    // border={"1px solid red"}
+    >
+      <Flex justifyContent={"space-between"} my={"30px"} ml={"-100px"}>
+        <Box display={"flex"}>
+          <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
+          <Select w={150} value={filterType} onChange={handleFilterChange}>
+            <option value="최신등록">최신등록</option>
+            <option value="마감임박">마감임박</option>
+            <option value="지역">지역</option>
+            <option value="직종">직종</option>
+            <option value="근무기간">근무기간</option>
+            <option value="근무요일">근무요일</option>
+            <option value="근무시간">근무시간</option>
           </Select>
-        )}
-        {filterType === "직종" && (
+          {filterType === "지역" && (
+            <Select
+              w={150}
+              value={selectedRegion}
+              onChange={handleRegionChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {addressList.map((address, index) => (
+                <option key={index} value={address}>
+                  {address}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "직종" && (
+            <Select
+              w={150}
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {categoryNames.map((category, index) => (
+                <option key={index} value={category}>
+                  {category}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "근무기간" && (
+            <Select
+              w={150}
+              value={selectedWorkPeriod}
+              onChange={handleWorkPeriodChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {workPeriodList.map((period, index) => (
+                <option key={index} value={period}>
+                  {period}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "근무요일" && (
+            <Select
+              w={150}
+              value={selectedWorkWeek}
+              onChange={handleWorkWeekChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {workWeekList.map((week, index) => (
+                <option key={index} value={week}>
+                  {week}
+                </option>
+              ))}
+            </Select>
+          )}
+          {filterType === "근무시간" && (
+            <Select
+              w={150}
+              value={selectedWorkTime}
+              onChange={handleWorkTimeChange}
+            >
+              <option value="" disabled>
+                선택
+              </option>
+              {workTimeList.map((time, index) => (
+                <option key={index} value={time}>
+                  {time}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Box>
+
+        {/* 검색 하는 곳*/}
+        <Box w={"500px"} display={"flex"}>
           <Select
-            w={150}
-            value={selectedCategory}
-            onChange={handleCategoryChange}
+            w={"150px"}
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
           >
-            <option value="" disabled>
-              선택
-            </option>
-            {categoryNames.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
-              </option>
-            ))}
+            <option value="all">전체</option>
+            <option value="text">글</option>
+            <option value="nickName">작성자</option>
           </Select>
-        )}
-        {filterType === "근무기간" && (
-          <Select
-            w={150}
-            value={selectedWorkPeriod}
-            onChange={handleWorkPeriodChange}
-          >
-            <option value="" disabled>
-              선택
-            </option>
-            {workPeriodList.map((period, index) => (
-              <option key={index} value={period}>
-                {period}
-              </option>
-            ))}
-          </Select>
-        )}
-        {filterType === "근무요일" && (
-          <Select
-            w={150}
-            value={selectedWorkWeek}
-            onChange={handleWorkWeekChange}
-          >
-            <option value="" disabled>
-              선택
-            </option>
-            {workWeekList.map((week, index) => (
-              <option key={index} value={week}>
-                {week}
-              </option>
-            ))}
-          </Select>
-        )}
-        {filterType === "근무시간" && (
-          <Select
-            w={150}
-            value={selectedWorkTime}
-            onChange={handleWorkTimeChange}
-          >
-            <option value="" disabled>
-              선택
-            </option>
-            {workTimeList.map((time, index) => (
-              <option key={index} value={time}>
-                {time}
-              </option>
-            ))}
-          </Select>
-        )}
-      </Center>
+          <Input
+            value={inputKeyword}
+            onChange={(e) => setInputKeyword(e.target.value)}
+            placeholder="검색어"
+          />
+          <Button onClick={handleSearchClick}>
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </Button>
+        </Box>
+      </Flex>
       <Center>
         {/* 그리드로 공고 카드 보여주기 */}
         <Box>
-          <Grid templateColumns="repeat(4,1fr)" gap={6}>
+          <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
             {jobsList.map((job) => (
               <GridItem key={job.id}>
                 <JobCard job={job} />
@@ -303,43 +355,6 @@ export function JobsList() {
 
           {/* 페이징 */}
           {Paging()}
-
-          <Center>
-            {/* 검색 하는 곳*/}
-            <Flex my={3} gap={1}>
-              <Box>
-                <Select
-                  w={100}
-                  value={searchType}
-                  onChange={(e) => setSearchType(e.target.value)}
-                >
-                  <option value="all">전체</option>
-                  <option value="text">글</option>
-                  <option value="nickName">작성자</option>
-                </Select>
-              </Box>
-              <Input
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                placeholder="검색어"
-              />
-              <Box>
-                <Button onClick={handleSearchClick}>
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </Button>
-              </Box>
-            </Flex>
-          </Center>
-
-          {/* 공고 생성 */}
-          <Button
-            onClick={() => navigate("/jobs/register")}
-            colorScheme={"green"}
-            w={120}
-            my={3}
-          >
-            공고생성
-          </Button>
         </Box>
       </Center>
     </Box>
@@ -347,77 +362,62 @@ export function JobsList() {
 
   /* 공고 카드 형식 */
   function JobCard({ job }) {
-    // 주소가 시,구 로 끝나는 경우 뒤의 주소 날림 (ex. 서울 강남구)
-    const [trimmedAddress, setTrimmedAddress] = useState("");
-    useEffect(() => {
-      setTrimmedAddress(trimAfterSiGu(job.address));
-    }, []);
+    const { addRecentJob } = useContext(LoginContext);
+
+    // trimmedAddress를 useMemo로 캐싱
+    const trimmedAddress = useMemo(
+      () => trimAfterSiGu(job.address),
+      [job.address],
+    );
 
     return (
       <Card
-        onClick={() => navigate(`/jobs/${job.id}`)}
-        w={"300px"}
-        h={"230px"}
+        onClick={() => {
+          navigate(`/jobs/${job.id}`);
+          addRecentJob(`/jobs/${job.id}`); // 최근 본 공고 URL 추가
+        }}
+        _hover={{ bgColor: "gray.100" }}
+        w={"1250px"}
+        h={"135px"}
+        p={5}
         cursor={"pointer"}
-        borderWidth="1px"
-        borderRadius="lg"
-        border={"1px solid lightgray"}
-        borderTop={"2px solid red"}
+        borderRadius="0"
+        borderY={"1px solid lightgray"}
         overflow="hidden"
-        p="5"
-        m="2"
       >
-        <Center>
-          <Image
-            w={"150px"}
-            h={"60px"}
-            src={
-              "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif"
-            }
-            alt={job.title}
-            objectFit="cover"
-          />
-        </Center>
-        <CardBody fontSize="sm">
-          <Text w={"220px"} h={"22px"} overflow="hidden" mt="2" fontSize="sm">
-            {job.title}
-          </Text>
-          <Center>
-            <Text
-              w={"250px"}
-              h={"30px"}
-              overflow="hidden"
-              fontWeight="bold"
-              mt="2"
-              fontSize="medium"
-            >
-              {job.content}
-            </Text>
-          </Center>
-          <Flex mt="2">
-            <Text color="gray.600" w={"50%"} fontSize="sm">
-              {trimmedAddress}
-            </Text>
-            <Text color="teal.500" w={"15%"} fontWeight="bold" ml={2}>
-              {" "}
-              시급
-            </Text>
-            <Text
-              fontWeight="bold"
-              w={"35%"}
-              fontSize="sm"
-              ml={1}
-              color="gray.600"
-            >
-              {job.salary.toLocaleString()} 원
-            </Text>
-          </Flex>
-        </CardBody>
-        <CardFooter>
-          <Button mt="2" colorScheme="teal" width="full">
-            신청하기
-          </Button>
-        </CardFooter>
+        <Flex alignItems={"center"}>
+          <Box w={"15%"}>
+            <Image
+              w={"150px"}
+              h={"60px"}
+              src={
+                "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif"
+              }
+              alt={job.title}
+              border={"1px solid lightgray"}
+              borderRadius={"5px"}
+              objectFit="cover"
+            />
+          </Box>
+          <Box w={"60%"} ml={"40px"}>
+            <CardBody>
+              <Text fontSize="xl" fontWeight="bold">
+                제목: {job.title}
+              </Text>
+              <Text overflow="hidden">내용: {job.content}</Text>
+            </CardBody>
+          </Box>
+          <Box w={"20%"}>
+            <Text color="gray.600">{trimmedAddress}</Text>
+            <Text fontSize="sm">분야 : {job.categoryName}</Text>
+            <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
+          </Box>
+          <Box w={"10%"}>
+            <Button borderWidth={"2px"} variant="outline" colorScheme="red">
+              지원하기
+            </Button>
+          </Box>
+        </Flex>
       </Card>
     );
   }
