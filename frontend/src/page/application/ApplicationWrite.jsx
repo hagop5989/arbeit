@@ -19,7 +19,7 @@ export function ApplicationWrite() {
   const { id } = useParams();
   const account = useContext(LoginContext);
   const [application, setApplication] = useState({});
-  const [jobsTitle, setJobsTitle] = useState();
+  const [jobsTitle, setJobsTitle] = useState("");
   const [resumeList, setResumeList] = useState([]);
   const navigate = useNavigate();
 
@@ -71,10 +71,10 @@ export function ApplicationWrite() {
   return (
     <Box>
       <Heading>지원서 작성</Heading>
-      <Center w={"50%"} ml={"25%"}>
+      <Center>
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
-          <Input defaultValue={jobsTitle} value={jobsTitle} ReadOnly />
+          <Input value={jobsTitle} readOnly />
           <Divider my={2} />
           <FormLabel>이력서 첨부</FormLabel>
           <Select

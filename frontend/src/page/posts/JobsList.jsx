@@ -230,7 +230,7 @@ export function JobsList() {
     <Box
     // border={"1px solid red"}
     >
-      <Flex justifyContent={"space-between"}>
+      <Flex justifyContent={"space-between"} mb={"30px"} mt={"-20px"}>
         <Box display={"flex"}>
           <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
           <Select w={150} value={filterType} onChange={handleFilterChange}>
@@ -390,7 +390,7 @@ export function JobsList() {
         }}
         _hover={{ bgColor: "gray.100" }}
         w={"1050px"}
-        h={"135px"}
+        h={"140px"}
         p={5}
         cursor={"pointer"}
         borderRadius="0"
@@ -412,7 +412,15 @@ export function JobsList() {
           </Box>
           <Box w={"60%"} ml={"30px"}>
             <CardBody>
-              <Text fontSize="xl" fontWeight="bold">
+              <Text
+                w={"500px"}
+                fontSize="xl"
+                fontWeight={"bold"}
+                letterSpacing={"1px"}
+                whiteSpace="nowrap" // 줄 바꿈을 막음
+                overflow="hidden" // 넘친 내용을 숨김
+                textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+              >
                 {job.title}
               </Text>
               <Text

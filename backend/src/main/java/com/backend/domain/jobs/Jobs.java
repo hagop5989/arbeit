@@ -1,12 +1,15 @@
 package com.backend.domain.jobs;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Jobs {
     private Integer id; //prk
     private Integer memberId; //frk-member
