@@ -23,7 +23,6 @@ public class ApplicationService {
 
         List<Resume> resumes = mapper.selectResumeByMemberId(memberId);
         Jobs jobs = mapper.selectJobsByJobsId(jobsId);
-
         loadData.put("resumes", resumes);
         loadData.put("jobsTitle", jobs.getTitle());
 

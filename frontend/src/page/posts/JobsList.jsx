@@ -386,7 +386,7 @@ export function JobsList() {
       <Card
         onClick={() => {
           navigate(`/jobs/${job.id}`);
-          addRecentJob(`/jobs/${job.id}`); // 최근 본 공고 URL 추가
+          addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
         }}
         _hover={{ bgColor: "gray.100" }}
         w={"1050px"}

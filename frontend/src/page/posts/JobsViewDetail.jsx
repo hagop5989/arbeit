@@ -271,6 +271,7 @@ export function JobContact({ job, jobsCond, boss }) {
 }
 
 export function JobRequirements({ job, jobsCond }) {
+  const navigate = useNavigate();
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     // 연도와 날짜만 추출
