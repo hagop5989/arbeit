@@ -36,14 +36,21 @@ const Navbar = () => {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   return (
-
-    <Box bg="white" borderBottom="3px solid #eaeaea" height="140px" pt={"80px"}>
+    <Box
+      bg="white"
+      borderBottom="3px solid #eaeaea"
+      height="110px"
+      pt={"30px"}
+      mb={"70px"}
+      border={"1px solid black"}
+    >
       <Flex
-        h="full"
+        h="80%"
         alignItems="center"
         justifyContent="space-between"
         mx={{ base: "50px", xl: "200px" }}
         pt={"30px"}
+        border={"1px solid red"}
       >
         <HStack spacing={8} alignItems="center" mb="30px" ml={"100px"}>
           <Box

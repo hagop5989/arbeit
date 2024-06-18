@@ -19,7 +19,7 @@ export function LoginProvider({ children }) {
     if (token) {
       login(token);
     }
-  }, []);
+  }, [id]);
 
   // boss 이면 지원 list 데이터 받아오기
   useEffect(() => {
