@@ -18,7 +18,7 @@ import {
   JobLocation,
   JobRequirements,
   JobReview,
-} from "./test)JobsDetail.jsx";
+} from "./JobsViewDetail.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
