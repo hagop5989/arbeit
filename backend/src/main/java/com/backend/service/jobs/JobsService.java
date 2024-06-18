@@ -110,8 +110,8 @@ public class JobsService {
         // update
         Integer jobsId = form.getId();
         Jobs jobs = new Jobs(
-                null,
                 jobsId,
+                null,
                 null, null,
                 form.getTitle(),
                 form.getContent(),

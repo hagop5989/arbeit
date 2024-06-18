@@ -1,5 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {Box, Button, Center, Divider, Flex, Spinner, Stack, useToast,} from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  Spinner,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 import {
   CompanyInfo,
   JobConditions,
@@ -11,10 +20,12 @@ import {
   JobReview,
 } from "./test)JobsDetail.jsx";
 import axios from "axios";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function JobsView2() {
-  const {id} = useParams();
+  const account = useContext(LoginContext);
+  const { id } = useParams();
   const [jobs, setJobs] = useState({});
   const [jobsCond, setJobsCond] = useState({});
   const [images, setImages] = useState([]);
@@ -57,7 +68,7 @@ export function JobsView2() {
   if (!jobs || !jobsCond) {
     return (
       <Center height="100vh">
-        <Spinner size="xl"/>
+        <Spinner size="xl" />
       </Center>
     );
   }
@@ -65,26 +76,36 @@ export function JobsView2() {
   return (
     <Center flexDirection="column" p={5} bg="#f7f9fc">
       <Stack spacing={6}>
-        <JobDetail job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <JobConditions job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <JobLocation job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <JobRequirements job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <JobDetails job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <JobContact job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <CompanyInfo job={jobs} jobsCond={jobsCond}/>
-        <Divider/>
-        <JobReview job={jobs} jobsCond={jobsCond}/>
+        <JobDetail job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <JobConditions job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <JobLocation job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <JobRequirements job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <JobDetails job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <JobContact job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <CompanyInfo job={jobs} jobsCond={jobsCond} />
+        <Divider />
+        <JobReview job={jobs} jobsCond={jobsCond} />
       </Stack>
-      <Flex><Button onClick={() => navigate("/jobs/list")}>목록</Button>
-        <Button onClick={() => navigate(`/jobs/${id}/apply`)}>지원하기</Button>
-        <Button onClick={() => navigate(`/jobs/${id}/edit)`)}>수정</Button>
-        <Button onClick={handleRemoveBtn}>삭제</Button></Flex>
+      <Flex>
+        <Button onClick={() => navigate("/jobs/list")}>목록</Button>
+        {account.isAlba() && (
+          <Button onClick={() => navigate(`/jobs/${id}/apply`)}>
+            지원하기
+          </Button>
+        )}
+        {account.isBoss() && (
+          <Flex>
+            <Button onClick={() => navigate(`/jobs/${id}/edit`)}>수정</Button>
+            <Button onClick={handleRemoveBtn}>삭제</Button>
+          </Flex>
+        )}
+      </Flex>
     </Center>
   );
 }

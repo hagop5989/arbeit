@@ -62,31 +62,45 @@ export function JobsList() {
     selectedWorkTime,
   ) => {
     let filteredJobs = [...jobs];
+
     if (filterType === "마감임박") {
       filteredJobs.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
     } else if (filterType === "최신등록") {
       filteredJobs.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
-    } else if (filterType === "지역" && selectedRegion) {
+    }
+
+    // 기존에는 필터 타입별로 필터링을 적용
+    // 아래는 필터 타입과 상관없이 선택된 필터를 모두 적용
+    if (selectedRegion) {
       filteredJobs = filteredJobs.filter((job) =>
         job.address.startsWith(selectedRegion),
       );
-    } else if (filterType === "직종" && selectedCategory) {
+    }
+
+    if (selectedCategory) {
       filteredJobs = filteredJobs.filter(
         (job) => job.categoryName === selectedCategory,
       );
-    } else if (filterType === "근무기간" && selectedWorkPeriod) {
+    }
+
+    if (selectedWorkPeriod) {
       filteredJobs = filteredJobs.filter(
         (job) => job.workPeriod === selectedWorkPeriod,
       );
-    } else if (filterType === "근무요일" && selectedWorkWeek) {
+    }
+
+    if (selectedWorkWeek) {
       filteredJobs = filteredJobs.filter(
         (job) => job.workWeek === selectedWorkWeek,
       );
-    } else if (filterType === "근무시간" && selectedWorkTime) {
+    }
+
+    if (selectedWorkTime) {
       filteredJobs = filteredJobs.filter(
         (job) => job.workTime === selectedWorkTime,
       );
     }
+
     return filteredJobs;
   };
 
