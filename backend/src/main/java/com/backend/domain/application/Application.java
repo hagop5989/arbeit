@@ -15,7 +15,7 @@ public class Application {
 
     private Integer isPassed; // Null 가능
     private LocalDate inserted; // Default Now()
-
+ 
     // db 에 없음
     private String jobsTitle;
 
