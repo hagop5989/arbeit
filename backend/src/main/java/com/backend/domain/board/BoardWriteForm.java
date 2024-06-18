@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardWriteForm {
-
     private Integer memberId;
-
     @NotBlank
     private String title;
     @NotBlank
     private String content;
-    private String files;
+
+
 }

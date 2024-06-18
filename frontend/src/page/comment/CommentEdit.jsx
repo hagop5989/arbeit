@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -15,75 +16,68 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-function FormControl(props) {
-  return null;
-}
-
-export function CommentEdit() {
+export function CommentEdit({ comment, setIsEditing }) {
   const { id } = useParams();
   const [errors, setErrors] = useState(null);
-  const [comment, setComment] = useState(null);
+  const [commentText, setCommentText] = useState(comment.comment);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    axios.get(`/api/comment/${id}`).then((res) => {
-      setComment(res.data);
-    });
-  }, [id]);
 
   function handleCommentSubmit() {
     axios
-      .put(`/api/comment/${id}`, ...comment)
+      .put(`/api/comment/${comment.id}`, {
+        id: comment.id,
+        comment: commentText,
+      })
       .then(() => {
         toast({
           description: "댓글이 수정되었습니다.",
           position: "top",
           status: "success",
         });
-        navigate(`/board/list`);
       })
       .catch((err) => {
         setErrors(err.response.data);
         toast({
           status: "warning",
-          description: "오류가발생하였습니다",
+          description: "댓글 수정을 실패하였습니다",
           position: "top",
         });
       })
       .finally(() => {
-        onClose();
+        setIsEditing(false);
       });
   }
 
-  const handleChange = (prop) => (e) => {
-    setComment({ ...comment, [prop]: e.target.value });
-  };
-
-  if (!comment == null) {
+  if (commentText == null) {
     return <Spinner />;
   }
 
   return (
     <Flex>
       <Box>
-        <FormControl>
+        <Box>
           <FormLabel>댓글</FormLabel>
           <Textarea
-            value={comment.comment}
-            onChange={handleChange("comment")}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
           />
           {errors && <FormHelperText>{errors.comment}</FormHelperText>}
-        </FormControl>
-        <Box>
-          <Button onClick={onOpen}>저장</Button>
         </Box>
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Box>
+          <Button size={"sm"} colorScheme="blue" onClick={onOpen}>
+            수정
+          </Button>
+          <Box>
+            <Button colorScheme="grey" onClick={() => setIsEditing(false)}>
+              취소
+            </Button>
+          </Box>
+        </Box>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>수정 확인</ModalHeader>

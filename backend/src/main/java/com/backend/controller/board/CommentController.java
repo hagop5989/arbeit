@@ -23,7 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping("/api/comment")
 @RequiredArgsConstructor
-public class CommentController {
+public class
+CommentController {
 
     final CommentService service;
 
@@ -60,15 +61,21 @@ public class CommentController {
 
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity edit(@Validated @RequestBody CommentEditForm form, BindingResult bindingResult,
+    public ResponseEntity edit(@Validated @RequestBody CommentEditForm form,
+                               BindingResult bindingResult,
                                @PathVariable Integer id,
                                Authentication authentication) throws Exception {
+
+        log.info("form={}", form);
+        log.info("commentId={}", id);
+        log.info("authentication={}", authentication.getName());
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
         if (!service.hasAccess(id, authentication)) {
+            log.info("edit.hasAccess");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         service.edit(form, id);
@@ -82,6 +89,18 @@ public class CommentController {
             errors.put(error.getField(), error.getDefaultMessage());
         }
         return errors;
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity info(@PathVariable Integer id) {
+        Comment comment = service.findById(id);
+
+        if (comment == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(comment);
     }
 
 }

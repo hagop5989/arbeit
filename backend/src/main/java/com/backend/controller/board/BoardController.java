@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,13 +34,14 @@ public class BoardController {
     @PostMapping("/write")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity write(@Validated @RequestBody BoardWriteForm form, BindingResult bindingResult,
+                                @RequestParam(value = "files[]", required = false) MultipartFile[] files,
                                 Authentication authentication) {
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
         }
-        boardService.write(form, authentication);
+        boardService.write(form, files, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -63,6 +65,8 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated @RequestBody BoardEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
+                               @RequestParam(value = "removeImages[]", required = false) List<String> removeImages,
+                               @RequestParam(value = "addImages[]", required = false) MultipartFile[] addImages,
                                Authentication authentication) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -74,7 +78,7 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        boardService.edit(form, id);
+        boardService.edit(form, id, removeImages, addImages);
         return ResponseEntity.ok().build();
     }
 

@@ -43,9 +43,9 @@ public class CommentService {
 
     }
 
-    public void edit(CommentEditForm form, Integer id) {
+    public void edit(CommentEditForm form, Integer Id) {
         Comment comment = new Comment(
-                id,
+                Id,
                 null,
                 null,
                 form.getComment()
@@ -55,9 +55,16 @@ public class CommentService {
 
 
     public boolean hasAccess(Integer id, Authentication authentication) {
-        Integer memberId = mapper.selectById(id).getMemberId();
-        Integer loginId = Integer.valueOf(authentication.getName());
-        return memberId.equals(loginId);
+        Comment comment = mapper.selectById(id);
+        if (comment == null) {
+            return false;
+        }
+        Integer memberId = comment.getMemberId();
+        String loginId = authentication.getName();
+        return String.valueOf(memberId).equals(loginId);
     }
 
+    public Comment findById(Integer id) {
+        return mapper.selectById(id);
+    }
 }
