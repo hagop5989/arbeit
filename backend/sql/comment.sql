@@ -16,18 +16,10 @@ SELECT *
 FROM comment;
 
 
+ALTER TABLE comment
+    DROP FOREIGN KEY comment_ibfk_1;
 
-SELECT c.id, c.member_id, c.comment, c.inserted
-FROM comment c
-         JOIN member m ON m.id = c.member_id
-WHERE board_Id = 1
-ORDER BY id
-;
+ALTER TABLE comment
+    ADD CONSTRAINT comment_ibfk_1 FOREIGN KEY (board_id) REFERENCES board (id) ON DELETE CASCADE;
 
-
-
-SELECT c.id, c.member_id, c.comment, c.inserted
-FROM comment c
-         JOIN member m ON m.id = c.member_id
-WHERE board_Id = 8
-ORDER BY c.id;
+DROP TABLE comment;

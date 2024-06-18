@@ -17,15 +17,15 @@ public class Board {
     private String name;
     private String title;
     private String content;
-    private String files;
+
 
     private LocalDateTime inserted;
 
-    public Board(Integer id, String title, String content, String files) {
+    public Board(Integer id, String title, String content) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.files = files;
+
     }
 
     public String getInserted() {

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -30,7 +30,8 @@ import { CommentComponent } from "../comment/CommentComponent.jsx";
 
 export function BoardView() {
   const { id } = useParams();
-  const [board, setBoard] = useState(null);
+  const [board, setBoard] = useState("");
+  const [imageList, setImageList] = useState([]);
   const [like, setLike] = useState({
     like: false,
     count: 0,
@@ -43,7 +44,10 @@ export function BoardView() {
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
-      .then((res) => setBoard(res.data))
+      .then((res) => {
+        setBoard(res.data.border);
+        setImageList(res.data.imageList);
+      })
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -109,13 +113,26 @@ export function BoardView() {
           <Input value={board.title} readOnly></Input>
           <FormLabel>본문</FormLabel>
           <Textarea value={board.content} readOnly></Textarea>
-          <FormLabel>사진</FormLabel>
-          <Image m={10} src={board.files} readOnly></Image>
+          <Box
+            flex="1"
+            width="500px"
+            height="250px"
+            border="1px solid gray"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            color="gray.400"
+          >
+            {imageList.map((image) => (
+              <Box key={image.name}>
+                <Image w={"100%"} h={"100%"} src={image.src} />
+              </Box>
+            ))}
+          </Box>
           <FormLabel>작성자</FormLabel>
           <Input value={board.name} readOnly></Input>
         </FormControl>
       </Box>
-
       {account.hasAccess(board.memberId) && (
         <Box>
           <Box>
@@ -129,24 +146,25 @@ export function BoardView() {
               삭제
             </Button>
           </Box>
-
-          <CommentComponent boardId={board.id} />
-
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>게시물 삭제</ModalHeader>
-              <ModalBody>삭제하시겠습니까?</ModalBody>
-              <ModalFooter>
-                <Button onClick={onClose}>취소</Button>
-                <Button colorScheme={"red"} onClick={handleRemoveBtn}>
-                  확인
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
         </Box>
       )}
+      <Box>
+        <CommentComponent boardId={board.id} />
+
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>게시물 삭제</ModalHeader>
+            <ModalBody>삭제하시겠습니까?</ModalBody>
+            <ModalFooter>
+              <Button onClick={onClose}>취소</Button>
+              <Button colorScheme={"red"} onClick={handleRemoveBtn}>
+                확인
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
     </Box>
   );
 }
