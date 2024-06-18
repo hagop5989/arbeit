@@ -12,7 +12,9 @@ export function LoginProvider({ children }) {
   const [authority, setAuthority] = useState("");
   const [expired, setExpired] = useState(0);
   const [alarmNum, setAlarmNum] = useState("");
-  const [recentJobPages, setRecentJobPages] = useState([]); // 최근 본 공고 페이지 URL을 저장하는 상태
+  const [recentJobPages, setRecentJobPages] = useState(
+    JSON.parse(localStorage.getItem("recentJobPages")) || [],
+  ); // 최근 본 공고 페이지 URL을 저장하는 상태
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,10 +36,14 @@ export function LoginProvider({ children }) {
   }, [authority]);
 
   // 최근 본 공고 페이지 URL을 추가하는 함수
-  function addRecentJob(url) {
-    setRecentJobPages((prevJobs) =>
-      [...new Set([url, ...prevJobs])].slice(0, 10),
-    ); // 중복 제거 및 최대 10개로 제한
+  function addRecentJob(url, title) {
+    setRecentJobPages((prevJobs) => {
+      const newJob = { url, title };
+      const filteredJobs = prevJobs.filter((job) => job.url !== url);
+      const updatedJobs = [newJob, ...filteredJobs].slice(0, 10); // 중복 제거 및 최대 10개로 제한
+      localStorage.setItem("recentJobPages", JSON.stringify(updatedJobs));
+      return updatedJobs;
+    });
   }
 
   // isLoggedIn

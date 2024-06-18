@@ -113,4 +113,5 @@ public interface StoreMapper {
             """)
     int deleteImageByIdAndName(Integer storeId, String name);
 
+
 }

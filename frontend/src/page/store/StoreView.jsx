@@ -69,7 +69,7 @@ export function StoreView() {
             color="gray.400"
           >
             {imageList.map((image) => (
-              <Box key={image.name} w={"100%"} h={"100%"}>
+              <Box key={image.name} w={"100%"} h={""}>
                 <Image
                   w={"100%"}
                   h={"100%"}

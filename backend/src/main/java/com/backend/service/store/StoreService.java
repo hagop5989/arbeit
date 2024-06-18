@@ -161,4 +161,5 @@ public class StoreService {
                 .build();
         s3Client.deleteObject(objectRequest);
     }
+
 }

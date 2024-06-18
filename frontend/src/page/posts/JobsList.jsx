@@ -43,6 +43,7 @@ export function JobsList() {
   const [jobsList, setJobsList] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [storeImages, setStoreImages] = useState({});
 
   const pageNums = [];
   const [pageInfo, setPageInfo] = useState({});
@@ -124,6 +125,8 @@ export function JobsList() {
     // }
 
     axios.get("/api/jobs/list", { params }).then((res) => {
+      setStoreImages(res.data.storeImgMap);
+
       const sortedJobs = filterJobsList(
         res.data.jobsList,
         filterType,
@@ -227,7 +230,7 @@ export function JobsList() {
     <Box
     // border={"1px solid red"}
     >
-      <Flex justifyContent={"space-between"} my={"30px"} ml={"-100px"}>
+      <Flex justifyContent={"space-between"}>
         <Box display={"flex"}>
           <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
           <Select w={150} value={filterType} onChange={handleFilterChange}>
@@ -348,7 +351,7 @@ export function JobsList() {
           <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
             {jobsList.map((job) => (
               <GridItem key={job.id}>
-                <JobCard job={job} />
+                <JobCard job={job} storeImages={storeImages} />
               </GridItem>
             ))}
           </Grid>
@@ -361,7 +364,7 @@ export function JobsList() {
   );
 
   /* 공고 카드 형식 */
-  function JobCard({ job }) {
+  function JobCard({ job, storeImages }) {
     const { addRecentJob } = useContext(LoginContext);
 
     // trimmedAddress를 useMemo로 캐싱
@@ -370,14 +373,23 @@ export function JobsList() {
       [job.address],
     );
 
+    // 특정 storeId에 대한 src 값을 가져오는 함수
+    const getSrcByStoreId = (storeId) => {
+      const storeImageInfo = storeImages[storeId];
+      if (storeImageInfo) {
+        return storeImageInfo.src;
+      }
+      return null;
+    };
+
     return (
       <Card
         onClick={() => {
           navigate(`/jobs/${job.id}`);
-          addRecentJob(`/jobs/${job.id}`); // 최근 본 공고 URL 추가
+          addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
         }}
         _hover={{ bgColor: "gray.100" }}
-        w={"1250px"}
+        w={"1050px"}
         h={"135px"}
         p={5}
         cursor={"pointer"}
@@ -386,30 +398,43 @@ export function JobsList() {
         overflow="hidden"
       >
         <Flex alignItems={"center"}>
-          <Box w={"15%"}>
+          <Box w={"150px"} h={"60px"}>
             <Image
-              w={"150px"}
-              h={"60px"}
-              src={
-                "https://img11.albamon.kr/trans/150x60/2020-08-21/e31du74k1jai3zj.gif"
-              }
-              alt={job.title}
+              w={"100%"}
+              p={"8px"}
+              // h={"100%"}
+              src={getSrcByStoreId(job.storeId)}
+              alt={"이미지 없음"}
               border={"1px solid lightgray"}
               borderRadius={"5px"}
               objectFit="cover"
             />
           </Box>
-          <Box w={"60%"} ml={"40px"}>
+          <Box w={"60%"} ml={"30px"}>
             <CardBody>
               <Text fontSize="xl" fontWeight="bold">
-                제목: {job.title}
+                {job.title}
               </Text>
-              <Text overflow="hidden">내용: {job.content}</Text>
+              <Text
+                w={"500px"}
+                mx={"20px"}
+                my={"10px"}
+                fontSize="15px"
+                color={"gray.500"}
+                whiteSpace="nowrap" // 줄 바꿈을 막음
+                overflow="hidden" // 넘친 내용을 숨김
+                textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+              >
+                {job.content}
+              </Text>
             </CardBody>
           </Box>
           <Box w={"20%"}>
             <Text color="gray.600">{trimmedAddress}</Text>
-            <Text fontSize="sm">분야 : {job.categoryName}</Text>
+            <Text fontSize="sm" color={"red.400"}>
+              {" "}
+              {job.categoryName}
+            </Text>
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
           </Box>
           <Box w={"10%"}>
