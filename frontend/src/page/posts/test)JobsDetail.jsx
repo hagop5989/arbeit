@@ -17,13 +17,13 @@ import {
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding } from "@fortawesome/free-solid-svg-icons";
+import KakaoMap2 from "./KakaoMap2.jsx";
+import { useNavigate } from "react-router-dom";
 
-export function JobDetail({ job, jobsCond }) {
+export function JobDetail({ job, jobsCond, storeMap }) {
   if (!job || !jobsCond) {
     return null;
   }
-  console.log(job);
-  console.log(jobsCond);
 
   return (
     <Box
@@ -37,20 +37,21 @@ export function JobDetail({ job, jobsCond }) {
       bg="white"
     >
       <Flex justifyContent="space-between" alignItems="center" mb={5}>
-        <Text fontSize="2xl" fontWeight="bold">
+        <Text fontSize="4xl" fontWeight="bold">
           {job.title}
         </Text>
         <Image
-          w={"150px"}
+          w={"200px"}
           h={"60px"}
-          // src={job.logo}
-          alt={job.title}
+          m={"10px"}
+          src={storeMap.images != null ? storeMap.images[0].src : ""}
+          alt={"job.logo"}
           borderRadius={"4px"}
           objectFit="cover"
         />
       </Flex>
       <Text fontSize="sm" color="gray.500" mb={2}>
-        {"job.hashtags"}
+        {"#초보가능, #간편지원"}
       </Text>
       <Text fontSize="md" mb={5}>
         {job.content}
@@ -59,7 +60,7 @@ export function JobDetail({ job, jobsCond }) {
       <Grid templateColumns="repeat(4, 1fr)" gap={6} textAlign="center">
         <Box>
           <Text fontSize="lg" fontWeight="bold">
-            {job.salary} 원
+            {parseInt(job.salary).toLocaleString()} 원
           </Text>
           <Text fontSize="sm" color="gray.500">
             시급
@@ -81,7 +82,7 @@ export function JobDetail({ job, jobsCond }) {
             요일
           </Text>
         </Box>
-        <Box mt={"-20px"}>
+        <Box maxH={"70px"}>
           <Text fontSize="medium" fontWeight="bold">
             {jobsCond.workTime}
           </Text>
@@ -106,15 +107,44 @@ export function JobConditions({ job, jobsCond }) {
       m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
-        모집조건
+      <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
+        근무조건
       </Text>
-      <VStack align="start" spacing={2} mb={5}>
-        <Text>급여: {job.salary}</Text>
-        <Text>기간: {jobsCond.workPeriod}</Text>
-        <Text>요일: {jobsCond.workWeek}</Text>
-        <Text>시간: {jobsCond.workTime}</Text>
-      </VStack>
+      <Divider />
+      <Flex justifyContent="space-between" p={2} fontSize={"17px"}>
+        <Box w={"440px"} mx={"10px"}>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>급여</Text>
+            <Text ml={"0px"}> {parseInt(job.salary).toLocaleString()}원</Text>
+          </Box>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>기간</Text>
+            <Text ml={"0px"}> {jobsCond.workPeriod}</Text>
+          </Box>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>요일</Text>
+            <Text ml={"0px"}> {jobsCond.workWeek}</Text>
+          </Box>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>시간</Text>
+            <Text ml={"0px"}> {jobsCond.workTime}</Text>
+          </Box>
+        </Box>
+        <Box w={"440px"} mx={"10px"}>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>업직종</Text>
+            <Text ml={"10px"}>{job.categoryName}</Text>
+          </Box>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>고용형태</Text>
+            <Text ml={"10px"}>{"알바"}</Text>
+          </Box>
+          <Box my={2} display={"flex"}>
+            <Text w={"95px"}>복리후생</Text>
+            <Text ml={"10px"}>{"국민연금, 고용보험, 산재보험, 건강보험 "}</Text>
+          </Box>
+        </Box>
+      </Flex>
       <Button colorScheme="red" w="full">
         지원하기
       </Button>
@@ -122,7 +152,7 @@ export function JobConditions({ job, jobsCond }) {
   );
 }
 
-export function JobLocation({ job, jobsCond }) {
+export function JobLocation({ job, jobsCond, storeMap }) {
   return (
     <Box
       w={"full"}
@@ -136,20 +166,18 @@ export function JobLocation({ job, jobsCond }) {
     >
       <Text fontSize="xl" fontWeight="bold" mb={3}>
         근무지역
+        <KakaoMap2
+          address={storeMap.store != null ? storeMap.store.address : ""}
+        />
       </Text>
-      <Text mb={3}>{"job.location"}</Text>
-      <Image
-        // src={job.mapImage}
-        alt="Map"
-        w="full"
-        h="200px"
-        objectFit="cover"
-      />
+      <Text mb={3} fontSize={"xl"}>
+        주소 : {storeMap.store != null ? storeMap.store.address : ""}
+      </Text>
     </Box>
   );
 }
 
-export function JobDetails({ job, jobsCond }) {
+export function JobDetails({ job, jobsCond, images }) {
   return (
     <Box
       w={"full"}
@@ -161,10 +189,14 @@ export function JobDetails({ job, jobsCond }) {
       m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
+      <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
         상세요강
       </Text>
-      <Image src={""}></Image>
+      <Divider my={5} />
+      {images &&
+        images.map((image, index) => (
+          <Image w={"100%"} key={index} src={image.src} alt={image.name} />
+        ))}
       <Text>{job.content}</Text>
       <Button colorScheme="orange" mt={5} w="full">
         지원하기
@@ -173,7 +205,7 @@ export function JobDetails({ job, jobsCond }) {
   );
 }
 
-export function JobContact({ job, jobsCond }) {
+export function JobContact({ job, jobsCond, boss }) {
   return (
     <Box
       w={"full"}
@@ -185,22 +217,23 @@ export function JobContact({ job, jobsCond }) {
       m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
+      <Text fontWeight="bold" fontSize="2xl" my={2}>
         채용담당자 연락처
       </Text>
+      <Divider />
       <Table variant="simple">
         <Tbody>
           <Tr>
             <Td fontWeight="bold">담당자</Td>
-            <Td>{"job.contactName"}</Td>
+            <Td>{boss.name}</Td>
           </Tr>
           <Tr>
             <Td fontWeight="bold">전화</Td>
-            <Td>{"job.contactPhone"}</Td>
+            <Td>{boss.phone}</Td>
           </Tr>
           <Tr>
             <Td fontWeight="bold">이메일</Td>
-            <Td>{"job.contactEmail"}</Td>
+            <Td>{boss.email}</Td>
           </Tr>
           <Tr>
             <Td fontWeight="bold">홈페이지</Td>
@@ -221,6 +254,12 @@ export function JobContact({ job, jobsCond }) {
 }
 
 export function JobRequirements({ job, jobsCond }) {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    // 연도와 날짜만 추출
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return date.toLocaleDateString(undefined, options);
+  };
   return (
     <Box
       w={"full"}
@@ -232,39 +271,54 @@ export function JobRequirements({ job, jobsCond }) {
       m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
+      <Text fontSize="2xl" my={2} fontWeight="bold">
         모집조건
       </Text>
       <Divider mb={4} />
       <Box mx={3}>
-        <HStack spacing={10} w="full" alignItems="start">
-          <VStack align="start" spacing={3} w="40%">
-            <HStack>
-              <Text fontWeight="bold">모집마감</Text>
-              <Text>{job.deadLine}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">모집인원</Text>
-              <Text>{job.recruitmentNumber}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">성별</Text>
-              <Text>{"job.gender"}</Text>
-            </HStack>
+        <HStack w={"1000px"} spacing={10} w="full" alignItems="start">
+          <VStack align="start" spacing={3} w="440px">
+            <Box my={2} display={"flex"}>
+              <Text w={"95px"} fontSize={"lg"}>
+                모집마감
+              </Text>
+              <Text ml={"0px"}>{formatDate(job.deadline)}</Text>
+            </Box>
+            <Box my={2} display={"flex"}>
+              <Text w={"95px"} fontSize={"lg"}>
+                모집인원
+              </Text>
+              <Text ml={"0px"}>{job.recruitmentNumber} 명</Text>
+            </Box>
+            <Box my={2} display={"flex"}>
+              <Text w={"95px"} fontSize={"lg"}>
+                성별
+              </Text>
+              <Text ml={"0px"}>{"성별 무관"} </Text>
+            </Box>
           </VStack>
-          <VStack align="start" spacing={3} w="60%">
-            <HStack>
-              <Text fontWeight="bold">학력</Text>
-              <Text>{jobsCond.education}</Text>
-            </HStack>
-            <HStack>
-              <Text fontWeight="bold">연령</Text>
-              <Text>{jobsCond.age}</Text>
-            </HStack>
-            <VStack align="start" spacing={1}>
-              <Text fontWeight="bold">우대사항</Text>
-              <Text>{jobsCond.preferred}</Text>
-            </VStack>
+          <VStack align="start" spacing={3} w="440px" ml={"40px"}>
+            <Box my={2} display={"flex"}>
+              <Text w={"95px"} fontSize={"lg"}>
+                학력
+              </Text>
+              <Text ml={"0px"}>
+                {jobsCond.education} {jobsCond.educationDetail}{" "}
+              </Text>
+            </Box>
+            <Box my={2} display={"flex"}>
+              <Text w={"95px"} fontSize={"lg"}>
+                연령
+              </Text>
+              <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
+            </Box>
+
+            <Box my={2} display={"flex"}>
+              <Text w={"95px"} fontSize={"lg"}>
+                우대사항
+              </Text>
+              <Text ml={"0px"}>{jobsCond.preferred}</Text>
+            </Box>
           </VStack>
         </HStack>
       </Box>
@@ -272,7 +326,8 @@ export function JobRequirements({ job, jobsCond }) {
   );
 }
 
-export function CompanyInfo({ job, jobsCond }) {
+export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
+  const navigate = useNavigate();
   return (
     <Box
       w={"full"}
@@ -284,21 +339,33 @@ export function CompanyInfo({ job, jobsCond }) {
       m="2"
       bg="white"
     >
-      <Flex justifyContent="space-between" alignItems="center" mb={5}>
-        <Text fontSize="2xl" fontWeight="bold">
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        fontSize="2xl"
+        my={2}
+      >
+        <Text fontWeight="bold" fontSize="2xl" my={2}>
           기업정보
         </Text>
-        <Link color="gray.500" href="#" fontSize="sm">
+        <Box
+          onClick={() => navigate(`/store/${storeMap.store.id}`)}
+          color="red.500"
+          cursor={"pointer"}
+          fontSize="sm"
+        >
           상세보기
-        </Link>
+        </Box>
       </Flex>
       <Divider mb={5} />
       <VStack align="start" spacing={4}>
         <Flex justifyContent="space-between" alignItems="center" w="full">
           <Image
-            // src={job.companyLogo}
+            src={storeMap.images != null ? storeMap.images[0].src : ""}
             alt={job.storeName}
-            boxSize="80px"
+            w={"160px"}
+            h={"60px"}
+            m={"-10px"}
             objectFit="contain"
           />
           <Box flex="1" ml={5}>
@@ -306,7 +373,7 @@ export function CompanyInfo({ job, jobsCond }) {
               {job.storeName}
             </Text>
             <Text fontSize="sm" color="gray.500">
-              대표: {"대표명"}
+              대표: {boss.name}
             </Text>
             <Text fontSize="sm" color="gray.500">
               회사주소: {job.address}
@@ -316,7 +383,7 @@ export function CompanyInfo({ job, jobsCond }) {
             <Flex alignItems="center">
               {/*<Icon as={FaHeart} color="red.500" mr={2} />*/}
               <Text fontSize="sm" color="gray.500">
-                관심기업 {"000"}명
+                관심기업 {parseInt(Math.random() * 1000)} 명
               </Text>
             </Flex>
           </Box>
@@ -361,8 +428,9 @@ export function CompanyInfo({ job, jobsCond }) {
               <Box mt={-10}>
                 <Text fontSize="sm" ml={2}>
                   <FontAwesomeIcon icon={faBuilding} color={"teal"} />
-                  {"  "}
-                  최근 1년간 채용 1,532회 진행
+                  {" 최근 1년간 채용 " +
+                    parseInt(Math.random() * 1000) +
+                    " 회 진행"}
                 </Text>
               </Box>
             </Flex>
@@ -386,7 +454,7 @@ export function JobReview({ job, jobsCond }) {
       m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
+      <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
         기업리뷰
       </Text>
       <Divider mb={4} />
@@ -395,11 +463,11 @@ export function JobReview({ job, jobsCond }) {
           <VStack align="start" spacing={3} w="50%">
             <HStack>
               <Text fontWeight="bold">기업평점</Text>
-              <Text>{"7 / 10"}</Text>
+              <Text>{parseInt(Math.random() * 10) + " / 10"}</Text>
             </HStack>
             <HStack>
               <Text fontWeight="bold">기업경쟁률</Text>
-              <Text>{" 33 : 1"}</Text>
+              <Text>{parseInt(Math.random() * 50) + " : 1"}</Text>
             </HStack>
           </VStack>
           <VStack align="start" spacing={3} w="40%">

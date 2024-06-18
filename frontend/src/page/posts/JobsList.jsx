@@ -12,7 +12,7 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../component/LoginProvider.jsx";
@@ -37,6 +37,7 @@ export function JobsList() {
   const [selectedWorkPeriod, setSelectedWorkPeriod] = useState("");
   const [selectedWorkWeek, setSelectedWorkWeek] = useState("");
   const [selectedWorkTime, setSelectedWorkTime] = useState("");
+  const [inputKeyword, setInputKeyword] = useState("");
   const [filterType, setFilterType] = useState("최신등록");
   const [selectedRegion, setSelectedRegion] = useState("");
   const [jobsList, setJobsList] = useState([]);
@@ -118,9 +119,9 @@ export function JobsList() {
     if (typeParam) {
       setSearchType(typeParam);
     }
-    if (keywordParam) {
-      setSearchKeyword(keywordParam);
-    }
+    // if (keywordParam) {
+    //   setSearchKeyword(keywordParam);
+    // }
 
     axios.get("/api/jobs/list", { params }).then((res) => {
       const sortedJobs = filterJobsList(
@@ -170,7 +171,17 @@ export function JobsList() {
   }
 
   function handleSearchClick() {
-    navigate(`/jobs/list?type=${searchType}&keyword=${searchKeyword}`);
+    setSearchKeyword(inputKeyword);
+    const typeParam = searchType;
+    const keywordParam = inputKeyword;
+
+    const params = new URLSearchParams({
+      type: typeParam,
+      keyword: keywordParam,
+      page: 1,
+    });
+
+    navigate(`/jobs/list?${params.toString()}`);
   }
 
   // 시,구 기준으로 이후 주소 제거.
@@ -213,8 +224,10 @@ export function JobsList() {
   }
 
   return (
-    <Box border={"1px solid red"}>
-      <Flex justifyContent={"space-between"}>
+    <Box
+    // border={"1px solid red"}
+    >
+      <Flex justifyContent={"space-between"} my={"30px"} ml={"-100px"}>
         <Box display={"flex"}>
           <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
           <Select w={150} value={filterType} onChange={handleFilterChange}>
@@ -320,8 +333,8 @@ export function JobsList() {
             <option value="nickName">작성자</option>
           </Select>
           <Input
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+            value={inputKeyword}
+            onChange={(e) => setInputKeyword(e.target.value)}
             placeholder="검색어"
           />
           <Button onClick={handleSearchClick}>
@@ -342,16 +355,6 @@ export function JobsList() {
 
           {/* 페이징 */}
           {Paging()}
-
-          {/* 공고 생성 */}
-          <Button
-            onClick={() => navigate("/jobs/register")}
-            colorScheme={"green"}
-            w={120}
-            my={3}
-          >
-            공고생성
-          </Button>
         </Box>
       </Center>
     </Box>
@@ -360,11 +363,12 @@ export function JobsList() {
   /* 공고 카드 형식 */
   function JobCard({ job }) {
     const { addRecentJob } = useContext(LoginContext);
-    // 주소가 시,구 로 끝나는 경우 뒤의 주소 날림 (ex. 서울 강남구)
-    const [trimmedAddress, setTrimmedAddress] = useState("");
-    useEffect(() => {
-      setTrimmedAddress(trimAfterSiGu(job.address));
-    }, []);
+
+    // trimmedAddress를 useMemo로 캐싱
+    const trimmedAddress = useMemo(
+      () => trimAfterSiGu(job.address),
+      [job.address],
+    );
 
     return (
       <Card
