@@ -40,15 +40,25 @@ export function JobDetail({ job, jobsCond, storeMap }) {
         <Text fontSize="4xl" fontWeight="bold">
           {job.title}
         </Text>
-        <Image
-          w={"200px"}
-          h={"60px"}
-          m={"10px"}
-          src={storeMap.images != null ? storeMap.images[0].src : ""}
-          alt={"job.logo"}
-          borderRadius={"4px"}
-          objectFit="cover"
-        />
+        <Box w={"200px"} h={"60px"}>
+          <Image
+            w={"100%"}
+            // h={"100%"}
+            p={"10px"}
+            src={
+              storeMap.images && storeMap.images[0]
+                ? storeMap.images[0].src
+                : ""
+            }
+            alt={
+              storeMap.images && storeMap.images[0]
+                ? storeMap.images[0].name
+                : "이미지 없음"
+            }
+            borderRadius={"4px"}
+            objectFit="cover"
+          />
+        </Box>
       </Flex>
       <Text fontSize="sm" color="gray.500" mb={2}>
         {"#초보가능, #간편지원"}
@@ -96,6 +106,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
 }
 
 export function JobConditions({ job, jobsCond }) {
+  const navigate = useNavigate();
   return (
     <Box
       w={"full"}
@@ -145,7 +156,11 @@ export function JobConditions({ job, jobsCond }) {
           </Box>
         </Box>
       </Flex>
-      <Button colorScheme="red" w="full">
+      <Button
+        onClick={() => navigate(`/jobs/${job.id}/apply`)}
+        colorScheme="red"
+        w="full"
+      >
         지원하기
       </Button>
     </Box>
@@ -164,13 +179,13 @@ export function JobLocation({ job, jobsCond, storeMap }) {
       m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
+      <Text fontSize="xl" fontWeight="bold" mb={"20px"}>
         근무지역
-        <KakaoMap2
-          address={storeMap.store != null ? storeMap.store.address : ""}
-        />
       </Text>
-      <Text mb={3} fontSize={"xl"}>
+      <KakaoMap2
+        address={storeMap.store != null ? storeMap.store.address : ""}
+      />
+      <Text my={"10px"} fontSize={"xl"}>
         주소 : {storeMap.store != null ? storeMap.store.address : ""}
       </Text>
     </Box>
@@ -178,6 +193,7 @@ export function JobLocation({ job, jobsCond, storeMap }) {
 }
 
 export function JobDetails({ job, jobsCond, images }) {
+  const navigate = useNavigate();
   return (
     <Box
       w={"full"}
@@ -198,7 +214,12 @@ export function JobDetails({ job, jobsCond, images }) {
           <Image w={"100%"} key={index} src={image.src} alt={image.name} />
         ))}
       <Text>{job.content}</Text>
-      <Button colorScheme="orange" mt={5} w="full">
+      <Button
+        onClick={() => navigate(`/jobs/${job.id}/apply`)}
+        colorScheme="orange"
+        mt={5}
+        w="full"
+      >
         지원하기
       </Button>
     </Box>
@@ -310,7 +331,10 @@ export function JobRequirements({ job, jobsCond }) {
               <Text w={"95px"} fontSize={"lg"}>
                 연령
               </Text>
-              <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
+              {jobsCond.age > 0 && (
+                <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
+              )}
+              {jobsCond.age == 0 && <Text ml={"0px"}>연령 무관</Text>}
             </Box>
 
             <Box my={2} display={"flex"}>
@@ -360,14 +384,22 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
       <Divider mb={5} />
       <VStack align="start" spacing={4}>
         <Flex justifyContent="space-between" alignItems="center" w="full">
-          <Image
-            src={storeMap.images != null ? storeMap.images[0].src : ""}
-            alt={job.storeName}
-            w={"160px"}
-            h={"60px"}
-            m={"-10px"}
-            objectFit="contain"
-          />
+          <Box w={"160px"} h={"60px"}>
+            <Image
+              src={
+                storeMap.images && storeMap.images[0]
+                  ? storeMap.images[0].src
+                  : ""
+              }
+              alt={
+                storeMap.images && storeMap.images[0]
+                  ? storeMap.images[0].name
+                  : "이미지 없음"
+              }
+              m={"-10px"}
+              objectFit="cover"
+            />
+          </Box>
           <Box flex="1" ml={5}>
             <Text fontSize="xl" fontWeight="bold">
               {job.storeName}

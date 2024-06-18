@@ -145,7 +145,7 @@ export function JobsEdit() {
   return (
     <Box>
       <Heading>알바공고 상세페이지</Heading>
-      <Center w={"50%"} ml={"25%"}>
+      <Center w={"100%"} ml={""}>
         <FormControl>
           <FormLabel>제목</FormLabel>
           <Input

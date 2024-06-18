@@ -3,6 +3,8 @@ import {
   Button,
   Center,
   Checkbox,
+  Divider,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -100,9 +102,9 @@ export function JobsRegister() {
   }
 
   return (
-    <Box>
+    <Box w={"100%"}>
       <Heading>알바공고 생성</Heading>
-      <Center w={"50%"} ml={"25%"}>
+      <Center>
         <FormControl>
           <FormLabel>제목</FormLabel>
           <Input onChange={handleInputChange("title")} />
@@ -157,22 +159,30 @@ export function JobsRegister() {
             )}
           </Box>
           <Box>
-            <Text>상세 조건</Text>
-            <FormLabel>최소학력</FormLabel>
-            <Select onChange={handleInputChange("education")}>
-              {eduList.map((education, index) => (
-                <option key={index} value={education}>
-                  {education}
-                </option>
-              ))}
-            </Select>
-            <Select onChange={handleInputChange("educationDetail")}>
-              {eduDetailList.map((eduDetail, index) => (
-                <option key={index} value={eduDetail}>
-                  {eduDetail}
-                </option>
-              ))}
-            </Select>
+            <Text fontSize={"2xl"}>상세 조건</Text>
+            <Divider />
+            <Flex gap={"50px"}>
+              <Box w={"50%"}>
+                <FormLabel>최소학력</FormLabel>
+                <Select onChange={handleInputChange("education")}>
+                  {eduList.map((education, index) => (
+                    <option key={index} value={education}>
+                      {education}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+              <Box w={"50%"}>
+                <FormLabel>학력상세</FormLabel>
+                <Select onChange={handleInputChange("educationDetail")}>
+                  {eduDetailList.map((eduDetail, index) => (
+                    <option key={index} value={eduDetail}>
+                      {eduDetail}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+            </Flex>
 
             <FormLabel>연령제한</FormLabel>
             <Checkbox
