@@ -1,9 +1,12 @@
 package com.backend.service.jobs;
 
 import com.backend.domain.jobs.*;
+import com.backend.domain.member.Member;
 import com.backend.mapper.jobs.JobsConditionMapper;
 import com.backend.mapper.jobs.JobsImageMapper;
 import com.backend.mapper.jobs.JobsMapper;
+import com.backend.service.member.MemberService;
+import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -28,6 +31,8 @@ public class JobsService {
     private final JobsMapper jobsMapper;
     private final JobsConditionMapper conditionMapper;
     private final JobsImageMapper imageMapper;
+    private final StoreService storeService;
+    private final MemberService memberService;
     final S3Client s3Client;
 
     @Value("${aws.s3.bucket.name}")
@@ -94,6 +99,9 @@ public class JobsService {
 
         JobsCond condition = conditionMapper.selectByJobsId(jobsId);
 
+        Map<String, Object> storeMap = storeService.findStoreById(jobs.getStoreId());
+        Member boss = memberService.findById(jobs.getMemberId());
+
         List<String> imageNames = imageMapper.selectImageNameByJobsId(jobsId);
         List<JobsImage> images = imageNames.stream()
                 .map(imageName -> new JobsImage(imageName, STR."\{srcPrefix}/jobs/\{jobsId}/\{imageName}"))
@@ -101,7 +109,9 @@ public class JobsService {
 
         result.put("jobs", jobs);
         result.put("jobsCondition", condition);
+        result.put("storeMap", storeMap);
         result.put("images", images);
+        result.put("boss", boss);
         return result;
     }
 
@@ -110,8 +120,8 @@ public class JobsService {
         // update
         Integer jobsId = form.getId();
         Jobs jobs = new Jobs(
-                null,
                 jobsId,
+                null,
                 null, null,
                 form.getTitle(),
                 form.getContent(),

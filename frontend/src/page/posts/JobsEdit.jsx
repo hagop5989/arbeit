@@ -74,6 +74,7 @@ export function JobsEdit() {
     }
   }, [jobsCondition.age]);
 
+  // update
   function handleSaveBtn() {
     axios
       .putForm(`/api/jobs/${id}`, {
@@ -82,7 +83,10 @@ export function JobsEdit() {
         removeImages,
         addImages,
       })
-      .then()
+      .then(() => {
+        myToast("수정이 완료됐습니다.", "success");
+        navigate(`/jobs/${id}`);
+      })
       .catch(() => alert("오류 발생"));
   }
 

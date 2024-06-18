@@ -64,7 +64,6 @@ export function ManagementView() {
 
   // 합격 데이터 제출
   function handleSubmit(updatedManagement) {
-    console.log(updatedManagement);
     axios
       .put(`/api/jobs/${id}/management/decision`, { ...updatedManagement })
       .then(myToast("처리 되었습니다.", "success"))
