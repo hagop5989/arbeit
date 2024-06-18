@@ -1,9 +1,9 @@
 import {
   Box,
   Button,
-  Center,
   Checkbox,
-  FormControl,
+  Divider,
+  Flex,
   FormLabel,
   Heading,
   Input,
@@ -100,82 +100,140 @@ export function JobsRegister() {
   }
 
   return (
-    <Box>
-      <Heading>알바공고 생성</Heading>
-      <Center w={"50%"} ml={"25%"}>
-        <FormControl>
-          <FormLabel>제목</FormLabel>
-          <Input onChange={handleInputChange("title")} />
-
-          <FormLabel>내용</FormLabel>
-          <Textarea onChange={handleInputChange("content")} />
-
-          <FormLabel>시급</FormLabel>
-          <Input type={"number"} onChange={handleInputChange("salary")} />
-
-          <FormLabel>마감일</FormLabel>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Heading mb={"50px"}>알바공고 생성</Heading>
+      <Box w="full" gap={"15px"} display={"flex"} flexDirection={"column"}>
+        <Box>
+          <FormLabel fontSize={"3xl"}>제목</FormLabel>
           <Input
-            onChange={handleInputChange("deadline")}
-            type={"datetime-local"}
+            mb={4}
+            placeholder="제목을 입력해주세요."
+            onChange={handleInputChange("title")}
           />
+        </Box>
 
-          <FormLabel>모집인원</FormLabel>
+        <Box>
+          <FormLabel fontSize={"3xl"}>내용</FormLabel>
+          <Textarea
+            mb={4}
+            placeholder="내용을 입력해주세요."
+            onChange={handleInputChange("content")}
+          />
+        </Box>
+
+        <Flex gap={"20px"}>
+          <Box w={"50%"}>
+            <FormLabel fontSize={"3xl"}>시급</FormLabel>
+            <Input
+              mb={4}
+              type="number"
+              placeholder="시급을 입력해주세요."
+              onChange={handleInputChange("salary")}
+            />
+          </Box>
+
+          <Box w={"50%"}>
+            <FormLabel fontSize={"3xl"}>마감일</FormLabel>
+            <Input
+              mb={4}
+              type="datetime-local"
+              placeholder="마감일을 선택해주세요."
+              onChange={handleInputChange("deadline")}
+            />
+          </Box>
+        </Flex>
+
+        <Box>
+          <FormLabel fontSize={"3xl"}>모집인원</FormLabel>
           <Input
-            type={"number"}
+            mb={4}
+            type="number"
+            placeholder="모집인원을 입력해주세요."
             onChange={handleInputChange("recruitmentNumber")}
           />
+        </Box>
 
-          <FormLabel>가게명</FormLabel>
-          <Select
-            onChange={(e) => handleSelectChange(e.target.value)}
-            placeholder={"선택해주세요"}
-          >
+        <Box>
+          <FormLabel fontSize={"3xl"}>가게명</FormLabel>
+          <Select mb={4} onChange={(e) => handleSelectChange(e.target.value)}>
+            <option value={""} disabled>
+              선택
+            </option>
             {storeList.map((store) => (
               <option key={store.id} value={store.id}>
                 {store.name}
               </option>
             ))}
           </Select>
+        </Box>
+        <Box>
+          <FormLabel fontSize={"3xl"}>카테고리(자동선택)</FormLabel>
+          <Input
+            mb={4}
+            defaultValue={category}
+            readOnly
+            placeholder="자동선택"
+          />
+        </Box>
 
-          <FormLabel>카테고리(자동선택)</FormLabel>
-          <Input defaultValue={category} readOnly />
+        <Box mb={4}>
+          <Text fontSize={"3xl"}>사진첨부</Text>
+          <Input
+            multiple
+            type="file"
+            placeholder="사진을 첨부해주세요."
+            onChange={(e) => {
+              setImages(e.target.files);
+            }}
+          />
+          {imageNameList.length > 0 && (
+            <Box mt={2}>
+              <Text>첨부파일 리스트:</Text>
+              <UnorderedList>{imageNameList}</UnorderedList>
+            </Box>
+          )}
+        </Box>
 
-          <Box>
-            <Text>사진첨부</Text>
-            <Input
-              multiple
-              type={"file"}
-              onChange={(e) => {
-                setImages(e.target.files);
-              }}
-            />
-            {imageNameList.length > 0 && (
-              <Box>
-                <Text>첨부파일 리스트:</Text>
-                <UnorderedList>{imageNameList}</UnorderedList>
-              </Box>
-            )}
+        <Box mb={4}>
+          <Box mt={"50px"}>
+            <Text fontSize="3xl" mb={2}>
+              상세 조건
+            </Text>
+            <Divider mb={4} />
           </Box>
-          <Box>
-            <Text>상세 조건</Text>
-            <FormLabel>최소학력</FormLabel>
-            <Select onChange={handleInputChange("education")}>
-              {eduList.map((education, index) => (
-                <option key={index} value={education}>
-                  {education}
+          <Flex gap={4}>
+            <Box w="50%" maxW="480px">
+              <FormLabel fontSize={"2xl"}>최소학력</FormLabel>
+              <Select onChange={handleInputChange("education")}>
+                <option value="" disabled>
+                  선택
                 </option>
-              ))}
-            </Select>
-            <Select onChange={handleInputChange("educationDetail")}>
-              {eduDetailList.map((eduDetail, index) => (
-                <option key={index} value={eduDetail}>
-                  {eduDetail}
+                {eduList.map((education, index) => (
+                  <option key={index} value={education}>
+                    {education}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+            <Box w="50%" maxW="480px">
+              <FormLabel fontSize={"2xl"}>학력상세</FormLabel>
+              <Select onChange={handleInputChange("educationDetail")}>
+                <option value="" disabled>
+                  선택
                 </option>
-              ))}
-            </Select>
+                {eduDetailList.map((eduDetail, index) => (
+                  <option key={index} value={eduDetail}>
+                    {eduDetail}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+          </Flex>
 
-            <FormLabel>연령제한</FormLabel>
+          <Box>
+            <FormLabel fontSize={"3xl"}>연령제한</FormLabel>
             <Checkbox
+              mb={4}
               isChecked={isAgeLimitChecked}
               onChange={handleAgeLimitChange}
             >
@@ -183,41 +241,48 @@ export function JobsRegister() {
             </Checkbox>
 
             <Input
+              mb={4}
+              placeholder="연령을 입력해주세요."
               onChange={handleInputChange("age")}
-              type={"number"}
+              type="number"
               disabled={isAgeLimitChecked}
             />
+          </Box>
 
-            <FormLabel>우대사항</FormLabel>
-            <Input onChange={handleInputChange("preferred")} />
-            <FormLabel>근무기간</FormLabel>
-            <Select
-              onChange={handleInputChange("workPeriod")}
-              placeholder={"기간을 정해주세요."}
-            >
+          <Box>
+            <FormLabel fontSize={"3xl"}>우대사항</FormLabel>
+            <Input
+              mb={4}
+              placeholder="우대사항을 입력해주세요."
+              onChange={handleInputChange("preferred")}
+            />
+          </Box>
+
+          <Box>
+            <FormLabel fontSize={"3xl"}>근무기간</FormLabel>
+            <Select mb={4} onChange={handleInputChange("workPeriod")}>
               {workPeriodList.map((workPeriod, index) => (
                 <option key={index} value={workPeriod}>
                   {workPeriod}
                 </option>
               ))}
             </Select>
+          </Box>
 
-            <FormLabel>근무요일</FormLabel>
-            <Select
-              onChange={handleInputChange("workWeek")}
-              placeholder={"요일을 정해주세요."}
-            >
+          <Box>
+            <FormLabel fontSize={"3xl"}>근무요일</FormLabel>
+            <Select mb={4} onChange={handleInputChange("workWeek")}>
               {workWeekList.map((workWeek, index) => (
                 <option key={index} value={workWeek}>
                   {workWeek}
                 </option>
               ))}
             </Select>
-            <FormLabel>근무시간</FormLabel>
-            <Select
-              onChange={handleInputChange("workTime")}
-              placeholder={"시간을 정해주세요."}
-            >
+          </Box>
+
+          <Box>
+            <FormLabel fontSize={"3xl"}>근무시간</FormLabel>
+            <Select mb={4} onChange={handleInputChange("workTime")}>
               {workTimeList.map((workTime, index) => (
                 <option key={index} value={workTime}>
                   {workTime}
@@ -225,9 +290,11 @@ export function JobsRegister() {
               ))}
             </Select>
           </Box>
-        </FormControl>
-      </Center>
-      <Button onClick={handleSubmitCreateJobs}>공고생성</Button>
+        </Box>
+      </Box>
+      <Button colorScheme="blue" w="full" onClick={handleSubmitCreateJobs}>
+        공고생성
+      </Button>
     </Box>
   );
 }

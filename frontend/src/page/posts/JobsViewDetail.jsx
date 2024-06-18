@@ -29,7 +29,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
@@ -40,15 +40,25 @@ export function JobDetail({ job, jobsCond, storeMap }) {
         <Text fontSize="4xl" fontWeight="bold">
           {job.title}
         </Text>
-        <Image
-          w={"200px"}
-          h={"60px"}
-          m={"10px"}
-          src={storeMap.images != null ? storeMap.images[0].src : ""}
-          alt={"job.logo"}
-          borderRadius={"4px"}
-          objectFit="cover"
-        />
+        <Box w={"200px"} h={"60px"}>
+          <Image
+            w={"100%"}
+            // h={"100%"}
+            p={"10px"}
+            src={
+              storeMap.images && storeMap.images[0]
+                ? storeMap.images[0].src
+                : ""
+            }
+            alt={
+              storeMap.images && storeMap.images[0]
+                ? storeMap.images[0].name
+                : "이미지 없음"
+            }
+            borderRadius={"4px"}
+            objectFit="cover"
+          />
+        </Box>
       </Flex>
       <Text fontSize="sm" color="gray.500" mb={2}>
         {"#초보가능, #간편지원"}
@@ -96,15 +106,15 @@ export function JobDetail({ job, jobsCond, storeMap }) {
 }
 
 export function JobConditions({ job, jobsCond }) {
+  const navigate = useNavigate();
   return (
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
       <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
@@ -141,13 +151,17 @@ export function JobConditions({ job, jobsCond }) {
           </Box>
           <Box my={2} display={"flex"}>
             <Text w={"95px"}>복리후생</Text>
-            <Text ml={"10px"}>{"국민연금, 고용보험, 산재보험, 건강보험 "}</Text>
+            <Text
+              ml={"10px"}
+              whiteSpace="nowrap" // 줄 바꿈을 막음
+              overflow="hidden" // 넘친 내용을 숨김
+              textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+            >
+              {"국민연금, 고용보험, 산재보험, 건강보험 "}
+            </Text>
           </Box>
         </Box>
       </Flex>
-      <Button colorScheme="red" w="full">
-        지원하기
-      </Button>
     </Box>
   );
 }
@@ -157,20 +171,19 @@ export function JobLocation({ job, jobsCond, storeMap }) {
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" mb={3}>
+      <Text fontSize="2xl" fontWeight="bold" mb={"20px"}>
         근무지역
-        <KakaoMap2
-          address={storeMap.store != null ? storeMap.store.address : ""}
-        />
       </Text>
-      <Text mb={3} fontSize={"xl"}>
+      <KakaoMap2
+        address={storeMap.store != null ? storeMap.store.address : ""}
+      />
+      <Text my={"10px"} fontSize={"xl"}>
         주소 : {storeMap.store != null ? storeMap.store.address : ""}
       </Text>
     </Box>
@@ -178,15 +191,15 @@ export function JobLocation({ job, jobsCond, storeMap }) {
 }
 
 export function JobDetails({ job, jobsCond, images }) {
+  const navigate = useNavigate();
   return (
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={8}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
       <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
@@ -198,7 +211,12 @@ export function JobDetails({ job, jobsCond, images }) {
           <Image w={"100%"} key={index} src={image.src} alt={image.name} />
         ))}
       <Text>{job.content}</Text>
-      <Button colorScheme="orange" mt={5} w="full">
+      <Button
+        onClick={() => navigate(`/jobs/${job.id}/apply`)}
+        colorScheme="orange"
+        mt={5}
+        w="full"
+      >
         지원하기
       </Button>
     </Box>
@@ -210,14 +228,13 @@ export function JobContact({ job, jobsCond, boss }) {
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
-      <Text fontWeight="bold" fontSize="2xl" my={2}>
+      <Text fontWeight="bold" fontSize="2xl">
         채용담당자 연락처
       </Text>
       <Divider />
@@ -254,6 +271,7 @@ export function JobContact({ job, jobsCond, boss }) {
 }
 
 export function JobRequirements({ job, jobsCond }) {
+  const navigate = useNavigate();
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     // 연도와 날짜만 추출
@@ -264,11 +282,10 @@ export function JobRequirements({ job, jobsCond }) {
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
       <Text fontSize="2xl" my={2} fontWeight="bold">
@@ -310,7 +327,10 @@ export function JobRequirements({ job, jobsCond }) {
               <Text w={"95px"} fontSize={"lg"}>
                 연령
               </Text>
-              <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
+              {jobsCond.age > 0 && (
+                <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
+              )}
+              {jobsCond.age == 0 && <Text ml={"0px"}>연령 무관</Text>}
             </Box>
 
             <Box my={2} display={"flex"}>
@@ -321,6 +341,14 @@ export function JobRequirements({ job, jobsCond }) {
             </Box>
           </VStack>
         </HStack>
+        <Button
+          onClick={() => navigate(`/jobs/${job.id}/apply`)}
+          colorScheme="red"
+          w="full"
+          my={"10px"}
+        >
+          지원하기
+        </Button>
       </Box>
     </Box>
   );
@@ -332,20 +360,15 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
       m="2"
       bg="white"
     >
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        fontSize="2xl"
-        my={2}
-      >
-        <Text fontWeight="bold" fontSize="2xl" my={2}>
+      <Flex justifyContent="space-between" alignItems="center" fontSize="2xl">
+        <Text fontWeight="bold" fontSize="2xl" mb={2}>
           기업정보
         </Text>
         <Box
@@ -360,14 +383,22 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
       <Divider mb={5} />
       <VStack align="start" spacing={4}>
         <Flex justifyContent="space-between" alignItems="center" w="full">
-          <Image
-            src={storeMap.images != null ? storeMap.images[0].src : ""}
-            alt={job.storeName}
-            w={"160px"}
-            h={"60px"}
-            m={"-10px"}
-            objectFit="contain"
-          />
+          <Box w={"160px"} h={"60px"}>
+            <Image
+              src={
+                storeMap.images && storeMap.images[0]
+                  ? storeMap.images[0].src
+                  : ""
+              }
+              alt={
+                storeMap.images && storeMap.images[0]
+                  ? storeMap.images[0].name
+                  : "이미지 없음"
+              }
+              m={"-10px"}
+              objectFit="cover"
+            />
+          </Box>
           <Box flex="1" ml={5}>
             <Text fontSize="xl" fontWeight="bold">
               {job.storeName}
@@ -447,34 +478,39 @@ export function JobReview({ job, jobsCond }) {
     <Box
       w={"full"}
       maxW={"800px"}
-      p={5}
+      p={10}
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
-        기업리뷰
+      <Text fontSize="xl" fontWeight="bold" fontSize="2xl">
+        기업 리뷰
       </Text>
       <Divider mb={4} />
       <Box mx={3}>
         <HStack spacing={10} w="full" alignItems="start" alignItems="center">
           <VStack align="start" spacing={3} w="50%">
             <HStack>
-              <Text fontWeight="bold">기업평점</Text>
+              <Text w="100px" fontSize="xl" fontWeight="bold" my={1}>
+                기업평점
+              </Text>
               <Text>{parseInt(Math.random() * 10) + " / 10"}</Text>
             </HStack>
             <HStack>
-              <Text fontWeight="bold">기업경쟁률</Text>
+              <Text w="100px" fontSize="xl" fontWeight="bold" my={1}>
+                기업경쟁률
+              </Text>
               <Text>{parseInt(Math.random() * 50) + " : 1"}</Text>
             </HStack>
           </VStack>
           <VStack align="start" spacing={3} w="40%">
             <HStack>
-              <Text fontWeight="bold">최근 리뷰 목록</Text>
+              <Text fontWeight="bold" fontSize={"xl"}>
+                최근 리뷰 목록
+              </Text>
             </HStack>
-            <VStack align="start" spacing={1}>
+            <VStack align="start" spacing={1} cursor={"pointer"}>
               <ul>
                 <li>1 번 리뷰 제목입니다.</li>
                 <li>2 번 리뷰 제목입니다.</li>

@@ -23,7 +23,6 @@ public class ApplicationService {
 
         List<Resume> resumes = mapper.selectResumeByMemberId(memberId);
         Jobs jobs = mapper.selectJobsByJobsId(jobsId);
-
         loadData.put("resumes", resumes);
         loadData.put("jobsTitle", jobs.getTitle());
 
@@ -48,9 +47,6 @@ public class ApplicationService {
     }
 
     public void delete(Integer jobsId, Integer memberId) {
-//        // 사장 지원 쪽 지원 data 삭제
-//        mapper.deleteFromManagement(jobsId,memberId);
-        // 알바 지원 쪽 지원 data 삭제
         mapper.deleteByJobsIdAndMemberId(jobsId, memberId);
     }
 
@@ -64,5 +60,10 @@ public class ApplicationService {
         loadData.put("resumes", resumes);
 
         return loadData;
+    }
+
+    public void deleteAllByJobsId(Integer jobsId) {
+        // 사장이 공고를 삭제하는 경우 해당공고의 알바 지원내역 모두 삭제
+        mapper.deleteAllByJobsId(jobsId);
     }
 }

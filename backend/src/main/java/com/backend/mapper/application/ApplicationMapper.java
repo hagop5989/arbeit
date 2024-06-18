@@ -64,11 +64,10 @@ public interface ApplicationMapper {
     int update(Application application);
 
 
-
     @Delete("""
-    DELETE FROM management
-    WHERE jobs_id = #{jobsId} AND applied_member_id = #{memberId};
-    """)
-    int deleteFromManagement(Integer jobsId, Integer memberId);
+            DELETE FROM application
+            WHERE jobs_id = #{jobsId}
+            """)
+    int deleteAllByJobsId(Integer jobsId);
 
 }

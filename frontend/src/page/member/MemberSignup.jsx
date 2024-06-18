@@ -1,88 +1,100 @@
 import {
   Box,
-  Button,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
-  Input,
-  Select,
+  Switch,
+  Tab,
+  TabIndicator,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { SignupComponent } from "./SignupComponent.jsx";
 
 export function MemberSignup() {
   const [member, setMember] = useState({});
+  const [isAdmin, setIsAdmin] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  function handleSignupBtn() {
-    axios
-      .post("/api/signup", member)
-      .then(() => {
-        navigate("/login");
-      })
-      .catch((err) => {
-        setErrors(null);
-        setErrors(err.response.data);
-      })
-      .finally();
+  function handleAuthTab(authority) {
+    setMember({ ...member, authority });
+    if (member.authority === "ALBA") {
+      setIsAdmin(false);
+    }
   }
 
-  const handleInputChange = (prop) => (e) => {
-    setMember({ ...member, [prop]: e.target.value });
-  };
+  function handleSwitchChange() {
+    if (isAdmin === true) {
+      setIsAdmin(false);
+      setMember({ ...member, authority: "BOSS" });
+    } else {
+      setIsAdmin(true);
+      setMember({ ...member, authority: "ADMIN" });
+    }
+  }
 
   return (
-    <Box>
-      <Box>
-        <Heading>알바 회원가입</Heading>
+    <Box w={"700px"}>
+      <Box
+        h={"60px"}
+        mb={"30px"}
+        bg={"#FF7F3E"}
+        color={"white"}
+        borderRadius={"10px"}
+      >
+        <Heading size={"lg"} textAlign={"center"} lineHeight={"60px"}>
+          회원가입
+        </Heading>
       </Box>
-      <FormControl>
-        <Select
-          placeholder="권한을 정해주세요."
-          onChange={handleInputChange("authority")}
-        >
-          <option value="ALBA">알바</option>
-          <option value="BOSS">사장</option>
-          <option value="ADMIN">관리자 (나중에 지울 예정)</option>
-        </Select>
-
-        <FormLabel>이메일</FormLabel>
-        <Input onChange={handleInputChange("email")} />
-        {errors && <FormHelperText>{errors.email}</FormHelperText>}
-
-        <FormLabel>패스워드</FormLabel>
-        <Input onChange={handleInputChange("password")} />
-        {errors && <FormHelperText>{errors.password}</FormHelperText>}
-
-        <FormLabel>이름</FormLabel>
-        <Input onChange={handleInputChange("name")} />
-        {errors && <FormHelperText>{errors.name}</FormHelperText>}
-
-        <Select
-          placeholder="성별을 선택해주세요"
-          onChange={handleInputChange("gender")}
-        >
-          <option value="MALE">남자</option>
-          <option value="FEMALE">여자</option>
-        </Select>
-
-        <FormLabel>생년월일</FormLabel>
-        <Input type={"date"} onChange={handleInputChange("birthDate")} />
-        {errors && <FormHelperText>{errors.birthDate}</FormHelperText>}
-
-        <FormLabel>주소</FormLabel>
-        <Input onChange={handleInputChange("address")} />
-        {errors && <FormHelperText>{errors.address}</FormHelperText>}
-
-        <FormLabel>전화번호</FormLabel>
-        <Input onChange={handleInputChange("phone")} />
-        {errors && <FormHelperText>{errors.phone}</FormHelperText>}
-
-        <Button onClick={handleSignupBtn}>회원가입</Button>
-      </FormControl>
+      <Tabs isFitted position="relative" variant="unstyled">
+        <TabList>
+          <Tab onClick={() => handleAuthTab("ALBA")}>알바</Tab>
+          <Tab onClick={() => handleAuthTab("BOSS")}>기업</Tab>
+        </TabList>
+        <TabIndicator
+          mt="-1.5px"
+          height="2px"
+          bg="#FF6435"
+          borderRadius="1px"
+        />
+        <TabPanels>
+          <TabPanel>
+            <SignupComponent
+              member={member}
+              setMember={setMember}
+              errors={errors}
+              setErrors={setErrors}
+            />
+          </TabPanel>
+          <TabPanel>
+            <FormControl display="flex" alignItems="center" mb="15px">
+              <FormLabel
+                htmlFor="isAdmin"
+                mb={"0"}
+                color={isAdmin ? "black" : "gray"}
+              >
+                관리자로 회원가입
+              </FormLabel>
+              <Switch
+                id="isAdmin"
+                onChange={handleSwitchChange}
+                isChecked={isAdmin}
+              />
+            </FormControl>
+            <SignupComponent
+              member={member}
+              setMember={setMember}
+              errors={errors}
+              setErrors={setErrors}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Box>
   );
 }

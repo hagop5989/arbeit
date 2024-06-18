@@ -5,6 +5,8 @@ import com.backend.domain.member.Member;
 import com.backend.mapper.jobs.JobsConditionMapper;
 import com.backend.mapper.jobs.JobsImageMapper;
 import com.backend.mapper.jobs.JobsMapper;
+import com.backend.mapper.store.StoreMapper;
+import com.backend.service.application.ApplicationService;
 import com.backend.service.member.MemberService;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,8 @@ public class JobsService {
     private final StoreService storeService;
     private final MemberService memberService;
     final S3Client s3Client;
+    private final StoreMapper storeMapper;
+    private final ApplicationService applicationService;
 
     @Value("${aws.s3.bucket.name}")
     String bucketName;
@@ -168,6 +172,7 @@ public class JobsService {
         // file 명 조회
         List<String> fileNames = imageMapper.selectImageNameByJobsId(jobsId);
 
+        applicationService.deleteAllByJobsId(jobsId);
         // s3,db jobsFile 삭제
         removeJobsImageToS3(jobsId, fileNames);
         imageMapper.deleteByJobsId(jobsId);
@@ -178,11 +183,25 @@ public class JobsService {
     public Map<String, Object> findAll(Integer currentPage, String searchType, String keyword) {
 
         Map<String, Integer> pageInfo = new HashMap<>();
+
         Integer offset = paging(currentPage, searchType, keyword, pageInfo);
         List<Jobs> jobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
 
+        Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
+        for (Jobs jobs : jobsList) {
+            Map<String, Object> imageInfo = new HashMap<>();
+            List<String> names = storeMapper.selectImagesById(jobs.getStoreId());
+            if (!names.isEmpty()) {
+                imageInfo.put("storeId", jobs.getStoreId());
+                imageInfo.put("names", names);
+                imageInfo.put("src", String.format("%s/store/%d/%s", srcPrefix, jobs.getStoreId(), names.get(0)));
+                storeImgMap.put(jobs.getStoreId(), imageInfo);
+            }
+        }
+
+
         return Map.of("pageInfo", pageInfo,
-                "jobsList", jobsList);
+                "jobsList", jobsList, "storeImgMap", storeImgMap);
     }
 
 
