@@ -17,7 +17,7 @@ import JobsView2 from "../page/posts/JobsView2.jsx"; // list : jobs , view : det
 
 // list : jobs , view : detail
 const bossRoutes = [
-  { path: "jobs/create", element: <JobsRegister /> },
+  { path: "jobs/register", element: <JobsRegister /> },
   { path: "jobs/list", element: <JobsList /> },
   // { path: "jobs/:id", element: <JobsView /> },
   { path: "jobs/:id", element: <JobsView2 /> },
