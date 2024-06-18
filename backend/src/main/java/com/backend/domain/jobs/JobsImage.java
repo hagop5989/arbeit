@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobsFile {
+public class JobsImage {
     private String name;
     private String src;
 }

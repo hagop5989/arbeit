@@ -9,6 +9,7 @@ import bossRoutes from "./path/bossRoutes.jsx";
 import storeRoutes from "./path/storeRoutes.jsx";
 import boardRoutes from "./path/boardRoutes.jsx";
 import { NavComponent } from "./NavComponent.jsx";
+import theme from "../index.js";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -36,7 +37,7 @@ function App() {
 
   return (
     <LoginProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <RouterProvider router={router} />
       </ChakraProvider>
     </LoginProvider>

@@ -105,6 +105,13 @@ export function ApplicationWrite() {
           >
             지원서관리
           </Button>
+          <Button
+            onClick={() => {
+              navigate("/jobs/list");
+            }}
+          >
+            공고목록
+          </Button>
         </FormControl>
       </Center>
     </Box>

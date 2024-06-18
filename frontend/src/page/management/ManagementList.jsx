@@ -21,24 +21,25 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 export function ManagementList() {
   const account = useContext(LoginContext);
   const [managementList, setManagementList] = useState([]);
-  const [management, setManagement] = useState({});
   const toast = useToast();
   const navigate = useNavigate();
+  const [checkChange, setCheckChange] = useState(false);
 
   // Read (jobs 리스트 받기)
+
   useEffect(() => {
     if (account.id) {
       axios.get("/api/jobs/management/list").then((res) => {
         setManagementList(res.data);
       });
     }
-  }, [account.id]);
+  }, [account.id, checkChange]);
 
   // 합격 로직
-  function handlePassOrNot(e, management) {
-    setManagement(management);
-    const decision = e.target.innerText;
+
+  function handleDecision(e, management) {
     let isPassed;
+    const decision = e.target.innerText;
 
     if (decision === "합격") {
       isPassed = 1;
@@ -50,22 +51,35 @@ export function ManagementList() {
 
     const updatedManagement = {
       ...management,
-      jobsId: management.jobsId,
-      appliedMemberId: management.memberId,
-      resumeId: management.resumeId,
       isPassed: isPassed,
     };
-
-    setManagement(updatedManagement);
     handleSubmit(updatedManagement);
   }
 
-  // 합격 데이터 제출
+  // 합격 여부 문자열 변환 함수
+  const isPassedToString = (decision) => {
+    switch (decision) {
+      case 1:
+        return "합격";
+      case 0:
+        return "불합격";
+      default:
+        return "미정";
+    }
+  };
+
   function handleSubmit(updatedManagement) {
-    console.log(updatedManagement);
     axios
-      .put(`/api/jobs/0/management/passOrNot`, { ...updatedManagement })
-      .then(myToast("처리 되었습니다.", "success"))
+      .put(`/api/jobs/0/management/decision`, { ...updatedManagement })
+      .then(() => {
+        myToast("처리 되었습니다.", "success");
+        setManagementList((prevList) =>
+          prevList.map((item) =>
+            item.id === updatedManagement.id ? updatedManagement : item,
+          ),
+        );
+        setCheckChange(!checkChange);
+      })
       .catch()
       .finally();
   }
@@ -103,15 +117,19 @@ export function ManagementList() {
               {managementList.map((management) => (
                 <Tr key={management.id}>
                   <Td>
+                    {/* 체크박스 */}
                     <Checkbox
                       value={management.id}
                       // onChange={handleCheckBoxChange}
                     />
                   </Td>
+                  {/* 지원일 */}
                   <Td>{management.applicationInserted}</Td>
+                  {/* 공고 제목 */}
                   <Td onClick={() => navigate(`/jobs/${management.jobsId}`)}>
                     {management.jobsTitle}
                   </Td>
+                  {/* 지원 제목 */}
                   <Td
                     cursor={"pointer"}
                     onClick={() =>
@@ -123,13 +141,15 @@ export function ManagementList() {
                   >
                     {management.applicationTitle}
                   </Td>
-                  <Td>진행중</Td>
+                  {/* 합격 여부 */}
+                  <Td>{isPassedToString(management.isPassed)}</Td>{" "}
+                  {/* 합격 결정 버튼 */}
                   <Td>
                     <Flex>
-                      <Button onClick={(e) => handlePassOrNot(e, management)}>
+                      <Button onClick={(e) => handleDecision(e, management)}>
                         합격
                       </Button>
-                      <Button onClick={(e) => handlePassOrNot(e, management)}>
+                      <Button onClick={(e) => handleDecision(e, management)}>
                         불합격
                       </Button>
                     </Flex>
@@ -138,6 +158,7 @@ export function ManagementList() {
               ))}
             </Tbody>
           </Table>
+          {/* 삭제 */}
           <Button
             colorScheme={"red"}
             // onClick={handleRemoveBtn}

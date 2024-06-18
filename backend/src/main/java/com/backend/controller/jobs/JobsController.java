@@ -1,64 +1,97 @@
 package com.backend.controller.jobs;
 
-import com.backend.controller.application.MemberId;
-import com.backend.domain.jobs.Jobs;
-import com.backend.domain.jobs.JobsCondition;
-import com.backend.domain.store.Store;
+import com.backend.domain.jobs.JobsEditForm;
+import com.backend.domain.jobs.JobsRegisterForm;
 import com.backend.service.jobs.JobsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/jobs")
 public class JobsController {
     private final JobsService service;
 
-    @GetMapping("insert")
-    public List<Store> getInsertData(@MemberId Integer memberId) {
-        return service.getInsertData(memberId);
+    @GetMapping("/store-names")
+    @PreAuthorize("isAuthenticated()")
+    public List<Map<String, Object>> findStoreNames(Authentication authentication) {
+        return service.findStoreNamesByMemberId(authentication);
     }
 
-    @PostMapping("insert")
-    public void insert(@ModelAttribute Jobs jobs,
-                       @ModelAttribute JobsCondition jobsCondition,
-                       @RequestParam(value = "files", required = false) MultipartFile[] files) throws IOException {
-        service.insert(jobs, jobsCondition, files);
+    @PostMapping("/register")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity register(@Validated JobsRegisterForm form, BindingResult bindingResult,
+                                   Authentication authentication) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        service.register(form, authentication);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("update")
-    public void update(@ModelAttribute Jobs jobs,
-                       @ModelAttribute JobsCondition jobsCondition,
-                       @RequestParam(value = "removeFileList[]", required = false)
-                       List<String> removeFileList,
-                       @RequestParam(value = "addFileList[]", required = false)
-                       MultipartFile[] addFileList) throws IOException {
-        service.update(jobs, jobsCondition, removeFileList, addFileList);
+    @GetMapping("/{id}")
+    public ResponseEntity view(@PathVariable Integer id) {
+
+        Map<String, Object> result = service.findById(id);
+        if (result == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping("{id}")
-    public Map<String, Object> selectByJobsId(@PathVariable Integer id) {
-        return service.selectByJobsId(id);
-    }
-
-    @DeleteMapping("delete")
-    public void delete(@RequestParam Integer id) {
-        service.deleteByJobsId(id);
-    }
-
-    @GetMapping("list")
-    public Map<String, Object> list(@MemberId Integer memberId,
-                                    @RequestParam(value = "page", defaultValue = "1") Integer page,
+    @GetMapping("/list")
+    public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer currentPage,
                                     @RequestParam(value = "type", required = false) String searchType,
                                     @RequestParam(value = "keyword", defaultValue = "") String keyword
     ) {
-        Map<String, Object> list = service.list(memberId, page, searchType, keyword);
-        return list;
+        return service.findAll(currentPage, searchType, keyword);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity update(@Validated JobsEditForm form, BindingResult bindingResult,
+                                 Authentication authentication) throws IOException {
+
+        if (!service.hasAccess(form, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        service.update(form, authentication);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        service.deleteByJobsId(id);
+    }
+
+    private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
+        Map<String, String> errors = new ConcurrentHashMap<>();
+        for (FieldError error : bindingResult.getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        return errors;
+    }
 }

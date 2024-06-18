@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export const LoginContext = createContext(null);
 
@@ -10,13 +11,40 @@ export function LoginProvider({ children }) {
   const [email, setEmail] = useState("");
   const [authority, setAuthority] = useState("");
   const [expired, setExpired] = useState(0);
+  const [alarmNum, setAlarmNum] = useState("");
+  const [recentJobPages, setRecentJobPages] = useState(
+    JSON.parse(localStorage.getItem("recentJobPages")) || [],
+  ); // 최근 본 공고 페이지 URL을 저장하는 상태
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       login(token);
     }
-  }, []);
+  }, [id]);
+
+  // boss 이면 지원 list 데이터 받아오기
+  useEffect(() => {
+    if (isBoss())
+      axios
+        .get("/api/jobs/management/alarm-count")
+        .then((res) => {
+          setAlarmNum(res.data);
+        })
+        .catch()
+        .finally(() => {});
+  }, [authority]);
+
+  // 최근 본 공고 페이지 URL을 추가하는 함수
+  function addRecentJob(url, title) {
+    setRecentJobPages((prevJobs) => {
+      const newJob = { url, title };
+      const filteredJobs = prevJobs.filter((job) => job.url !== url);
+      const updatedJobs = [newJob, ...filteredJobs].slice(0, 10); // 중복 제거 및 최대 10개로 제한
+      localStorage.setItem("recentJobPages", JSON.stringify(updatedJobs));
+      return updatedJobs;
+    });
+  }
 
   // isLoggedIn
   function isLoggedIn() {
@@ -46,6 +74,7 @@ export function LoginProvider({ children }) {
     setId("");
     setEmail("");
     setName("");
+    setAuthority("");
   }
 
   // 권한 확인
@@ -75,6 +104,9 @@ export function LoginProvider({ children }) {
         isAlba,
         isBoss,
         isAdmin,
+        alarmNum,
+        addRecentJob,
+        recentJobPages,
       }}
     >
       {children}

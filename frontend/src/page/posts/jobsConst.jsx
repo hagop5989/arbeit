@@ -1,4 +1,3 @@
-/* condition 관련 선택 값들 리스트 */
 export const eduList = [
   "무관",
   "초등학교",
@@ -8,10 +7,7 @@ export const eduList = [
   "대학교(4년제)",
   "대학원",
 ];
-
 export const eduDetailList = ["무관", "졸업", "재학", "휴학", "중퇴", "수료"];
-
-/* 근무기간 */
 export const workPeriodList = [
   "기간협의",
   "하루",
@@ -22,7 +18,6 @@ export const workPeriodList = [
   "6개월 ~ 1년",
   "1년 이상",
 ];
-/* 근무요일 */
 export const workWeekList = [
   "요일협의",
   "월 ~ 일",
@@ -36,8 +31,6 @@ export const workWeekList = [
   "주2일",
   "주1일",
 ];
-
-/* 근무시간 */
 export const workTimeList = [
   "시간협의",
   "오전 파트타임(06:00~12:00)",
@@ -46,7 +39,6 @@ export const workTimeList = [
   "새벽 파트타임(00:00~06:00)",
   "풀타임",
 ];
-
 export const addressList = [
   "서울",
   "경기",

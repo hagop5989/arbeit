@@ -1,14 +1,17 @@
 package com.backend.service.jobs;
 
-import com.backend.domain.jobs.Jobs;
-import com.backend.domain.jobs.JobsCondition;
-import com.backend.domain.jobs.JobsFile;
-import com.backend.domain.store.Store;
+import com.backend.domain.jobs.*;
+import com.backend.domain.member.Member;
 import com.backend.mapper.jobs.JobsConditionMapper;
-import com.backend.mapper.jobs.JobsFileMapper;
+import com.backend.mapper.jobs.JobsImageMapper;
 import com.backend.mapper.jobs.JobsMapper;
+import com.backend.mapper.store.StoreMapper;
+import com.backend.service.application.ApplicationService;
+import com.backend.service.member.MemberService;
+import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +32,12 @@ import java.util.Map;
 public class JobsService {
     private final JobsMapper jobsMapper;
     private final JobsConditionMapper conditionMapper;
-    private final JobsFileMapper fileMapper;
+    private final JobsImageMapper imageMapper;
+    private final StoreService storeService;
+    private final MemberService memberService;
     final S3Client s3Client;
+    private final StoreMapper storeMapper;
+    private final ApplicationService applicationService;
 
     @Value("${aws.s3.bucket.name}")
     String bucketName;
@@ -38,118 +45,185 @@ public class JobsService {
     @Value("${image.src.prefix}")
     String srcPrefix;
 
-    public void insert(Jobs jobs, JobsCondition condition, MultipartFile[] fileList) throws IOException {
-        // db에 jobs 입력
+    public List<Map<String, Object>> findStoreNamesByMemberId(Authentication authentication) {
+        return jobsMapper.selectStoreNamesByMemberId(Integer.valueOf(authentication.getName()));
+    }
+
+    public void register(JobsRegisterForm form, Authentication authentication) throws IOException {
+        // Jobs 저장
+        Jobs jobs = new Jobs(
+                null,
+                Integer.valueOf(authentication.getName()),
+                form.getStoreId(),
+                form.getCategoryId(),
+                form.getTitle(),
+                form.getContent(),
+                form.getSalary(),
+                form.getDeadline(),
+                form.getRecruitmentNumber(),
+                null, null, null, null
+
+        );
         jobsMapper.insert(jobs);
 
-        // mapper로 인해 생성된 jobs의 id를 condition에 부여 (현재 null)
-        Jobs dbJobs = jobsMapper.selectByJobsId(jobs.getId());
-        condition.setAlbaPostsId(dbJobs.getId());
+        // JobsCondition 저장
+        Integer jobsId = jobs.getId();
+        JobsCond jobsCond = new JobsCond(
+                jobsId,
+                form.getEducation(),
+                form.getEducationDetail(),
+                form.getAge(),
+                form.getPreferred(),
+                form.getWorkPeriod(),
+                form.getWorkWeek(),
+                form.getWorkTime()
+        );
+        conditionMapper.insert(jobsCond);
 
-        // db에 condition 입력
-        conditionMapper.insert(condition);
-        // db, s3에 파일 입력
-        addFileList(jobs, fileList);
+        // 사진 저장
+        List<MultipartFile> images = form.getImages();
+        if (images != null) {
+            for (MultipartFile image : images) {
+                String imageName = image.getOriginalFilename();
+                imageMapper.insertImage(jobsId, imageName);
+                saveJobsImageToS3(image, jobsId, imageName);
+            }
+        }
     }
 
-    public List<Store> getInsertData(Integer memberId) {
-        // storeList 반환(카테고리 포함).
-        return jobsMapper.selectStoreByJobsMemberId(memberId);
-    }
+    public Map<String, Object> findById(Integer jobsId) {
 
-    public void update(Jobs jobs, JobsCondition condition, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
-        // db에 condition 입력
-        conditionMapper.update(condition);
-        // s3,db jobsFile 삭제
-        deleteFileList(jobs, removeFileList);
-        // db, s3 에 입력
-        addFileList(jobs, addFileList);
-        // db에 jobs 입력
-        jobsMapper.update(jobs);
-    }
-
-
-    public Map<String, Object> selectByJobsId(Integer jobsId) {
-        // jobs, storeList 넣을 map 생성
         Map<String, Object> result = new HashMap<>();
 
-        // jobsId로 jobs 찾기
-        Jobs jobs = jobsMapper.selectByJobsId(jobsId);
-        JobsCondition condition = conditionMapper.selectByJobsId(jobsId);
+        Jobs jobs = jobsMapper.selectById(jobsId);
 
+        if (jobs == null) {
+            return null;
+        }
 
-        // jobs의 memberId로 storeList 찾기
-        List<Store> storeList = jobsMapper.selectStoreByJobsMemberId(jobs.getMemberId());
-        // jobsId로 파일리스트 찾기
-        List<String> fileNames = fileMapper.selectFileNameByJobsId(jobsId);
-        List<JobsFile> files = fileNames.stream()
-                .map(fileName -> new JobsFile(fileName, STR."\{srcPrefix}/jobs/\{jobsId}/\{fileName}"))
+        JobsCond condition = conditionMapper.selectByJobsId(jobsId);
+
+        Map<String, Object> storeMap = storeService.findStoreById(jobs.getStoreId());
+        Member boss = memberService.findById(jobs.getMemberId());
+
+        List<String> imageNames = imageMapper.selectImageNameByJobsId(jobsId);
+        List<JobsImage> images = imageNames.stream()
+                .map(imageName -> new JobsImage(imageName, STR."\{srcPrefix}/jobs/\{jobsId}/\{imageName}"))
                 .toList();
-        jobs.setFileList(files);
-
-        // map 에 넣고 반환
 
         result.put("jobs", jobs);
         result.put("jobsCondition", condition);
-        result.put("storeList", storeList);
+        result.put("storeMap", storeMap);
+        result.put("images", images);
+        result.put("boss", boss);
         return result;
     }
 
-    public void deleteByJobsId(Integer jobsId) {
-        // file 명 조회
-        List<String> fileNames = fileMapper.selectFileNameByJobsId(jobsId);
-        Jobs jobs = jobsMapper.selectByJobsId(jobsId);
+    public void update(JobsEditForm form, Authentication authentication) throws IOException {
 
-        // s3,db jobsFile 삭제
-        deleteFileList(jobs, fileNames);
-        // db의 condition 삭제
-        conditionMapper.deleteByJobsId(jobsId);
-        // db의 jobs 삭제
-        jobsMapper.deleteByJobsId(jobsId);
+        // update
+        Integer jobsId = form.getId();
+        Jobs jobs = new Jobs(
+                jobsId,
+                null,
+                null, null,
+                form.getTitle(),
+                form.getContent(),
+                form.getSalary(),
+                form.getDeadline(),
+                form.getRecruitmentNumber(),
+                null, null, null, null
+        );
+        JobsCond jobsCond = new JobsCond(
+                jobsId,
+                form.getEducation(),
+                form.getEducationDetail(),
+                form.getAge(),
+                form.getPreferred(),
+                form.getWorkPeriod(),
+                form.getWorkWeek(),
+                form.getWorkTime()
+        );
+        jobsMapper.updateById(jobs);
+        conditionMapper.updateByJobsId(jobsCond);
+
+        // 이미지 삭제
+        removeJobsImageToS3(jobsId, form.getRemoveImages());
+        List<String> removeImages = form.getRemoveImages();
+        if (removeImages != null) {
+            for (String removeImageName : removeImages) {
+                imageMapper.deleteByJobsIdAndImageName(jobsId, removeImageName);
+            }
+        }
+
+        // 이미지 추가
+        List<MultipartFile> addImages = form.getAddImages();
+        if (addImages != null) {
+            for (MultipartFile image : addImages) {
+                String imageName = image.getOriginalFilename();
+                imageMapper.insertImage(jobsId, imageName);
+                saveJobsImageToS3(image, jobsId, image.getOriginalFilename());
+            }
+        }
     }
 
-    public Map<String, Object> list(Integer memberId, Integer page,
-                                    String searchType, String keyword) {
-        Map pageInfo = new HashMap();
-        Integer offset = paging(page, searchType, keyword, pageInfo);
+
+    public void deleteByJobsId(Integer jobsId) {
+        // file 명 조회
+        List<String> fileNames = imageMapper.selectImageNameByJobsId(jobsId);
+
+        applicationService.deleteAllByJobsId(jobsId);
+        // s3,db jobsFile 삭제
+        removeJobsImageToS3(jobsId, fileNames);
+        imageMapper.deleteByJobsId(jobsId);
+        conditionMapper.deleteByJobsId(jobsId);
+        jobsMapper.deleteById(jobsId);
+    }
+
+    public Map<String, Object> findAll(Integer currentPage, String searchType, String keyword) {
+
+        Map<String, Integer> pageInfo = new HashMap<>();
+
+        Integer offset = paging(currentPage, searchType, keyword, pageInfo);
         List<Jobs> jobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
 
+        Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
+        for (Jobs jobs : jobsList) {
+            Map<String, Object> imageInfo = new HashMap<>();
+            List<String> names = storeMapper.selectImagesById(jobs.getStoreId());
+            if (!names.isEmpty()) {
+                imageInfo.put("storeId", jobs.getStoreId());
+                imageInfo.put("names", names);
+                imageInfo.put("src", String.format("%s/store/%d/%s", srcPrefix, jobs.getStoreId(), names.get(0)));
+                storeImgMap.put(jobs.getStoreId(), imageInfo);
+            }
+        }
+
+
         return Map.of("pageInfo", pageInfo,
-                "jobsList", jobsList);
+                "jobsList", jobsList, "storeImgMap", storeImgMap);
     }
 
 
     // 추출한 메소드 들
 
-    // db, s3 에 입력
-    private void addFileList(Jobs jobs, MultipartFile[] addFileList) throws IOException {
-        if (addFileList != null && addFileList.length > 0) {
-            List<String> fileNameList = fileMapper.selectFileNameByJobsId(jobs.getId());
-            for (MultipartFile file : addFileList) {
-                String fileName = file.getOriginalFilename();
-                if (!fileNameList.contains(fileName)) {
-                    // 새 파일이 기존에 없을 때만 db에 추가
-                    fileMapper.insertFileName(jobs.getId(), fileName);
-                }
-                // s3 에 쓰기
-                String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
-                PutObjectRequest objectRequest = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .acl(ObjectCannedACL.PUBLIC_READ)
-                        .build();
+    private void saveJobsImageToS3(MultipartFile image, int jobsId, String imageName) throws IOException {
+        String key = STR."arbeit/jobs/\{jobsId}/\{imageName}";
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .acl(ObjectCannedACL.PUBLIC_READ)
+                .build();
 
-                s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            }
-        }
+        s3Client.putObject(objectRequest,
+                RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
     }
 
-    // s3,db jobsFile 삭제
-    private void deleteFileList(Jobs jobs, List<String> removeFileList) {
-        if (removeFileList != null && removeFileList.size() > 0) {
-            for (String fileName : removeFileList) {
+    private void removeJobsImageToS3(Integer jobsId, List<String> removeImages) {
+        if (removeImages != null && !removeImages.isEmpty()) {
+            for (String imageName : removeImages) {
                 // s3의 파일 삭제
-                String key = STR."arbeit/jobs/\{jobs.getId()}/\{fileName}";
+                String key = STR."arbeit/jobs/\{jobsId}/\{imageName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -157,19 +231,19 @@ public class JobsService {
                 s3Client.deleteObject(objectRequest);
 
                 // db jobsFile 삭제
-                fileMapper.deleteFileByJobsIdAndName(jobs.getId(), fileName);
+                imageMapper.deleteByJobsIdAndImageName(jobsId, imageName);
             }
         }
     }
 
     // 페이징
-    private Integer paging(Integer page, String searchType, String keyword, Map pageInfo) {
-        Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword);
+    private Integer paging(Integer currentPage, String searchType, String keyword, Map<String, Integer> pageInfo) {
 
-        Integer offset = (page - 1) * 10;
+        Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword);
+        Integer offset = (currentPage - 1) * 10;
 
         Integer lastPageNum = (countAll - 1) / 10 + 1;
-        Integer leftPageNum = (page - 1) / 10 * 10 + 1;
+        Integer leftPageNum = (currentPage - 1) / 10 * 10 + 1;
         Integer rightPageNum = leftPageNum + 9;
         rightPageNum = Math.min(rightPageNum, lastPageNum);
         leftPageNum = rightPageNum - 9;
@@ -179,18 +253,22 @@ public class JobsService {
 
         //  이전,처음,다음,맨끝 버튼 만들기
         if (prevPageNum > 0) {
-            pageInfo.put("prevPageNum", prevPageNum);
+            pageInfo.put("prevPage", prevPageNum);
         }
         if (nextPageNum <= lastPageNum) {
-            pageInfo.put("nextPageNum", nextPageNum);
+            pageInfo.put("nextPage", nextPageNum);
         }
-        pageInfo.put("currentPageNum", page);
-        pageInfo.put("lastPageNum", lastPageNum);
-        pageInfo.put("leftPageNum", leftPageNum);
-        pageInfo.put("rightPageNum", rightPageNum);
+
+        pageInfo.put("currentPage", currentPage);
+        pageInfo.put("lastPage", lastPageNum);
+        pageInfo.put("leftPage", leftPageNum);
+        pageInfo.put("rightPage", rightPageNum);
         return offset;
     }
 
 
+    public boolean hasAccess(JobsEditForm form, Authentication authentication) {
+        return String.valueOf(form.getMemberId()).equals(authentication.getName());
+    }
 }
 

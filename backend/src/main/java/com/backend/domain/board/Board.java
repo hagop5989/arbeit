@@ -18,7 +18,6 @@ public class Board {
     private String title;
     private String content;
 
-
     private LocalDateTime inserted;
 
     public Board(Integer id, String title, String content) {

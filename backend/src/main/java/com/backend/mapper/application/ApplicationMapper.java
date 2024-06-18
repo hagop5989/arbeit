@@ -41,7 +41,7 @@ public interface ApplicationMapper {
             SELECT a.*,j.title AS jobsTitle
             FROM application a
             JOIN jobs j ON a.jobs_id = j.id
-            WHERE 
+            WHERE
             a.jobs_id = #{jobsId} AND a.member_id = #{memberId}
             """)
     Application selectByJobsIdAndMemberId(Integer jobsId, Integer memberId);
@@ -64,11 +64,10 @@ public interface ApplicationMapper {
     int update(Application application);
 
 
-
     @Delete("""
-    DELETE FROM management
-    WHERE jobs_id = #{jobsId} AND applied_member_id = #{memberId};
-    """)
-    int deleteFromManagement(Integer jobsId, Integer memberId);
+            DELETE FROM application
+            WHERE jobs_id = #{jobsId}
+            """)
+    int deleteAllByJobsId(Integer jobsId);
 
 }

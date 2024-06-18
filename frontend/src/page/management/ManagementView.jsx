@@ -38,7 +38,7 @@ export function ManagementView() {
   }, [account.id, id, management.resumeId]);
 
   // 합격 로직
-  function handlePassOrNot(e) {
+  function handleDecision(e) {
     const decision = e.target.innerText;
     let isPassed;
 
@@ -64,13 +64,24 @@ export function ManagementView() {
 
   // 합격 데이터 제출
   function handleSubmit(updatedManagement) {
-    console.log(updatedManagement);
     axios
-      .put(`/api/jobs/${id}/management/passOrNot`, { ...updatedManagement })
+      .put(`/api/jobs/${id}/management/decision`, { ...updatedManagement })
       .then(myToast("처리 되었습니다.", "success"))
       .catch()
       .finally();
   }
+
+  // 합격 여부 문자열 변환 함수
+  const isPassedToString = (decision) => {
+    switch (decision) {
+      case 1:
+        return "합격";
+      case 0:
+        return "불합격";
+      default:
+        return "미정";
+    }
+  };
 
   // toast 커스텀
   function myToast(text, status) {
@@ -88,11 +99,11 @@ export function ManagementView() {
       <Center w={"50%"} ml={"25%"}>
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
-          <Input
-            defaultValue={management.jobsTitle}
-            value={management.jobsTitle}
-            readOnly
-          />
+          <Input value={management.jobsTitle || ""} readOnly />
+          <FormLabel>합격여부</FormLabel>
+          <Box bgColor={"gray.100"}>
+            {isPassedToString(management.isPassed)}
+          </Box>
           <Divider my={2} />
           <FormLabel>이력서 첨부</FormLabel>
           <Input value={management.title || ""} readOnly />
@@ -106,8 +117,8 @@ export function ManagementView() {
           >
             목록
           </Button>
-          <Button onClick={(e) => handlePassOrNot(e)}>합격</Button>
-          <Button onClick={(e) => handlePassOrNot(e)}>불합격</Button>
+          <Button onClick={(e) => handleDecision(e)}>합격</Button>
+          <Button onClick={(e) => handleDecision(e)}>불합격</Button>
         </FormControl>
       </Center>
     </Box>

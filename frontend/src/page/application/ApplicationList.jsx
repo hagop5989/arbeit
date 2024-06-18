@@ -31,6 +31,18 @@ export function ApplicationList() {
     }
   }, [account.id, id]);
 
+  // 합격 여부 문자열 변환 함수
+  const isPassedToString = (decision) => {
+    switch (decision) {
+      case 1:
+        return "합격";
+      case 0:
+        return "불합격";
+      default:
+        return "미정";
+    }
+  };
+
   return (
     <Center>
       <Box>
@@ -78,7 +90,7 @@ export function ApplicationList() {
                   >
                     {application.title}
                   </Td>
-                  <Td>진행중</Td>
+                  <Td>{isPassedToString(application.isPassed)}</Td>
                   <Td>
                     <Button
                       onClick={() =>
