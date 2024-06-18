@@ -1,3 +1,5 @@
+// npm install react-slick slick-carousel
+
 import {
   Box,
   Button,
@@ -16,6 +18,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 import KakaoMap2 from "../posts/KakaoMap2.jsx";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export function StoreView() {
   const { id } = useParams();
@@ -36,7 +41,7 @@ export function StoreView() {
       .catch(() => navigate("/store/list"));
   }, [account.id]);
 
-  if (store === null) {
+  if (!store.name) {
     return (
       <Flex justifyContent="center" alignItems="center" minHeight="100vh">
         <Spinner size="xl" />
@@ -50,74 +55,78 @@ export function StoreView() {
     });
   }
 
+  const sliderSettings = {
+    dots: true, // 동그라미 네비게이션 활성화
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
-    <Box mx={{ base: "20px", xl: "200px" }} mt={"30px"}>
-      <Box fontSize={"1.7rem"}>가게 정보</Box>
-      <Divider borderWidth="1px" my={4} borderColor={"lightgray"} />
+    <Box w={"100%"}>
+      <Box
+        h={"70px"}
+        mb={"70px"}
+        bg={"#FF7F3E"}
+        color={"white"}
+        borderRadius={"10px"}
+      >
+        <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+          가게 관리
+        </Heading>
+      </Box>
       <Box>
         <Heading>{store.name}</Heading>
         <FormControl>
-          <Divider borderWidth="2px" my={6} borderColor={"lightgray"} />
+          <Divider borderWidth="2px" my={6} borderColor={"#ffa500"} />
           <Box
-            flex="1"
-            width="500px"
+            position="relative"
+            width="100%"
+            maxWidth="500px"
             height="350px"
             border="1px solid gray"
             display="flex"
             alignItems="center"
             justifyContent="center"
-            color="gray.400"
+            overflow="hidden"
+            mx="auto"
           >
-            {imageList.map((image) => (
-              <Box key={image.name} w={"100%"} h={""}>
-                <Image
-                  w={"100%"}
-                  h={"100%"}
-                  src={image.src}
-                  objectFit="cover"
-                />
-              </Box>
-            ))}
+            <Slider
+              {...sliderSettings}
+              style={{ width: "100%", height: "100%" }}
+            >
+              {imageList.map((image) => (
+                <Box
+                  key={image.name}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  width="100%"
+                  height="100%"
+                >
+                  <Image
+                    src={image.src}
+                    maxH="100%"
+                    maxW="100%"
+                    objectFit="contain"
+                  />
+                </Box>
+              ))}
+            </Slider>
           </Box>
-          <Divider borderWidth="1px" my={6} borderColor={"gray"} />
+          <Divider borderWidth="1px" my={6} borderColor={"#ededed"} />
           <Flex
             justifyContent="space-between"
             direction={{ base: "column", md: "row" }}
             gap="5"
           >
-            <FormLabel
-              mt={{ base: "8px", md: "8px" }}
-              mr={{ base: "0", md: "15px" }}
-            >
-              전화 번호
-            </FormLabel>
-            <Input
-              w={{ base: "100%", md: "200px" }}
-              defaultValue={store.phone}
-              readOnly
-            />
-            <FormLabel
-              mt={{ base: "8px", md: "8px" }}
-              mr={{ base: "0", md: "15px" }}
-            >
-              가게 카테고리
-            </FormLabel>
-            <Input
-              w={{ base: "100%", md: "300px" }}
-              defaultValue={store.categoryName}
-              readOnly
-            />
-            <FormLabel
-              mt={{ base: "8px", md: "8px" }}
-              mr={{ base: "0", md: "15px" }}
-            >
-              가게 별점
-            </FormLabel>
-            <Input
-              w={{ base: "100%", md: "300px" }}
-              defaultValue={"아직 작업 안했음"}
-              readOnly
-            />
+            <FormLabel mt={"8px"}>전화 번호</FormLabel>
+            <Input w={"200px"} defaultValue={store.phone} readOnly />
+            <FormLabel mt={"8px"}>가게 카테고리</FormLabel>
+            <Input w={"120px"} defaultValue={store.categoryName} readOnly />
+            <FormLabel mt={"8px"}>가게 별점</FormLabel>
+            <Input w={"150px"} defaultValue={"아직 작업 안했음"} readOnly />
           </Flex>
           <Divider borderWidth="1px" my={6} borderColor={"#ededed"} />
           <FormLabel mt="50px" fontSize={"1.5rem"}>

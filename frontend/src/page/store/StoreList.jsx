@@ -43,10 +43,18 @@ export function StoreList() {
   return (
     <Box>
       <Box>
-        <Box>
-          <Heading>가게 목록</Heading>
+        <Box
+          h={"70px"}
+          mb={"70px"}
+          bg={"#FF7F3E"}
+          color={"white"}
+          borderRadius={"10px"}
+        >
+          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+            가게 목록
+          </Heading>
         </Box>
-        <Box>
+        <Box float={"right"} mb={"15px"}>
           <Button
             colorScheme="green"
             onClick={() => navigate("/store/register")}
@@ -56,7 +64,7 @@ export function StoreList() {
         </Box>
         <Table>
           <Thead>
-            <Tr>
+            <Tr bgColor="#ffa33f">
               <Th>id</Th>
               <Th>가게명</Th>
               <Th>주소</Th>
