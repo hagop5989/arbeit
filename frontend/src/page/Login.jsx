@@ -8,6 +8,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   Link,
   Switch,
   Tab,
@@ -25,32 +26,16 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
 
-const styles = {
-  formControl: {
-    marginBottom: "60px",
-    height: "100px",
-  },
-  formLabel: {
-    fontSize: "25px",
-    width: "100%",
-    borderBottom: "2px solid #1F3042",
-    marginBottom: 6,
-  },
-  center: {
-    width: "97%",
-    margin: "auto",
-    display: "block",
-  },
-};
-
 export function Login() {
   const [authority, setAuthority] = useState("ALBA");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [password, setPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [show, setShow] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+  const handleClick = () => setShow(!show);
 
   const account = useContext(LoginContext);
 
@@ -75,10 +60,6 @@ export function Login() {
         setErrors(err.response.data);
       })
       .finally();
-  }
-
-  function handleTypeBtn(value) {
-    setAuthority(value);
   }
 
   function handleSwitchChange() {
@@ -140,10 +121,15 @@ export function Login() {
                     </InputLeftElement>
                     <Input
                       defaultValue={password}
-                      type="text"
+                      type={show ? "text" : "password"}
                       placeholder="패스워드"
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                    <InputRightElement width="4.5rem">
+                      <Button h="1.75rem" size="sm" onClick={handleClick}>
+                        {show ? "Hide" : "Show"}
+                      </Button>
+                    </InputRightElement>
                   </InputGroup>
                 </FormControl>
               </Box>
@@ -205,10 +191,15 @@ export function Login() {
                         </InputLeftElement>
                         <Input
                           defaultValue={password}
-                          type="text"
+                          type={show ? "text" : "password"}
                           placeholder="패스워드"
                           onChange={(e) => setPassword(e.target.value)}
                         />
+                        <InputRightElement width="4.5rem">
+                          <Button h="1.75rem" size="sm" onClick={handleClick}>
+                            {show ? "Hide" : "Show"}
+                          </Button>
+                        </InputRightElement>
                       </InputGroup>
                     </FormControl>
                   </Box>
