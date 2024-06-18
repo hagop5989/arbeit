@@ -27,12 +27,19 @@ export function Profile() {
         />
       </Box>
       <Center mb={"10px"}>마이페이지</Center>
-      <Center w={"100%"} height={"50px"} bg={"orange"} borderRadius={150}>
+      <Center
+        w={"100%"}
+        height={"50px"}
+        bg={"#FF7F3E"}
+        color={"white"}
+        borderRadius={150}
+      >
         <Text>지원 내역</Text>
         <Center
           w={"30px"}
           h={"30px"}
           bg={"yellow"}
+          color={"black"}
           borderRadius={150}
           ml={"20px"}
         >
