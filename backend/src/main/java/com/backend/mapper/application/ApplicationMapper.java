@@ -41,7 +41,7 @@ public interface ApplicationMapper {
             SELECT a.*,j.title AS jobsTitle
             FROM application a
             JOIN jobs j ON a.jobs_id = j.id
-            WHERE 
+            WHERE
             a.jobs_id = #{jobsId} AND a.member_id = #{memberId}
             """)
     Application selectByJobsIdAndMemberId(Integer jobsId, Integer memberId);

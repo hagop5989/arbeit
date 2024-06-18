@@ -36,6 +36,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   return (
+
     <Box bg="white" borderBottom="3px solid #eaeaea" height="140px" pt={"80px"}>
       <Flex
         h="full"

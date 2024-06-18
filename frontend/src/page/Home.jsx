@@ -7,7 +7,9 @@ export function Home() {
     <Box>
       <Box>
         <Navbar />
-        <Outlet />
+        <Box w={"1050px"} m={"auto"}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
