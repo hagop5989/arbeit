@@ -9,13 +9,14 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { LoginContext } from "../component/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 
 export function LeftNavbar(props) {
   const account = useContext(LoginContext);
-  const [isHovered, setIsHovered] = useState(false); // 호버 상태를 관리하는 상태 추가
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const navigate = useNavigate();
   const albaMenu = [
     { name: "공고리스트", url: "/jobs/list" },
@@ -34,20 +35,51 @@ export function LeftNavbar(props) {
     { name: "캘린더테스트", url: "/test" },
   ];
 
-  // 여기서 조건에 따라 albaMenu 또는 bossMenu를 선택하세요.
   const menuItems = account.isBoss() ? bossMenu : albaMenu;
+
+  const timerRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    timerRef.current = setTimeout(() => {
+      if (!isMenuHovered) {
+        setIsHovered(false);
+      }
+    }, 200);
+  };
+
+  const handleMenuMouseEnter = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setIsMenuHovered(true);
+    setIsHovered(true);
+  };
+
+  const handleMenuMouseLeave = () => {
+    setIsMenuHovered(false);
+    timerRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 200);
+  };
 
   return (
     <Flex zIndex={"3"}>
       <Box
         position={"fixed"}
         w={"60px"}
-        h={"160px"}
+        h={"150px"}
         borderRadius={"10px"}
         bgColor={"#2D3748"}
         color={"white"}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         display={"flex"}
         flexDirection={"column"}
         alignItems={"center"}
@@ -61,14 +93,14 @@ export function LeftNavbar(props) {
       <Box
         position={"fixed"}
         top={"230px"}
-        left={isHovered ? "90px" : "-300px"}
+        left={isHovered ? "100px" : "-300px"}
         transition="left 0.3s ease"
         border={"1px solid lightgray"}
         borderRadius={"10px"}
         w={"300px"}
         zIndex={isHovered ? "4" : "2"}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={handleMenuMouseEnter}
+        onMouseLeave={handleMenuMouseLeave}
         bgColor={"white"}
         boxShadow={"lg"}
       >
