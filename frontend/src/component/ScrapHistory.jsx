@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Divider,
   Heading,
   Table,
@@ -12,20 +13,37 @@ import {
 } from "@chakra-ui/react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function VisitHistory(props) {
+function ScrapHistory(props) {
   const account = useContext(LoginContext);
-  const [visitList, setVisitList] = useState([]);
+  const [scrapList, setScrapList] = useState([]);
   const navigate = useNavigate();
+  const [post, setPost] = useState(false);
   useEffect(() => {
-    setVisitList(account.recentJobPages);
-    console.log(account.recentJobPages);
-  }, [account.recentJobPages]);
+    axios
+      .get("/api/scrap/list")
+      .then((res) => {
+        // favorite 상태가 true인 항목만 필터링
+        const filteredScrapList = res.data.filter(
+          (item) => item.favorite === true,
+        );
+        setScrapList(filteredScrapList);
+      })
+      .catch()
+      .finally();
+  }, [account.recentJobPages, post]);
+
+  function handleDelete(id) {
+    axios.delete(`/api/scrap/delete/${id}`).then(() => {
+      setPost(!post);
+    });
+  }
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
       <Heading mb={"10px"} p={1}>
-        최근 방문한 공고 (최대 10개 저장)
+        스크랩한 공고
       </Heading>
       <Divider mb={"40px"} borderWidth={"2px"} />
       <Box>
@@ -37,7 +55,7 @@ function VisitHistory(props) {
             </Tr>
           </Thead>
           <Tbody>
-            {visitList.map((item, index) => (
+            {scrapList.map((item, index) => (
               <Tr
                 key={index}
                 cursor={"pointer"}
@@ -46,11 +64,17 @@ function VisitHistory(props) {
                 <Td>{index + 1}</Td>
                 <Td
                   onClick={() => {
-                    navigate(item.url);
+                    navigate(`/jobs/${item.jobsId}`);
                   }}
                 >
-                  {item.title}
+                  {item.jobsTitle}
                 </Td>
+                <Button
+                  colorScheme={"red"}
+                  onClick={() => handleDelete(item.id)}
+                >
+                  삭제
+                </Button>
               </Tr>
             ))}
           </Tbody>
@@ -60,4 +84,4 @@ function VisitHistory(props) {
   );
 }
 
-export default VisitHistory;
+export default ScrapHistory;

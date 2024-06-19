@@ -13,7 +13,8 @@ import { ManagementList } from "../page/management/ManagementList.jsx";
 import { ManagementView } from "../page/management/ManagementView.jsx";
 import Test1 from "../page/test)calendar/Test1.jsx";
 import VisitHistory from "../component/VisitHistory.jsx";
-import JobsView2 from "../page/posts/JobsView2.jsx"; // list : jobs , view : detail
+import JobsView2 from "../page/posts/JobsView2.jsx";
+import ScrapHistory from "../component/ScrapHistory.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
@@ -34,6 +35,7 @@ const bossRoutes = [
   { path: "resume/:id/edit", element: <ResumeEdit /> },
   { path: "test", element: <Test1 /> },
   { path: "visit-history", element: <VisitHistory /> },
+  { path: "scrap-history", element: <ScrapHistory /> },
 ];
 
 export default bossRoutes;

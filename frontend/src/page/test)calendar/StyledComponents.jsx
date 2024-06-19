@@ -13,7 +13,7 @@ export const SmallCalendarContainer = styled(VStack)`
 export const LeftCalendarContainer = styled(Box)`
   position: fixed;
   left: 0;
-  margin-left: -13px;
+  margin-left: 165px;
   margin-top: 35px;
   padding: 16px;
 `;

@@ -8,6 +8,7 @@ import com.backend.mapper.jobs.JobsMapper;
 import com.backend.mapper.store.StoreMapper;
 import com.backend.service.application.ApplicationService;
 import com.backend.service.member.MemberService;
+import com.backend.service.scrap.ScrapService;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,14 +31,15 @@ import java.util.Map;
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class JobsService {
+    final S3Client s3Client;
     private final JobsMapper jobsMapper;
     private final JobsConditionMapper conditionMapper;
     private final JobsImageMapper imageMapper;
     private final StoreService storeService;
     private final MemberService memberService;
-    final S3Client s3Client;
     private final StoreMapper storeMapper;
     private final ApplicationService applicationService;
+    private final ScrapService scrapService;
 
     @Value("${aws.s3.bucket.name}")
     String bucketName;

@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Flex,
   Heading,
   Table,
@@ -103,25 +104,32 @@ export function ManagementList() {
       {account.isBoss() && (
         <Box>
           <Box>
-            <Heading>지원내역(사장)</Heading>
+            <Heading mb={"10px"} p={1}>
+              지원내역(사장)
+            </Heading>
+            <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
 
           <Box>
             <Table>
               <Thead>
                 <Tr>
-                  <Th>선택</Th>
-                  <Th>작성일</Th>
-                  <Th>진행공고명</Th>
-                  <Th>지원서 제목</Th>
-                  <Th>진행상황</Th>
-                  <Th>관리</Th>
+                  <Th fontSize={"medium"}>선택</Th>
+                  <Th fontSize={"medium"}>지원일</Th>
+                  <Th fontSize={"medium"}>진행공고명</Th>
+                  <Th fontSize={"medium"}>지원서 제목</Th>
+                  <Th fontSize={"medium"}>상태</Th>
+                  <Th fontSize={"medium"}>관리</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {managementList.map((management) => (
-                  <Tr key={management.id}>
-                    <Td>
+                  <Tr
+                    key={management.id}
+                    fontSize={"15px"}
+                    _hover={{ bgColor: "orange.50" }}
+                  >
+                    <Td minW={"80px"}>
                       {/* 체크박스 */}
                       <Checkbox
                         value={management.id}
@@ -129,13 +137,24 @@ export function ManagementList() {
                       />
                     </Td>
                     {/* 지원일 */}
-                    <Td>{management.applicationInserted}</Td>
+                    <Td fontSize={"sm"} minW={"130px"}>
+                      {management.applicationInserted}
+                    </Td>
                     {/* 공고 제목 */}
-                    <Td onClick={() => navigate(`/jobs/${management.jobsId}`)}>
+                    <Td
+                      whiteSpace="nowrap" // 줄 바꿈을 막음
+                      overflow="hidden" // 넘친 내용을 숨김
+                      textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                      cursor={"pointer"}
+                      onClick={() => navigate(`/jobs/${management.jobsId}`)}
+                    >
                       {management.jobsTitle}
                     </Td>
                     {/* 지원 제목 */}
                     <Td
+                      whiteSpace="nowrap" // 줄 바꿈을 막음
+                      overflow="hidden" // 넘친 내용을 숨김
+                      textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
                       cursor={"pointer"}
                       onClick={() =>
                         navigate(
@@ -147,14 +166,35 @@ export function ManagementList() {
                       {management.applicationTitle}
                     </Td>
                     {/* 합격 여부 */}
-                    <Td>{isPassedToString(management.isPassed)}</Td>{" "}
+                    <Td
+                      minW={"90px"}
+                      fontWeight={"bold"}
+                      color={
+                        management.isPassed != null && management.isPassed
+                          ? "teal"
+                          : "red"
+                      }
+                    >
+                      {isPassedToString(management.isPassed)}
+                    </Td>
+
                     {/* 합격 결정 버튼 */}
                     <Td>
-                      <Flex>
-                        <Button onClick={(e) => handleDecision(e, management)}>
+                      <Flex gap={"5px"}>
+                        <Button
+                          onClick={(e) => handleDecision(e, management)}
+                          fontWeight={"500"}
+                          bgColor={"#FF7F3E"}
+                          color={"white"}
+                        >
                           합격
                         </Button>
-                        <Button onClick={(e) => handleDecision(e, management)}>
+                        <Button
+                          onClick={(e) => handleDecision(e, management)}
+                          fontWeight={"500"}
+                          bgColor={"red.500"}
+                          color={"white"}
+                        >
                           불합격
                         </Button>
                       </Flex>
@@ -163,13 +203,6 @@ export function ManagementList() {
                 ))}
               </Tbody>
             </Table>
-            {/* 삭제 */}
-            <Button
-              colorScheme={"red"}
-              // onClick={handleRemoveBtn}
-            >
-              삭제
-            </Button>
           </Box>
         </Box>
       )}
