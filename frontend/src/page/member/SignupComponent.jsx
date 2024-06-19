@@ -4,54 +4,106 @@ import {
   Center,
   Flex,
   FormControl,
-  FormHelperText,
+  FormErrorMessage,
   FormLabel,
   Input,
   InputGroup,
-  InputLeftElement,
   InputRightElement,
   Modal,
   ModalContent,
   ModalOverlay,
   Radio,
   RadioGroup,
+  Spacer,
   Stack,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const styles = {
   formControl: {
-    marginBottom: "60px",
-    height: "100px",
+    display: "flex",
+    marginBottom: "10px",
   },
   formLabel: {
-    fontSize: "25px",
-    width: "100%",
-    borderBottom: "2px solid #1F3042",
-    marginBottom: 6,
+    w: "110px",
+    h: "20px",
+    lineHeight: "20px",
+    borderRight: "3px solid orange",
+    my: "10px",
+    textAlign: "left",
   },
-  center: {
-    width: "97%",
-    margin: "auto",
-    display: "block",
+  formControlHalf: {
+    w: "50%",
+    display: "flex",
+  },
+  input: {
+    width: "70%",
+    marginRight: 2,
+  },
+
+  box: {
+    width: "110px",
+    height: "20px",
+    lineHeight: "20px",
+    marginRight: "20px",
+    borderRight: "3px solid orange",
   },
 };
-export function SignupComponent({ member, setMember, errors, setErrors }) {
-  const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
 
-  let navigate = useNavigate();
+export function SignupComponent({ member, setMember, errors, setErrors }) {
+  const [pwdShow, setPwdShow] = useState(false);
+  const [pwdCheckShow, setPwdCheckShow] = useState(false);
+  const [currentEmail, setCurrentEmail] = useState("");
+  const [isMatch, setIsMatch] = useState(false);
+  const [isSendMail, setIsSendMail] = useState(false);
+  const [authNumber, setAuthNumber] = useState("");
+
+  const [seconds, setSeconds] = useState(120); // 1분 = 60초
+  const [isActive, setIsActive] = useState(false);
+
+  const handlePwdClick = () => setPwdShow(!pwdShow);
+  const handlePwdCheckClick = () => setPwdCheckShow(!pwdCheckShow);
+
+  const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  // Timer
+  useEffect(() => {
+    let interval = null;
+    if (isActive && seconds > 0) {
+      interval = setInterval(() => {
+        setSeconds((seconds) => seconds - 1);
+      }, 1000);
+    } else if (seconds === 0) {
+      clearInterval(interval);
+      setIsActive(false);
+    }
+    return () => clearInterval(interval);
+  }, [isActive, seconds]);
+
+  const startCountdown = () => {
+    setIsActive(true);
+  };
 
   const handleInputChange = (prop) => (e) => {
     setMember({ ...member, [prop]: e.target.value });
   };
+
+  const onCompletePost = (data) => {
+    setMember({ ...member, address: data.address });
+    onClose();
+  };
+
+  const isError = (prop) => prop !== undefined;
+
+  const isPwdMatch = member.password === member.passwordCheck;
 
   function handleSignupBtn() {
     axios
@@ -62,78 +114,184 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
       .catch((err) => {
         setErrors(null);
         setErrors(err.response.data);
-      })
-      .finally();
+      });
   }
 
-  const onCompletePost = (data) => {
-    setMember({ ...member, address: data.address });
-    onClose();
-  };
+  function handleSendMailBtn() {
+    alert("인증번호를 발신합니다. 최대 1분 소요됩니다.");
+    if (isSendMail) {
+      setSeconds(120);
+    }
+    startCountdown();
+    setIsSendMail(true);
+    setMember({ ...member, email: currentEmail });
+    const email = new URLSearchParams();
+    email.append("email", currentEmail);
+    axios
+      .post(`/api/mail-send`, email)
+      .then((res) => {
+        if (res.data === false) {
+          alert("이미 존재하는 이메일입니다.");
+          setIsSendMail(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          alert("이메일 형식을 맞춰주세요.");
+          setIsSendMail(false);
+        }
+      });
+  }
+
+  function handleAuthCheckBtn() {
+    const params = new URLSearchParams();
+    params.append("authNumber", authNumber);
+    params.append("email", member.email);
+    axios.post("/api/mail-check", params).then((res) => {
+      setIsMatch(res.data);
+      if (res.data === false) {
+        alert("인증번호를 다시 확인해주세요.");
+      }
+    });
+  }
 
   return (
     <Box>
-      {/*===========================*/}
-      <FormControl>
-        <InputGroup>
-          <InputLeftElement pointerEvents="none" color={"gray.400"}>
-            <FontAwesomeIcon icon={faEnvelope} />
-          </InputLeftElement>
-          <Input
-            defaultValue={member.email}
-            type="email"
-            placeholder="이메일"
-            onChange={handleInputChange("email")}
-          />
-          {errors && <FormHelperText>{errors.email}</FormHelperText>}
-        </InputGroup>
+      <FormControl {...styles.formControl} isInvalid={isError(errors.email)}>
+        <FormLabel {...styles.formLabel}>이메일</FormLabel>
+        <Box w={"70%"}>
+          <Box>
+            <InputGroup>
+              <Input
+                disabled={isMatch}
+                onChange={(e) => setCurrentEmail(e.target.value)}
+                placeholder={"이메일을 입력해주세요."}
+                defaultValue={currentEmail}
+              />
+              <InputRightElement w={"100px"} mr={"10px"}>
+                <Button
+                  isDisabled={isMatch}
+                  h="1.75rem"
+                  size="sm"
+                  onClick={handleSendMailBtn}
+                >
+                  {isSendMail ? "재발송" : "인증번호 발송"}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            {errors && <FormErrorMessage>{errors.email}</FormErrorMessage>}
+          </Box>
+          {isSendMail && (
+            <Flex w={"80%"} mt={"10px"}>
+              <InputGroup w={"80%"}>
+                <Input
+                  disabled={isMatch}
+                  onChange={(e) => setAuthNumber(e.target.value)}
+                  placeholder={"인증번호를 입력해주세요."}
+                />
+                <InputRightElement mr={"10px"}>
+                  <Button
+                    isDisabled={isMatch}
+                    h="1.75rem"
+                    size="sm"
+                    onClick={handleAuthCheckBtn}
+                  >
+                    확인
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              <Spacer />
+              <Box w={"70px"} lineHeight={"40px"}>
+                <Text color={"gray.500"}>{seconds}</Text>
+              </Box>
+            </Flex>
+          )}
+        </Box>
       </FormControl>
-      <FormControl>
-        <InputGroup>
-          <InputLeftElement color={"gray.400"}>
-            <FontAwesomeIcon icon={faKey} />
-          </InputLeftElement>
-          <Input type={show ? "text" : "password"} placeholder="패스워드" />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-        {errors && <FormHelperText>{errors.password}</FormHelperText>}
+      <Box pl={"130px"} color={"gray.600"} fontSize={"12px"}>
+        숫자, 문자, 특수문자 무조건 1개 이상, 비밀번호 최소 8자에서 최대
+        16자까지 허용합니다.
+      </Box>
+      <FormControl
+        {...styles.formControl}
+        isInvalid={isError(errors.password) || !isPwdMatch}
+      >
+        <FormLabel {...styles.formLabel}>패스워드</FormLabel>
+        <Box w={"70%"}>
+          <InputGroup>
+            <Input
+              type={pwdShow ? "text" : "password"}
+              onChange={handleInputChange("password")}
+              placeholder={"패스워드를 입력해주세요."}
+              defaultValue={member.password}
+            />
+            <InputRightElement mr={"10px"}>
+              <Button h="1.75rem" size="sm" onClick={handlePwdClick}>
+                {pwdShow ? (
+                  <FontAwesomeIcon icon={faEyeSlash} />
+                ) : (
+                  <FontAwesomeIcon icon={faEye} />
+                )}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          {errors && <FormErrorMessage>{errors.password}</FormErrorMessage>}
+        </Box>
+      </FormControl>
+      <FormControl
+        {...styles.formControl}
+        isInvalid={isError(errors.passwordCheck) || !isPwdMatch}
+      >
+        <FormLabel {...styles.formLabel}>패스워드 확인</FormLabel>
+        <Box w={"70%"}>
+          <InputGroup>
+            <Input
+              type={pwdCheckShow ? "text" : "password"}
+              onChange={handleInputChange("passwordCheck")}
+              placeholder={"패스워드 확인을 입력해주세요."}
+              defaultValue={member.passwordCheck}
+            />
+            <InputRightElement mr={"10px"}>
+              <Button h="1.75rem" size="sm" onClick={handlePwdCheckClick}>
+                {pwdCheckShow ? (
+                  <FontAwesomeIcon icon={faEyeSlash} />
+                ) : (
+                  <FontAwesomeIcon icon={faEye} />
+                )}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          {errors && (
+            <FormErrorMessage>{errors.passwordCheck}</FormErrorMessage>
+          )}
+          {isPwdMatch || (
+            <FormErrorMessage>
+              패스워드와 패스워드 확인이 일치하지 않습니다.
+            </FormErrorMessage>
+          )}
+        </Box>
       </FormControl>
 
-      <Flex border={"1px solid red"}>
-        <FormControl w={"240px"} border={"1px solid black"} display={"flex"}>
-          <FormLabel
-            w={"40px"}
-            h={"20px"}
-            lineHeight={"20px"}
-            borderRight={"3px solid orange"}
-            my={"10px"}
-          >
-            이름
-          </FormLabel>
-          <Input w={"200px"} onChange={handleInputChange("name")} />
-          {errors && <FormHelperText>{errors.name}</FormHelperText>}
-        </FormControl>
+      <Flex mb={"10px"}>
         <FormControl
-          w={"200px"}
-          h={"40px"}
-          border={"1px solid red"}
-          ml={"30px"}
+          {...styles.formControlHalf}
+          isInvalid={isError(errors.name)}
         >
-          <Center h={"40px"}>
-            <Box
-              w={"40px"}
-              h={"20px"}
-              lineHeight={"20px"}
-              mr={"20px"}
-              borderRight={"3px solid orange"}
-            >
-              성별
-            </Box>
-            <RadioGroup defaultValue="2">
+          <FormLabel {...styles.formLabel}>이름</FormLabel>
+          <Box>
+            <Input
+              onChange={handleInputChange("name")}
+              w={"200px"}
+              placeholder={"예) 홍길동"}
+            />
+            {errors && <FormErrorMessage>{errors.name}</FormErrorMessage>}
+          </Box>
+        </FormControl>
+
+        <FormControl {...styles.formControlHalf}>
+          <Flex h={"40px"} py={"10px"}>
+            <FormLabel {...styles.box}>성별</FormLabel>
+            <RadioGroup value={member.gender}>
               <Stack spacing={5} direction="row">
                 <Radio
                   colorScheme="orange"
@@ -151,52 +309,41 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
                 </Radio>
               </Stack>
             </RadioGroup>
-          </Center>
+          </Flex>
         </FormControl>
       </Flex>
-      <Flex border={"1px solid green"}>
-        <FormControl display={"flex"} border={"1px solid orange"}>
-          <FormLabel
-            w={"70px"}
-            h={"20px"}
-            lineHeight={"20px"}
-            borderRight={"3px solid orange"}
-            my={"10px"}
-          >
-            생년월일
-          </FormLabel>
-          <Input
-            w={"200px"}
-            type={"text"}
-            onChange={handleInputChange("birthDate")}
-            placeholder={"990101"}
-          />
-          {errors && <FormHelperText>{errors.birthDate}</FormHelperText>}
-        </FormControl>
-        <FormControl display={"flex"} border={"1px solid blue"}>
-          <FormLabel
-            w={"70px"}
-            h={"20px"}
-            lineHeight={"20px"}
-            borderRight={"3px solid orange"}
-            my={"10px"}
-          >
-            전화번호
-          </FormLabel>
-          <Input w={"200px"} onChange={handleInputChange("phone")} />
-          {errors && <FormHelperText>{errors.phone}</FormHelperText>}
-        </FormControl>
-      </Flex>
-      <FormControl display={"flex"}>
-        <FormLabel
-          w={"40px"}
-          h={"20px"}
-          lineHeight={"20px"}
-          borderRight={"3px solid orange"}
-          my={"10px"}
+
+      <Flex>
+        <FormControl
+          {...styles.formControl}
+          isInvalid={isError(errors.birthDate)}
         >
-          주소
-        </FormLabel>
+          <FormLabel {...styles.formLabel}>생년월일</FormLabel>
+          <Box>
+            <Input
+              w={"200px"}
+              type={"text"}
+              onChange={handleInputChange("birthDate")}
+              placeholder={"예) 990101"}
+            />
+            {errors && <FormErrorMessage>{errors.birthDate}</FormErrorMessage>}
+          </Box>
+        </FormControl>
+        <FormControl {...styles.formControl} isInvalid={isError(errors.phone)}>
+          <FormLabel {...styles.formLabel}>전화번호</FormLabel>
+          <Box>
+            <Input
+              w={"200px"}
+              onChange={handleInputChange("phone")}
+              placeholder={"예) 01012345678"}
+            />
+            {errors && <FormErrorMessage>{errors.phone}</FormErrorMessage>}
+          </Box>
+        </FormControl>
+      </Flex>
+
+      <FormControl {...styles.formControl} isInvalid={isError(errors.address)}>
+        <FormLabel {...styles.formLabel}>주소</FormLabel>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -204,13 +351,18 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
           </ModalContent>
         </Modal>
         <Flex mb={2}>
-          <Input w={"70%"} defaultValue={member.address} readOnly mr={2} />
+          <Box w={"70%"} mr={2}>
+            <Input defaultValue={member.address} readOnly />
+            {errors && <FormErrorMessage>{errors.address}</FormErrorMessage>}
+          </Box>
           <Button onClick={onOpen}>우편번호 검색</Button>
         </Flex>
-        {errors && <FormHelperText>{errors.address}</FormHelperText>}
       </FormControl>
-
-      <Button onClick={handleSignupBtn}>회원가입</Button>
+      <Center mt={"30px"}>
+        <Button w={"150px"} onClick={handleSignupBtn} colorScheme={"orange"}>
+          회원가입
+        </Button>
+      </Center>
     </Box>
   );
 }

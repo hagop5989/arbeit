@@ -35,6 +35,19 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findById(id));
     }
 
+    @PostMapping("/check")
+    public ResponseEntity check(@RequestBody String email) {
+        log.info("email={}", email);
+        if (email.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Member member = memberService.findByEmail(email);
+        if (member != null) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public List<Member> list() {
@@ -46,6 +59,7 @@ public class MemberController {
     public ResponseEntity edit(@Validated @RequestBody MemberEditForm form, BindingResult bindingResult,
                                @PathVariable("id") Integer id,
                                Authentication authentication) {
+
         Map<String, String> passwordMatch = memberService.passwordMatch(form);
         if (bindingResult.hasErrors() || passwordMatch != null) {
             Map<String, String> errors = getErrorMessages(bindingResult);
