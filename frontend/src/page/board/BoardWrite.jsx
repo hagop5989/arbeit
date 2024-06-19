@@ -19,15 +19,15 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 export function BoardWrite() {
   const [board, setBoard] = useState({});
   const [errors, setErrors] = useState({});
-  const [files, setFiles] = useState([]);
+  const [images, setImages] = useState([]);
   const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
   const maxContentLength = 500;
 
   const fileNameList = [];
-  for (let i = 0; i < files.length; i++) {
-    fileNameList.push(<li key={i}>{files[i].name}</li>);
+  for (let i = 0; i < images.length; i++) {
+    fileNameList.push(<li key={i}>{images[i].name}</li>);
   }
 
   function handleWriteBtn() {
@@ -41,7 +41,7 @@ export function BoardWrite() {
     }
 
     axios
-      .post(`/api/board/write`, { ...board, memberId: account.id, files })
+      .postForm(`/api/board/write`, { ...board, memberId: account.id, images })
       .then(() => {
         toast({
           description: "글이 작성 되었습니다",
@@ -94,21 +94,24 @@ export function BoardWrite() {
               {board.content?.length} / {maxContentLength}
             </Text>
             {errors && <FormHelperText>{errors.content}</FormHelperText>}
-            <FormLabel>사진</FormLabel>
+          </FormControl>
+          <Box>
+            <Text fontSize={"2xl"}>파일첨부</Text>
             <Input
               multiple
-              type={"file"}
-              accept="image/*"
-              onChange={(e) => setFiles(e.target.files)}
+              type="file"
+              placeholder="파일을 첨부해주세요"
+              onChange={(e) => {
+                setImages(e.target.files);
+              }}
             />
-            <Text>이미지 터져요</Text>
-          </FormControl>
-          {fileNameList.length > 0 && (
-            <Box>
-              <Text>파일 리스트</Text>
-              <UnorderedList>{fileNameList}</UnorderedList>
-            </Box>
-          )}
+            {fileNameList.length > 0 && (
+              <Box mt={2}>
+                <Text>첨부파일리스트</Text>
+                <UnorderedList>{fileNameList}</UnorderedList>
+              </Box>
+            )}
+          </Box>
         </Box>
         <Box mt={3}>
           <Button onClick={handleWritecancel}>취소</Button>

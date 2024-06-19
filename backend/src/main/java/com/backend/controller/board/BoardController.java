@@ -15,9 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,69 +30,80 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class BoardController {
 
+
     private final BoardService boardService;
+
+
+    @ControllerAdvice
+    public class GlobalExceptionHandler {
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<Map<String, String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+            Map<String, String> response = new HashMap<>();
+            response.put("title", "");
+            response.put("content", "");
+            response.put("error", "잘못된 요청입니다.");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
     @PostMapping("/write")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity write(@Validated @RequestBody BoardWriteForm form, BindingResult bindingResult,
-                                @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-                                Authentication authentication) {
+    public ResponseEntity write(@Validated BoardWriteForm form, BindingResult bindingResult,
+                                Authentication authentication) throws IOException {
+        System.out.println("form = " + form);
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
         }
-        boardService.write(form, files, authentication);
+
+        boardService.write(form, authentication);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity info(@PathVariable Integer id) {
+        Map<String, Object> result = boardService.findById(id);
+
+
+        if (result == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(result);
+    }
+
 
     @GetMapping("/list")
     public List<Board> list() {
         return boardService.list();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity info(@PathVariable Integer id) {
-        Board board = boardService.findById(id);
-
-        if (board == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(board);
-    }
 
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity edit(@Validated @RequestBody BoardEditForm form, BindingResult bindingResult,
-                               @PathVariable("id") Integer id,
-                               @RequestParam(value = "removeImages[]", required = false) List<String> removeImages,
-                               @RequestParam(value = "addImages[]", required = false) MultipartFile[] addImages,
+    public ResponseEntity edit(@Validated BoardEditForm form, BindingResult bindingResult,
                                Authentication authentication) throws IOException {
+
+
+        if (!boardService.hasAccess(form, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
-        if (!boardService.hasAccess(id, authentication)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        boardService.edit(form, id, removeImages, addImages);
+        boardService.edit(form, authentication);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
-
-        if (!boardService.hasAccess(id, authentication)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
+    public void delete(@PathVariable Integer id) {
         boardService.delete(id);
-        return ResponseEntity.ok().build();
     }
 
 

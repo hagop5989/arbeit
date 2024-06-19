@@ -30,8 +30,8 @@ import { CommentComponent } from "../comment/CommentComponent.jsx";
 
 export function BoardView() {
   const { id } = useParams();
-  const [board, setBoard] = useState("");
-  const [imageList, setImageList] = useState([]);
+  const [board, setBoard] = useState({});
+  const [images, setImages] = useState([]);
   const [like, setLike] = useState({
     like: false,
     count: 0,
@@ -45,10 +45,11 @@ export function BoardView() {
     axios
       .get(`/api/board/${id}`)
       .then((res) => {
-        setBoard(res.data.border);
-        setImageList(res.data.imageList);
+        setBoard(res.data);
+        setImages(res.data.images);
       })
       .catch((err) => {
+        console.log(err);
         if (err.response.status === 404) {
           toast({
             status: "error",
@@ -58,9 +59,9 @@ export function BoardView() {
           navigate("/");
         }
       });
-  }, []);
+  }, [account.id]);
 
-  if (board === null) {
+  if (!board) {
     return <Spinner />;
   }
 
@@ -113,20 +114,10 @@ export function BoardView() {
           <Input value={board.title} readOnly></Input>
           <FormLabel>본문</FormLabel>
           <Textarea value={board.content} readOnly></Textarea>
-          <Box
-            flex="1"
-            width="500px"
-            height="250px"
-            border="1px solid gray"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            color="gray.400"
-          >
-            {imageList.map((image) => (
-              <Box key={image.name}>
-                <Image w={"100%"} h={"100%"} src={image.src} />
-              </Box>
+          <FormLabel>첨부사진</FormLabel>
+          <Box>
+            {images.map((image) => (
+              <Image key={image.name} src={image.src} />
             ))}
           </Box>
           <FormLabel>작성자</FormLabel>
