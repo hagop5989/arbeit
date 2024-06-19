@@ -45,7 +45,7 @@ export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
           description: "댓글 등록 하였습니다 ",
           position: "top",
         });
-        navigate("/board/list");
+        navigate("/board/view");
       })
       .catch((err) => {
         setErrors(err.response.data);

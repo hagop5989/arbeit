@@ -34,7 +34,13 @@ export function Profile() {
       >
         ▲ 맨위로
       </Button>
-      <Box w={"100%"} height={"160px"} mb={"20px"}>
+      <Box
+        w={"100%"}
+        height={"160px"}
+        mb={"20px"}
+        cursor={"pointer"}
+        onClick={() => navigate(`/member/${account.id}`)}
+      >
         <Image
           borderRadius={150}
           border={"2px solid gray"}
@@ -42,23 +48,26 @@ export function Profile() {
           h={"100%"}
           src={src}
         />
+        <Center mb={"10px"}>마이페이지</Center>
       </Box>
-      <Center mb={"10px"}>마이페이지</Center>
       <Center
         w={"100%"}
         height={"50px"}
         bg={"#FF7F3E"}
         color={"white"}
         borderRadius={150}
+        cursor={"pointer"}
+        onClick={() => navigate("/jobs/management/list")}
       >
-        <Text>지원 내역</Text>
+        <Text>지원 내역 {account.alarmNum}</Text>
         <Center
           w={"30px"}
           h={"30px"}
           bg={"yellow"}
           color={"black"}
           borderRadius={150}
-          ml={"20px"}
+          ml={"5px"}
+          mr={"-20px"}
         >
           <FontAwesomeIcon icon={faBell} />
         </Center>
@@ -67,13 +76,19 @@ export function Profile() {
         w={"100%"}
         height={"50px"}
         my={"5px"}
-        bg={"teal"}
+        bg={"gray.500"}
         borderRadius={150}
+        cursor={"pointer"}
+        onClick={() => navigate("/scrap-history")}
       >
-        <Text>스크랩 알바 5</Text>
+        <Text color={"white"}>스크랩 알바 {account.scrapNum}</Text>
       </Center>
-      <Center w={"100%"} height={"50px"} bg={"lightblue"} borderRadius={150}>
-        <Text cursor={"pointer"} onClick={() => navigate("/visit-history")}>
+      <Center w={"100%"} height={"50px"} bg={"gray.600"} borderRadius={150}>
+        <Text
+          color={"white"}
+          cursor={"pointer"}
+          onClick={() => navigate("/visit-history")}
+        >
           최근 본 알바 {account.recentJobPages.length}
         </Text>
       </Center>

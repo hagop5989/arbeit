@@ -30,7 +30,9 @@ import {
   faAnglesRight,
   faArrowDownWideShort,
   faMagnifyingGlass,
+  faStar as fullStar,
 } from "@fortawesome/free-solid-svg-icons";
+import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 
 export function JobsList() {
   const account = useContext(LoginContext);
@@ -157,6 +159,29 @@ export function JobsList() {
     selectedWorkTime,
   ]);
 
+  // favorite 리스트
+  const [favoriteList, setFavoriteList] = useState({});
+  useEffect(() => {
+    axios
+      .get("/api/scrap/list")
+      .then((res) => {
+        // 배열을 객체로 변환
+        const favorites = res.data.reduce((acc, item) => {
+          acc[item.jobsId] = item.favorite;
+          return acc;
+        }, {});
+        setFavoriteList(favorites);
+
+        // favorite이 true인 항목의 개수를 계산
+        const scrapCount = Object.values(favorites).filter(
+          (value) => value,
+        ).length;
+        account.updateScrapNum(scrapCount);
+      })
+      .catch()
+      .finally();
+  }, []);
+
   // 마감임박 필터링
   useEffect(() => {
     let sortJobs = [...jobsList];
@@ -230,7 +255,7 @@ export function JobsList() {
     <Box
     // border={"1px solid red"}
     >
-      <Flex justifyContent={"space-between"}>
+      <Flex justifyContent={"space-between"} mb={"30px"} mt={"-20px"}>
         <Box display={"flex"}>
           <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
           <Select w={150} value={filterType} onChange={handleFilterChange}>
@@ -351,7 +376,11 @@ export function JobsList() {
           <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
             {jobsList.map((job) => (
               <GridItem key={job.id}>
-                <JobCard job={job} storeImages={storeImages} />
+                <JobCard
+                  job={job}
+                  storeImages={storeImages}
+                  favoriteList={favoriteList}
+                />
               </GridItem>
             ))}
           </Grid>
@@ -364,8 +393,69 @@ export function JobsList() {
   );
 
   /* 공고 카드 형식 */
-  function JobCard({ job, storeImages }) {
+  function JobCard({ job, storeImages, favoriteList }) {
     const { addRecentJob } = useContext(LoginContext);
+    // 초기 favorite 상태 설정
+    const [favorite, setFavorite] = useState(favoriteList[job.id] || false);
+    // 안쓰는지 확인
+    const [myScrap, setMyScrap] = useState({});
+
+    //favoriteList 반영
+    useEffect(() => {
+      if (favoriteList[job.id] !== undefined) {
+        setFavorite(favoriteList[job.id].isFavorite); // .isFavorite을 사용하여 상태를 설정
+      }
+    }, [favoriteList, job.id]);
+
+    // 상태 업데이트 함수
+    // favoriteList 변경 시 상태 업데이트
+    useEffect(() => {
+      if (favoriteList[job.id] !== undefined) {
+        setFavorite(favoriteList[job.id]);
+      }
+    }, [favoriteList, job.id]);
+
+    const updateScrapStatus = (jobId, status) => {
+      const scrapData = {
+        jobsId: jobId,
+        memberId: account.id,
+        favorite: status,
+        jobsTitle: job.title,
+      };
+
+      // 상태가 false에서 true로 바뀌면 POST 요청을 보내고, 그렇지 않으면 PUT 요청을 보냄
+      const request = status
+        ? axios.post("/api/scrap", scrapData)
+        : axios.put("/api/scrap", scrapData);
+
+      request
+        .then((response) => {
+          console.log("Scrap status updated:", response.data);
+
+          // favoriteList를 업데이트하여 상태 반영
+          setFavoriteList((prevList) => {
+            const updatedList = { ...prevList, [jobId]: status };
+
+            // favorite이 true인 항목의 개수를 계산
+            const scrapCount = Object.values(updatedList).filter(
+              (value) => value,
+            ).length;
+            account.updateScrapNum(scrapCount);
+
+            return updatedList;
+          });
+        })
+        .catch((error) => {
+          console.error("There was an error updating the scrap status!", error);
+        });
+    };
+
+    const handleScraping = (e, job) => {
+      e.stopPropagation();
+      const newStatus = !favorite;
+      setFavorite(newStatus);
+      updateScrapStatus(job.id, newStatus); // job 대신 job.id와 newStatus를 전달
+    };
 
     // trimmedAddress를 useMemo로 캐싱
     const trimmedAddress = useMemo(
@@ -388,9 +478,9 @@ export function JobsList() {
           navigate(`/jobs/${job.id}`);
           addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
         }}
-        _hover={{ bgColor: "gray.100" }}
+        _hover={{ bgColor: "orange.50" }}
         w={"1050px"}
-        h={"135px"}
+        h={"140px"}
         p={5}
         cursor={"pointer"}
         borderRadius="0"
@@ -412,7 +502,15 @@ export function JobsList() {
           </Box>
           <Box w={"60%"} ml={"30px"}>
             <CardBody>
-              <Text fontSize="xl" fontWeight="bold">
+              <Text
+                w={"500px"}
+                fontSize="xl"
+                fontWeight={"bold"}
+                letterSpacing={"1px"}
+                whiteSpace="nowrap" // 줄 바꿈을 막음
+                overflow="hidden" // 넘친 내용을 숨김
+                textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+              >
                 {job.title}
               </Text>
               <Text
@@ -438,6 +536,20 @@ export function JobsList() {
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
           </Box>
           <Box w={"10%"}>
+            <Box
+              h={"20px"}
+              lineHeight={"20px"}
+              mt={"-20px"}
+              mb={2}
+              textIndent={"60px"}
+            >
+              <FontAwesomeIcon
+                onClick={(e) => handleScraping(e, job)}
+                color={"orange"}
+                icon={favorite ? fullStar : emptyStar}
+                fontSize={"20px"}
+              />
+            </Box>
             <Button borderWidth={"2px"} variant="outline" colorScheme="red">
               지원하기
             </Button>

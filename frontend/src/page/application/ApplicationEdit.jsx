@@ -1,8 +1,8 @@
 import {
   Box,
   Button,
-  Center,
   Divider,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -10,7 +10,7 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
@@ -73,9 +73,12 @@ export function ApplicationEdit() {
   }
 
   return (
-    <Box>
-      <Heading>지원서 수정</Heading>
-      <Center w={"50%"} ml={"25%"}>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Heading mb={"10px"} p={1}>
+        지원서 수정
+      </Heading>
+      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Box>
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
           <Input value={application.jobsTitle || ""} readOnly />
@@ -101,25 +104,47 @@ export function ApplicationEdit() {
             value={application.comment || ""}
             onChange={handleInputChange("comment")}
           />
-          <Button
-            onClick={() => {
-              navigate(`/jobs/apply/list`);
-            }}
-          >
-            목록
-          </Button>
+          <Flex gap={"10px"} my={"20px"}>
+            <Button
+              onClick={() => {
+                navigate(`/jobs/apply/list`);
+              }}
+              w={"25%"}
+              bgColor={"gray.500"}
+              color={"white"}
+            >
+              목록
+            </Button>
 
-          <Button onClick={handleSubmitApply}>저장</Button>
-          <Button
-            onClick={() => {
-              navigate(`/jobs/${id}/apply/select`);
-            }}
-          >
-            뷰페이지
-          </Button>
-          <Button onClick={handleDelete}>삭제하기</Button>
+            <Button
+              onClick={handleSubmitApply}
+              w={"25%"}
+              bgColor={"blue.500"}
+              color={"white"}
+            >
+              저장
+            </Button>
+            <Button
+              onClick={() => {
+                navigate(`/jobs/${id}/apply/select`);
+              }}
+              w={"25%"}
+              bgColor={"#FF7F3E"}
+              color={"white"}
+            >
+              뷰페이지
+            </Button>
+            <Button
+              onClick={handleDelete}
+              w={"25%"}
+              bgColor={"red.500"}
+              color={"white"}
+            >
+              삭제하기
+            </Button>
+          </Flex>
         </FormControl>
-      </Center>
+      </Box>
     </Box>
   );
 }

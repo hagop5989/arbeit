@@ -8,21 +8,27 @@ import {
   Input,
   Text,
   Textarea,
+  UnorderedList,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [board, setBoard] = useState({});
   const [errors, setErrors] = useState({});
+  const [files, setFiles] = useState([]);
   const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
-
   const maxContentLength = 500;
+
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li key={i}>{files[i].name}</li>);
+  }
 
   function handleWriteBtn() {
     if (!account || !account.id) {
@@ -35,7 +41,7 @@ export function BoardWrite() {
     }
 
     axios
-      .post(`/api/board/write`, { ...board, memberId: account.id })
+      .post(`/api/board/write`, { ...board, memberId: account.id, files })
       .then(() => {
         toast({
           description: "글이 작성 되었습니다",
@@ -93,13 +99,16 @@ export function BoardWrite() {
               multiple
               type={"file"}
               accept="image/*"
-              onChange={handleInputChange("files")}
-            ></Input>
-            <Text>
-              이미지는 최대 3개, 400KB 이하의 GIF, JPEG, JPG 파일만 등록이
-              가능합니다.
-            </Text>
+              onChange={(e) => setFiles(e.target.files)}
+            />
+            <Text>이미지 터져요</Text>
           </FormControl>
+          {fileNameList.length > 0 && (
+            <Box>
+              <Text>파일 리스트</Text>
+              <UnorderedList>{fileNameList}</UnorderedList>
+            </Box>
+          )}
         </Box>
         <Box mt={3}>
           <Button onClick={handleWritecancel}>취소</Button>

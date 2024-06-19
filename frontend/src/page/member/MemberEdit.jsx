@@ -4,7 +4,7 @@ import axios from "axios";
 import {
   Box,
   Button,
-  Center,
+  Divider,
   Flex,
   FormControl,
   FormHelperText,
@@ -49,58 +49,92 @@ export function MemberEdit() {
   }
 
   return (
-    <Center>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
-        <Box>
-          <Heading>회원정보</Heading>
-        </Box>
+        <Heading mb={"10px"} p={1}>
+          회원정보
+        </Heading>
+        <Divider mb={"40px"} borderWidth={"2px"} />
         <Box>
           <Box>
             <FormControl>
-              <FormLabel>이메일</FormLabel>
-              <Input value={member.email} isReadOnly />
+              <Box mb={4}>
+                <FormLabel fontSize={"xl"}>이메일</FormLabel>
+                <Input value={member.email} isReadOnly />
+              </Box>
 
-              <FormLabel>패스워드</FormLabel>
-              <Input
-                defaultValue={""}
-                onChange={handleInputChange("password")}
-              />
+              <Box mb={4}>
+                <FormLabel fontSize={"xl"}>패스워드</FormLabel>
+                <Input
+                  defaultValue={""}
+                  onChange={handleInputChange("password")}
+                />
+              </Box>
 
-              <FormLabel>패스워드 확인</FormLabel>
-              <Input
-                defaultValue={""}
-                onChange={handleInputChange("passwordCheck")}
-              />
-              {errors && (
-                <FormHelperText>{errors.passwordCheck}</FormHelperText>
-              )}
+              <Box mb={4}>
+                <FormLabel fontSize={"xl"}>패스워드 확인</FormLabel>
+                <Input
+                  defaultValue={""}
+                  onChange={handleInputChange("passwordCheck")}
+                />
+                {errors && (
+                  <FormHelperText color="red.500">
+                    {errors.passwordCheck}
+                  </FormHelperText>
+                )}
+              </Box>
 
-              <FormLabel>이름</FormLabel>
-              <Input value={member.name} onChange={handleInputChange("name")} />
-              {errors && <FormHelperText>{errors.name}</FormHelperText>}
+              <Flex gap={"10px"} mb={4}>
+                <Box w={"50%"}>
+                  <FormLabel fontSize={"xl"}>이름</FormLabel>
+                  <Input
+                    value={member.name}
+                    onChange={handleInputChange("name")}
+                  />
+                  {errors && <FormHelperText>{errors.name}</FormHelperText>}
+                </Box>
 
-              <FormLabel>주소</FormLabel>
+                <Box w={"50%"}>
+                  <FormLabel fontSize={"xl"}>전화번호</FormLabel>
+                  <Input
+                    value={member.phone}
+                    onChange={handleInputChange("phone")}
+                  />
+                  {errors && <FormHelperText>{errors.phone}</FormHelperText>}
+                </Box>
+              </Flex>
+
+              <FormLabel fontSize={"xl"}>주소</FormLabel>
               <Input
                 value={member.address}
                 onChange={handleInputChange("address")}
               />
               {errors && <FormHelperText>{errors.address}</FormHelperText>}
 
-              <FormLabel>전화번호</FormLabel>
-              <Input
-                value={member.phone}
-                onChange={handleInputChange("phone")}
-              />
-              {errors && <FormHelperText>{errors.phone}</FormHelperText>}
-
-              <Flex>
-                <Button onClick={handleSaveBtn}>저장</Button>
-                <Button>취소</Button>
+              <Flex gap={"10px"} my={"20px"}>
+                <Button
+                  onClick={handleSaveBtn}
+                  w={"50%"}
+                  bgColor={"#FF7F3E"}
+                  color={"white"}
+                >
+                  저장
+                </Button>
+                <Button
+                  onClick={() => {
+                    navigate(`/member/${id}`);
+                  }}
+                  w={"50%"}
+                  bgColor={"gray.500"}
+                  color={"white"}
+                >
+                  취소
+                </Button>
               </Flex>
             </FormControl>
           </Box>
         </Box>
       </Box>
-    </Center>
+    </Box>
   );
 }
