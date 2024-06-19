@@ -388,7 +388,7 @@ export function JobsList() {
           navigate(`/jobs/${job.id}`);
           addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
         }}
-        _hover={{ bgColor: "gray.100" }}
+        _hover={{ bgColor: "orange.50" }}
         w={"1050px"}
         h={"140px"}
         p={5}

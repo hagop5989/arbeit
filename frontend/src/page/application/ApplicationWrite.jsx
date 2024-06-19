@@ -10,7 +10,7 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
@@ -69,14 +69,17 @@ export function ApplicationWrite() {
   };
 
   return (
-    <Box>
-      <Heading>지원서 작성</Heading>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Heading mb={"10px"} p={1}>
+        지원서 작성
+      </Heading>
+      <Divider mb={"40px"} borderWidth={"2px"} />
       <Center>
         <FormControl>
-          <FormLabel>공고글 제목</FormLabel>
+          <FormLabel fontSize={"3xl"}>공고 제목</FormLabel>
           <Input value={jobsTitle} readOnly />
           <Divider my={2} />
-          <FormLabel>이력서 첨부</FormLabel>
+          <FormLabel fontSize={"3xl"}>이력서 첨부</FormLabel>
           <Select
             value={application.resumeId || ""}
             onChange={handleResumeChange}
@@ -91,7 +94,7 @@ export function ApplicationWrite() {
             ))}
           </Select>
           <Divider my={2} />
-          <FormLabel>지원메세지</FormLabel>
+          <FormLabel fontSize={"3xl"}>지원메세지</FormLabel>
           <Textarea
             h={"300px"}
             value={application.comment || ""}

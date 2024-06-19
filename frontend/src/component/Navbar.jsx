@@ -10,7 +10,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginProvider.jsx";
+import { LoginContext } from "./LoginProvider.jsx"; // 개별 메뉴 링크 컴포넌트
 
 // 개별 메뉴 링크 컴포넌트
 const NavLink = ({ href, children }) => (
@@ -86,6 +86,8 @@ const Navbar = () => {
                   color="black"
                   mr={"20px"}
                   fontWeight={"600"}
+                  cursor={"pointer"}
+                  onClick={() => navigate(`/member/${account.id}`)}
                 >
                   {account.name} 님
                 </Box>

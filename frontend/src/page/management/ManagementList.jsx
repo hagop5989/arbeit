@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Center,
   Checkbox,
   Flex,
   Heading,
@@ -95,78 +94,85 @@ export function ManagementList() {
   }
 
   return (
-    <Center>
-      <Box>
+    <Box w={"100%"} h={"55vh"}>
+      {account.isAlba() && (
+        <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
+          사장만 접근 가능한 페이지 입니다.
+        </Heading>
+      )}
+      {account.isBoss() && (
         <Box>
-          <Heading>지원내역(사장)</Heading>
-        </Box>
+          <Box>
+            <Heading>지원내역(사장)</Heading>
+          </Box>
 
-        <Box>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>선택</Th>
-                <Th>작성일</Th>
-                <Th>진행공고명</Th>
-                <Th>지원서 제목</Th>
-                <Th>진행상황</Th>
-                <Th>관리</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {managementList.map((management) => (
-                <Tr key={management.id}>
-                  <Td>
-                    {/* 체크박스 */}
-                    <Checkbox
-                      value={management.id}
-                      // onChange={handleCheckBoxChange}
-                    />
-                  </Td>
-                  {/* 지원일 */}
-                  <Td>{management.applicationInserted}</Td>
-                  {/* 공고 제목 */}
-                  <Td onClick={() => navigate(`/jobs/${management.jobsId}`)}>
-                    {management.jobsTitle}
-                  </Td>
-                  {/* 지원 제목 */}
-                  <Td
-                    cursor={"pointer"}
-                    onClick={() =>
-                      navigate(
-                        `/jobs/${management.resumeId}/management/select`,
-                        { state: { jobsId: management.jobsId } },
-                      )
-                    }
-                  >
-                    {management.applicationTitle}
-                  </Td>
-                  {/* 합격 여부 */}
-                  <Td>{isPassedToString(management.isPassed)}</Td>{" "}
-                  {/* 합격 결정 버튼 */}
-                  <Td>
-                    <Flex>
-                      <Button onClick={(e) => handleDecision(e, management)}>
-                        합격
-                      </Button>
-                      <Button onClick={(e) => handleDecision(e, management)}>
-                        불합격
-                      </Button>
-                    </Flex>
-                  </Td>
+          <Box>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>선택</Th>
+                  <Th>작성일</Th>
+                  <Th>진행공고명</Th>
+                  <Th>지원서 제목</Th>
+                  <Th>진행상황</Th>
+                  <Th>관리</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          {/* 삭제 */}
-          <Button
-            colorScheme={"red"}
-            // onClick={handleRemoveBtn}
-          >
-            삭제
-          </Button>
+              </Thead>
+              <Tbody>
+                {managementList.map((management) => (
+                  <Tr key={management.id}>
+                    <Td>
+                      {/* 체크박스 */}
+                      <Checkbox
+                        value={management.id}
+                        // onChange={handleCheckBoxChange}
+                      />
+                    </Td>
+                    {/* 지원일 */}
+                    <Td>{management.applicationInserted}</Td>
+                    {/* 공고 제목 */}
+                    <Td onClick={() => navigate(`/jobs/${management.jobsId}`)}>
+                      {management.jobsTitle}
+                    </Td>
+                    {/* 지원 제목 */}
+                    <Td
+                      cursor={"pointer"}
+                      onClick={() =>
+                        navigate(
+                          `/jobs/${management.resumeId}/management/select`,
+                          { state: { jobsId: management.jobsId } },
+                        )
+                      }
+                    >
+                      {management.applicationTitle}
+                    </Td>
+                    {/* 합격 여부 */}
+                    <Td>{isPassedToString(management.isPassed)}</Td>{" "}
+                    {/* 합격 결정 버튼 */}
+                    <Td>
+                      <Flex>
+                        <Button onClick={(e) => handleDecision(e, management)}>
+                          합격
+                        </Button>
+                        <Button onClick={(e) => handleDecision(e, management)}>
+                          불합격
+                        </Button>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            {/* 삭제 */}
+            <Button
+              colorScheme={"red"}
+              // onClick={handleRemoveBtn}
+            >
+              삭제
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Center>
+      )}
+    </Box>
   );
 }

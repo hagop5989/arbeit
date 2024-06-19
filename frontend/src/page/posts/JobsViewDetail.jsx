@@ -220,7 +220,8 @@ export function JobDetails({ job, jobsCond, images }) {
       <Text>{job.content}</Text>
       <Button
         onClick={() => navigate(`/jobs/${job.id}/apply`)}
-        colorScheme="orange"
+        bgColor={"#FF7F3E"}
+        color={"white"}
         mt={5}
         w="full"
       >
