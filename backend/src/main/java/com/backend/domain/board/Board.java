@@ -24,7 +24,6 @@ public class Board {
         this.id = id;
         this.title = title;
         this.content = content;
-
     }
 
     public String getInserted() {
