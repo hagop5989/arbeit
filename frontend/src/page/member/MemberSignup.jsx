@@ -16,7 +16,10 @@ import { useNavigate } from "react-router-dom";
 import { SignupComponent } from "./SignupComponent.jsx";
 
 export function MemberSignup() {
-  const [member, setMember] = useState({});
+  const [member, setMember] = useState({
+    authority: "ALBA",
+    gender: "MALE",
+  });
   const [isAdmin, setIsAdmin] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();

@@ -1,5 +1,3 @@
-// npm install react-slick slick-carousel
-
 import {
   Box,
   Button,

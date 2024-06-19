@@ -16,10 +16,14 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -32,10 +36,20 @@ public class MemberService {
     private final JwtEncoder encoder;
 
     public void signup(MemberSignupForm form) {
-        form.setPassword(passwordEncoder.encode(form.getPassword()));
-        mapper.insert(form);
+        Member member = new Member(
+                null,
+                form.getEmail(),
+                passwordEncoder.encode(form.getPassword()),
+                form.getName(),
+                form.getGender(),
+                parseBirthDate(form.getBirthDate()),
+                form.getAddress(),
+                form.getPhone(),
+                null
+        );
+        mapper.insert(member);
 
-        MemberAuth auth = new MemberAuth(form.getId(), form.getAuthority());
+        MemberAuth auth = new MemberAuth(member.getId(), form.getAuthority());
         mapper.insertAuth(auth);
     }
 
@@ -109,6 +123,10 @@ public class MemberService {
         mapper.updateById(member);
     }
 
+    public Member findByEmail(String email) {
+        return mapper.selectByEmail(email);
+    }
+
     public List<Member> findAll() {
         return mapper.selectAll();
     }
@@ -132,9 +150,36 @@ public class MemberService {
     public Map<String, String> passwordMatch(MemberEditForm form) {
         Map<String, String> map = null;
         if (!form.getPassword().equals(form.getPasswordCheck())) {
-            map = Map.of("passwordCheck", "패스워드와 확인이 일치하지 않습니다.");
+            map = Map.of("passwordCheck", "패스워드와 패스워드 확인이 일치하지 않습니다.");
         }
-
         return map;
+    }
+
+    private Date parseBirthDate(String birthDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+
+        try {
+            return dateFormat.parse(birthDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String findByNameAndPhone(String name, String phone) {
+        if (name.trim().isEmpty() || phone.trim().isEmpty()) {
+            return null;
+        }
+        return mapper.selectByNameAndPhone(name, phone);
+    }
+
+    public boolean checkRegexPwd(String password) {
+        String regex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$";
+        return Pattern.matches(regex, password);
+    }
+
+    public void updatePwdByEmail(String email, String password) {
+        String encoded = passwordEncoder.encode(password);
+        mapper.updatePwdByEmail(email, encoded);
     }
 }

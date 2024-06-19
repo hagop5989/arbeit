@@ -219,6 +219,9 @@ export function Login() {
           </TabPanels>
         </Tabs>
         <Box mt={"20px"} ml={"20px"} color={"gray.600"}>
+          <Link href={"/find-member"} mr={"30px"} color={"red.300"}>
+            이메일 또는 패스워드를 잊어버리셨나요?
+          </Link>
           <Link href={"/signup"}>회원가입</Link>
         </Box>
       </Box>
