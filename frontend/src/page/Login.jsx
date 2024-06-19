@@ -19,12 +19,17 @@ import {
   Tabs,
   useToast,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../component/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEnvelope,
+  faEye,
+  faEyeSlash,
+  faKey,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function Login() {
   const [authority, setAuthority] = useState("ALBA");
@@ -122,12 +127,16 @@ export function Login() {
                     <Input
                       defaultValue={password}
                       type={show ? "text" : "password"}
-                      placeholder="패스워드"
+                      placeholder="비밀번호"
                       onChange={(e) => setPassword(e.target.value)}
                     />
                     <InputRightElement width="4.5rem">
                       <Button h="1.75rem" size="sm" onClick={handleClick}>
-                        {show ? "Hide" : "Show"}
+                        {show ? (
+                          <FontAwesomeIcon icon={faEyeSlash} />
+                        ) : (
+                          <FontAwesomeIcon icon={faEye} />
+                        )}
                       </Button>
                     </InputRightElement>
                   </InputGroup>
@@ -192,12 +201,16 @@ export function Login() {
                         <Input
                           defaultValue={password}
                           type={show ? "text" : "password"}
-                          placeholder="패스워드"
+                          placeholder="비밀번호"
                           onChange={(e) => setPassword(e.target.value)}
                         />
                         <InputRightElement width="4.5rem">
                           <Button h="1.75rem" size="sm" onClick={handleClick}>
-                            {show ? "Hide" : "Show"}
+                            {show ? (
+                              <FontAwesomeIcon icon={faEyeSlash} />
+                            ) : (
+                              <FontAwesomeIcon icon={faEye} />
+                            )}
                           </Button>
                         </InputRightElement>
                       </InputGroup>
@@ -220,7 +233,7 @@ export function Login() {
         </Tabs>
         <Box mt={"20px"} ml={"20px"} color={"gray.600"}>
           <Link href={"/find-member"} mr={"30px"} color={"red.300"}>
-            이메일 또는 패스워드를 잊어버리셨나요?
+            이메일 또는 비밀번호를 잊어버리셨나요?
           </Link>
           <Link href={"/signup"}>회원가입</Link>
         </Box>

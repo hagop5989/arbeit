@@ -170,6 +170,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
               />
               <InputRightElement w={"100px"} mr={"10px"}>
                 <Button
+                  border={"1px solid black"}
                   isDisabled={isMatch}
                   h="1.75rem"
                   size="sm"
@@ -191,6 +192,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
                 />
                 <InputRightElement mr={"10px"}>
                   <Button
+                    border={"1px solid black"}
                     isDisabled={isMatch}
                     h="1.75rem"
                     size="sm"
@@ -208,7 +210,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
           )}
         </Box>
       </FormControl>
-      <Box pl={"130px"} color={"gray.600"} fontSize={"12px"}>
+      <Box pl={"130px"} fontSize={"14px"}>
         숫자, 문자, 특수문자 무조건 1개 이상, 비밀번호 최소 8자에서 최대
         16자까지 허용합니다.
       </Box>
@@ -216,13 +218,13 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
         {...styles.formControl}
         isInvalid={isError(errors.password) || !isPwdMatch}
       >
-        <FormLabel {...styles.formLabel}>패스워드</FormLabel>
+        <FormLabel {...styles.formLabel}>비밀번호</FormLabel>
         <Box w={"70%"}>
           <InputGroup>
             <Input
               type={pwdShow ? "text" : "password"}
               onChange={handleInputChange("password")}
-              placeholder={"패스워드를 입력해주세요."}
+              placeholder={"비밀번호를 입력해주세요."}
               defaultValue={member.password}
             />
             <InputRightElement mr={"10px"}>
@@ -242,13 +244,13 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
         {...styles.formControl}
         isInvalid={isError(errors.passwordCheck) || !isPwdMatch}
       >
-        <FormLabel {...styles.formLabel}>패스워드 확인</FormLabel>
+        <FormLabel {...styles.formLabel}>비밀번호 확인</FormLabel>
         <Box w={"70%"}>
           <InputGroup>
             <Input
               type={pwdCheckShow ? "text" : "password"}
               onChange={handleInputChange("passwordCheck")}
-              placeholder={"패스워드 확인을 입력해주세요."}
+              placeholder={"비밀번호 확인을 입력해주세요."}
               defaultValue={member.passwordCheck}
             />
             <InputRightElement mr={"10px"}>
@@ -266,7 +268,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
           )}
           {isPwdMatch || (
             <FormErrorMessage>
-              패스워드와 패스워드 확인이 일치하지 않습니다.
+              비밀번호와 비밀번호 확인이 일치하지 않습니다.
             </FormErrorMessage>
           )}
         </Box>
@@ -322,7 +324,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
           <Box>
             <Input
               w={"200px"}
-              type={"text"}
+              type={"number"}
               onChange={handleInputChange("birthDate")}
               placeholder={"예) 990101"}
             />
@@ -333,6 +335,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
           <FormLabel {...styles.formLabel}>전화번호</FormLabel>
           <Box>
             <Input
+              type={"number"}
               w={"200px"}
               onChange={handleInputChange("phone")}
               placeholder={"예) 01012345678"}

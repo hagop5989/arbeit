@@ -27,7 +27,7 @@ export function FindMember() {
       </Box>
       <Tabs isFitted position="relative" variant="unstyled">
         <TabList>
-          <Tab>아이디 찾기</Tab>
+          <Tab>이메일 찾기</Tab>
           <Tab>비밀번호 찾기</Tab>
         </TabList>
         <TabIndicator mt="-1.5px" height="2px" bg="orange" borderRadius="1px" />

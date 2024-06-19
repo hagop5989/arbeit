@@ -12,7 +12,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEnvelope,
+  faEye,
+  faEyeSlash,
+  faKey,
+} from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +33,11 @@ export function FindPassword() {
   const [isSendMail, setIsSendMail] = useState(false);
   const [seconds, setSeconds] = useState(120);
   const [isActive, setIsActive] = useState(false);
+  const [pwdShow, setPwdShow] = useState(false);
+  const [pwdCheckShow, setPwdCheckShow] = useState(false);
+
+  const handlePwdClick = () => setPwdShow(!pwdShow);
+  const handlePwdCheckClick = () => setPwdCheckShow(!pwdCheckShow);
 
   const navigate = useNavigate();
 
@@ -93,7 +103,7 @@ export function FindPassword() {
       axios
         .post("/api/password-update", params)
         .then(() => {
-          alert("패스워드가 정상 변경되었습니다.");
+          alert("비밀번호가 정상 변경되었습니다.");
           navigate("/login");
         })
         .catch((err) => {
@@ -154,18 +164,18 @@ export function FindPassword() {
           </InputGroup>
           <Spacer />
           <Box w={"70px"} lineHeight={"40px"}>
-            <Text color={"gray.500"}>{seconds}</Text>
+            {isMatch || <Text color={"gray.500"}>{seconds}</Text>}
           </Box>
         </Flex>
       )}
       {isMatch && (
         <>
-          <Center height={"40px"} my={"15px"} borderY={"2px solid gray"}>
-            패스워드 변경
+          <Center height={"40px"} my={"30px"} borderY={"2px solid gray"}>
+            비밀번호 변경
           </Center>
           <Box>
             <Box w={"100%"}>
-              <Box color={"gray.600"} fontSize={"12px"}>
+              <Box fontSize={"13px"}>
                 숫자, 문자, 특수문자 무조건 1개 이상, 비밀번호 최소 8자에서 최대
                 16자까지 허용합니다.
               </Box>
@@ -175,9 +185,19 @@ export function FindPassword() {
                     <FontAwesomeIcon icon={faKey} />
                   </InputLeftElement>
                   <Input
+                    type={pwdShow ? "text" : "password"}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="패스워드"
+                    placeholder="비밀번호"
                   />
+                  <InputRightElement width="4.5rem">
+                    <Button h="1.75rem" size="sm" onClick={handlePwdClick}>
+                      {pwdShow ? (
+                        <FontAwesomeIcon icon={faEyeSlash} />
+                      ) : (
+                        <FontAwesomeIcon icon={faEye} />
+                      )}
+                    </Button>
+                  </InputRightElement>
                 </InputGroup>
               </FormControl>
             </Box>
@@ -188,9 +208,19 @@ export function FindPassword() {
                     <FontAwesomeIcon icon={faKey} />
                   </InputLeftElement>
                   <Input
+                    type={pwdCheckShow ? "text" : "password"}
                     onChange={(e) => setPasswordCheck(e.target.value)}
-                    placeholder="패스워드 확인"
+                    placeholder="비밀번호 확인"
                   />
+                  <InputRightElement width="4.5rem">
+                    <Button h="1.75rem" size="sm" onClick={handlePwdCheckClick}>
+                      {pwdCheckShow ? (
+                        <FontAwesomeIcon icon={faEyeSlash} />
+                      ) : (
+                        <FontAwesomeIcon icon={faEye} />
+                      )}
+                    </Button>
+                  </InputRightElement>
                 </InputGroup>
               </FormControl>
             </Box>
@@ -200,7 +230,7 @@ export function FindPassword() {
                 onClick={handleEditPasswordBtn}
                 isDisabled={!isMatchPwd}
               >
-                패스워드 변경
+                비밀번호 변경
               </Button>
             </Center>
           </Box>
