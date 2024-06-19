@@ -45,7 +45,7 @@ export function StoreList() {
       <Box>
         <Box
           h={"70px"}
-          mb={"70px"}
+          mb={"50px"}
           bg={"#FF7F3E"}
           color={"white"}
           borderRadius={"10px"}
@@ -54,9 +54,9 @@ export function StoreList() {
             가게 목록
           </Heading>
         </Box>
-        <Box float={"right"} mb={"15px"}>
+        <Box float={"right"} mb={"35px"}>
           <Button
-            colorScheme="green"
+            colorSzcheme="green"
             onClick={() => navigate("/store/register")}
           >
             가게 등록
