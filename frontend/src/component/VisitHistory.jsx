@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
+  Divider,
   Heading,
   Table,
   Tbody,
@@ -22,32 +23,39 @@ function VisitHistory(props) {
   }, [account.recentJobPages]);
 
   return (
-    <Box w={"1050px"}>
-      <Heading>최근 방문한 공고</Heading>
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>#</Th>
-            <Th>제목</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {visitList.map((item, index) => (
-            <Tr key={index}>
-              <Td>{index + 1}</Td>
-              <Td
+    <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Heading mb={"10px"} p={1}>
+        최근 방문한 공고
+      </Heading>
+      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Box>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>#</Th>
+              <Th>제목</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {visitList.map((item, index) => (
+              <Tr
+                key={index}
                 cursor={"pointer"}
                 _hover={{ bgColor: "gray.100" }}
-                onClick={() => {
-                  navigate(item.url);
-                }}
               >
-                {item.title}
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+                <Td>{index + 1}</Td>
+                <Td
+                  onClick={() => {
+                    navigate(item.url);
+                  }}
+                >
+                  {item.title}
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
     </Box>
   );
 }

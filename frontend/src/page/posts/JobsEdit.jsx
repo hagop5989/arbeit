@@ -5,14 +5,16 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Center,
   Checkbox,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   Spinner,
   Stack,
@@ -143,146 +145,220 @@ export function JobsEdit() {
   }
 
   return (
-    <Box>
-      <Heading>알바공고 상세페이지</Heading>
-      <Center w={"100%"} ml={""}>
-        <FormControl>
-          <FormLabel>제목</FormLabel>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Heading mb={"10px"} p={1}>
+        알바공고 수정
+      </Heading>
+      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Box w="full" gap={"20px"} display={"flex"} flexDirection={"column"}>
+        <Box>
+          <FormLabel fontSize={"3xl"}>제목</FormLabel>
           <Input
+            mb={4}
+            h={"50px"}
             defaultValue={jobs.title}
+            placeholder="제목을 입력해주세요."
             onChange={handleInputChange("title")}
           />
+        </Box>
 
-          <FormLabel>내용</FormLabel>
+        <Box>
+          <FormLabel fontSize={"3xl"}>공고내용</FormLabel>
           <Textarea
+            mb={2}
             defaultValue={jobs.content}
+            placeholder={`공고내용을 입력해주세요. \n 예) OO 가게 신규 알바모집 (초보환영)`}
             onChange={handleInputChange("content")}
           />
+        </Box>
 
-          <FormLabel>시급</FormLabel>
-          <Input
-            defaultValue={jobs.salary}
-            onChange={handleInputChange("salary")}
-          />
-
-          <FormLabel>마감일</FormLabel>
-          <Input
-            type={"datetime-local"}
-            defaultValue={jobs.deadline}
-            onChange={handleInputChange("deadline")}
-          />
-
-          <FormLabel>모집인원</FormLabel>
-          <Input
-            defaultValue={jobs.recruitmentNumber}
-            onChange={handleInputChange("recruitmentNumber")}
-          />
-
-          <FormLabel>카테고리(자동선택)</FormLabel>
-          <Input defaultValue={jobs.categoryName} readOnly />
-
-          <FormLabel>가게명</FormLabel>
-          <Input defaultValue={jobs.storeName} readOnly />
-
-          <FormLabel>첨부사진</FormLabel>
-          <Box>
-            <FormControl>
-              {/* todo : 이미지 등록 수정 */}
-              <Box
-                border="1px solid gray"
-                display="flex"
-                justifyContent="center"
-              >
-                {images.map((image, index) => (
-                  <Box key={index}>
-                    <Box>
-                      <Box
-                        h={"10%"}
-                        position={"absolute"}
-                        color={"red"}
-                        onClick={() => handleRemoveImage(image.name)}
-                      >
-                        <FontAwesomeIcon icon={faXmark} />
-                      </Box>
-                      <Image w={"100%"} h={"100%"} src={image.src} />
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-              <FormLabel>이미지 등록</FormLabel>
+        <Flex gap={"10px"}>
+          <Box w={"50%"}>
+            <FormLabel fontSize={"3xl"}>시급</FormLabel>
+            <InputGroup>
+              <InputRightElement mx={3}>원</InputRightElement>
               <Input
-                multiple
-                type="file"
-                accept="image/*"
-                onChange={(e) => setAddImages(e.target.files)}
+                mb={4}
+                type="number"
+                defaultValue={jobs.salary}
+                placeholder="시급을 입력해주세요."
+                onChange={handleInputChange("salary")}
               />
-              {fileNameList.length > 0 && (
-                <Box>
-                  <Card>
-                    <CardHeader>
-                      <Heading size="md">추가 선택된 이미지 목록</Heading>
-                    </CardHeader>
-                    <CardBody>
-                      <Stack divider={<StackDivider />} spacing={4}>
-                        {fileNameList}
-                      </Stack>
-                    </CardBody>
-                  </Card>
-                </Box>
-              )}
-            </FormControl>
+            </InputGroup>
           </Box>
-          <Box>
-            <Text>상세 조건</Text>
-            <Box>
-              <FormLabel>학력</FormLabel>
+
+          <Box w={"50%"}>
+            <FormLabel fontSize={"3xl"}>공고 마감일</FormLabel>
+            <Input
+              mb={4}
+              type="datetime-local"
+              defaultValue={jobs.deadline}
+              placeholder="마감일을 선택해주세요."
+              onChange={handleInputChange("deadline")}
+            />
+          </Box>
+        </Flex>
+
+        <Box>
+          <FormLabel fontSize={"3xl"}>모집인원</FormLabel>
+          <InputGroup w={"49.2%"}>
+            <InputRightElement mx={3}>명</InputRightElement>
+            <Input
+              mb={4}
+              type="number"
+              defaultValue={jobs.recruitmentNumber}
+              placeholder="모집인원을 입력해주세요."
+              onChange={handleInputChange("recruitmentNumber")}
+            />
+          </InputGroup>
+        </Box>
+
+        <Flex gap={"10px"}>
+          <Box w={"50%"}>
+            <FormLabel fontSize={"3xl"}>가게명</FormLabel>
+            <Input mb={4} defaultValue={jobs.storeName} readOnly />
+          </Box>
+          <Box w={"50%"}>
+            <FormLabel fontSize={"3xl"}>카테고리(자동선택)</FormLabel>
+            <Input mb={4} defaultValue={jobs.categoryName} readOnly />
+          </Box>
+        </Flex>
+
+        <FormLabel>첨부사진</FormLabel>
+        <Box>
+          <FormControl>
+            <Box border="1px solid gray" display="flex" justifyContent="center">
+              {images.map((image, index) => (
+                <Box key={index}>
+                  <Box>
+                    <Box
+                      h={"10%"}
+                      position={"absolute"}
+                      color={"red"}
+                      onClick={() => handleRemoveImage(image.name)}
+                    >
+                      <FontAwesomeIcon icon={faXmark} />
+                    </Box>
+                    <Image w={"100%"} h={"100%"} src={image.src} />
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+            <FormLabel>이미지 등록</FormLabel>
+            <Input
+              p={1}
+              multiple
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAddImages(e.target.files)}
+            />
+            {fileNameList.length > 0 && (
+              <Box>
+                <Card>
+                  <CardHeader>
+                    <Heading size="md">추가 선택된 이미지 목록</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Stack divider={<StackDivider />} spacing={4}>
+                      {fileNameList}
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Box>
+            )}
+          </FormControl>
+        </Box>
+
+        <Box mb={4}>
+          <Box mt={"50px"}>
+            <Text fontSize="3xl" mb={2} color={"gray.600"} fontWeight={"bold"}>
+              상세 조건
+            </Text>
+            <Divider mb={4} />
+          </Box>
+          <Flex gap={4} mb={4}>
+            <Box w="50%" maxW="480px">
+              <FormLabel fontSize={"2xl"}>최소학력</FormLabel>
               <Select
                 value={jobsCondition.education}
                 onChange={handleCondInputChange("education")}
               >
+                <option value="" disabled>
+                  선택
+                </option>
                 {eduList.map((education, index) => (
                   <option key={index} value={education}>
                     {education}
                   </option>
                 ))}
               </Select>
+            </Box>
+            <Box w="50%" mb={4} maxW="480px">
+              <FormLabel fontSize={"2xl"}>학력상세</FormLabel>
               <Select
                 value={jobsCondition.educationDetail}
                 onChange={handleCondInputChange("educationDetail")}
               >
+                <option value="" disabled>
+                  선택
+                </option>
                 {eduDetailList.map((eduDetail, index) => (
                   <option key={index} value={eduDetail}>
                     {eduDetail}
                   </option>
                 ))}
               </Select>
+            </Box>
+          </Flex>
 
-              <FormLabel>연령제한</FormLabel>
-              <Checkbox
-                isChecked={isAgeLimitChecked}
-                onChange={handleAgeLimitChange}
-              >
-                연령무관
-              </Checkbox>
+          <Box>
+            <FormLabel fontSize={"3xl"}>우대사항</FormLabel>
+            <Input
+              mb={4}
+              defaultValue={jobsCondition.preferred}
+              placeholder="우대사항을 입력해주세요."
+              onChange={handleInputChange("preferred")}
+            />
+          </Box>
 
-              <Input
-                defaultValue={jobsCondition.age}
-                onChange={handleInputChange("age")}
-                type={"number"}
-                disabled={isAgeLimitChecked}
-              />
+          <Flex gap={"10px"} mt={"20px"}>
+            <Box w={"50%"}>
+              <Flex>
+                <FormLabel fontSize={"3xl"}>연령제한</FormLabel>
+                <Checkbox
+                  p={1}
+                  isChecked={isAgeLimitChecked}
+                  onChange={handleAgeLimitChange}
+                >
+                  <Text fontSize={"sm"}>연령무관</Text>
+                </Checkbox>
+              </Flex>
+              <InputGroup>
+                <InputRightElement
+                  w={"50px"}
+                  mx={3}
+                  fontSize={"sm"}
+                  color={"gray.500"}
+                >
+                  세 이상
+                </InputRightElement>
+                <Input
+                  mb={4}
+                  defaultValue={jobsCondition.age}
+                  placeholder="연령을 입력해주세요."
+                  onChange={handleInputChange("age")}
+                  type="number"
+                  disabled={isAgeLimitChecked}
+                />
+              </InputGroup>
+            </Box>
 
-              <FormLabel>우대사항</FormLabel>
-              <Input
-                defaultValue={jobsCondition.preferred}
-                onChange={handleInputChange("preferred")}
-              />
-
-              <FormLabel>근무기간</FormLabel>
+            <Box w={"50%"}>
+              <FormLabel fontSize={"3xl"}>근무기간</FormLabel>
               <Select
+                mb={4}
                 value={jobsCondition.workPeriod}
                 onChange={handleCondInputChange("workPeriod")}
-                placeholder={"기간을 정해주세요."}
               >
                 {workPeriodList.map((workPeriod, index) => (
                   <option key={index} value={workPeriod}>
@@ -290,12 +366,16 @@ export function JobsEdit() {
                   </option>
                 ))}
               </Select>
+            </Box>
+          </Flex>
 
-              <FormLabel>근무요일</FormLabel>
+          <Flex gap={"10px"} mt={"20px"}>
+            <Box w={"50%"}>
+              <FormLabel fontSize={"3xl"}>근무요일</FormLabel>
               <Select
+                mb={4}
                 value={jobsCondition.workWeek}
                 onChange={handleCondInputChange("workWeek")}
-                placeholder={"요일을 정해주세요."}
               >
                 {workWeekList.map((workWeek, index) => (
                   <option key={index} value={workWeek}>
@@ -303,11 +383,14 @@ export function JobsEdit() {
                   </option>
                 ))}
               </Select>
-              <FormLabel>근무시간</FormLabel>
+            </Box>
+
+            <Box w={"50%"}>
+              <FormLabel fontSize={"3xl"}>근무시간</FormLabel>
               <Select
+                mb={4}
                 value={jobsCondition.workTime}
                 onChange={handleCondInputChange("workTime")}
-                placeholder={"시간을 정해주세요."}
               >
                 {workTimeList.map((workTime, index) => (
                   <option key={index} value={workTime}>
@@ -316,12 +399,19 @@ export function JobsEdit() {
                 ))}
               </Select>
             </Box>
-          </Box>
-          <Flex justifyContent="center">
-            <Button onClick={handleSaveBtn}>저장</Button>
           </Flex>
-        </FormControl>
-      </Center>
+        </Box>
+      </Box>
+      <Button
+        onClick={handleSaveBtn}
+        bgColor={"#FFA500"}
+        color={"white"}
+        w="full"
+        h={"50px"}
+        my={"25px"}
+      >
+        저장
+      </Button>
     </Box>
   );
 }

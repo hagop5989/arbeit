@@ -34,7 +34,13 @@ export function Profile() {
       >
         ▲ 맨위로
       </Button>
-      <Box w={"100%"} height={"160px"} mb={"20px"}>
+      <Box
+        w={"100%"}
+        height={"160px"}
+        mb={"20px"}
+        cursor={"pointer"}
+        onClick={() => navigate(`/member/${account.id}`)}
+      >
         <Image
           borderRadius={150}
           border={"2px solid gray"}
@@ -42,8 +48,8 @@ export function Profile() {
           h={"100%"}
           src={src}
         />
+        <Center mb={"10px"}>마이페이지</Center>
       </Box>
-      <Center mb={"10px"}>마이페이지</Center>
       <Center
         w={"100%"}
         height={"50px"}

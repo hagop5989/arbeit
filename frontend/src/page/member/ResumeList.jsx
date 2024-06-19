@@ -1,8 +1,8 @@
 import {
   Box,
   Button,
-  Center,
   Checkbox,
+  Divider,
   Heading,
   Table,
   Tbody,
@@ -49,11 +49,12 @@ export function ResumeList() {
   }
 
   return (
-    <Center>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
-        <Box>
-          <Heading>이력서 목록</Heading>
-        </Box>
+        <Heading mb={"10px"} p={1}>
+          이력서 목록
+        </Heading>
+        <Divider mb={"40px"} borderWidth={"2px"} />
         <Button
           onClick={() => navigate("/resume/register")}
           colorScheme={"green"}
@@ -104,6 +105,6 @@ export function ResumeList() {
           </Button>
         </Box>
       </Box>
-    </Center>
+    </Box>
   );
 }

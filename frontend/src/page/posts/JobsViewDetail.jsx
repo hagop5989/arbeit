@@ -33,11 +33,11 @@ export function JobDetail({ job, jobsCond, storeMap }) {
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
+      mb="2"
       bg="white"
     >
       <Flex justifyContent="space-between" alignItems="center" mb={5}>
-        <Text fontSize="4xl" fontWeight="bold">
+        <Text fontSize="3xl" fontWeight="bold" letterSpacing={"1px"}>
           {job.title}
         </Text>
         <Box w={"200px"} h={"60px"}>
@@ -67,7 +67,12 @@ export function JobDetail({ job, jobsCond, storeMap }) {
         {job.content}
       </Text>
 
-      <Grid templateColumns="repeat(4, 1fr)" gap={6} textAlign="center">
+      <Grid
+        templateColumns="repeat(4, 1fr)"
+        gap={6}
+        textAlign="center"
+        mt={"40px"}
+      >
         <Box>
           <Text fontSize="lg" fontWeight="bold">
             {parseInt(job.salary).toLocaleString()} 원
@@ -117,7 +122,7 @@ export function JobConditions({ job, jobsCond }) {
       border={"1px solid lightgray"}
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
+      <Text fontWeight="bold" fontSize="2xl" my={2}>
         근무조건
       </Text>
       <Divider />
@@ -137,7 +142,9 @@ export function JobConditions({ job, jobsCond }) {
           </Box>
           <Box my={2} display={"flex"}>
             <Text w={"95px"}>시간</Text>
-            <Text ml={"0px"}> {jobsCond.workTime}</Text>
+            <Text w={"160px"} ml={"0px"}>
+              {jobsCond.workTime}
+            </Text>
           </Box>
         </Box>
         <Box w={"440px"} mx={"10px"}>
@@ -202,7 +209,7 @@ export function JobDetails({ job, jobsCond, images }) {
       border={"1px solid lightgray"}
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" fontSize="2xl" my={2}>
+      <Text fontWeight="bold" fontSize="2xl" my={2}>
         상세요강
       </Text>
       <Divider my={5} />
@@ -213,7 +220,8 @@ export function JobDetails({ job, jobsCond, images }) {
       <Text>{job.content}</Text>
       <Button
         onClick={() => navigate(`/jobs/${job.id}/apply`)}
-        colorScheme="orange"
+        bgColor={"#FF7F3E"}
+        color={"white"}
         mt={5}
         w="full"
       >
@@ -293,7 +301,7 @@ export function JobRequirements({ job, jobsCond }) {
       </Text>
       <Divider mb={4} />
       <Box mx={3}>
-        <HStack w={"1000px"} spacing={10} w="full" alignItems="start">
+        <HStack spacing={10} w="full" alignItems="start">
           <VStack align="start" spacing={3} w="440px">
             <Box my={2} display={"flex"}>
               <Text w={"95px"} fontSize={"lg"}>
@@ -484,14 +492,14 @@ export function JobReview({ job, jobsCond }) {
       border={"1px solid lightgray"}
       bg="white"
     >
-      <Text fontSize="xl" fontWeight="bold" fontSize="2xl">
+      <Text fontWeight="bold" fontSize="2xl">
         기업 리뷰
       </Text>
       <Divider mb={4} />
       <Box mx={3}>
-        <HStack spacing={10} w="full" alignItems="start" alignItems="center">
-          <VStack align="start" spacing={3} w="50%">
-            <HStack>
+        <HStack spacing={10} w="full" alignItems="start">
+          <VStack align="start" spacing={3} w="65%">
+            <HStack mt={5}>
               <Text w="100px" fontSize="xl" fontWeight="bold" my={1}>
                 기업평점
               </Text>

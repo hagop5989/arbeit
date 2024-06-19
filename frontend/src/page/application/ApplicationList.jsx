@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Center,
   Checkbox,
   Heading,
   Table,
@@ -44,74 +43,85 @@ export function ApplicationList() {
   };
 
   return (
-    <Center>
-      <Box>
+    <Box w={"100%"} h={"55vh"}>
+      {account.isBoss() && (
+        <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
+          알바만 접근 가능한 페이지 입니다.
+        </Heading>
+      )}
+      {account.isAlba() && (
         <Box>
-          <Heading>지원내역(알바)</Heading>
-        </Box>
-        <Button
-          onClick={() => navigate("/resume/register")}
-          colorScheme={"green"}
-          w={120}
-          my={3}
-        >
-          이력서 등록
-        </Button>
-        <Box>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>선택</Th>
-                <Th>작성일</Th>
-                <Th>지원공고명</Th>
-                <Th>제목</Th>
-                <Th>진행상황</Th>
-                <Th>관리</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {applicationList.map((application) => (
-                <Tr key={application.id}>
-                  <Td>
-                    <Checkbox
-                      value={application.id}
-                      // onChange={handleCheckBoxChange}
-                    />
-                  </Td>
-                  <Td>{application.inserted}</Td>
-                  <Td onClick={() => navigate(`/jobs/${application.jobsId}`)}>
-                    {application.jobsTitle}
-                  </Td>
-                  <Td
+          <Box>
+            <Heading>지원내역(알바)</Heading>
+          </Box>
+          <Button
+            onClick={() => navigate("/resume/register")}
+            colorScheme={"green"}
+            w={120}
+            my={3}
+          >
+            이력서 등록
+          </Button>
+          <Box>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>선택</Th>
+                  <Th>작성일</Th>
+                  <Th>지원공고명</Th>
+                  <Th>나의 지원서 제목</Th>
+                  <Th>진행상황</Th>
+                  <Th>관리</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {applicationList.map((application) => (
+                  <Tr
+                    key={application.id}
                     cursor={"pointer"}
-                    onClick={() =>
-                      navigate(`/jobs/${application.jobsId}/apply/select`)
-                    }
+                    _hover={{ bgColor: "orange.50" }}
                   >
-                    {application.title}
-                  </Td>
-                  <Td>{isPassedToString(application.isPassed)}</Td>
-                  <Td>
-                    <Button
+                    <Td>
+                      <Checkbox
+                        value={application.id}
+                        // onChange={handleCheckBoxChange}
+                      />
+                    </Td>
+                    <Td>{application.inserted}</Td>
+                    <Td onClick={() => navigate(`/jobs/${application.jobsId}`)}>
+                      {application.jobsTitle}
+                    </Td>
+                    <Td
+                      cursor={"pointer"}
                       onClick={() =>
-                        navigate(`/jobs/${application.jobsId}/apply/edit`)
+                        navigate(`/jobs/${application.jobsId}/apply/select`)
                       }
                     >
-                      수정
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Button
-            colorScheme={"red"}
-            // onClick={handleRemoveBtn}
-          >
-            삭제
-          </Button>
+                      {application.title}
+                    </Td>
+                    <Td>{isPassedToString(application.isPassed)}</Td>
+                    <Td>
+                      <Button
+                        onClick={() =>
+                          navigate(`/jobs/${application.jobsId}/apply/edit`)
+                        }
+                      >
+                        수정
+                      </Button>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Button
+              colorScheme={"red"}
+              // onClick={handleRemoveBtn}
+            >
+              삭제
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Center>
+      )}
+    </Box>
   );
 }
