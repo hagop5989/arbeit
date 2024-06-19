@@ -36,8 +36,8 @@ export function ApplicationView() {
       <Heading mb={"10px"} p={1}>
         지원서 보기
       </Heading>
+      <Divider mb={"40px"} borderWidth={"2px"} />
       <Box>
-        <Divider mb={"40px"} borderWidth={"2px"} />
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
           <Input defaultValue={jobsTitle} value={jobsTitle} ReadOnly />

@@ -1,8 +1,8 @@
 import {
   Box,
   Button,
-  Center,
   Divider,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -94,14 +94,26 @@ export function ManagementView() {
   }
 
   return (
-    <Box>
-      <Heading>지원서 보기(사장)</Heading>
-      <Center w={"50%"} ml={"25%"}>
+    <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Heading mb={"10px"} p={1}>
+        지원서 보기(사장)
+      </Heading>
+      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Box>
         <FormControl>
           <FormLabel>공고글 제목</FormLabel>
           <Input value={management.jobsTitle || ""} readOnly />
           <FormLabel>합격여부</FormLabel>
-          <Box bgColor={"gray.100"}>
+          <Box
+            fontSize={"xl"}
+            fontWeight={"bold"}
+            textIndent={"10px"}
+            color={
+              management.isPassed != null && management.isPassed
+                ? "teal"
+                : "red"
+            }
+          >
             {isPassedToString(management.isPassed)}
           </Box>
           <Divider my={2} />
@@ -110,17 +122,36 @@ export function ManagementView() {
           <Divider my={2} />
           <FormLabel>지원메세지</FormLabel>
           <Textarea h={"300px"} value={management.comment || ""} readOnly />
-          <Button
-            onClick={() => {
-              navigate("/jobs/management/list");
-            }}
-          >
-            목록
-          </Button>
-          <Button onClick={(e) => handleDecision(e)}>합격</Button>
-          <Button onClick={(e) => handleDecision(e)}>불합격</Button>
+          <Flex gap={"10px"} my={8}>
+            <Button
+              w={"33%"}
+              bgColor={"gray.500"}
+              color={"white"}
+              onClick={() => {
+                navigate("/jobs/management/list");
+              }}
+            >
+              목록
+            </Button>
+            <Button
+              w={"33%"}
+              bgColor={"blue.500"}
+              color={"white"}
+              onClick={(e) => handleDecision(e)}
+            >
+              합격
+            </Button>
+            <Button
+              w={"33%"}
+              bgColor={"red.500"}
+              color={"white"}
+              onClick={(e) => handleDecision(e)}
+            >
+              불합격
+            </Button>
+          </Flex>
         </FormControl>
-      </Center>
+      </Box>
     </Box>
   );
 }

@@ -98,7 +98,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
           </Text>
         </Box>
         <Box maxH={"70px"}>
-          <Text fontSize="medium" fontWeight="bold">
+          <Text fontSize="lg" fontWeight="bold">
             {jobsCond.workTime}
           </Text>
           <Text fontSize="sm" color="gray.500">
@@ -304,19 +304,19 @@ export function JobRequirements({ job, jobsCond }) {
         <HStack spacing={10} w="full" alignItems="start">
           <VStack align="start" spacing={3} w="440px">
             <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"}>
+              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
                 모집마감
               </Text>
               <Text ml={"0px"}>{formatDate(job.deadline)}</Text>
             </Box>
             <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"}>
+              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
                 모집인원
               </Text>
               <Text ml={"0px"}>{job.recruitmentNumber} 명</Text>
             </Box>
             <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"}>
+              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
                 성별
               </Text>
               <Text ml={"0px"}>{"성별 무관"} </Text>
@@ -324,7 +324,7 @@ export function JobRequirements({ job, jobsCond }) {
           </VStack>
           <VStack align="start" spacing={3} w="440px" ml={"40px"}>
             <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"}>
+              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
                 학력
               </Text>
               <Text ml={"0px"}>
@@ -332,7 +332,7 @@ export function JobRequirements({ job, jobsCond }) {
               </Text>
             </Box>
             <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"}>
+              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
                 연령
               </Text>
               {jobsCond.age > 0 && (
@@ -342,7 +342,7 @@ export function JobRequirements({ job, jobsCond }) {
             </Box>
 
             <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"}>
+              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
                 우대사항
               </Text>
               <Text ml={"0px"}>{jobsCond.preferred}</Text>

@@ -66,12 +66,12 @@ export function ApplicationList() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th>선택</Th>
-                  <Th>작성일</Th>
-                  <Th>지원공고명</Th>
-                  <Th>나의 지원서 제목</Th>
-                  <Th>진행상황</Th>
-                  <Th>관리</Th>
+                  <Th fontSize={"medium"}>선택</Th>
+                  <Th fontSize={"medium"}>작성일</Th>
+                  <Th fontSize={"medium"}>지원공고명</Th>
+                  <Th fontSize={"medium"}>나의 지원서 제목</Th>
+                  <Th fontSize={"medium"}>진행상황</Th>
+                  <Th fontSize={"medium"}>관리</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -81,7 +81,7 @@ export function ApplicationList() {
                     cursor={"pointer"}
                     _hover={{ bgColor: "orange.50" }}
                   >
-                    <Td>
+                    <Td minW={"80px"}>
                       <Checkbox
                         value={application.id}
                         // onChange={handleCheckBoxChange}
