@@ -23,6 +23,7 @@ export function MemberInfo() {
   const { id } = useParams();
   const [member, setMember] = useState(null);
   const [profileSrc, setProfileSrc] = useState("");
+  const [nowAge, setNowAge] = useState("");
   const fileInputRef = useRef({});
   const navigate = useNavigate();
   const toast = useToast();
@@ -48,7 +49,12 @@ export function MemberInfo() {
   useEffect(() => {
     axios
       .get(`/api/member/${id}`)
-      .then((res) => setMember(res.data))
+      .then((res) => {
+        setMember(res.data);
+        if (member != null) {
+          setNowAge(res.data);
+        }
+      })
       .catch(() => {
         toast({
           status: "warning",
@@ -60,6 +66,12 @@ export function MemberInfo() {
       .finally();
     getProfilePicture();
   }, []);
+
+  useEffect(() => {
+    if (member) {
+      countNowAge();
+    }
+  }, [member]);
 
   function handleRemoveBtn() {
     axios
@@ -106,6 +118,17 @@ export function MemberInfo() {
     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
   };
 
+  // 나이 계산
+  const countNowAge = () => {
+    const currentTime = Date.now();
+    const birthTime = new Date(member.birthDate).getTime();
+    const ageInMilliseconds = currentTime - birthTime;
+    const ageInYears = Math.floor(
+      ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25),
+    ); // 윤년을 고려하여 365.25로 나눔
+    setNowAge(ageInYears);
+  };
+
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
@@ -117,24 +140,63 @@ export function MemberInfo() {
           <Box>
             {/* 프로필 사진 */}
             <FormControl>
-              <FormLabel>사진</FormLabel>
-              <Image
-                w={"240px"}
-                h={"240px"}
-                border={"1px solid gray"}
-                borderRadius={150}
-                src={
-                  profileSrc === ""
-                    ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
-                    : profileSrc
-                }
-              />
+              <Flex>
+                <Box w={"230px"} h={"230px"} ml={"40px"}>
+                  <Image
+                    w={"100%"}
+                    h={"100%"}
+                    border={"1px solid gray"}
+                    borderRadius={150}
+                    src={
+                      profileSrc === ""
+                        ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
+                        : profileSrc
+                    }
+                  />
+                </Box>
+                <Box
+                  ml={"120px"}
+                  display={"flex"}
+                  flexDirection={"column"}
+                  gap={"25px"}
+                  lineHeight={"30px"}
+                >
+                  <Box display={"flex"}>
+                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      이름
+                    </FormLabel>
+                    <Box>{member.name}</Box>
+                  </Box>
+
+                  <Box display={"flex"}>
+                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      생년월일
+                    </FormLabel>
+                    <Box>{member.birthDate}</Box>
+                    <Box ml={"5px"}> (만 {nowAge}세)</Box>
+                  </Box>
+
+                  <Box display={"flex"}>
+                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      성별
+                    </FormLabel>
+                    <Box>{member.gender}</Box>
+                  </Box>
+                  <Box display={"flex"}>
+                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      전화번호
+                    </FormLabel>
+                    <Box>{formatPhoneNumber(member.phone)}</Box>
+                  </Box>
+                </Box>
+              </Flex>
               {account.hasAccess(id) && (
                 <Box>
                   <Center
                     boxSize={"50px"}
                     bgColor="gray.100"
                     borderRadius={100}
+                    ml={"30px"}
                     mt={"-30px"}
                     cursor="pointer"
                     onClick={handleProfilePictureBtn}
@@ -142,6 +204,7 @@ export function MemberInfo() {
                     <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
                   </Center>
                   <Input
+                    w={"50px"}
                     type={"file"}
                     ref={fileInputRef}
                     style={{ display: "none" }}
@@ -152,41 +215,16 @@ export function MemberInfo() {
             </FormControl>
             {/* 회원 정보 */}
             <FormControl>
-              <Box w={"100%"} mb={4}>
+              <Box w={"100%"} my={5}>
                 <FormLabel fontSize={"xl"}>이메일</FormLabel>
                 <Input defaultValue={member.email} readOnly />
               </Box>
-              <Flex gap={"10px"} mb={4}>
-                <Box w={"50%"}>
-                  <FormLabel fontSize={"xl"}>이름</FormLabel>
-                  <Input defaultValue={member.name} readOnly />
-                </Box>
-
-                <Box w={"50%"}>
-                  <FormLabel fontSize={"xl"}>생년월일</FormLabel>
-                  <Input defaultValue={member.birthDate} readOnly />
-                </Box>
-              </Flex>
               <Box w={"100%"} mb={4}>
                 <FormLabel fontSize={"xl"}>주소</FormLabel>
                 <Input defaultValue={member.address} readOnly />
               </Box>
 
-              <Flex gap={"10px"} mb={4}>
-                <Box w={"50%"}>
-                  <FormLabel fontSize={"xl"}>성별</FormLabel>
-                  <Input defaultValue={member.gender} readOnly />
-                </Box>
-                <Box w={"50%"}>
-                  <FormLabel fontSize={"xl"}>전화번호</FormLabel>
-                  <Input
-                    defaultValue={formatPhoneNumber(member.phone)}
-                    readOnly
-                  />
-                </Box>
-              </Flex>
-
-              <Box my={8}>
+              <Box my={10}>
                 {account.hasAccess(id) && (
                   <Flex gap={"10px"} my={"20px"}>
                     <Button
@@ -203,7 +241,7 @@ export function MemberInfo() {
                       color={"white"}
                       onClick={handleRemoveBtn}
                     >
-                      회원 삭제
+                      회원 탈퇴
                     </Button>
                   </Flex>
                 )}

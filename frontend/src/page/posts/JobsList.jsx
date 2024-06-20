@@ -7,6 +7,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Heading,
   Image,
   Input,
   Select,
@@ -36,6 +37,7 @@ import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 
 export function JobsList() {
   const account = useContext(LoginContext);
+  const [selectedFilterDetail, setSelectedFilterDetail] = useState([]);
   const [selectedWorkPeriod, setSelectedWorkPeriod] = useState("");
   const [selectedWorkWeek, setSelectedWorkWeek] = useState("");
   const [selectedWorkTime, setSelectedWorkTime] = useState("");
@@ -117,47 +119,29 @@ export function JobsList() {
       page: currentPage,
       type: typeParam,
       keyword: keywordParam,
+      filterType,
+      filterDetail: selectedFilterDetail,
     };
 
     if (typeParam) {
       setSearchType(typeParam);
     }
-    // if (keywordParam) {
-    //   setSearchKeyword(keywordParam);
-    // }
 
     axios.get("/api/jobs/list", { params }).then((res) => {
       setStoreImages(res.data.storeImgMap);
+      setJobsList(res.data.jobsList);
 
-      const sortedJobs = filterJobsList(
-        res.data.jobsList,
-        filterType,
-        selectedRegion,
-        selectedCategory,
-        selectedWorkPeriod,
-        selectedWorkWeek,
-        selectedWorkTime,
-      );
+      if (categoryNames.length === 0) {
+        // categoryName 추출해서 배열에 담기 (중복값 제거)
+        const newCategoryNames = Array.from(
+          new Set(res.data.jobsList.map((job) => job.categoryName)),
+        );
+        setCategoryNames(newCategoryNames);
+      }
 
-      setJobsList(sortedJobs);
-      // categoryName 추출해서 배열에 담기 (중복값 제거)
-      const categoryNames = Array.from(
-        new Set(res.data.jobsList.map((job) => job.categoryName)),
-      );
-      setCategoryNames(categoryNames);
       setPageInfo(res.data.pageInfo);
     });
-  }, [
-    currentPage,
-    searchParams,
-    account,
-    filterType,
-    selectedRegion,
-    selectedCategory,
-    selectedWorkPeriod,
-    selectedWorkWeek,
-    selectedWorkTime,
-  ]);
+  }, [currentPage, searchParams, account, filterType, selectedFilterDetail]);
 
   // favorite 리스트
   const [favoriteList, setFavoriteList] = useState({});
@@ -224,31 +208,33 @@ export function JobsList() {
 
   function handleFilterChange(e) {
     setFilterType(e.target.value);
-    setSelectedRegion("");
-    setSelectedCategory("");
-    setSelectedWorkPeriod("");
-    setSelectedWorkWeek("");
-    setSelectedWorkTime("");
+    setSelectedFilterDetail([]);
+
+    // 필터 타입이 변경될 때마다 백엔드로 새로운 데이터를 요청
+    const params = new URLSearchParams({
+      type: searchType,
+      keyword: searchKeyword,
+      page: 1,
+      filterType: e.target.value,
+      filterDetail: [],
+    });
+
+    navigate(`/jobs/list?${params.toString()}`);
   }
 
-  function handleRegionChange(e) {
-    setSelectedRegion(e.target.value);
-  }
+  function handleDetailFilterChange(e) {
+    setSelectedFilterDetail(e.target.value);
 
-  function handleCategoryChange(e) {
-    setSelectedCategory(e.target.value);
-  }
+    // 상세 필터가 변경될 때마다 백엔드로 새로운 데이터를 요청
+    const params = new URLSearchParams({
+      type: searchType,
+      keyword: searchKeyword,
+      page: 1,
+      filterType,
+      filterDetail: e.target.value,
+    });
 
-  function handleWorkPeriodChange(e) {
-    setSelectedWorkPeriod(e.target.value);
-  }
-
-  function handleWorkWeekChange(e) {
-    setSelectedWorkWeek(e.target.value);
-  }
-
-  function handleWorkTimeChange(e) {
-    setSelectedWorkTime(e.target.value);
+    navigate(`/jobs/list?${params.toString()}`);
   }
 
   return (
@@ -270,8 +256,8 @@ export function JobsList() {
           {filterType === "지역" && (
             <Select
               w={150}
-              value={selectedRegion}
-              onChange={handleRegionChange}
+              value={selectedFilterDetail}
+              onChange={handleDetailFilterChange}
             >
               <option value="" disabled>
                 선택
@@ -286,8 +272,8 @@ export function JobsList() {
           {filterType === "직종" && (
             <Select
               w={150}
-              value={selectedCategory}
-              onChange={handleCategoryChange}
+              value={selectedFilterDetail}
+              onChange={handleDetailFilterChange}
             >
               <option value="" disabled>
                 선택
@@ -302,8 +288,8 @@ export function JobsList() {
           {filterType === "근무기간" && (
             <Select
               w={150}
-              value={selectedWorkPeriod}
-              onChange={handleWorkPeriodChange}
+              value={selectedFilterDetail}
+              onChange={handleDetailFilterChange}
             >
               <option value="" disabled>
                 선택
@@ -318,8 +304,8 @@ export function JobsList() {
           {filterType === "근무요일" && (
             <Select
               w={150}
-              value={selectedWorkWeek}
-              onChange={handleWorkWeekChange}
+              value={selectedFilterDetail}
+              onChange={handleDetailFilterChange}
             >
               <option value="" disabled>
                 선택
@@ -334,8 +320,8 @@ export function JobsList() {
           {filterType === "근무시간" && (
             <Select
               w={150}
-              value={selectedWorkTime}
-              onChange={handleWorkTimeChange}
+              value={selectedFilterDetail}
+              onChange={handleDetailFilterChange}
             >
               <option value="" disabled>
                 선택
@@ -372,7 +358,13 @@ export function JobsList() {
       </Flex>
       <Center>
         {/* 그리드로 공고 카드 보여주기 */}
+
         <Box>
+          {jobsList.length == 0 && (
+            <Center w={"1050px"} h={"55vh"}>
+              <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
+            </Center>
+          )}
           <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
             {jobsList.map((job) => (
               <GridItem key={job.id}>
@@ -398,7 +390,6 @@ export function JobsList() {
     // 초기 favorite 상태 설정
     const [favorite, setFavorite] = useState(favoriteList[job.id] || false);
     // 안쓰는지 확인
-    const [myScrap, setMyScrap] = useState({});
 
     //favoriteList 반영
     useEffect(() => {
@@ -491,13 +482,13 @@ export function JobsList() {
           <Box w={"150px"} h={"60px"}>
             <Image
               w={"100%"}
+              h={"100%"}
               p={"8px"}
-              // h={"100%"}
               src={getSrcByStoreId(job.storeId)}
               alt={"이미지 없음"}
               border={"1px solid lightgray"}
               borderRadius={"5px"}
-              objectFit="cover"
+              objectFit="contain"
             />
           </Box>
           <Box w={"60%"} ml={"30px"}>
@@ -550,9 +541,6 @@ export function JobsList() {
                 fontSize={"20px"}
               />
             </Box>
-            <Button borderWidth={"2px"} variant="outline" colorScheme="red">
-              지원하기
-            </Button>
           </Box>
         </Flex>
       </Card>

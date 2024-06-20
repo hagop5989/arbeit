@@ -7,18 +7,25 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   Heading,
   Input,
+  Modal,
+  ModalContent,
+  ModalOverlay,
   Spinner,
+  useDisclosure,
 } from "@chakra-ui/react";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 export function MemberEdit() {
   const { id } = useParams();
   const [errors, setErrors] = useState({});
   const [member, setMember] = useState(null);
   const navigate = useNavigate();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
     axios
@@ -43,6 +50,13 @@ export function MemberEdit() {
   const handleInputChange = (prop) => (e) => {
     setMember({ ...member, [prop]: e.target.value });
   };
+
+  const onCompletePost = (data) => {
+    setMember({ ...member, address: data.address });
+    onClose();
+  };
+
+  const isError = (prop) => prop !== undefined;
 
   if (member === null) {
     return <Spinner />;
@@ -69,6 +83,15 @@ export function MemberEdit() {
                   defaultValue={""}
                   onChange={handleInputChange("password")}
                 />
+                {errors && (
+                  <FormHelperText color="red.500">
+                    {errors.password}
+                  </FormHelperText>
+                )}
+              </Box>
+              <Box fontSize={"14px"} mb={4}>
+                숫자, 문자, 특수문자 무조건 1개 이상, 비밀번호 최소 8자에서 최대
+                16자까지 허용합니다.
               </Box>
 
               <Box mb={4}>
@@ -91,7 +114,11 @@ export function MemberEdit() {
                     value={member.name}
                     onChange={handleInputChange("name")}
                   />
-                  {errors && <FormHelperText>{errors.name}</FormHelperText>}
+                  {errors && (
+                    <FormHelperText color="red.500">
+                      {errors.name}
+                    </FormHelperText>
+                  )}
                 </Box>
 
                 <Box w={"50%"}>
@@ -100,16 +127,37 @@ export function MemberEdit() {
                     value={member.phone}
                     onChange={handleInputChange("phone")}
                   />
-                  {errors && <FormHelperText>{errors.phone}</FormHelperText>}
+                  {errors && (
+                    <FormHelperText color="red.500">
+                      {errors.phone}
+                    </FormHelperText>
+                  )}
                 </Box>
               </Flex>
 
-              <FormLabel fontSize={"xl"}>주소</FormLabel>
-              <Input
-                value={member.address}
-                onChange={handleInputChange("address")}
-              />
-              {errors && <FormHelperText>{errors.address}</FormHelperText>}
+              {/* 주소 */}
+              <FormControl isInvalid={isError(errors.address)} mb={8}>
+                <FormLabel> 주소</FormLabel>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <DaumPostcodeEmbed onComplete={onCompletePost} />
+                  </ModalContent>
+                </Modal>
+                <Flex mb={2}>
+                  <Box w={"70%"} mr={2}>
+                    <Input
+                      value={member.address}
+                      onChange={handleInputChange("address")}
+                    />
+                    {errors && (
+                      <FormErrorMessage>{errors.address}</FormErrorMessage>
+                    )}
+                  </Box>
+                  <Button onClick={onOpen}>우편번호 검색</Button>
+                </Flex>
+              </FormControl>
+              {/* 주소 */}
 
               <Flex gap={"10px"} my={"20px"}>
                 <Button
