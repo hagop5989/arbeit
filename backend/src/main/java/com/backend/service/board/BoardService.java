@@ -173,7 +173,7 @@ public class BoardService {
     public boolean hasAccess(BoardEditForm form, Authentication authentication) {
 
         try {
-            Board board = mapper.selectById(form.getMemberId());
+            Board board = mapper.selectById(form.getId());
             if (board == null) {
                 return false; // 혹은 예외 처리
             }
