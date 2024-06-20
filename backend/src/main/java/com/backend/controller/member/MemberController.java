@@ -30,6 +30,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity info(@PathVariable("id") Integer id, Authentication authentication) {
         if (!memberService.hasAccess(id, authentication)) {
+            log.info("Access denied");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok().body(memberService.findById(id));
@@ -60,11 +61,15 @@ public class MemberController {
                                Authentication authentication) {
 
         Map<String, String> passwordMatch = memberService.passwordMatch(form);
-        if (bindingResult.hasErrors() || passwordMatch != null) {
+        if (bindingResult.hasErrors() && passwordMatch != null) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             errors.put("passwordCheck", passwordMatch.get("passwordCheck"));
             return ResponseEntity.badRequest().body(errors);
+        } else if (bindingResult.hasErrors()) {
+            Map<String, String> errors = getErrorMessages(bindingResult);
+            return ResponseEntity.badRequest().body(errors);
         }
+
 
         if (!memberService.hasAccess(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

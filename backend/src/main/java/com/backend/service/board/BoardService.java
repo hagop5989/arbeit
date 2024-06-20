@@ -6,7 +6,6 @@ import com.backend.domain.board.BoardImage;
 import com.backend.domain.board.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -34,8 +33,8 @@ public class BoardService {
 
     @Value("${image.src.prefix}")
     String srcPrefix;
-    @Autowired
-    private S3Client s3Client;
+
+    private final S3Client s3Client;
 
     private final BoardMapper mapper;
 
@@ -70,7 +69,7 @@ public class BoardService {
 
         Board board = mapper.selectById(boardId);
 
-        if (board != null) {
+        if (board == null) {
             return null;
         }
 
@@ -82,6 +81,7 @@ public class BoardService {
 
         result.put("board", board);
         result.put("images", images);
+
         return result;
 
 
@@ -92,7 +92,9 @@ public class BoardService {
         return mapper.selectAll();
     }
 
+    //update
     public void edit(BoardEditForm form, Authentication authentication) throws IOException {
+
 
         Integer boardId = form.getId();
         Board board = new Board(
@@ -101,6 +103,7 @@ public class BoardService {
                 form.getContent()
         );
         mapper.update(board);
+
 
         //사진삭제
         removeBoardImageToS3(boardId, form.getRemoveImages());
@@ -120,6 +123,7 @@ public class BoardService {
             }
         }
 
+
     }
 
 
@@ -135,6 +139,7 @@ public class BoardService {
 
 
     private void saveBoardImageToS3(MultipartFile image, int boardId, String imageName) throws IOException {
+
         String key = STR."arbeit/board/\{boardId}/\{imageName}";
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -165,8 +170,20 @@ public class BoardService {
 
 
     public boolean hasAccess(BoardEditForm form, Authentication authentication) {
-        Integer memberId = mapper.selectById(form.getMemberId()).getMemberId();
-        Integer loginId = Integer.valueOf(authentication.getName());
-        return Objects.equals(memberId, loginId);
+
+        try {
+            Board board = mapper.selectById(form.getMemberId());
+            if (board == null) {
+                return false; // 혹은 예외 처리
+            }
+
+            Integer memberId = board.getMemberId();
+            Integer loginId = Integer.valueOf(authentication.getName());
+            return Objects.equals(memberId, loginId);
+        } catch (NumberFormatException | NullPointerException e) {
+            // 예외 처리
+            e.printStackTrace();
+            return false; // 예외 발생 시 기본 동작
+        }
     }
 }

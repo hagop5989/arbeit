@@ -5,7 +5,7 @@ import { Footer } from "../component/Footer.jsx";
 import { Profile } from "../component/Profile.jsx";
 import { useContext } from "react";
 import { LoginContext } from "../component/LoginProvider.jsx";
-import { LeftNavbar } from "./LeftNavbar.jsx";
+import { LeftNavbar } from "../navbar/LeftNavbar.jsx";
 
 export function Home() {
   const account = useContext(LoginContext);

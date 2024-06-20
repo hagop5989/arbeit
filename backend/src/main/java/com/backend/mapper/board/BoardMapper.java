@@ -25,7 +25,7 @@ public interface BoardMapper {
     List<Board> selectAll();
 
     @Select("""
-                SELECT b.id, m.name, b.member_id, title, content, b.inserted
+                SELECT b.id, m.name, b.member_id, b.title, b.content, b.inserted
                 FROM board b JOIN member m ON m.id = b.member_id
                 WHERE b.id= #{id}
             """)
@@ -40,12 +40,11 @@ public interface BoardMapper {
 
 
     @Update("""
-                        
-
             UPDATE board
             SET title=#{title},
                 content=#{content},
-            WHERE id= #{id}
+                memberId = #{memberId}
+            WHERE id=#{id}
             """)
     int update(Board board);
 

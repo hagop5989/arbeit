@@ -19,6 +19,7 @@ import KakaoMap2 from "../posts/KakaoMap2.jsx";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import defaultImage from "/alba_connector_logo.png";
 
 export function StoreView() {
   const { id } = useParams();
@@ -94,9 +95,26 @@ export function StoreView() {
               {...sliderSettings}
               style={{ width: "100%", height: "100%" }}
             >
-              {imageList.map((image) => (
+              {imageList.length > 0 ? (
+                imageList.map((image) => (
+                  <Box
+                    key={image.name}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    width="100%"
+                    height="100%"
+                  >
+                    <Image
+                      src={image.src}
+                      maxH="100%"
+                      maxW="100%"
+                      objectFit="contain"
+                    />
+                  </Box>
+                ))
+              ) : (
                 <Box
-                  key={image.name}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
@@ -104,13 +122,13 @@ export function StoreView() {
                   height="100%"
                 >
                   <Image
-                    src={image.src}
+                    src={defaultImage}
                     maxH="100%"
                     maxW="100%"
                     objectFit="contain"
                   />
                 </Box>
-              ))}
+              )}
             </Slider>
           </Box>
           <Divider borderWidth="1px" my={6} borderColor={"#ededed"} />

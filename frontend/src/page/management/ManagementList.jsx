@@ -152,9 +152,9 @@ export function ManagementList() {
                     </Td>
                     {/* 지원 제목 */}
                     <Td
-                      whiteSpace="nowrap" // 줄 바꿈을 막음
-                      overflow="hidden" // 넘친 내용을 숨김
-                      textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
                       cursor={"pointer"}
                       onClick={() =>
                         navigate(
