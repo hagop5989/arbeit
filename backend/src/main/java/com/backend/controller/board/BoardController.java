@@ -69,12 +69,12 @@ public class BoardController {
     }
 
 
-    @PutMapping("edit")
+    @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity edit(@Validated BoardEditForm form, BindingResult bindingResult,
-                               Authentication authentication) throws IOException {
+    public ResponseEntity edit(
+            @Validated BoardEditForm form, BindingResult bindingResult,
+            Authentication authentication) throws IOException {
         System.out.println("form = " + form);
-        log.debug("Number of rows updated: {}", form);
 
         if (!boardService.hasAccess(form, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -88,7 +88,7 @@ public class BoardController {
         boardService.edit(form, authentication);
         return ResponseEntity.ok().build();
 
-        
+
     }
 
     @DeleteMapping("/{id}")

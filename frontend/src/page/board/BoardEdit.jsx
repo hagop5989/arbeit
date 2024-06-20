@@ -93,11 +93,10 @@ export function BoardEdit() {
 
   function handleSaveBtn() {
     axios
-      .putForm(`/api/board/edit`, {
+      .putForm(`/api/board/${id}`, {
         id: board.id,
         title: board.title,
         content: board.content,
-        memberId: account.id,
         removeImages,
         addImages,
       })

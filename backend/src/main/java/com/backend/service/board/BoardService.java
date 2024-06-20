@@ -115,6 +115,7 @@ public class BoardService {
         }
         //사진 추가
         List<MultipartFile> addImages = form.getAddImages();
+
         if (addImages != null) {
             for (MultipartFile addImage : addImages) {
                 String imageName = addImage.getOriginalFilename();
