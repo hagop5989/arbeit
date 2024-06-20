@@ -49,7 +49,7 @@ export function ResumeList() {
   }
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
+    <Box w={"100%"} h={"55vh"}>
       <Box>
         <Heading mb={"10px"} p={1}>
           이력서 목록
@@ -67,10 +67,10 @@ export function ResumeList() {
           <Table>
             <Thead>
               <Tr>
-                <Th>선택</Th>
-                <Th>제목</Th>
-                <Th>작성일</Th>
-                <Th>관리</Th>
+                <Th fontSize={"medium"}>선택</Th>
+                <Th fontSize={"medium"}>제목</Th>
+                <Th fontSize={"medium"}>작성일</Th>
+                <Th fontSize={"medium"}>관리</Th>
               </Tr>
             </Thead>
             <Tbody>

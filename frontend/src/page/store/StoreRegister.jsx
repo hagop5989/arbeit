@@ -86,16 +86,44 @@ export function StoreRegister() {
     setStore({ ...store, [prop]: e.target.value });
   };
 
+  const handlePhoneChange = (e) => {
+    const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+    setStore({ ...store, phone: formattedPhoneNumber });
+  };
+
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    const phoneNumberLength = phoneNumber.length;
+
+    if (phoneNumberLength < 4) return phoneNumber;
+
+    if (phoneNumberLength < 7) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+
+    if (phoneNumberLength < 11) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
+    }
+
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  };
+
   const onCompletePost = (data) => {
     setStore({ ...store, address: data.address });
     onClose();
   };
 
-  // file 목록
-  const imageNameList = [];
-  for (let i = 0; i < images.length; i++) {
-    imageNameList.push(<li key={i}>{images[i].name}</li>);
-  }
+  // 파일 목록
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+  };
+
+  const imageNameList = images.map((image, index) => (
+    <li key={index}>{image.name}</li>
+  ));
 
   const isError = (prop) => prop !== undefined;
 
@@ -142,7 +170,8 @@ export function StoreRegister() {
           <FormLabel {...styles.formLabel}>가게 전화번호</FormLabel>
           <Center {...styles.center}>
             <Input
-              onChange={handleInputChange("phone")}
+              value={store.phone || ""}
+              onChange={handlePhoneChange}
               placeholder="전화 번호를 입력하세요."
               mb={1}
             />
@@ -167,6 +196,7 @@ export function StoreRegister() {
               ml={3}
               p={"10px"}
               borderRadius={"20px"}
+              overflow="auto"
             >
               {imageNameList.length > 0 && (
                 <UnorderedList>{imageNameList}</UnorderedList>
@@ -221,7 +251,6 @@ export function StoreRegister() {
               <KakaoMap2 address={store.address} />
             </Box>
           </Center>
-          {/* 카카오 맵 */}
         </FormControl>
         <Center>
           <Button
@@ -240,7 +269,7 @@ export function StoreRegister() {
         multiple
         type="file"
         accept="image/*"
-        onChange={(e) => setImages(e.target.files)}
+        onChange={handleFileChange}
       />
     </Box>
   );
