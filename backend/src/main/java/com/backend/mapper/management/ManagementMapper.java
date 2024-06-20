@@ -46,7 +46,7 @@ public interface ManagementMapper {
 
 
     @Update("""
-            UPDATE application 
+            UPDATE application
             SET is_passed = #{isPassed}
             WHERE jobs_id = #{jobsId} AND member_id = #{appliedMemberId}
             """)
@@ -54,9 +54,9 @@ public interface ManagementMapper {
 
     @Delete("""
             DELETE FROM application
-            WHERE jobs_id = #{jobsId} AND member_id = #{appliedMemberId}
+            WHERE jobs_id = #{jobsId} AND member_id = #{memberId}
             """)
-    int delete(Integer jobsId, Integer appliedMemberId);
+    int delete(Integer jobsId, Integer memberId);
 
     @Select("""
             SELECT COUNT(j.id)

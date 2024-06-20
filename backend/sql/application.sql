@@ -22,3 +22,5 @@ create index member_id
 create index resume_id
     on application (resume_id);
 
+select *
+from application;

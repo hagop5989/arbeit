@@ -4,12 +4,12 @@ import { LoginContext } from "./LoginProvider.jsx";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 
 export function Profile() {
-  const account = useContext(LoginContext);
   const [src, setSrc] = useState("");
-  const navigate = useNavigate();
+
+  const account = useContext(LoginContext);
+  const isBoss = account.isBoss();
 
   useEffect(() => {
     if (account.id !== "") {
@@ -45,17 +45,21 @@ export function Profile() {
       <Center h={"20px"} mb={"15px"}>
         <Link href={`/member/${account.id}`}>내 정보</Link>
       </Center>
-      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"} cursor={"pointer"}>
-        <Link href={"/jobs/management/list"}>지원 내역</Link>
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.alarmNum}
-        </Center>
+      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
+        <Link href={isBoss ? "/jobs/management/list" : "/apply/list"}>
+          지원 내역
+        </Link>
+        {isBoss && (
+          <Center
+            w={"20px"}
+            h={"20px"}
+            bg={"yellow"}
+            borderRadius={150}
+            ml={"5px"}
+          >
+            {account.alarmNum}
+          </Center>
+        )}
       </Flex>
       <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
         <Link href={"/scrap-history"}>스크랩 알바</Link>
