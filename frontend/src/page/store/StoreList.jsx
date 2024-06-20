@@ -41,7 +41,7 @@ export function StoreList() {
   };
 
   return (
-    <Box>
+    <Box w={"100%"}>
       <Box>
         <Box
           h={"70px"}
@@ -65,10 +65,11 @@ export function StoreList() {
         <Table>
           <Thead>
             <Tr bgColor="#ffa33f">
-              <Th>id</Th>
-              <Th>가게명</Th>
-              <Th>주소</Th>
-              <Th>등록일</Th>
+              <Th fontSize={"medium"}>id</Th>
+              <Th fontSize={"medium"}>가게명</Th>
+              <Th fontSize={"medium"}>주소</Th>
+              <Th fontSize={"medium"}>등록일</Th>
+              <Th fontSize={"medium"}>전화 번호</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -87,6 +88,7 @@ export function StoreList() {
                 <Td>{store.name}</Td>
                 <Td>{store.address}</Td>
                 <Td>{store.inserted}</Td>
+                <Td>{store.phone}</Td>
               </Tr>
             ))}
           </Tbody>

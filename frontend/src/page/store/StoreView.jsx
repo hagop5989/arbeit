@@ -19,7 +19,7 @@ import KakaoMap2 from "../posts/KakaoMap2.jsx";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import defaultImage from "/public/alba_connector_logo.png";
+import defaultImage from "/alba_connector_logo.png";
 
 export function StoreView() {
   const { id } = useParams();
