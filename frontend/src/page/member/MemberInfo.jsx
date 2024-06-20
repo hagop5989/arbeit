@@ -141,21 +141,45 @@ export function MemberInfo() {
             {/* 프로필 사진 */}
             <FormControl>
               <Flex>
-                <Box w={"230px"} h={"230px"} ml={"40px"}>
+                <Box w={"240px"} h={"240px"}>
                   <Image
                     w={"100%"}
                     h={"100%"}
                     border={"1px solid gray"}
-                    borderRadius={150}
+                    borderRadius={"50%"}
                     src={
                       profileSrc === ""
                         ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
                         : profileSrc
                     }
+                    objectFit={"contain"}
                   />
+                  {account.hasAccess(id) && (
+                    <Box w={"50px"} h={"50px"}>
+                      <Center
+                        boxSize={"50px"}
+                        bgColor="gray.100"
+                        borderRadius={100}
+                        ml={"20px"}
+                        mt={"-30px"}
+                        cursor="pointer"
+                        onClick={handleProfilePictureBtn}
+                      >
+                        <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
+                      </Center>
+                      <Input
+                        w={"50px"}
+                        type={"file"}
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
+                    </Box>
+                  )}
                 </Box>
                 <Box
-                  ml={"120px"}
+                  w={"50%"}
+                  ml={"50px"}
                   display={"flex"}
                   flexDirection={"column"}
                   gap={"25px"}
@@ -182,6 +206,7 @@ export function MemberInfo() {
                     </FormLabel>
                     <Box>{member.gender}</Box>
                   </Box>
+
                   <Box display={"flex"}>
                     <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       전화번호
@@ -190,28 +215,6 @@ export function MemberInfo() {
                   </Box>
                 </Box>
               </Flex>
-              {account.hasAccess(id) && (
-                <Box>
-                  <Center
-                    boxSize={"50px"}
-                    bgColor="gray.100"
-                    borderRadius={100}
-                    ml={"30px"}
-                    mt={"-30px"}
-                    cursor="pointer"
-                    onClick={handleProfilePictureBtn}
-                  >
-                    <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
-                  </Center>
-                  <Input
-                    w={"50px"}
-                    type={"file"}
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                </Box>
-              )}
             </FormControl>
             {/* 회원 정보 */}
             <FormControl>

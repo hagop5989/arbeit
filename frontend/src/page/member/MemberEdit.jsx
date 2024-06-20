@@ -66,7 +66,7 @@ export function MemberEdit() {
     <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
         <Heading mb={"10px"} p={1}>
-          회원정보
+          회원정보 수정
         </Heading>
         <Divider mb={"40px"} borderWidth={"2px"} />
         <Box>
