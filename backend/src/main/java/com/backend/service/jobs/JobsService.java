@@ -183,7 +183,6 @@ public class JobsService {
     }
 
     public Map<String, Object> findAll(Integer currentPage, String searchType, String keyword, String filterType, String filterDetail) {
-
         Map<String, Integer> pageInfo = new HashMap<>();
         filterTrim(filterType, filterDetail);
 

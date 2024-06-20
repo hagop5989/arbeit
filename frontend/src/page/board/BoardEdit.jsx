@@ -1,6 +1,11 @@
 import {
+  Badge,
   Box,
   Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -14,31 +19,88 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Stack,
+  StackDivider,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardEdit() {
   const { id } = useParams();
-  const [board, setBoard] = useState(null);
+
+  const account = useContext(LoginContext);
+  const [board, setBoard] = useState({});
   const [errors, setErrors] = useState({});
+  const [image, setImage] = useState([]);
+  const [removeImages, setRemoveImages] = useState([]);
+  const [addImages, setAddImages] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`/api/board/${id}`).then((res) => {
-      setBoard(res.data);
+    axios
+      .get(`/api/board/${id}`)
+      .then((res) => {
+        setBoard(res.data.board);
+        setImage(res.data.images);
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 404) {
+          navigate("/board/list");
+        }
+      });
+  }, [id]);
+
+  const fileNameList = [];
+  for (let addFile of addImages) {
+    let duplicate = false;
+    for (let file of image) {
+      if (file.name === addFile.name) {
+        duplicate = true;
+        break;
+      }
+    }
+    fileNameList.push(
+      <Flex key={addFile.name}>
+        <Text fontSize={"md"} mr={3}>
+          {addFile.name}
+        </Text>
+        <Box>{duplicate && <Badge colorScheme={"blue"}>덮어쓰기</Badge>}</Box>
+      </Flex>,
+    );
+  }
+  function handleRemovingImage(imageName) {
+    setRemoveImages([...removeImages, imageName]);
+    setImage((prevList) => {
+      const index = prevList.findIndex((image) => image.name === imageName);
+      if (index !== -1) {
+        const newList = [...prevList];
+        newList.splice(index, 1);
+        return newList;
+      }
+      return prevList;
     });
-  }, []);
+  }
 
   function handleSaveBtn() {
     axios
-      .put(`/api/board/${id}`, board)
+      .putForm(`/api/board/edit`, {
+        id: board.id,
+        title: board.title,
+        content: board.content,
+        memberId: account.id,
+        removeImages,
+        addImages,
+      })
       .then(() => {
         toast({
           status: "success",
@@ -90,19 +152,54 @@ export function BoardEdit() {
           {errors && <FormHelperText>{errors.content}</FormHelperText>}
 
           <FormLabel>사진</FormLabel>
-          <Image defaultValue={board.files}></Image>
-          <Input
-            multiple
-            type={"file"}
-            accept="image/*"
-            onChange={handleInputChange("files")}
-          ></Input>
-          {errors && <FormHelperText>{errors.files}</FormHelperText>}
+          <Box>
+            <FormControl>
+              <Box border="1px solid bule" display="flex">
+                {image.map((image, index) => (
+                  <Box key={index}>
+                    <Box>
+                      <Box
+                        h={"7%"}
+                        position={"absolute"}
+                        color={"yellow"}
+                        onClick={() => handleRemovingImage(image.name)}
+                      >
+                        <FontAwesomeIcon icon={faXmark} />
+                      </Box>
+                      <Image w={"100%"} h={"100%"} src={image.src} />
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+              <FormLabel>사진 등록</FormLabel>
+              <Input
+                multiple
+                type="file"
+                accept="image/*"
+                onChange={(e) => setAddImages(e.target.files)}
+              />
+              {fileNameList.length > 0 && (
+                <Box>
+                  <Card>
+                    <CardHeader>
+                      <Heading>선택된 이미지 목록</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      <Stack divider={<StackDivider />} spacing={3}>
+                        {fileNameList}
+                      </Stack>
+                    </CardBody>
+                  </Card>
+                </Box>
+              )}
+            </FormControl>
+          </Box>
         </FormControl>
       </Box>
 
       <Box>
         <Button onClick={onOpen}>저장</Button>
+        <Button onClick={() => navigate("/board/list")}>취소</Button>
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose}>
