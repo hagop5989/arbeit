@@ -15,10 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,23 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class BoardController {
 
-
     private final BoardService boardService;
 
-
-    @ControllerAdvice
-    public class GlobalExceptionHandler {
-
-        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-        public ResponseEntity<Map<String, String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-            Map<String, String> response = new HashMap<>();
-            response.put("title", "");
-            response.put("content", "");
-            response.put("error", "잘못된 요청입니다.");
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
 
     @PostMapping("/write")
     @PreAuthorize("isAuthenticated()")
@@ -64,15 +47,19 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity info(@PathVariable Integer id) {
-        Map<String, Object> result = boardService.findById(id);
+    public ResponseEntity<Map<String, Object>> findById(@PathVariable Integer id) {
+        try {
+            Map<String, Object> result = boardService.findById(id);
+            if (result == null) {
+                return ResponseEntity.notFound().build();
+            }
 
-
-        if (result == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
-        return ResponseEntity.ok().body(result);
     }
 
 
@@ -82,11 +69,12 @@ public class BoardController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("edit")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated BoardEditForm form, BindingResult bindingResult,
                                Authentication authentication) throws IOException {
-
+        System.out.println("form = " + form);
+        log.debug("Number of rows updated: {}", form);
 
         if (!boardService.hasAccess(form, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -99,6 +87,8 @@ public class BoardController {
 
         boardService.edit(form, authentication);
         return ResponseEntity.ok().build();
+
+        
     }
 
     @DeleteMapping("/{id}")

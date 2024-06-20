@@ -182,6 +182,7 @@ public class JobsService {
         jobsMapper.deleteById(jobsId);
     }
 
+
     public Map<String, Object> findAll(Integer currentPage, String searchType, String keyword) {
 
         Map<String, Integer> pageInfo = new HashMap<>();
