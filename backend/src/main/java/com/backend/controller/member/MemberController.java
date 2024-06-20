@@ -38,7 +38,6 @@ public class MemberController {
 
     @PostMapping("/check")
     public ResponseEntity check(@RequestBody String email) {
-        log.info("email={}", email);
         if (email.trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

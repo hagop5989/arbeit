@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBuilding } from "@fortawesome/free-solid-svg-icons";
 import KakaoMap2 from "./KakaoMap2.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export function JobDetail({ job, jobsCond, storeMap }) {
   if (!job || !jobsCond) {
@@ -278,7 +279,7 @@ export function JobContact({ job, jobsCond, boss }) {
   );
 }
 
-export function JobRequirements({ job, jobsCond }) {
+export function JobRequirements({ job, jobsCond, id }) {
   const navigate = useNavigate();
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -286,6 +287,16 @@ export function JobRequirements({ job, jobsCond }) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return date.toLocaleDateString(undefined, options);
   };
+
+  function handleApplyBtn() {
+    const jobsId = new URLSearchParams();
+    jobsId.append("jobsId", id);
+    axios
+      .post("/api/apply-validate", jobsId)
+      .then(() => navigate(`/jobs/${id}/apply`))
+      .catch((err) => alert(err.response.data));
+  }
+
   return (
     <Box
       w={"full"}
@@ -349,12 +360,7 @@ export function JobRequirements({ job, jobsCond }) {
             </Box>
           </VStack>
         </HStack>
-        <Button
-          onClick={() => navigate(`/jobs/${job.id}/apply`)}
-          colorScheme="red"
-          w="full"
-          my={"10px"}
-        >
+        <Button onClick={handleApplyBtn} colorScheme="red" w="full" my={"10px"}>
           지원하기
         </Button>
       </Box>

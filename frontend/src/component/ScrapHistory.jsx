@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Divider,
   Heading,
   Table,
   Tbody,
@@ -41,47 +40,47 @@ function ScrapHistory(props) {
   }
 
   return (
-    <Box w={"100%"} h={"65vh"}>
-      <Heading mb={"10px"} p={1}>
+    <Box w="full" maxW="70%" mx="auto" p={5} h={"600px"}>
+      <Heading borderBottom={"2px solid gray"} mb={"10px"}>
         스크랩한 공고
       </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
-      <Box>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>#</Th>
-              <Th>제목</Th>
-            </Tr>
-          </Thead>
-          <Tbody lineHeight={"54px"}>
-            {scrapList.map((item, index) => (
-              <Tr
-                key={index}
-                cursor={"pointer"}
-                _hover={{ bgColor: "orange.50" }}
-              >
-                <Td>{index + 1}</Td>
-                <Td
-                  onClick={() => {
-                    navigate(`/jobs/${item.jobsId}`);
-                  }}
-                >
-                  {item.jobsTitle}
-                </Td>
-                <Button
-                  w={"70px"}
-                  mr={"20px"}
-                  colorScheme={"red"}
-                  onClick={() => handleDelete(item.id)}
-                >
-                  삭제
-                </Button>
+      {scrapList.length === 0 && <Box>스크랩한 공고가 없습니다.</Box>}
+      {scrapList.length === 0 || (
+        <Box>
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>#</Th>
+                <Th>제목</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
+            </Thead>
+            <Tbody>
+              {scrapList.map((item, index) => (
+                <Tr
+                  key={index}
+                  cursor={"pointer"}
+                  _hover={{ bgColor: "gray.100" }}
+                >
+                  <Td>{index + 1}</Td>
+                  <Td
+                    onClick={() => {
+                      navigate(`/jobs/${item.jobsId}`);
+                    }}
+                  >
+                    {item.jobsTitle}
+                  </Td>
+                  <Button
+                    colorScheme={"red"}
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    삭제
+                  </Button>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
     </Box>
   );
 }

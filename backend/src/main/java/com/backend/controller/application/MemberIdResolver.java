@@ -14,7 +14,7 @@ public class MemberIdResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(Integer.class) && parameter.hasParameterAnnotation(MemberId.class);
+        return parameter.getParameterType().equals(Integer.class) && parameter.hasParameterAnnotation(AuthId.class);
     }
 
     @Override

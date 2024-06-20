@@ -1,15 +1,15 @@
-import { Box, Button, Center, Image, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Image, Link } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 export function Profile() {
-  const account = useContext(LoginContext);
   const [src, setSrc] = useState("");
-  const navigate = useNavigate();
+
+  const account = useContext(LoginContext);
+  const isBoss = account.isBoss();
 
   useEffect(() => {
     if (account.id !== "") {
@@ -26,72 +26,65 @@ export function Profile() {
 
   return (
     <Box width={"80%"}>
-      <Button
-        onClick={scrollToTop}
-        w="100px"
-        variant={"outline"}
-        border={"none"}
-      >
-        ▲ 맨위로
-      </Button>
-      <Box
-        w={"100%"}
-        height={"160px"}
-        mb={"20px"}
-        cursor={"pointer"}
-        onClick={() => navigate(`/member/${account.id}`)}
-      >
+      <Center w="100%" h={"30px"} variant={"outline"} mt={"-20px"} mb={"20px"}>
+        <FontAwesomeIcon
+          icon={faArrowUp}
+          onClick={scrollToTop}
+          cursor={"pointer"}
+        />
+      </Center>
+      <Center w={"100%"} height={"140px"} mb={"10px"}>
         <Image
           borderRadius={150}
           border={"2px solid gray"}
-          w={"100%"}
+          w={"90%"}
           h={"100%"}
           src={src}
         />
-        <Center mb={"10px"}>마이페이지</Center>
-      </Box>
-      <Center
-        w={"100%"}
-        height={"50px"}
-        bg={"#FF7F3E"}
-        color={"white"}
-        borderRadius={150}
-        cursor={"pointer"}
-        onClick={() => navigate("/jobs/management/list")}
-      >
-        <Text>지원 내역 {account.alarmNum}</Text>
+      </Center>
+      <Center h={"20px"} mb={"15px"}>
+        <Link href={`/member/${account.id}`}>내 정보</Link>
+      </Center>
+      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
+        <Link href={isBoss ? "/jobs/management/list" : "/apply/list"}>
+          지원 내역
+        </Link>
+        {isBoss && (
+          <Center
+            w={"20px"}
+            h={"20px"}
+            bg={"yellow"}
+            borderRadius={150}
+            ml={"5px"}
+          >
+            {account.alarmNum}
+          </Center>
+        )}
+      </Flex>
+      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
+        <Link href={"/scrap-history"}>스크랩 알바</Link>
         <Center
-          w={"30px"}
-          h={"30px"}
+          w={"20px"}
+          h={"20px"}
           bg={"yellow"}
-          color={"black"}
           borderRadius={150}
           ml={"5px"}
-          mr={"-20px"}
         >
-          <FontAwesomeIcon icon={faBell} />
+          {account.scrapNum}
         </Center>
-      </Center>
-      <Center
-        w={"100%"}
-        height={"50px"}
-        my={"5px"}
-        bg={"gray.500"}
-        borderRadius={150}
-        cursor={"pointer"}
-        onClick={() => navigate("/scrap-history")}
-      >
-        <Text color={"white"}>스크랩 알바 {account.scrapNum}</Text>
-      </Center>
-      <Center w={"100%"} height={"50px"} bg={"gray.600"} borderRadius={150}>
-        <Text
-          color={"white"}
-          cursor={"pointer"}
-          onClick={() => navigate("/visit-history")}
+      </Flex>
+      <Flex w={"100%"} h={"20px"} ml={"20px"}>
+        <Link href={"/visit-history"}>최근 본 알바</Link>
+        <Center
+          w={"20px"}
+          h={"20px"}
+          bg={"yellow"}
+          borderRadius={150}
+          ml={"5px"}
         >
-          최근 본 알바 {account.recentJobPages.length}
-        </Text>
-      </Center>
+          {account.recentJobPages.length}
+        </Center>
+      </Flex>
     </Box>
   );
 }

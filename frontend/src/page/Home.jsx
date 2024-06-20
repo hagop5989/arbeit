@@ -25,7 +25,7 @@ export function Home() {
             position={"fixed"}
             right={"150px"}
             w={"200px"}
-            h={"300px"}
+            h={"330px"}
             borderRadius={"10px"}
             display={{ base: "none", "2xl": "flex" }}
           >

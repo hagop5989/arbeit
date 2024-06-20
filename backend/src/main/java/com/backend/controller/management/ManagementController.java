@@ -1,6 +1,6 @@
 package com.backend.controller.management;
 
-import com.backend.controller.application.MemberId;
+import com.backend.controller.application.AuthId;
 import com.backend.domain.application.Application;
 import com.backend.domain.management.Management;
 import com.backend.service.management.ManagementService;
@@ -17,8 +17,8 @@ import java.util.List;
 public class ManagementController {
     private final ManagementService service;
 
-    @PutMapping("{idd}/management/decision")
-    public void insertDecision(@RequestBody Management management, @PathVariable Integer idd) {
+    @PutMapping("{id}/management/decision")
+    public void insertDecision(@RequestBody Management management, @PathVariable Integer id) {
         service.insertDecision(management);
     }
 
@@ -28,13 +28,13 @@ public class ManagementController {
     }
 
     @GetMapping("management/list")
-    public List<Management> list(@MemberId Integer memberId) {
+    public List<Management> list(@AuthId Integer memberId) {
         List<Management> list = service.list(memberId);
         return list;
     }
 
-    @GetMapping("management/alarm-count")
-    public Integer alarmCount(@MemberId Integer memberId) {
-        return service.alarmCount(memberId);
+    @GetMapping("/managements-count")
+    public Integer alarmCount(@AuthId Integer memberId) {
+        return service.count(memberId);
     }
 }
