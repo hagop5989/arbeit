@@ -29,7 +29,7 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
-  faArrowDownWideShort,
+  faFilter,
   faMagnifyingGlass,
   faStar as fullStar,
 } from "@fortawesome/free-solid-svg-icons";
@@ -38,15 +38,10 @@ import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 export function JobsList() {
   const account = useContext(LoginContext);
   const [selectedFilterDetail, setSelectedFilterDetail] = useState([]);
-  const [selectedWorkPeriod, setSelectedWorkPeriod] = useState("");
-  const [selectedWorkWeek, setSelectedWorkWeek] = useState("");
-  const [selectedWorkTime, setSelectedWorkTime] = useState("");
   const [inputKeyword, setInputKeyword] = useState("");
   const [filterType, setFilterType] = useState("최신등록");
-  const [selectedRegion, setSelectedRegion] = useState("");
   const [jobsList, setJobsList] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [storeImages, setStoreImages] = useState({});
 
   const pageNums = [];
@@ -243,7 +238,9 @@ export function JobsList() {
     >
       <Flex justifyContent={"space-between"} mb={"30px"} mt={"-20px"}>
         <Box display={"flex"}>
-          <FontAwesomeIcon icon={faArrowDownWideShort} fontSize={"25px"} />
+          <Center mr={"5px"}>
+            <FontAwesomeIcon icon={faFilter} />
+          </Center>
           <Select w={150} value={filterType} onChange={handleFilterChange}>
             <option value="최신등록">최신등록</option>
             <option value="마감임박">마감임박</option>
@@ -339,6 +336,7 @@ export function JobsList() {
         <Box w={"500px"} display={"flex"}>
           <Select
             w={"150px"}
+            mr={"5px"}
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
           >
@@ -350,6 +348,7 @@ export function JobsList() {
             value={inputKeyword}
             onChange={(e) => setInputKeyword(e.target.value)}
             placeholder="검색어"
+            mr={"5px"}
           />
           <Button onClick={handleSearchClick}>
             <FontAwesomeIcon icon={faMagnifyingGlass} />

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Heading,
   Link,
   Table,
@@ -72,41 +73,41 @@ export function ApplicationList() {
   return (
     <Box w={"100%"} h={"55vh"}>
       <Box>
-        <Box>
-          <Heading borderBottom={"2px solid gray"} mb={"10px"}>
-            지원내역
-          </Heading>
-        </Box>
-        <Button
-          onClick={() => navigate("/resume/register")}
-          colorScheme={"green"}
-          w={120}
-          mt={3}
-          mb={7}
-        >
-          이력서 등록
-        </Button>
+        <Heading mb={"10px"} p={1}>
+          지원 내역
+        </Heading>
+        <Divider mb={"40px"} borderWidth={"2px"} />
         <Box>
           <Table>
             <Thead>
-              <Tr>
-                <Th fontSize={"medium"}>작성일</Th>
-                <Th fontSize={"medium"}>지원공고명</Th>
-                <Th fontSize={"medium"}>지원서 제목</Th>
-                <Th fontSize={"medium"}>처리 상태</Th>
-                <Th fontSize={"medium"}>지원 취소</Th>
+              <Tr borderTop={"1px solid gray"}>
+                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                  작성일
+                </Th>
+                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                  지원 공고
+                </Th>
+                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                  지원서 제목
+                </Th>
+                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                  처리 상태
+                </Th>
+                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                  지원 취소
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
               {applicationList.map((application, index) => (
                 <Tr key={index}>
                   <Td>{application.inserted}</Td>
-                  <Td>
+                  <Td fontWeight={"700"}>
                     <Link href={`jobs/${application.jobsId}`}>
                       {application.jobsTitle}
                     </Link>
                   </Td>
-                  <Td>
+                  <Td fontWeight={"700"}>
                     <Link href={`/jobs/${application.jobsId}/apply/select`}>
                       {application.title}
                     </Link>
@@ -128,6 +129,15 @@ export function ApplicationList() {
             </Tbody>
           </Table>
         </Box>
+        <Button
+          onClick={() => navigate("/resume/register")}
+          colorScheme={"green"}
+          w={120}
+          mt={3}
+          mb={7}
+        >
+          이력서 등록
+        </Button>
       </Box>
     </Box>
   );

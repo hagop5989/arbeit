@@ -98,11 +98,13 @@ public class JobsService {
         Map<String, Object> result = new HashMap<>();
 
         Jobs jobs = jobsMapper.selectById(jobsId);
-
         if (jobs == null) {
             return null;
         }
-
+        Member member = memberService.findById(jobs.getMemberId());
+        if (member.getName().equals("탈퇴한 유저")) {
+            return null;
+        }
         JobsCond condition = conditionMapper.selectByJobsId(jobsId);
 
         Map<String, Object> storeMap = storeService.findStoreById(jobs.getStoreId());
@@ -187,7 +189,10 @@ public class JobsService {
         filterTrim(filterType, filterDetail);
 
         Integer offset = paging(currentPage, searchType, keyword, pageInfo, filterType, filterDetail);
-        List<Jobs> jobsList = jobsMapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail);
+        List<Jobs> dbJobsList = jobsMapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail);
+
+        // 탈퇴한 유저의 공고를 삭제함
+        List<Jobs> jobsList = dbJobsList.stream().filter((jobs) -> !jobs.getMemberName().equals("탈퇴한 유저")).toList();
 
         Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
         for (Jobs jobs : jobsList) {

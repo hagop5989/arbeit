@@ -39,7 +39,7 @@ export function Profile() {
           border={"2px solid gray"}
           w={"90%"}
           h={"100%"}
-          src={src}
+          src={src === "" ? "/public/base_profile.png" : src}
         />
       </Center>
       <Center h={"20px"} mb={"15px"}>

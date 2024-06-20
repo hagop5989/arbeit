@@ -75,15 +75,17 @@ export function MemberInfo() {
 
   function handleRemoveBtn() {
     axios
-      .delete(`/api/member/${id}`)
+      .post(`/api/member/${id}/delete`)
       .then(() => {
         toast({
           status: "success",
           description: "삭제되었습니다.",
           position: "top",
         });
+        account.logout();
+        navigate("/login");
       })
-      .catch()
+      .catch(() => alert("내부 오류 발생"))
       .finally();
   }
 
@@ -149,7 +151,7 @@ export function MemberInfo() {
                     borderRadius={150}
                     src={
                       profileSrc === ""
-                        ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
+                        ? "/public/base_profile.png"
                         : profileSrc
                     }
                   />
