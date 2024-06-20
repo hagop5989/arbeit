@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Heading,
   Table,
   Tbody,
@@ -52,7 +53,10 @@ export function ApplicationList() {
       {account.isAlba() && (
         <Box>
           <Box>
-            <Heading>지원내역(알바)</Heading>
+            <Heading mb={"10px"} p={1}>
+              지원내역(알바)
+            </Heading>
+            <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
           <Button
             onClick={() => navigate("/resume/register")}
@@ -67,10 +71,10 @@ export function ApplicationList() {
               <Thead>
                 <Tr>
                   <Th fontSize={"medium"}>선택</Th>
-                  <Th fontSize={"medium"}>작성일</Th>
+                  <Th fontSize={"medium"}>지원일</Th>
                   <Th fontSize={"medium"}>지원공고명</Th>
-                  <Th fontSize={"medium"}>나의 지원서 제목</Th>
-                  <Th fontSize={"medium"}>진행상황</Th>
+                  <Th fontSize={"medium"}>지원서 제목</Th>
+                  <Th fontSize={"medium"}>상태</Th>
                   <Th fontSize={"medium"}>관리</Th>
                 </Tr>
               </Thead>
@@ -87,8 +91,15 @@ export function ApplicationList() {
                         // onChange={handleCheckBoxChange}
                       />
                     </Td>
-                    <Td>{application.inserted}</Td>
-                    <Td onClick={() => navigate(`/jobs/${application.jobsId}`)}>
+                    <Td fontSize={"sm"} minW={"130px"}>
+                      {application.inserted}
+                    </Td>
+                    <Td
+                      onClick={() => navigate(`/jobs/${application.jobsId}`)}
+                      whiteSpace="nowrap" // 줄 바꿈을 막음
+                      overflow="hidden" // 넘친 내용을 숨김
+                      textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                    >
                       {application.jobsTitle}
                     </Td>
                     <Td
@@ -96,10 +107,24 @@ export function ApplicationList() {
                       onClick={() =>
                         navigate(`/jobs/${application.jobsId}/apply/select`)
                       }
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
                     >
                       {application.title}
                     </Td>
-                    <Td>{isPassedToString(application.isPassed)}</Td>
+                    {/* 합격 여부 */}
+                    <Td
+                      minW={"90px"}
+                      fontWeight={"bold"}
+                      color={
+                        application.isPassed != null && application.isPassed
+                          ? "teal"
+                          : "red"
+                      }
+                    >
+                      {isPassedToString(application.isPassed)}
+                    </Td>
                     <Td>
                       <Button
                         onClick={() =>

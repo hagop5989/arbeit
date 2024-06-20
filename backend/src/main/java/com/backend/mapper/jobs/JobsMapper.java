@@ -53,22 +53,46 @@ public interface JobsMapper {
     @Select("""
             <script>
             SELECT COUNT(j.id) 
-            FROM jobs j JOIN member m ON j.member_id = m.id
-                <trim prefix="WHERE" prefixOverrides="OR">
-                    <if test="searchType != null">
-                        <bind name="pattern" value="'%' + keyword + '%'" />
-                        <if test="searchType == 'all' || searchType == 'text'">
-                            OR j.title LIKE #{pattern}
-                            OR j.content LIKE #{pattern}
-                        </if>
-                        <if test="searchType == 'all' || searchType == 'nickName'">
-                        OR m.name LIKE #{pattern}
-                        </if>
-                     </if>
-                </trim>
+            FROM jobs j 
+            JOIN member m ON j.member_id = m.id 
+            JOIN store s ON s.id = j.store_id
+            JOIN category c ON c.id = j.category_id
+            JOIN jobs_condition jc ON jc.jobs_id = j.id
+            <where>
+                <if test="searchType != null">
+                    <bind name="pattern" value="'%' + keyword + '%'" />
+                    <choose>
+                        <when test="searchType == 'all' || searchType == 'text'">
+                            (j.title LIKE #{pattern} OR j.content LIKE #{pattern})
+                        </when>
+                        <when test="searchType == 'nickName'">
+                            (m.name LIKE #{pattern})
+                        </when>
+                    </choose>
+                </if>
+                <if test="filterType != null and filterDetail != null and filterDetail !=''">
+                    <choose>
+                        <when test="filterType == '지역'">
+                            AND s.address LIKE CONCAT(#{filterDetail}, '%')
+                        </when>
+                        <when test="filterType == '직종'">
+                            AND c.name = #{filterDetail}
+                        </when>
+                        <when test="filterType == '근무기간'">
+                            AND jc.work_period = #{filterDetail}
+                        </when>
+                        <when test="filterType == '근무요일'">
+                            AND jc.work_week = #{filterDetail}
+                        </when>
+                        <when test="filterType == '근무시간'">
+                            AND jc.work_time = #{filterDetail}
+                        </when>
+                    </choose>
+                </if>
+            </where>
             </script>
             """)
-    Integer countAllWithSearch(String searchType, String keyword);
+    Integer countAllWithSearch(String searchType, String keyword, String filterType, String filterDetail);
 
     @Select("""
             <script>
@@ -95,11 +119,68 @@ public interface JobsMapper {
                    </if>
                </trim>
             GROUP BY j.id
-            ORDER BY j.id DESC
-            LIMIT #{offset}, 15
+            <trim prefix="HAVING" prefixOverrides="AND">
+                <if test="filterType != null and filterDetail != null and filterDetail !=''">
+                    <if test="filterType == '지역'">
+                        AND s.address LIKE CONCAT (#{filterDetail},'%')
+                    </if>
+                    <if test="filterType == '직종'">
+                        AND c.name = #{filterDetail}
+                    </if>
+                    <if test="filterType == '근무기간'">
+                        AND jc.work_period = #{filterDetail}
+                    </if>
+                    <if test="filterType == '근무요일'">
+                        AND jc.work_week = #{filterDetail}
+                    </if>
+                    <if test="filterType == '근무시간'">
+                        AND jc.work_time = #{filterDetail}
+                    </if>
+                </if>
+            </trim>
+            ORDER BY
+            <if test="filterType == '마감임박'">
+            j.deadline ASC 
+            </if>
+            <if test="filterType != '마감임박'">
+            j.id DESC
+            </if>
+            LIMIT #{offset},8
             </script>
                 """)
-    List<Jobs> selectAllPaging(int offset, String searchType, String keyword);
+    List<Jobs> selectAllPaging(int offset, String searchType, String keyword, String filterType, String filterDetail);
+
+
+//    @Select("""
+//            <script>
+//            SELECT j.*,jc.*,
+//                   s.address,
+//                   s.name AS storeName,
+//                   m.name AS memberName,
+//                   c.name AS categoryName
+//            FROM jobs j
+//            JOIN member m ON j.member_id = m.id
+//            JOIN store s ON s.id = j.store_id
+//            JOIN category c ON c.id = j.category_id
+//            JOIN jobs_condition jc ON jc.jobs_id = j.id
+//               <trim prefix="WHERE" prefixOverrides="OR">
+//                   <if test="searchType != null">
+//                       <bind name="pattern" value="'%' + keyword + '%'" />
+//                       <if test="searchType == 'all' || searchType == 'text'">
+//                           OR j.title LIKE #{pattern}
+//                           OR j.content LIKE #{pattern}
+//                       </if>
+//                       <if test="searchType == 'all' || searchType == 'nickName'">
+//                           OR m.name LIKE #{pattern}
+//                       </if>
+//                   </if>
+//               </trim>
+//            GROUP BY j.id
+//            ORDER BY j.id DESC
+//            LIMIT #{offset},8
+//            </script>
+//                """)
+//    List<Jobs> selectAllPaging(int offset, String searchType, String keyword, String filterType, String filterDetail);
 
     // Update
     @Update("""

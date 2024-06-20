@@ -23,9 +23,9 @@ function VisitHistory(props) {
   }, [account.recentJobPages]);
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
+    <Box w={"100%"} h={"65vh"}>
       <Heading mb={"10px"} p={1}>
-        최근 방문한 공고 (최대 10개 저장)
+        최근 방문한 공고
       </Heading>
       <Divider mb={"40px"} borderWidth={"2px"} />
       <Box>
@@ -41,7 +41,7 @@ function VisitHistory(props) {
               <Tr
                 key={index}
                 cursor={"pointer"}
-                _hover={{ bgColor: "gray.100" }}
+                _hover={{ bgColor: "orange.50" }}
               >
                 <Td>{index + 1}</Td>
                 <Td

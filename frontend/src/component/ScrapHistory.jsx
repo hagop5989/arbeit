@@ -41,7 +41,7 @@ function ScrapHistory(props) {
   }
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
+    <Box w={"100%"} h={"65vh"}>
       <Heading mb={"10px"} p={1}>
         스크랩한 공고
       </Heading>
@@ -54,12 +54,12 @@ function ScrapHistory(props) {
               <Th>제목</Th>
             </Tr>
           </Thead>
-          <Tbody>
+          <Tbody lineHeight={"54px"}>
             {scrapList.map((item, index) => (
               <Tr
                 key={index}
                 cursor={"pointer"}
-                _hover={{ bgColor: "gray.100" }}
+                _hover={{ bgColor: "orange.50" }}
               >
                 <Td>{index + 1}</Td>
                 <Td
@@ -70,6 +70,8 @@ function ScrapHistory(props) {
                   {item.jobsTitle}
                 </Td>
                 <Button
+                  w={"70px"}
+                  mr={"20px"}
                   colorScheme={"red"}
                   onClick={() => handleDelete(item.id)}
                 >
