@@ -11,6 +11,7 @@ import {
   Tab,
   TabList,
   Tabs,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -23,6 +24,7 @@ export function ResumeEdit() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
+  const [nowAge, setNowAge] = useState("");
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
 
   const navigate = useNavigate();
@@ -47,6 +49,12 @@ export function ResumeEdit() {
         }
       });
   }, []);
+
+  useEffect(() => {
+    if (resume) {
+      countNowAge();
+    }
+  }, [resume]);
 
   function handleRookieBtn(prop) {
     setResume({ ...resume, isRookie: prop });
@@ -85,106 +93,133 @@ export function ResumeEdit() {
       });
   }
 
+  // 나이 계산
+  const countNowAge = () => {
+    const currentTime = Date.now();
+    const birthTime = new Date(resume.birthDate).getTime();
+    const ageInMilliseconds = currentTime - birthTime;
+    const ageInYears = Math.floor(
+      ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25),
+    ); // 윤년을 고려하여 365.25로 나눔
+    setNowAge(ageInYears);
+  };
+
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
+    <Box w="full" maxW="70%" mx="auto" p={5} lineHeight="30px">
       <Heading mb={"10px"} p={1}>
         이력서 수정
       </Heading>
       <Divider mb={"40px"} borderWidth={"2px"} />
-      <Box w="full" gap={"20px"} display={"flex"} flexDirection={"column"}>
+      <Box>
         <FormControl>
-          <Box>
-            <Box mb={4}>
-              <FormLabel fontSize={"xl"}>이름</FormLabel>
-              <Input defaultValue={account.name} readOnly h={"50px"} />
+          <Box w="full" gap={"15px"} display={"flex"} flexDirection={"column"}>
+            <Box display={"flex"}>
+              <Box w={"50%"} display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  이름
+                </FormLabel>
+                <Text h={"50px"}>{account.name}</Text>
+              </Box>
+              <Box w={"50%"} display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  성별
+                </FormLabel>
+                <Text>{resume.gender}</Text>
+              </Box>
             </Box>
 
-            <Flex gap={"10px"} mb={4}>
-              <Box w={"50%"}>
-                <FormLabel fontSize={"xl"}>성별</FormLabel>
-                <Input defaultValue={resume.gender} readOnly h={"50px"} />
+            <Flex mb={4}>
+              <Box w={"50%"} display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  생년월일{" "}
+                </FormLabel>
+                <Text>
+                  {resume.birthDate} (만 {nowAge}세)
+                </Text>
               </Box>
-
-              <Box w={"50%"}>
-                <FormLabel fontSize={"xl"}>생년월일</FormLabel>
-                <Input defaultValue={resume.birthDate} readOnly h={"50px"} />
-              </Box>
-            </Flex>
-
-            <Flex gap={"10px"} mb={4}>
-              <Box w={"50%"}>
-                <FormLabel fontSize={"xl"}>이메일</FormLabel>
-                <Input defaultValue={resume.email} readOnly h={"50px"} />
-              </Box>
-
-              <Box w={"50%"}>
-                <FormLabel fontSize={"xl"}>전화번호</FormLabel>
-                <Input
-                  defaultValue={formatPhoneNumber(resume.phone)}
-                  readOnly
-                  h={"50px"}
-                />
+              <Box w={"50%"} display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  전화번호
+                </FormLabel>
+                <Text>{resume.phone}</Text>
               </Box>
             </Flex>
-          </Box>
-          <Box mb={4}>
-            <FormLabel fontSize={"xl"}>제목</FormLabel>
-            <Input
-              placeholder="제목을 입력해주세요."
-              defaultValue={resume.title}
-              onChange={handleInputChange("title")}
-              h={"50px"}
-              mb={4}
-            />
-            {errors && (
-              <FormHelperText color="red.500">{errors.title}</FormHelperText>
-            )}
-          </Box>
-          <Box mb={4}>
-            <FormLabel fontSize={"xl"}>경력</FormLabel>
-            <Tabs variant="solid-rounded" index={initialIndex}>
-              <TabList>
-                <Tab
-                  onClick={() => handleRookieBtn(1)}
-                  w={"160px"}
-                  h={"50px"}
-                  border={"1px solid lightgray"}
-                >
-                  신입
-                </Tab>
-                <Tab
-                  onClick={() => handleRookieBtn(0)}
-                  w={"160px"}
-                  h={"50px"}
-                  border={"1px solid lightgray"}
-                >
-                  경력
-                </Tab>
-              </TabList>
-            </Tabs>
-          </Box>
-          <Box>
-            <FormLabel fontSize={"xl"}>자기 소개</FormLabel>
-            <Textarea
-              placeholder="자기소개를 써주세요."
-              defaultValue={resume.content}
-              onChange={handleInputChange("content")}
-              mb={4}
-              h={"150px"}
-            />
-            {errors && (
-              <FormHelperText color="red.500">{errors.content}</FormHelperText>
-            )}
 
-            <Button
-              onClick={handleSaveBtn}
-              bgColor={"#FF7F3E"}
-              color={"white"}
-              w="full"
-              h={"50px"}
-            >
-              이력서 수정
-            </Button>
+            <Flex gap={"10px"} mb={4}>
+              <Box w={"50%"} display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  이메일
+                </FormLabel>
+                <Text>{resume.email}</Text>
+              </Box>
+            </Flex>
+            <Box mb={4}>
+              <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"} mt={8}>
+                제목
+              </FormLabel>
+              <Input
+                placeholder="제목을 입력해주세요."
+                defaultValue={resume.title}
+                onChange={handleInputChange("title")}
+                h={"50px"}
+                mb={4}
+              />
+              {errors && (
+                <FormHelperText color="red.500">{errors.title}</FormHelperText>
+              )}
+            </Box>
+            <Box mb={4}>
+              <FormLabel fontSize={"xl"} fontWeight={"bold"}>
+                경력
+              </FormLabel>
+              <Tabs variant="solid-rounded" index={initialIndex}>
+                <TabList>
+                  <Tab
+                    onClick={() => handleRookieBtn(1)}
+                    w={"160px"}
+                    h={"50px"}
+                    border={"1px solid lightgray"}
+                  >
+                    신입
+                  </Tab>
+                  <Tab
+                    onClick={() => handleRookieBtn(0)}
+                    w={"160px"}
+                    h={"50px"}
+                    border={"1px solid lightgray"}
+                  >
+                    경력
+                  </Tab>
+                </TabList>
+              </Tabs>
+            </Box>
+            <Box>
+              <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+                자기 소개
+              </FormLabel>
+              <Textarea
+                placeholder="자기소개를 써주세요."
+                defaultValue={resume.content}
+                onChange={handleInputChange("content")}
+                mb={4}
+                h={"150px"}
+              />
+              {errors && (
+                <FormHelperText color="red.500">
+                  {errors.content}
+                </FormHelperText>
+              )}
+
+              <Button
+                onClick={handleSaveBtn}
+                bgColor={"#FF7F3E"}
+                color={"white"}
+                w="full"
+                h={"50px"}
+              >
+                이력서 수정
+              </Button>
+            </Box>
           </Box>
         </FormControl>
       </Box>

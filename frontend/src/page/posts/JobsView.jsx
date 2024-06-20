@@ -99,7 +99,12 @@ export function JobsView() {
         <Divider />
         <JobDetails job={jobs} jobsCond={jobsCond} images={images} />
         <Divider />
-        <JobContact job={jobs} jobsCond={jobsCond} boss={boss} />
+        <JobContact
+          job={jobs}
+          jobsCond={jobsCond}
+          boss={boss}
+          storeMap={storeMap}
+        />
         <Divider />
         <CompanyInfo
           job={jobs}
@@ -110,34 +115,35 @@ export function JobsView() {
         <Divider />
         <JobReview job={jobs} jobsCond={jobsCond} />
       </Stack>
-      <Flex gap={5} my={"25px"}>
+      <Flex w={"100%"} gap={5} my={"40px"}>
         <Button
           onClick={() => navigate("/jobs/list")}
-          w={"100px"}
+          w={"50%"}
           colorScheme={"green"}
         >
           목록
         </Button>
         {account.isAlba() && (
-          <Button onClick={handleApplyBtn} w={"100px"} colorScheme={"blue"}>
+          <Button onClick={handleApplyBtn} w={"50%"} colorScheme={"blue"}>
             지원하기
           </Button>
         )}
-        {account.isBoss() && (
-          <Flex gap={5}>
-            <Button
-              onClick={() => navigate(`/jobs/${id}/edit`)}
-              w={"100px"}
-              colorScheme={"purple"}
-            >
-              수정
-            </Button>
-            <Button onClick={handleRemoveBtn} w={"100px"} colorScheme={"red"}>
-              삭제
-            </Button>
-          </Flex>
-        )}
       </Flex>
+
+      {account.isBoss() && (
+        <Flex w={"100%"} gap={5} my={"40px"}>
+          <Button
+            onClick={() => navigate(`/jobs/${id}/edit`)}
+            w={"50%"}
+            colorScheme={"purple"}
+          >
+            수정
+          </Button>
+          <Button onClick={handleRemoveBtn} w={"50%"} colorScheme={"red"}>
+            삭제
+          </Button>
+        </Flex>
+      )}
     </Center>
   );
 }

@@ -3,20 +3,20 @@ import {
   Button,
   Divider,
   Flex,
-  FormControl,
   FormLabel,
   Heading,
   Image,
-  Input,
   Tab,
   TabList,
   Tabs,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function ResumeView() {
   const { id } = useParams();
@@ -25,6 +25,8 @@ export function ResumeView() {
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
   const toast = useToast();
   const navigate = useNavigate();
+
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     axios
@@ -76,58 +78,80 @@ export function ResumeView() {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
-      <Heading mb={"10px"} p={1}>
-        이력서 세부항목
-      </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
-      <Box w="full" gap={"20px"} display={"flex"} flexDirection={"column"}>
-        <FormControl>
-          <FormLabel></FormLabel>
-          <Image
-            w={"240px"}
-            h={"240px"}
-            border={"1px solid gray"}
-            borderRadius={150}
-            src={profileSrc === "" ? "/public/base_profile.png" : profileSrc}
-          />
-        </FormControl>
-        <FormControl>
-          <Box mb={4}>
-            <FormLabel fontSize={"xl"}>제목</FormLabel>
-            <Input defaultValue={resume.title} readOnly />
-          </Box>
-          <Flex gap={"10px"} mb={4}>
-            <Box w={"50%"}>
-              <FormLabel fontSize={"xl"}>성별</FormLabel>
-              <Input defaultValue={resume.gender} readOnly />
+      <Box>
+        <Heading mb={"10px"} p={1}>
+          이력서 세부항목
+        </Heading>
+        <Divider mb={"40px"} borderWidth={"2px"} />
+        <Box w="full" gap={"20px"} display={"flex"} flexDirection={"column"}>
+          <Flex>
+            <Box w={"240px"} h={"240px"}>
+              <Image
+                w={"100%"}
+                h={"100%"}
+                border={"1px solid gray"}
+                borderRadius={"50%"}
+                src={profileSrc === "" ? "/public/base_profile.png" : profileSrc}
+                objectFit={"contain"}
+              />
             </Box>
-            <Box w={"50%"}>
-              <FormLabel fontSize={"xl"}>생년월일</FormLabel>
-              <Input defaultValue={resume.birthDate} readOnly />
+            <Box
+              w={"50%"}
+              ml={"50px"}
+              display={"flex"}
+              flexDirection={"column"}
+              gap={"25px"}
+              lineHeight={"30px"}
+            >
+              <Box display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  이름
+                </FormLabel>
+                <Box>{account.name}</Box>
+              </Box>
+
+              <Box display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  생년월일
+                </FormLabel>
+                <Box>{resume.birthDate}</Box>
+                {/*<Box ml={"5px"}> (만 {nowAge}세)</Box>*/}
+              </Box>
+
+              <Box display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  성별
+                </FormLabel>
+                <Box>{resume.gender}</Box>
+              </Box>
+
+              <Box display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  전화번호
+                </FormLabel>
+                <Box>{formatPhoneNumber(resume.phone)}</Box>
+              </Box>
+
+              <Box display={"flex"}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  이메일
+                </FormLabel>
+                <Box>{resume.email}</Box>
+              </Box>
             </Box>
           </Flex>
-          <Flex gap={"10px"} mb={4}>
-            <Box w={"50%"}>
-              <FormLabel fontSize={"xl"}>이메일</FormLabel>
-              <Input defaultValue={resume.email} readOnly />
-            </Box>
-            <Box w={"50%"}>
-              <FormLabel fontSize={"xl"}>전화번호</FormLabel>
-              <Input defaultValue={formatPhoneNumber(resume.phone)} readOnly />
-            </Box>
-          </Flex>
+
           <Box mb={4}>
-            <FormLabel fontSize={"xl"}>자기소개</FormLabel>
+            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+              자기소개
+            </FormLabel>
             <Textarea defaultValue={resume.content} h={"150px"} readOnly />
-          </Box>
-          <Box mb={4}>
-            <FormLabel fontSize={"xl"}>신입여부</FormLabel>
-            {resume.isRookie === 1 && <Input defaultValue={"신입"} readOnly />}
-            {resume.isRookie !== 1 && <Input defaultValue={"경력"} readOnly />}
           </Box>
 
           <Box mb={4}>
-            <FormLabel fontSize={"xl"}>경력</FormLabel>
+            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+              경력여부
+            </FormLabel>
             <Tabs variant="solid-rounded" index={initialIndex}>
               <TabList>
                 <Tab
@@ -150,9 +174,11 @@ export function ResumeView() {
             </Tabs>
           </Box>
 
-          <Box mb={8}>
-            <FormLabel fontSize={"xl"}>작성일시</FormLabel>
-            <Input defaultValue={resume.inserted} readOnly />
+          <Box mb={4}>
+            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+              생성일
+            </FormLabel>
+            <Text>{resume.inserted}</Text>
           </Box>
           <Flex gap={"10px"}>
             <Button
@@ -172,7 +198,7 @@ export function ResumeView() {
               수정
             </Button>
           </Flex>
-        </FormControl>
+        </Box>
       </Box>
     </Box>
   );
