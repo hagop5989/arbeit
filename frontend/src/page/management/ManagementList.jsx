@@ -1,13 +1,13 @@
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
   Flex,
   Heading,
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -26,7 +26,6 @@ export function ManagementList() {
   const [checkChange, setCheckChange] = useState(false);
 
   // Read (jobs 리스트 받기)
-
   useEffect(() => {
     if (account.id) {
       axios.get("/api/jobs/management/list").then((res) => {
@@ -36,7 +35,6 @@ export function ManagementList() {
   }, [account.id, checkChange]);
 
   // 합격 로직
-
   function handleDecision(e, management) {
     let isPassed;
     const decision = e.target.innerText;
@@ -95,7 +93,7 @@ export function ManagementList() {
   }
 
   return (
-    <Box w={"100%"} h={"55vh"}>
+    <Box w={"100%"} h={"100%"}>
       {account.isAlba() && (
         <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
           사장만 접근 가능한 페이지 입니다.
@@ -114,7 +112,7 @@ export function ManagementList() {
             <Table>
               <Thead>
                 <Tr>
-                  <Th fontSize={"medium"}>선택</Th>
+                  <Th fontSize={"medium"}>#</Th>
                   <Th fontSize={"medium"}>지원일</Th>
                   <Th fontSize={"medium"}>진행공고명</Th>
                   <Th fontSize={"medium"}>지원서 제목</Th>
@@ -123,7 +121,7 @@ export function ManagementList() {
                 </Tr>
               </Thead>
               <Tbody>
-                {managementList.map((management) => (
+                {managementList.map((management, index) => (
                   <Tr
                     key={management.id}
                     fontSize={"15px"}
@@ -131,10 +129,7 @@ export function ManagementList() {
                   >
                     <Td minW={"80px"}>
                       {/* 체크박스 */}
-                      <Checkbox
-                        value={management.id}
-                        // onChange={handleCheckBoxChange}
-                      />
+                      <Text>{index + 1}</Text>
                     </Td>
                     {/* 지원일 */}
                     <Td fontSize={"sm"} minW={"130px"}>
@@ -183,19 +178,21 @@ export function ManagementList() {
                       <Flex gap={"5px"}>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
+                          w={"70px"}
                           fontWeight={"500"}
-                          bgColor={"#FF7F3E"}
+                          bgColor={"blue.500"}
                           color={"white"}
                         >
-                          합격
+                          <Text>합격</Text>
                         </Button>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
+                          w={"80px"}
                           fontWeight={"500"}
                           bgColor={"red.500"}
                           color={"white"}
                         >
-                          불합격
+                          <Text>불합격</Text>
                         </Button>
                       </Flex>
                     </Td>

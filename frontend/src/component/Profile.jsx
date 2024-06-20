@@ -7,6 +7,7 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 export function Profile() {
   const [src, setSrc] = useState("");
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const account = useContext(LoginContext);
   const isBoss = account.isBoss();
@@ -15,6 +16,22 @@ export function Profile() {
     if (account.id !== "") {
       axios.get(`/api/profile/${account.id}`).then((res) => setSrc(res.data));
     }
+
+    // 스크롤 이벤트 리스너 추가
+    const handleScroll = () => {
+      if (window.scrollY > 700) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트 언마운트 시 스크롤 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [account.id]);
 
   const scrollToTop = () => {
@@ -26,13 +43,6 @@ export function Profile() {
 
   return (
     <Box width={"80%"}>
-      <Center w="100%" h={"30px"} variant={"outline"} mt={"-20px"} mb={"20px"}>
-        <FontAwesomeIcon
-          icon={faArrowUp}
-          onClick={scrollToTop}
-          cursor={"pointer"}
-        />
-      </Center>
       <Center w={"100%"} height={"140px"} mb={"10px"}>
         <Image
           borderRadius={150}
@@ -86,6 +96,31 @@ export function Profile() {
           {account.recentJobPages.length}
         </Center>
       </Flex>
+      {showScrollButton && (
+        <Box position={"absolute"} bottom={"-400px"} left={"135px"}>
+          <Center
+            w="60px"
+            h={"60px"}
+            fontSize={"14px"}
+            variant={"outline"}
+            bgColor={"white"}
+            color={"gray.600"}
+            border={"1px solid lightgray"}
+            borderRadius={"50%"}
+            mt={"-20px"}
+            mb={"20px"}
+          >
+            <Flex direction="column" alignItems="center" fontWeight={"bold"}>
+              <FontAwesomeIcon
+                icon={faArrowUp}
+                onClick={scrollToTop}
+                cursor={"pointer"}
+              />
+              <Box mt="2px">Top</Box>
+            </Flex>
+          </Center>
+        </Box>
+      )}
     </Box>
   );
 }

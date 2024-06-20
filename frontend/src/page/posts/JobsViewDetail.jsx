@@ -7,7 +7,10 @@ import {
   HStack,
   Image,
   Link,
+  Tab,
   Table,
+  TabList,
+  Tabs,
   Tbody,
   Td,
   Text,
@@ -205,6 +208,7 @@ export function JobDetails({ job, jobsCond, images }) {
   const navigate = useNavigate();
   return (
     <Box
+      id="상세요강"
       w={"full"}
       maxW={"800px"}
       p={8}
@@ -290,6 +294,23 @@ export function JobContact({ job, jobsCond, boss, storeMap }) {
 
 export function JobRequirements({ job, jobsCond, id }) {
   const navigate = useNavigate();
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // 부드럽게 스크롤
+    });
+  };
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     // 연도와 날짜만 추출
@@ -307,71 +328,118 @@ export function JobRequirements({ job, jobsCond, id }) {
   }
 
   return (
-    <Box
-      w={"full"}
-      maxW={"800px"}
-      p={10}
-      borderWidth="1px"
-      borderRadius="lg"
-      border={"1px solid lightgray"}
-      bg="white"
-    >
-      <Text fontSize="2xl" my={2} fontWeight="bold">
-        모집조건
-      </Text>
-      <Divider mb={4} />
-      <Box mx={3}>
-        <HStack spacing={10} w="full" alignItems="start">
-          <VStack align="start" spacing={3} w="440px">
-            <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
-                모집마감
-              </Text>
-              <Text ml={"0px"}>{formatDate(job.deadline)}</Text>
-            </Box>
-            <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
-                모집인원
-              </Text>
-              <Text ml={"0px"}>{job.recruitmentNumber} 명</Text>
-            </Box>
-            <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
-                성별
-              </Text>
-              <Text ml={"0px"}>{"성별 무관"} </Text>
-            </Box>
-          </VStack>
-          <VStack align="start" spacing={3} w="440px" ml={"40px"}>
-            <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
-                학력
-              </Text>
-              <Text ml={"0px"}>
-                {jobsCond.education} {jobsCond.educationDetail}{" "}
-              </Text>
-            </Box>
-            <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
-                연령
-              </Text>
-              {jobsCond.age > 0 && (
-                <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
-              )}
-              {jobsCond.age == 0 && <Text ml={"0px"}>연령 무관</Text>}
-            </Box>
+    <Box>
+      {/* Scroll Tab */}
+      <Tabs
+        variant="unstyled"
+        defaultIndex={0} // 모집조건 탭을 기본으로 선택
+        mb={-2}
+        sx={{
+          "& .chakra-tabs__tab": {
+            color: "gray.400",
+            bg: "#f7f7f7",
+            border: "1px solid lightgray",
+            _selected: {
+              color: "red.400",
+              fontWeight: "600",
+              bg: "white",
+              borderColor: "lightgray",
+              borderBottom: "white", // 선택된 탭의 하단 경계선 제거
+            },
+            fontWeight: "500", // 기본 fontWeight 설정 (원하는 값으로 변경)
+            fontSize: "17px",
+            letterSpacing: "1px",
+          },
+          "& .chakra-tabs__tab-list": {
+            borderBottom: "1px solid lightgray",
+          },
+        }}
+      >
+        <TabList w={"100.2%"} h={"55px"}>
+          <Tab onClick={() => scrollToSection("모집조건")} w={"33.3%"}>
+            모집조건
+          </Tab>
+          <Tab onClick={() => scrollToSection("상세요강")} w={"33.3%"}>
+            상세요강
+          </Tab>
+          <Tab onClick={() => scrollToSection("기업정보")} w={"34%"}>
+            기업정보
+          </Tab>
+        </TabList>
+      </Tabs>
+      {/* Scroll Tab */}
+      <Box
+        id="모집조건"
+        w={"full"}
+        maxW={"800px"}
+        p={10}
+        borderWidth="1px"
+        borderRadius="lg"
+        border={"1px solid lightgray"}
+        bg="white"
+      >
+        <Text fontSize="2xl" my={2} fontWeight="bold">
+          모집조건
+        </Text>
+        <Divider mb={4} />
+        <Box mx={3}>
+          <HStack spacing={10} w="full" alignItems="start">
+            <VStack align="start" spacing={3} w="440px">
+              <Box my={2} display={"flex"}>
+                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                  모집마감
+                </Text>
+                <Text ml={"0px"}>{formatDate(job.deadline)}</Text>
+              </Box>
+              <Box my={2} display={"flex"}>
+                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                  모집인원
+                </Text>
+                <Text ml={"0px"}>{job.recruitmentNumber} 명</Text>
+              </Box>
+              <Box my={2} display={"flex"}>
+                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                  성별
+                </Text>
+                <Text ml={"0px"}>{"성별 무관"} </Text>
+              </Box>
+            </VStack>
+            <VStack align="start" spacing={3} w="440px" ml={"40px"}>
+              <Box my={2} display={"flex"}>
+                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                  학력
+                </Text>
+                <Text ml={"0px"}>
+                  {jobsCond.education} {jobsCond.educationDetail}{" "}
+                </Text>
+              </Box>
+              <Box my={2} display={"flex"}>
+                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                  연령
+                </Text>
+                {jobsCond.age > 0 && (
+                  <Text ml={"0px"}>{jobsCond.age} 세 이상</Text>
+                )}
+                {jobsCond.age == 0 && <Text ml={"0px"}>연령 무관</Text>}
+              </Box>
 
-            <Box my={2} display={"flex"}>
-              <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
-                우대사항
-              </Text>
-              <Text ml={"0px"}>{jobsCond.preferred}</Text>
-            </Box>
-          </VStack>
-        </HStack>
-        <Button onClick={handleApplyBtn} colorScheme="red" w="full" my={"10px"}>
-          지원하기
-        </Button>
+              <Box my={2} display={"flex"}>
+                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                  우대사항
+                </Text>
+                <Text ml={"0px"}>{jobsCond.preferred}</Text>
+              </Box>
+            </VStack>
+          </HStack>
+          <Button
+            onClick={handleApplyBtn}
+            colorScheme="red"
+            w="full"
+            my={"10px"}
+          >
+            지원하기
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
@@ -381,6 +449,7 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
   const navigate = useNavigate();
   return (
     <Box
+      id="기업정보"
       w={"full"}
       maxW={"800px"}
       p={10}

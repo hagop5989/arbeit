@@ -22,6 +22,7 @@ public interface ManagementMapper {
                FROM application a
                JOIN jobs j ON  j.id = a.jobs_id
                WHERE j.member_id = #{memberId}
+               ORDER BY applicationInserted
                 """)
     List<Management> list(Integer memberId);
 
