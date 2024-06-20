@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
-  Divider,
   Heading,
   Table,
   Tbody,
@@ -23,11 +22,12 @@ function VisitHistory(props) {
   }, [account.recentJobPages]);
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
-      <Heading mb={"10px"} p={1}>
-        최근 방문한 공고 (최대 10개 저장)
+    <Box w="full" maxW="70%" mx="auto" p={5} h={"600px"}>
+      <Heading borderBottom={"2px solid gray"} mb={"10px"}>
+        최근 방문한 공고
       </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
+      {visitList.length === 0 || <Box>최대 10개까지 등록됩니다.</Box>}
+      {visitList.length === 0 && <Box>최근 방문한 공고가 없습니다.</Box>}
       <Box>
         <Table>
           <Thead>
@@ -41,7 +41,7 @@ function VisitHistory(props) {
               <Tr
                 key={index}
                 cursor={"pointer"}
-                _hover={{ bgColor: "gray.100" }}
+                _hover={{ bgColor: "gray.300" }}
               >
                 <Td>{index + 1}</Td>
                 <Td
