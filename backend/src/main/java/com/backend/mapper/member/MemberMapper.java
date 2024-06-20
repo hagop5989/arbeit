@@ -40,8 +40,20 @@ public interface MemberMapper {
             """)
     void updateById(Member member);
 
-    @Delete("DELETE FROM member WHERE id=#{id}")
-    void deleteById(Integer id);
+    @Update("""
+            UPDATE member
+            SET
+                email=#{deleted},
+                name='탈퇴한 유저',
+                password='X',
+                gender='X',
+                birth_date='0000-00-00',
+                address='X',
+                phone='X',
+                inserted='0000-00-00 00:00:00'
+            WHERE id=#{id}
+            """)
+    void deleteById(Integer id, String deleted);
 
     /**
      * 권한 관련 SQL

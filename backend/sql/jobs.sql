@@ -20,6 +20,8 @@ create table jobs
 );
 SELECT *
 FROM jobs;
+SELECT *
+FROM member;
 
 
 SELECT *

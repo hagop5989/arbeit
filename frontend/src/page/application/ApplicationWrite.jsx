@@ -92,12 +92,10 @@ export function ApplicationWrite() {
           <Divider my={2} />
           <FormLabel fontSize={"3xl"}>이력서 첨부</FormLabel>
           <Select
-            value={application.resumeId || ""}
+            defaultValue={application.resumeId}
+            placeholder={"이력서를 선택해주세요."}
             onChange={handleResumeChange}
           >
-            <option value="" disabled>
-              선택
-            </option>
             {resumeList.map((resume) => (
               <option key={resume.id} value={resume.id}>
                 {resume.title}

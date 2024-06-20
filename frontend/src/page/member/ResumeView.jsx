@@ -91,11 +91,7 @@ export function ResumeView() {
                 h={"100%"}
                 border={"1px solid gray"}
                 borderRadius={"50%"}
-                src={
-                  profileSrc === ""
-                    ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
-                    : profileSrc
-                }
+                src={profileSrc === "" ? "/public/base_profile.png" : profileSrc}
                 objectFit={"contain"}
               />
             </Box>

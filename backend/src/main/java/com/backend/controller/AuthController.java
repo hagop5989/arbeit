@@ -92,6 +92,10 @@ public class AuthController {
 
     @PostMapping("/find-email")
     public ResponseEntity findEmail(@RequestParam String name, @RequestParam String phone) {
+
+        if (name.equals("탈퇴한 유저")) {
+            return ResponseEntity.badRequest().build();
+        }
         String email = memberService.findByNameAndPhone(name, phone);
         if (email != null) {
             return ResponseEntity.ok(email);

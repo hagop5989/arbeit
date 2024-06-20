@@ -168,10 +168,11 @@ export function JobsRegister() {
         <Flex gap={"10px"}>
           <Box w={"50%"}>
             <FormLabel fontSize={"3xl"}>가게명</FormLabel>
-            <Select mb={4} onChange={(e) => handleSelectChange(e.target.value)}>
-              <option value={""} disabled>
-                선택
-              </option>
+            <Select
+              mb={4}
+              onChange={(e) => handleSelectChange(e.target.value)}
+              placeholder={"선택해주세요."}
+            >
               {storeList.map((store) => (
                 <option key={store.id} value={store.id}>
                   {store.name}
