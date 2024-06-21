@@ -78,8 +78,8 @@ export function MemberInfo() {
       .post(`/api/member/${id}/delete`)
       .then(() => {
         toast({
-          status: "success",
-          description: "삭제되었습니다.",
+          status: "warning",
+          description: "탈퇴되었습니다.",
           position: "top",
         });
         account.logout();

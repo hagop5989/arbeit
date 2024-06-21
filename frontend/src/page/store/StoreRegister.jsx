@@ -179,7 +179,7 @@ export function StoreRegister() {
           </Center>
         </FormControl>
         <FormControl {...styles.formControl} mb={"180px"}>
-          <FormLabel {...styles.formLabel}>가게 사진</FormLabel>
+          <FormLabel {...styles.formLabel}>가게 로고</FormLabel>
           <Center>
             <Button
               colorScheme={"orange"}
