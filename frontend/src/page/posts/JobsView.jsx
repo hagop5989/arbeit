@@ -115,20 +115,20 @@ export function JobsView() {
         <Divider />
         <JobReview job={jobs} jobsCond={jobsCond} />
       </Stack>
-      <Flex w={"100%"} gap={5} my={"40px"}>
-        <Button
-          onClick={() => navigate("/jobs/list")}
-          w={"50%"}
-          colorScheme={"green"}
-        >
-          목록
-        </Button>
-        {account.isAlba() && (
+      {account.isAlba() && (
+        <Flex w={"100%"} gap={5} my={"40px"}>
+          <Button
+            onClick={() => navigate("/jobs/list")}
+            w={"50%"}
+            colorScheme={"green"}
+          >
+            목록
+          </Button>
           <Button onClick={handleApplyBtn} w={"50%"} colorScheme={"blue"}>
             지원하기
           </Button>
-        )}
-      </Flex>
+        </Flex>
+      )}
 
       {account.isBoss() && (
         <Flex w={"100%"} gap={5} my={"40px"}>
