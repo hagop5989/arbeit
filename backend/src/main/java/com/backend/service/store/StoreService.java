@@ -95,29 +95,20 @@ public class StoreService {
         return result;
     }
 
-    public void edit(StoreEditForm form, List<String> removeImages, MultipartFile[] addImages) throws IOException {
+    public void edit(StoreEditForm form, String removeImageName, MultipartFile addImage) throws IOException {
 
         Integer storeId = form.getId();
 
-        if (removeImages != null && !removeImages.isEmpty()) {
-            for (String imageName : removeImages) {
-                // s3의 파일 삭제
-                removeStoreImageToS3(storeId, imageName);
-                mapper.deleteImageByIdAndName(storeId, imageName);
-            }
+        if (removeImageName != null) {
+            // s3의 파일 삭제
+            removeStoreImageToS3(storeId, removeImageName);
+            mapper.deleteImageByIdAndName(storeId, removeImageName);
         }
 
-        if (addImages != null && addImages.length > 0) {
-            List<String> imageNames = mapper.selectImagesById(storeId);
-
-            for (MultipartFile image : addImages) {
-                String imageName = image.getOriginalFilename();
-
-                if (!imageNames.contains(imageName)) {
-                    mapper.insertImage(storeId, imageName);
-                }
-                saveStoreImageToS3(image, storeId, imageName);
-            }
+        if (addImage != null) {
+            String imageName = addImage.getOriginalFilename();
+            mapper.insertImage(storeId, addImage.getOriginalFilename());
+            saveStoreImageToS3(addImage, storeId, imageName);
         }
 
         mapper.update(form);
@@ -162,4 +153,7 @@ public class StoreService {
         s3Client.deleteObject(objectRequest);
     }
 
+    public Integer findMemberIdByAuthId(Integer id) {
+        return memberMapper.selectMemberIdById(id);
+    }
 }

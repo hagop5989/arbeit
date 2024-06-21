@@ -1,14 +1,10 @@
 import {
   Box,
   Button,
-  Divider,
+  Center,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
   Image,
-  Input,
-  Spinner,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -16,15 +12,41 @@ import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import axios from "axios";
 import KakaoMap2 from "../posts/KakaoMap2.jsx";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import defaultImage from "/alba_connector_logo.png";
+
+const styles = {
+  menu: {
+    h: "33.33%",
+    textIndent: "20px",
+    lineHeight: "40px",
+    ml: "20px",
+    pt: "8px",
+  },
+  text: {
+    fontSize: "17px",
+    borderRight: "3px solid orange",
+    w: "100px",
+    h: "40px",
+  },
+  info: {
+    w: "300px",
+    h: "40px",
+    fontWeight: "700",
+  },
+  title: {
+    h: "40px",
+    fontSize: "1.5rem",
+    fontWeight: "800",
+    borderBottom: "2px solid gray",
+    mb: "10px",
+  },
+};
 
 export function StoreView() {
   const { id } = useParams();
   const [store, setStore] = useState({});
-  const [imageList, setImageList] = useState([]);
+  const [image, setImage] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -35,35 +57,22 @@ export function StoreView() {
       .get(`/api/store/${id}`)
       .then((res) => {
         setStore(res.data.store);
-        setImageList(res.data.images);
+        setImage(res.data.images);
       })
       .catch(() => navigate("/store/list"));
   }, [account.id]);
 
-  if (!store.name) {
-    return (
-      <Flex justifyContent="center" alignItems="center" minHeight="100vh">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
-
   function handleRemoveBtn() {
-    axios.delete(`/api/store/${id}`).then(() => {
-      navigate("/store/list");
-    });
+    const confirm = window.confirm("정말 삭제하시겠습니까?");
+    if (confirm) {
+      axios.delete(`/api/store/${id}`).then(() => {
+        navigate("/store/list");
+      });
+    }
   }
-
-  const sliderSettings = {
-    dots: true, // 동그라미 네비게이션 활성화
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
 
   return (
-    <Box w={"100%"}>
+    <Box w={"70%"}>
       <Box
         h={"70px"}
         mb={"70px"}
@@ -72,117 +81,95 @@ export function StoreView() {
         borderRadius={"10px"}
       >
         <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
-          가게 관리
+          사업장 정보
         </Heading>
       </Box>
       <Box>
-        <Heading>{store.name}</Heading>
-        <FormControl>
-          <Divider borderWidth="2px" my={6} borderColor={"#ffa500"} />
-          <Box
-            position="relative"
-            width="100%"
-            maxWidth="500px"
-            height="350px"
-            border="1px solid gray"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            overflow="hidden"
-            mx="auto"
-          >
-            <Slider
-              {...sliderSettings}
-              style={{ width: "100%", height: "100%" }}
+        <Flex mb={"70px"}>
+          <Box>
+            <Box
+              w={"260px"}
+              h={"110px"}
+              border={"2px solid #E0E0E0"}
+              borderRadius={"10px"}
             >
-              {imageList.length > 0 ? (
-                imageList.map((image) => (
-                  <Box
-                    key={image.name}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    width="100%"
-                    height="100%"
-                  >
-                    <Image
-                      src={image.src}
-                      maxH="100%"
-                      maxW="100%"
-                      objectFit="contain"
-                    />
-                  </Box>
-                ))
-              ) : (
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  width="100%"
-                  height="100%"
-                >
-                  <Image
-                    src={defaultImage}
-                    maxH="100%"
-                    maxW="100%"
-                    objectFit="contain"
-                  />
-                </Box>
-              )}
-            </Slider>
+              <Image
+                src={
+                  image.length === 0
+                    ? "/public/alba_connector_store_logo.png"
+                    : image[0].src
+                }
+                w={"250px"}
+                h={"100px"}
+                objectFit="contain"
+              />
+            </Box>
+            <Center w="260px" h="70px" size={"lg"}>
+              <Box textAlign={"center"}>
+                <Box mb={"2px"}>사업장명</Box>
+                <Heading size={"md"}>{store.name}</Heading>
+              </Box>
+            </Center>
           </Box>
-          <Divider borderWidth="1px" my={6} borderColor={"#ededed"} />
-          <Flex
-            justifyContent="space-between"
-            direction={{ base: "column", md: "row" }}
-            gap="5"
-          >
-            <FormLabel mt={"8px"}>전화 번호</FormLabel>
-            <Input w={"200px"} defaultValue={store.phone} readOnly />
-            <FormLabel mt={"8px"}>가게 카테고리</FormLabel>
-            <Input w={"120px"} defaultValue={store.categoryName} readOnly />
-            <FormLabel mt={"8px"}>가게 별점</FormLabel>
-            <Input w={"150px"} defaultValue={"아직 작업 안했음"} readOnly />
-          </Flex>
-          <Divider borderWidth="1px" my={6} borderColor={"#ededed"} />
-          <FormLabel mt="50px" fontSize={"1.5rem"}>
-            가게 내용
-          </FormLabel>
-          <Divider borderWidth="1px" my={2} borderColor={"#ededed"} />
-          <Box
-            ml={"10px"}
-            h={"200px"}
-            fontSize={"1.2rem"}
-            whiteSpace="pre-wrap"
-          >
-            {store.content}
+          <Box w={"100%"} fontSize={"20px"}>
+            <Flex {...styles.menu}>
+              <Box {...styles.text}>연락처</Box>
+              <Box {...styles.info}>{store.phoneNumber}</Box>
+            </Flex>
+            <Flex {...styles.menu}>
+              <Box {...styles.text}>카테고리</Box>
+              <Box {...styles.info}>{store.categoryName}</Box>
+            </Flex>
+            <Flex {...styles.menu}>
+              <Box {...styles.text}>평점</Box>
+              <Box {...styles.info}>준비중</Box>
+            </Flex>
           </Box>
-          <Divider borderWidth="1px" my={2} borderColor={"#ededed"} />
-          <FormLabel mt="20px" fontSize={"1.5rem"}>
-            가게 주소
-          </FormLabel>
-          <Divider borderWidth="1px" my={4} borderColor={"#ededed"} />
-          <Box ml={"10px"} fontSize={"1.2rem"}>
-            {store.address}{" "}
+        </Flex>
+        <Box {...styles.title}>사업장 소개</Box>
+        <Box
+          h={"300px"}
+          border={"2px solid #E0E0E0"}
+          borderRadius={"10px"}
+          p={"10px"}
+          fontSize={"20px"}
+          mb={"70px"}
+        >
+          {store.content}
+        </Box>
+        <Box {...styles.title}>주소</Box>
+        <Flex h={"200px"} mb={"70px"}>
+          <Box w={"600px"} mt={"10px"}>
+            <Box mt={"50px"}>
+              <Box fontSize={"20px"} textAlign={"center"}>
+                {store.address}
+              </Box>
+              <Box fontSize={"20px"} textAlign={"center"}>
+                {store.detailAddress}
+              </Box>
+            </Box>
           </Box>
-          <Box ml={"10px"} fontSize={"1.2rem"}>
-            {store.detailAddress}{" "}
-          </Box>
-          <Box mt="20px">
-            <KakaoMap2 address={store.address} />
-          </Box>
-          <Flex mt="20px">
+          <KakaoMap2 address={store.address} height={"200px"} />
+        </Flex>
+        {account.hasAccess(store.memberId) && (
+          <Flex mt={"50px"} borderTop={"2px solid #E0E0E0"} pt={"10px"}>
             <Button
-              colorScheme="purple"
+              colorScheme="blue"
+              variant={"outline"}
               onClick={() => navigate(`/store/edit/${store.id}`)}
             >
               수정
             </Button>
-            <Button colorScheme="red" onClick={handleRemoveBtn} ml="4">
+            <Button
+              colorScheme="red"
+              variant={"outline"}
+              onClick={handleRemoveBtn}
+              ml="5px"
+            >
               삭제
             </Button>
           </Flex>
-        </FormControl>
+        )}
       </Box>
     </Box>
   );

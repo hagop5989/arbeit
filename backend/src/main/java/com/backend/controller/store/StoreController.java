@@ -51,6 +51,7 @@ public class StoreController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
     public List<Store> list(Authentication authentication) {
         return storeService.findAllByMemberId(authentication);
     }
@@ -69,10 +70,10 @@ public class StoreController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
     public ResponseEntity edit(@Validated StoreEditForm form, BindingResult bindingResult,
-                               @RequestParam(value = "removeImages[]", required = false)
-                               List<String> removeImages,
-                               @RequestParam(value = "addImages[]", required = false)
-                               MultipartFile[] addImages,
+                               @RequestParam(value = "removeImage", required = false)
+                               String removeImage,
+                               @RequestParam(value = "addImage[]", required = false)
+                               MultipartFile addImage,
                                Authentication authentication) throws IOException {
 
         if (!storeService.hasAccess(form.getId(), authentication)) {
@@ -84,7 +85,7 @@ public class StoreController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        storeService.edit(form, removeImages, addImages);
+        storeService.edit(form, removeImage, addImage);
         return ResponseEntity.ok().build();
     }
 

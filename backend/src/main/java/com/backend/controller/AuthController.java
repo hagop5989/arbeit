@@ -131,7 +131,6 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-
     private void putValue(String key, String value) {
         numbers.put(key, value);
         scheduleRemoval(key, 2, TimeUnit.MINUTES);

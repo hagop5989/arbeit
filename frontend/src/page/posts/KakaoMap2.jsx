@@ -3,7 +3,7 @@ import { Box, useDisclosure } from "@chakra-ui/react";
 
 const { kakao } = window;
 
-function KakaoMap2({ address }) {
+function KakaoMap2({ address, height }) {
   const mapRef = useRef(null);
   const [x, setX] = useState(126.945184);
   const [y, setY] = useState(37.556441);
@@ -79,7 +79,8 @@ function KakaoMap2({ address }) {
       <Box
         id={"map"}
         w={"100%"}
-        h={"400px"}
+        h={height}
+        maxHeight={"400px"}
         border={"3px solid gray"}
         borderRadius={"20px"}
       />

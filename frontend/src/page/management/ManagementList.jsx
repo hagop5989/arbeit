@@ -109,7 +109,6 @@ export function ManagementList() {
             </Heading>
             <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
-
           <Box>
             <Table>
               <Thead>
