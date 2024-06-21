@@ -2,7 +2,7 @@ package com.backend.mapper.store;
 
 import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
-import com.backend.domain.store.StoreEditForm;
+import com.backend.domain.store.form.StoreEditForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

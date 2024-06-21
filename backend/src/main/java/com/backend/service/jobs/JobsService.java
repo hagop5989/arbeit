@@ -1,6 +1,8 @@
 package com.backend.service.jobs;
 
 import com.backend.domain.jobs.*;
+import com.backend.domain.jobs.form.JobsEditForm;
+import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.domain.member.Member;
 import com.backend.mapper.jobs.JobsConditionMapper;
 import com.backend.mapper.jobs.JobsImageMapper;

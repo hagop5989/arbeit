@@ -1,7 +1,7 @@
 package com.backend.mapper.application;
 
 import com.backend.domain.application.Application;
-import com.backend.domain.member.resume.Resume;
+import com.backend.domain.resume.Resume;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

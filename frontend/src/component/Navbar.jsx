@@ -10,7 +10,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginProvider.jsx"; // 개별 메뉴 링크 컴포넌트
+import { LoginContext } from "../provider/LoginProvider.jsx"; // 개별 메뉴 링크 컴포넌트
 
 // 개별 메뉴 링크 컴포넌트
 const NavLink = ({ href, children }) => (
@@ -46,9 +46,9 @@ const Navbar = () => {
 
   return (
     <Box bg="white" borderBottom="3px solid #eaeaea" height="110px" mb={"70px"}>
-      <Box bg={"orange"} h={"3px"} mb={"30px"}></Box>
-      <Flex minWidth={"1150px"} mx={{ base: "0px", "2xl": "200px" }}>
-        <HStack w={"90%"} spacing={8} mx={"150px"}>
+      <Box bg={"orange"} h={"3px"} mb={"30px"} />
+      <Center minWidth={"1000px"} mx={{ base: "0px", xl: "200px" }}>
+        <HStack w={"1300px"} spacing={8}>
           <Box
             display="flex"
             width="200px"
@@ -127,13 +127,13 @@ const Navbar = () => {
               )}
               {account.isBoss() && (
                 <NavbarButton onClick={() => navigate("/store/register")}>
-                  가게 등록
+                  사업장 등록
                 </NavbarButton>
               )}
             </Center>
           </Flex>
         </HStack>
-      </Flex>
+      </Center>
     </Box>
   );
 };

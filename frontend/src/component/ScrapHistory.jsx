@@ -11,7 +11,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { LoginContext } from "./LoginProvider.jsx";
+import { LoginContext } from "../provider/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

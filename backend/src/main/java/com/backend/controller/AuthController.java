@@ -1,7 +1,7 @@
 package com.backend.controller;
 
-import com.backend.domain.member.MemberLoginForm;
-import com.backend.domain.member.MemberSignupForm;
+import com.backend.domain.member.form.MemberLoginForm;
+import com.backend.domain.member.form.MemberSignupForm;
 import com.backend.service.member.MailService;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -130,7 +130,6 @@ public class AuthController {
         memberService.updatePwdByEmail(email, password);
         return ResponseEntity.ok().build();
     }
-
 
     private void putValue(String key, String value) {
         numbers.put(key, value);

@@ -1,10 +1,10 @@
-import { JobsRegister } from "../page/posts/JobsRegister.jsx";
-import { JobsList } from "../page/posts/JobsList.jsx";
-import { ResumeRegister } from "../page/member/ResumeRegister.jsx";
-import { ResumeList } from "../page/member/ResumeList.jsx";
-import { ResumeEdit } from "../page/member/ResumeEdit.jsx";
-import { JobsEdit } from "../page/posts/JobsEdit.jsx";
-import { ResumeView } from "../page/member/ResumeView.jsx";
+import { JobsRegister } from "../page/jobs/JobsRegister.jsx";
+import { JobsList } from "../page/jobs/JobsList.jsx";
+import { ResumeRegister } from "../page/resume/ResumeRegister.jsx";
+import { ResumeList } from "../page/resume/ResumeList.jsx";
+import { ResumeEdit } from "../page/resume/ResumeEdit.jsx";
+import { JobsEdit } from "../page/jobs/JobsEdit.jsx";
+import { ResumeView } from "../page/resume/ResumeView.jsx";
 import { ApplicationWrite } from "../page/application/ApplicationWrite.jsx";
 import { ApplicationList } from "../page/application/ApplicationList.jsx";
 import { ApplicationView } from "../page/application/ApplicationView.jsx";
@@ -12,8 +12,8 @@ import { ManagementList } from "../page/management/ManagementList.jsx";
 import { ManagementView } from "../page/management/ManagementView.jsx";
 import Test1 from "../page/test)calendar/Test1.jsx";
 import VisitHistory from "../component/VisitHistory.jsx";
-import JobsView from "../page/posts/JobsView.jsx";
-import ScrapHistory from "../component/ScrapHistory.jsx";
+import JobsView from "../page/jobs/JobsView.jsx";
+import ScrapHistory from "../component/ScrapHistory.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [

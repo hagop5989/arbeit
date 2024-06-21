@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [board, setBoard] = useState({});

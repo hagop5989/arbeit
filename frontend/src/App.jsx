@@ -5,9 +5,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import Home from "./page/Home.jsx";
-import { LoginProvider } from "./component/LoginProvider.jsx";
+import { LoginProvider } from "./provider/LoginProvider.jsx";
 import axios from "axios";
-import { Login } from "./page/Login.jsx";
+import { Login } from "./page/member/Login.jsx";
 import memberRoutes from "./path/memberRoutes.jsx";
 import bossRoutes from "./path/bossRoutes.jsx";
 import storeRoutes from "./path/storeRoutes.jsx";

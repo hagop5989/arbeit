@@ -2,9 +2,9 @@ package com.backend.service.member;
 
 import com.backend.domain.authority.MemberAuth;
 import com.backend.domain.member.Member;
-import com.backend.domain.member.MemberEditForm;
-import com.backend.domain.member.MemberLoginForm;
-import com.backend.domain.member.MemberSignupForm;
+import com.backend.domain.member.form.MemberEditForm;
+import com.backend.domain.member.form.MemberLoginForm;
+import com.backend.domain.member.form.MemberSignupForm;
 import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
