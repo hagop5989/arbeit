@@ -4,18 +4,20 @@ import {
   Table,
   Tbody,
   Td,
+
+  Text,
   Th,
   Thead,
   Tr,
-  useMediaQuery,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { LoginContext } from "../component/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 
 export function LeftNavbar(props) {
   const account = useContext(LoginContext);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const navigate = useNavigate();
   const albaMenu = [
     { name: "공고리스트", url: "/jobs/list" },
@@ -34,36 +36,72 @@ export function LeftNavbar(props) {
     { name: "캘린더테스트", url: "/test" },
   ];
 
-  // 특정 크기 이하 이면 사라지게
-  const [isLargerThanX] = useMediaQuery("(min-width: 1800px)");
-  // 자연스럽게 메뉴 보이기
-  useEffect(() => {
-    if (isLargerThanX) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
-  }, [isLargerThanX]);
-
-  // 여기서 조건에 따라 albaMenu 또는 bossMenu를 선택하세요.
   const menuItems = account.isBoss() ? bossMenu : albaMenu;
 
+  const timerRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    timerRef.current = setTimeout(() => {
+      if (!isMenuHovered) {
+        setIsHovered(false);
+      }
+    }, 200);
+  };
+
+  const handleMenuMouseEnter = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setIsMenuHovered(true);
+    setIsHovered(true);
+  };
+
+  const handleMenuMouseLeave = () => {
+    setIsMenuHovered(false);
+    timerRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 200);
+  };
+
   return (
-    <Flex
-      display={isLargerThanX ? "block" : "none"}
-      zIndex={"3"}
-      position={"fixed"}
-      left={"50px"}
-      top={"230px"}
-      h={"300px"}
-    >
+    <Flex zIndex={"3"}>
       <Box
-        transition="transform 0.3s ease, opacity 0.3s ease"
-        transform={isVisible ? "translateX(0)" : "translateX(-100%)"}
-        opacity={isVisible ? 1 : 0}
+        position={"fixed"}
+        w={"60px"}
+        h={"150px"}
+        borderRadius={"10px"}
+        bgColor={"#2D3748"}
+        color={"white"}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        cursor={"pointer"}
+      >
+        <Text writingMode={"vertical-rl"} transform={"rotate(270deg)"}>
+          메뉴 호버
+        </Text>
+      </Box>
+      <Box
+        position={"fixed"}
+        top={"230px"}
+        left={isHovered ? "100px" : "-300px"}
+        transition="left 0.3s ease"
         border={"1px solid lightgray"}
         borderRadius={"10px"}
         w={"300px"}
+        zIndex={isHovered ? "4" : "2"}
+        onMouseEnter={handleMenuMouseEnter}
+        onMouseLeave={handleMenuMouseLeave}
         bgColor={"white"}
         boxShadow={"lg"}
       >
