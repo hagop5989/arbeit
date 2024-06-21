@@ -6,7 +6,6 @@ import {
   Grid,
   HStack,
   Image,
-  Link,
   Tab,
   Table,
   TabList,
@@ -65,10 +64,10 @@ export function JobDetail({ job, jobsCond, storeMap }) {
         </Box>
       </Flex>
       <Text fontSize="sm" color="gray.500" mb={2}>
-        {"#초보가능, #간편지원"}
+        {"#초보가능, #간편지원, #4대보험"}
       </Text>
       <Text fontSize="md" mb={5}>
-        {job.content}
+        {/*{job.content}*/}
       </Text>
 
       <Grid
@@ -78,7 +77,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
         mt={"40px"}
       >
         <Box>
-          <Text fontSize="lg" fontWeight="bold">
+          <Text fontSize="xl" fontWeight="bold">
             {parseInt(job.salary).toLocaleString()} 원
           </Text>
           <Text fontSize="sm" color="gray.500">
@@ -86,7 +85,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
           </Text>
         </Box>
         <Box>
-          <Text fontSize="lg" fontWeight="bold">
+          <Text fontSize="xl" fontWeight="bold">
             {jobsCond.workPeriod}
           </Text>
           <Text fontSize="sm" color="gray.500">
@@ -94,7 +93,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
           </Text>
         </Box>
         <Box>
-          <Text fontSize="lg" fontWeight="bold">
+          <Text fontSize="xl" fontWeight="bold">
             {jobsCond.workWeek}
           </Text>
           <Text fontSize="sm" color="gray.500">
@@ -133,19 +132,27 @@ export function JobConditions({ job, jobsCond }) {
       <Flex justifyContent="space-between" p={2} fontSize={"17px"}>
         <Box w={"440px"} mx={"10px"}>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>급여</Text>
+            <Text w={"95px"} fontWeight="bold">
+              급여
+            </Text>
             <Text ml={"0px"}> {parseInt(job.salary).toLocaleString()}원</Text>
           </Box>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>기간</Text>
+            <Text w={"95px"} fontWeight="bold">
+              기간
+            </Text>
             <Text ml={"0px"}> {jobsCond.workPeriod}</Text>
           </Box>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>요일</Text>
+            <Text w={"95px"} fontWeight="bold">
+              요일
+            </Text>
             <Text ml={"0px"}> {jobsCond.workWeek}</Text>
           </Box>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>시간</Text>
+            <Text w={"95px"} fontWeight="bold">
+              시간
+            </Text>
             <Text w={"160px"} ml={"0px"}>
               {jobsCond.workTime}
             </Text>
@@ -153,15 +160,21 @@ export function JobConditions({ job, jobsCond }) {
         </Box>
         <Box w={"440px"} mx={"10px"}>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>업직종</Text>
+            <Text w={"95px"} fontWeight="bold">
+              업직종
+            </Text>
             <Text ml={"10px"}>{job.categoryName}</Text>
           </Box>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>고용형태</Text>
+            <Text w={"95px"} fontWeight="bold">
+              고용형태
+            </Text>
             <Text ml={"10px"}>{"알바"}</Text>
           </Box>
           <Box my={2} display={"flex"}>
-            <Text w={"95px"}>복리후생</Text>
+            <Text w={"95px"} fontWeight="bold">
+              복리후생
+            </Text>
             <Text
               ml={"10px"}
               whiteSpace="nowrap" // 줄 바꿈을 막음
@@ -177,7 +190,7 @@ export function JobConditions({ job, jobsCond }) {
   );
 }
 
-export function JobLocation({ job, jobsCond, storeMap }) {
+export function JobLocation({ storeMap }) {
   return (
     <Box
       w={"full"}
@@ -204,7 +217,7 @@ export function JobLocation({ job, jobsCond, storeMap }) {
   );
 }
 
-export function JobDetails({ job, jobsCond, images }) {
+export function JobDetails({ job, images }) {
   const navigate = useNavigate();
   return (
     <Box
@@ -239,7 +252,7 @@ export function JobDetails({ job, jobsCond, images }) {
   );
 }
 
-export function JobContact({ job, jobsCond, boss, storeMap }) {
+export function JobContact({ boss, storeMap }) {
   const navigate = useNavigate();
   return (
     <Box
@@ -272,14 +285,16 @@ export function JobContact({ job, jobsCond, boss, storeMap }) {
           <Tr>
             <Td fontWeight="bold">홈페이지</Td>
             <Td>
-              <Link
+              {/*/store/${storeMap.store.id}*/}
+              <Box
                 onClick={() => navigate(`/store/${storeMap.store.id}`)}
+                cursor={"pointer"}
                 color="red.500"
                 href={"job.contactWebsite"}
                 isExternal
               >
                 홈페이지방문
-              </Link>
+              </Box>
             </Td>
           </Tr>
         </Tbody>
@@ -309,13 +324,6 @@ export function JobRequirements({ job, jobsCond, id }) {
       .then(() => navigate(`/jobs/${id}/apply`))
       .catch((err) => alert(err.response.data));
   }
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth", // 부드럽게 스크롤
-    });
-  };
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);

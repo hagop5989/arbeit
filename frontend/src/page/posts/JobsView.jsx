@@ -89,22 +89,17 @@ export function JobsView() {
   return (
     <Center flexDirection="column" p={5} bg="#f7f9fc">
       <Stack spacing={6}>
-        <JobDetail job={jobs} jobsCond={jobsCond} storeMap={storeMap} />
+        <JobDetail job={jobs} storeMap={storeMap} />
         <Divider />
         <JobRequirements job={jobs} jobsCond={jobsCond} id={id} />
         <Divider />
-        <JobLocation job={jobs} jobsCond={jobsCond} storeMap={storeMap} />
+        <JobLocation storeMap={storeMap} />
         <Divider />
         <JobConditions job={jobs} jobsCond={jobsCond} />
         <Divider />
         <JobDetails job={jobs} jobsCond={jobsCond} images={images} />
         <Divider />
-        <JobContact
-          job={jobs}
-          jobsCond={jobsCond}
-          boss={boss}
-          storeMap={storeMap}
-        />
+        <JobContact boss={boss} storeMap={storeMap} />
         <Divider />
         <CompanyInfo
           job={jobs}

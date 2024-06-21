@@ -13,7 +13,7 @@ import { ManagementView } from "../page/management/ManagementView.jsx";
 import Test1 from "../page/test)calendar/Test1.jsx";
 import VisitHistory from "../component/VisitHistory.jsx";
 import JobsView from "../page/posts/JobsView.jsx";
-import ScrapHistory from "../component/ScrapHistory.jsx"; // list : jobs , view : detail
+import ScrapHistory from "../component/ScrapHistory.jsx";
 
 // list : jobs , view : detail
 const bossRoutes = [

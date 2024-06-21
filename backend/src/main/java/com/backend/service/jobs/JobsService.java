@@ -176,6 +176,7 @@ public class JobsService {
         // file 명 조회
         List<String> fileNames = imageMapper.selectImageNameByJobsId(jobsId);
 
+        scrapService.deleteByJobsId(jobsId);
         applicationService.deleteAllByJobsId(jobsId);
         // s3,db jobsFile 삭제
         removeJobsImageToS3(jobsId, fileNames);
