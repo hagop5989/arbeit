@@ -83,7 +83,7 @@ export function FAQ() {
   };
 
   return (
-    <Box width="100%" mt="5" borderRadius="md" boxShadow="md">
+    <Box width="100%" mt="5" borderRadius="md">
       <Box>
         <Tabs variant="enclosed" mt={2} onChange={handleTabChange}>
           <TabList>
@@ -96,7 +96,13 @@ export function FAQ() {
           </TabList>
         </Tabs>
       </Box>
-      <Heading as="h2" size="lg" margin="5" textAlign="center">
+      <Heading
+        as="h2"
+        size="lg"
+        margin="5"
+        textAlign="center"
+        color={"#df7d4a"}
+      >
         FAQ
       </Heading>
       <Accordion
