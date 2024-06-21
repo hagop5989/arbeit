@@ -22,7 +22,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";

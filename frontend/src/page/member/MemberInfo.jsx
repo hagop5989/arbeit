@@ -15,7 +15,7 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
@@ -78,8 +78,8 @@ export function MemberInfo() {
       .post(`/api/member/${id}/delete`)
       .then(() => {
         toast({
-          status: "success",
-          description: "삭제되었습니다.",
+          status: "warning",
+          description: "탈퇴되었습니다.",
           position: "top",
         });
         account.logout();

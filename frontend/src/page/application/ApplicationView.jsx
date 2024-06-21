@@ -12,7 +12,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function ApplicationView() {
   const { id } = useParams();

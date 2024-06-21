@@ -11,7 +11,7 @@ import {
 import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");

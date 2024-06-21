@@ -1,7 +1,7 @@
 package com.backend.controller.jobs;
 
-import com.backend.domain.jobs.JobsEditForm;
-import com.backend.domain.jobs.JobsRegisterForm;
+import com.backend.domain.jobs.form.JobsEditForm;
+import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.service.jobs.JobsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,7 +2,7 @@ package com.backend.service.application;
 
 import com.backend.domain.application.Application;
 import com.backend.domain.application.ApplicationWriteForm;
-import com.backend.domain.member.resume.Resume;
+import com.backend.domain.resume.Resume;
 import com.backend.mapper.application.ApplicationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,4 +71,6 @@ public class ApplicationService {
     public Integer count(Integer authId) {
         return mapper.selectCountByMemberId(authId);
     }
+
+
 }

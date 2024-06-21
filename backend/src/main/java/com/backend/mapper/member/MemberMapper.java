@@ -84,4 +84,11 @@ public interface MemberMapper {
             WHERE email=#{email}
             """)
     void updatePwdByEmail(String email, String password);
+
+    @Select("""
+            SELECT member_id
+            FROM store
+            WHERE id=#{id}
+            """)
+    Integer selectMemberIdById(Integer id);
 }

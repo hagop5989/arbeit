@@ -1,6 +1,7 @@
-import { Box, Flex, Select, Text } from "@chakra-ui/react";
+import { Box, Flex, Select, Text, useMediaQuery } from "@chakra-ui/react";
 
 export function Footer() {
+  const [isNeedResize] = useMediaQuery("(max-width: 1050px)");
   const footerList = [
     "회사소개",
     "이용약관",
@@ -13,7 +14,7 @@ export function Footer() {
   ];
 
   return (
-    <Box h={"200px"} mt={"50px"} bg={"#E9E9E9"}>
+    <Box h={"200px"} bg={"#E9E9E9"}>
       <Box
         w={"full"}
         // my={"20px"}
@@ -35,7 +36,9 @@ export function Footer() {
             p={5}
           >
             {footerList.map((item, index) => (
-              <Text key={index}>{item}</Text>
+              <Text key={index} fontSize={isNeedResize ? "15px" : "medium"}>
+                {item}
+              </Text>
             ))}
           </Box>
 

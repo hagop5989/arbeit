@@ -31,7 +31,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function BoardEdit() {
   const { id } = useParams();

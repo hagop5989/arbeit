@@ -15,7 +15,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function ApplicationList() {
   const account = useContext(LoginContext);
@@ -91,7 +91,7 @@ export function ApplicationList() {
                   지원서 제목
                 </Th>
                 <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
-                  처리 상태
+                  상태
                 </Th>
                 <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
                   지원 취소
@@ -112,7 +112,17 @@ export function ApplicationList() {
                       {application.title}
                     </Link>
                   </Td>
-                  <Td>{isPassedToString(application.isPassed)}</Td>
+                  <Td
+                    minW={"90px"}
+                    fontWeight={"bold"}
+                    color={
+                      application.isPassed != null && application.isPassed
+                        ? "teal"
+                        : "red"
+                    }
+                  >
+                    {isPassedToString(application.isPassed)}
+                  </Td>
                   <Td>
                     <Button
                       colorScheme="red"

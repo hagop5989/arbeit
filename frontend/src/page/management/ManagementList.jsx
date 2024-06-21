@@ -7,7 +7,6 @@ import {
   Table,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
@@ -16,7 +15,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function ManagementList() {
   const account = useContext(LoginContext);
@@ -26,6 +25,7 @@ export function ManagementList() {
   const [checkChange, setCheckChange] = useState(false);
 
   // Read (jobs 리스트 받기)
+
   useEffect(() => {
     if (account.id) {
       axios.get("/api/jobs/management/list").then((res) => {
@@ -35,6 +35,7 @@ export function ManagementList() {
   }, [account.id, checkChange]);
 
   // 합격 로직
+
   function handleDecision(e, management) {
     let isPassed;
     const decision = e.target.innerText;
@@ -93,7 +94,7 @@ export function ManagementList() {
   }
 
   return (
-    <Box w={"100%"} h={"100%"}>
+    <Box w={"full"} h={"80vh"}>
       {account.isAlba() && (
         <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
           사장만 접근 가능한 페이지 입니다.
@@ -107,7 +108,6 @@ export function ManagementList() {
             </Heading>
             <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
-
           <Box>
             <Table>
               <Thead>
@@ -127,10 +127,7 @@ export function ManagementList() {
                     fontSize={"15px"}
                     _hover={{ bgColor: "orange.50" }}
                   >
-                    <Td minW={"80px"}>
-                      {/* 체크박스 */}
-                      <Text>{index + 1}</Text>
-                    </Td>
+                    <Td minW={"80px"}>{index + 1}</Td>
                     {/* 지원일 */}
                     <Td fontSize={"sm"} minW={"130px"}>
                       {management.applicationInserted}
@@ -178,21 +175,19 @@ export function ManagementList() {
                       <Flex gap={"5px"}>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
-                          w={"70px"}
                           fontWeight={"500"}
-                          bgColor={"blue.500"}
+                          bgColor={"#FF7F3E"}
                           color={"white"}
                         >
-                          <Text>합격</Text>
+                          합격
                         </Button>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
-                          w={"80px"}
                           fontWeight={"500"}
                           bgColor={"red.500"}
                           color={"white"}
                         >
-                          <Text>불합격</Text>
+                          불합격
                         </Button>
                       </Flex>
                     </Td>
