@@ -191,9 +191,9 @@ export function JobsList() {
     navigate(`/jobs/list?${params.toString()}`);
   }
 
-  // 시,구 기준으로 이후 주소 제거.
+  // 시,구,군 기준으로 이후 주소 제거.
   const trimAfterSiGu = (text) => {
-    const match = text.match(/(\S+시|\S+구)\s/);
+    const match = text.match(/(\S+시|\S+구|\S+군)\s/);
     if (match) {
       let slice = text.slice(0, match.index + match[0].length - 1);
       return slice;

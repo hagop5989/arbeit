@@ -7,11 +7,14 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
+  Image,
   Input,
   Modal,
+  ModalBody,
   ModalContent,
   ModalOverlay,
   Select,
+  Text,
   Textarea,
   UnorderedList,
   useDisclosure,
@@ -53,6 +56,12 @@ export function StoreRegister() {
   const inputRef = useRef(null);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isFileModalOpen,
+    onClose: onFileModalClose,
+    onOpen: onFileModalOpen,
+  } = useDisclosure();
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     axios.get(`/api/store/category`).then((res) => {
@@ -119,6 +128,11 @@ export function StoreRegister() {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
+    if (files.length > 0) {
+      setPreviewImage(URL.createObjectURL(files[0]));
+    } else {
+      setPreviewImage(null);
+    }
   };
 
   const imageNameList = images.map((image, index) => (
@@ -179,13 +193,14 @@ export function StoreRegister() {
           </Center>
         </FormControl>
         <FormControl {...styles.formControl} mb={"180px"}>
-          <FormLabel {...styles.formLabel}>가게 사진</FormLabel>
+          <FormLabel {...styles.formLabel}>가게 로고</FormLabel>
           <Center>
             <Button
               colorScheme={"orange"}
               w={"100px"}
               h={"100px"}
-              onClick={() => inputRef.current.click()}
+              onClick={onFileModalOpen}
+              // onClick={() => inputRef.current.click()}
             >
               사진 추가
             </Button>
@@ -204,6 +219,65 @@ export function StoreRegister() {
             </Box>
           </Center>
         </FormControl>
+
+        {/*미리보기 모달*/}
+        <Modal
+          isOpen={isFileModalOpen}
+          onClose={onFileModalClose}
+          border={"1px solid red"}
+        >
+          <ModalOverlay />
+          <ModalContent w={"500px"} h={"300px"}>
+            <ModalBody>
+              <Text my={4} fontSize={"sm"}>
+                사진을 첨부해주세요.(250px * 100px 권장)
+              </Text>
+              <Input
+                ml={"-17px"}
+                my={2}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                border={"none"}
+              />
+              <Box
+                mt={4}
+                w={"250px"}
+                h={"100px"}
+                border={"1px solid lightgray"}
+                borderRadius={"8px"}
+              >
+                <Image
+                  w={"100%"}
+                  h={"100%"}
+                  src={previewImage || "/public/alba_connector_logo.png"}
+                  alt="미리보기"
+                  objectFit="contain"
+                />
+                <Text
+                  position={"absolute"}
+                  fontWeight={"bold"}
+                  top={"130px"}
+                  left={"35px"}
+                  color={"gray.600"}
+                >
+                  미리보기
+                </Text>
+              </Box>
+              <Button
+                onClick={onFileModalClose}
+                colorScheme={"blue"}
+                mt={4}
+                w={"70px"}
+                left={"330px"}
+              >
+                저장
+              </Button>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        {/*미리보기 모달*/}
+
         <FormControl
           {...styles.formControl}
           isInvalid={isError(errors.categoryId)}
