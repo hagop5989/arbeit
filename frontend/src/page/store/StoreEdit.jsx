@@ -23,10 +23,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import DaumPostcodeEmbed from "react-daum-postcode";
-import KakaoMap2 from "../posts/KakaoMap2.jsx";
+import LocationMap from "../../component/LocationMap.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   formControl: {
@@ -92,7 +92,7 @@ export function StoreEdit() {
   }, [account.id]);
 
   function handleSaveClick() {
-    const confirm = window.confirm("가게를 수정하시겠습니까?");
+    const confirm = window.confirm("수정하시겠습니까?");
     if (confirm) {
       axios
         .putForm(`/api/store/${id}`, {
@@ -101,11 +101,6 @@ export function StoreEdit() {
           addImage: addImage,
         })
         .then(() => {
-          toast({
-            title: "가게 수정 성공",
-            description: "가게 정보가 수정되었습니다.",
-            status: "success",
-          });
           navigate(`/store/${store.id}`);
         })
         .catch((err) => {
@@ -360,7 +355,7 @@ export function StoreEdit() {
                   {errors.detailAddress}
                 </FormErrorMessage>
                 <Box mt={3}>
-                  <KakaoMap2 address={store.address} height={"400px"} />
+                  <LocationMap address={store.address} height={"400px"} />
                 </Box>
               </Center>
             </FormControl>

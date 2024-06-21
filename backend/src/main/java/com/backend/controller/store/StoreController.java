@@ -2,8 +2,8 @@ package com.backend.controller.store;
 
 import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
-import com.backend.domain.store.StoreEditForm;
-import com.backend.domain.store.StoreRegisterForm;
+import com.backend.domain.store.form.StoreEditForm;
+import com.backend.domain.store.form.StoreRegisterForm;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

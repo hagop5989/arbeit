@@ -10,7 +10,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginProvider.jsx"; // 개별 메뉴 링크 컴포넌트
+import { LoginContext } from "../provider/LoginProvider.jsx"; // 개별 메뉴 링크 컴포넌트
 
 // 개별 메뉴 링크 컴포넌트
 const NavLink = ({ href, children }) => (

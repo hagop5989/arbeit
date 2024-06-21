@@ -24,11 +24,11 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import KakaoMap2 from "../posts/KakaoMap2.jsx";
+import LocationMap from "../../component/LocationMap.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   formControl: {
@@ -336,7 +336,7 @@ export function StoreRegister() {
                   {errors.detailAddress}
                 </FormErrorMessage>
                 <Box mt={3}>
-                  <KakaoMap2 address={store.address} height={"400px"} />
+                  <LocationMap address={store.address} height={"400px"} />
                 </Box>
               </Center>
             </FormControl>

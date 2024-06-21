@@ -9,9 +9,9 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import axios from "axios";
-import KakaoMap2 from "../posts/KakaoMap2.jsx";
+import LocationMap from "../../component/LocationMap.jsx";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -149,7 +149,7 @@ export function StoreView() {
               </Box>
             </Box>
           </Box>
-          <KakaoMap2 address={store.address} height={"200px"} />
+          <LocationMap address={store.address} height={"200px"} />
         </Flex>
         {account.hasAccess(store.memberId) && (
           <Flex mt={"50px"} borderTop={"2px solid #E0E0E0"} pt={"10px"}>

@@ -1,6 +1,8 @@
 package com.backend.service.store;
 
 import com.backend.domain.store.*;
+import com.backend.domain.store.form.StoreEditForm;
+import com.backend.domain.store.form.StoreRegisterForm;
 import com.backend.mapper.member.MemberMapper;
 import com.backend.mapper.store.StoreMapper;
 import lombok.RequiredArgsConstructor;
