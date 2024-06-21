@@ -15,7 +15,7 @@ import {
   UnorderedList,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
@@ -26,15 +26,20 @@ import {
   workTimeList,
   workWeekList,
 } from "./jobsConst.jsx";
+import { JobsInputForm } from "../../path/JobsInputForm.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 export function JobsRegister() {
   const account = useContext(LoginContext);
+  const printRef = useRef();
 
   const [storeList, setStoreList] = useState([]);
   const [category, setCategory] = useState("");
   const [jobs, setJobs] = useState({});
   const [isAgeLimitChecked, setIsAgeLimitChecked] = useState(false);
   const [images, setImages] = useState([]);
+  const [checked, setChecked] = useState(false);
 
   const toast = useToast();
   function myToast(text, status) {
@@ -47,10 +52,31 @@ export function JobsRegister() {
   }
   const navigate = useNavigate();
 
+  // 첨부파일 리스트에서 특정 파일을 삭제하는 함수
+  const handleRemoveImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
+
   // file 목록
   const imageNameList = [];
   for (let i = 0; i < images.length; i++) {
-    imageNameList.push(<li key={i}>{images[i].name}</li>);
+    imageNameList.push(
+      <li key={i}>
+        <Flex>
+          {images[i].name}
+          <Box w={"10px"} h={"5px"} ml={3} onClick={() => handleRemoveImage(i)}>
+            <FontAwesomeIcon
+              icon={faX}
+              bgcolor="gray"
+              size="sm"
+              color={"red"}
+            />
+          </Box>
+        </Flex>
+      </li>,
+    );
   }
 
   // Create 관련 필요정보 얻기(store,category)
@@ -65,8 +91,12 @@ export function JobsRegister() {
 
   // Create
   function handleSubmitCreateJobs() {
+    const newJobs = {
+      ...jobs,
+      content: ".",
+    };
     axios
-      .postForm("/api/jobs/register", { ...jobs, images })
+      .postForm("/api/jobs/register", { ...newJobs, images })
       .then(() => {
         myToast("공고생성 되었습니다", "success");
         navigate("/jobs/list");
@@ -111,7 +141,6 @@ export function JobsRegister() {
         <Box>
           <FormLabel fontSize={"3xl"}>제목</FormLabel>
           <Input
-            mb={4}
             h={"50px"}
             placeholder="제목을 입력해주세요."
             onChange={handleInputChange("title")}
@@ -119,12 +148,45 @@ export function JobsRegister() {
         </Box>
 
         <Box>
-          <FormLabel fontSize={"3xl"}>공고내용</FormLabel>
-          <Textarea
-            mb={2}
-            placeholder={`공고내용을 입력해주세요. \n 예) OO 가게 신규 알바모집 (초보환영)`}
-            onChange={handleInputChange("content")}
+          <FormLabel fontSize={"3xl"}>공고내역</FormLabel>
+          <Checkbox
+            checked={checked}
+            m={2}
+            onChange={(e) => setChecked(e.target.checked)}
+          >
+            일반텍스트로 전환
+          </Checkbox>
+          {/* Test3 컴포넌트를 사용하는 부분 */}
+          {!checked && (
+            <JobsInputForm ref={printRef} w={"700px"} setImages={setImages} />
+          )}
+          {!checked || (
+            <Textarea
+              mb={2}
+              placeholder={`공고내용을 입력해주세요. \n 예) OO 가게 신규 알바모집 (초보환영)`}
+              onChange={handleInputChange("content")}
+            />
+          )}
+        </Box>
+
+        <Box mb={8}>
+          <Text fontSize={"3xl"}>이미지 등록</Text>
+          <Input
+            multiple
+            type="file"
+            p={2}
+            h={"50px"}
+            value={""} // 추가: file input을 초기화하여 파일 목록이 겹치지 않도록 함
+            onChange={(e) => {
+              setImages(e.target.files);
+            }}
           />
+          {imageNameList.length > 0 && (
+            <Box mt={2}>
+              <Text>첨부파일 리스트:</Text>
+              <UnorderedList>{imageNameList}</UnorderedList>
+            </Box>
+          )}
         </Box>
 
         <Flex gap={"10px"}>
@@ -190,25 +252,6 @@ export function JobsRegister() {
             />
           </Box>
         </Flex>
-
-        <Box mb={4}>
-          <Text fontSize={"3xl"}>이미지 등록</Text>
-          <Input
-            multiple
-            type="file"
-            p={2}
-            h={"50px"}
-            onChange={(e) => {
-              setImages(e.target.files);
-            }}
-          />
-          {imageNameList.length > 0 && (
-            <Box mt={2}>
-              <Text>첨부파일 리스트:</Text>
-              <UnorderedList>{imageNameList}</UnorderedList>
-            </Box>
-          )}
-        </Box>
 
         <Box mb={4}>
           <Box mt={"50px"}>

@@ -20,11 +20,16 @@ public class ScrapService {
 
     public List<Scrap> list(Integer memberId) {
         List<Scrap> scraps = mapper.selectByMemberId(memberId);
+//        List<Scrap> scraps1 = mapper.selectAll();
         return scraps;
     }
 
     public void delete(Integer id) {
         mapper.delete(id);
+    }
+
+    public void deleteByJobsId(Integer jobsId) {
+        mapper.deleteByJobsId(jobsId);
     }
 
     public void update(Scrap scarp) {

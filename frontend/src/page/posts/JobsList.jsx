@@ -52,64 +52,10 @@ export function JobsList() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // 필터링 함수
-  const filterJobsList = (
-    jobs,
-    filterType,
-    selectedRegion,
-    selectedCategory,
-    selectedWorkPeriod,
-    selectedWorkWeek,
-    selectedWorkTime,
-  ) => {
-    let filteredJobs = [...jobs];
-
-    if (filterType === "마감임박") {
-      filteredJobs.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-    } else if (filterType === "최신등록") {
-      filteredJobs.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
-    }
-
-    // 기존에는 필터 타입별로 필터링을 적용
-    // 아래는 필터 타입과 상관없이 선택된 필터를 모두 적용
-    if (selectedRegion) {
-      filteredJobs = filteredJobs.filter((job) =>
-        job.address.startsWith(selectedRegion),
-      );
-    }
-
-    if (selectedCategory) {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.categoryName === selectedCategory,
-      );
-    }
-
-    if (selectedWorkPeriod) {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.workPeriod === selectedWorkPeriod,
-      );
-    }
-
-    if (selectedWorkWeek) {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.workWeek === selectedWorkWeek,
-      );
-    }
-
-    if (selectedWorkTime) {
-      filteredJobs = filteredJobs.filter(
-        (job) => job.workTime === selectedWorkTime,
-      );
-    }
-
-    return filteredJobs;
-  };
-
   // Read
   useEffect(() => {
     const typeParam = searchParams.get("type");
     const keywordParam = searchParams.get("keyword");
-
     const params = {
       page: currentPage,
       type: typeParam,
@@ -138,7 +84,7 @@ export function JobsList() {
     });
   }, [currentPage, searchParams, account, filterType, selectedFilterDetail]);
 
-  // favorite 리스트
+  // favorite 리스트 받기
   const [favoriteList, setFavoriteList] = useState({});
   useEffect(() => {
     axios
@@ -161,14 +107,7 @@ export function JobsList() {
       .finally();
   }, []);
 
-  // 마감임박 필터링
-  useEffect(() => {
-    let sortJobs = [...jobsList];
-    if (filterType === "마감임박") {
-      sortJobs.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-    }
-  }, []);
-
+  // 페이징, 검색 관련
   for (let i = pageInfo.leftPage; i <= pageInfo.rightPage; i++) {
     pageNums.push(i);
   }
@@ -191,21 +130,11 @@ export function JobsList() {
     navigate(`/jobs/list?${params.toString()}`);
   }
 
-  // 시,구,군 기준으로 이후 주소 제거.
-  const trimAfterSiGu = (text) => {
-    const match = text.match(/(\S+시|\S+구|\S+군)\s/);
-    if (match) {
-      let slice = text.slice(0, match.index + match[0].length - 1);
-      return slice;
-    }
-    return text;
-  };
-
+  // 필터 타입이 변경될 때마다 백엔드로 새로운 데이터를 요청
   function handleFilterChange(e) {
     setFilterType(e.target.value);
     setSelectedFilterDetail([]);
 
-    // 필터 타입이 변경될 때마다 백엔드로 새로운 데이터를 요청
     const params = new URLSearchParams({
       type: searchType,
       keyword: searchKeyword,
@@ -217,10 +146,9 @@ export function JobsList() {
     navigate(`/jobs/list?${params.toString()}`);
   }
 
+  // 상세 필터가 변경될 때마다 백엔드로 새로운 데이터를 요청
   function handleDetailFilterChange(e) {
     setSelectedFilterDetail(e.target.value);
-
-    // 상세 필터가 변경될 때마다 백엔드로 새로운 데이터를 요청
     const params = new URLSearchParams({
       type: searchType,
       keyword: searchKeyword,
@@ -232,15 +160,24 @@ export function JobsList() {
     navigate(`/jobs/list?${params.toString()}`);
   }
 
+  // 시,구,군 기준으로 이후 주소 제거.
+  const trimAfterSiGu = (text) => {
+    const match = text.match(/(\S+시|\S+구|\S+군)\s/);
+    if (match) {
+      let slice = text.slice(0, match.index + match[0].length - 1);
+      return slice;
+    }
+    return text;
+  };
+
   return (
-    <Box
-    // border={"1px solid red"}
-    >
+    <Box>
       <Flex justifyContent={"space-between"} mb={"30px"} mt={"-20px"}>
         <Box display={"flex"}>
           <Center mr={"5px"}>
             <FontAwesomeIcon icon={faFilter} />
           </Center>
+          {/* 첫번째 필터 요소 */}
           <Select w={150} value={filterType} onChange={handleFilterChange}>
             <option value="최신등록">최신등록</option>
             <option value="마감임박">마감임박</option>
@@ -250,6 +187,8 @@ export function JobsList() {
             <option value="근무요일">근무요일</option>
             <option value="근무시간">근무시간</option>
           </Select>
+
+          {/* 첫번째 필터 요소에 따른 두번째 필터 요소 리스트 화 */}
           {filterType === "지역" && (
             <Select
               w={150}
@@ -356,14 +295,15 @@ export function JobsList() {
         </Box>
       </Flex>
       <Center>
-        {/* 그리드로 공고 카드 보여주기 */}
-
         <Box>
-          {jobsList.length == 0 && (
+          {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
+          {(searchParams || filterType) && jobsList.length == 0 && (
             <Center w={"1050px"} h={"55vh"}>
               <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
             </Center>
           )}
+
+          {/* 그리드로 공고 카드 보여주기 */}
           <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
             {jobsList.map((job) => (
               <GridItem key={job.id}>
@@ -386,18 +326,16 @@ export function JobsList() {
   /* 공고 카드 형식 */
   function JobCard({ job, storeImages, favoriteList }) {
     const { addRecentJob } = useContext(LoginContext);
-    // 초기 favorite 상태 설정
     const [favorite, setFavorite] = useState(favoriteList[job.id] || false);
-    // 안쓰는지 확인
 
-    //favoriteList 반영
+    /* 스크랩 관련 */
+    //favoriteList 로드
     useEffect(() => {
       if (favoriteList[job.id] !== undefined) {
         setFavorite(favoriteList[job.id].isFavorite); // .isFavorite을 사용하여 상태를 설정
       }
     }, [favoriteList, job.id]);
 
-    // 상태 업데이트 함수
     // favoriteList 변경 시 상태 업데이트
     useEffect(() => {
       if (favoriteList[job.id] !== undefined) {
@@ -440,12 +378,14 @@ export function JobsList() {
         });
     };
 
+    // 스크랩 하기
     const handleScraping = (e, job) => {
       e.stopPropagation();
       const newStatus = !favorite;
       setFavorite(newStatus);
       updateScrapStatus(job.id, newStatus); // job 대신 job.id와 newStatus를 전달
     };
+    /* 스크랩 관련 끝*/
 
     // trimmedAddress를 useMemo로 캐싱
     const trimmedAddress = useMemo(
@@ -478,7 +418,7 @@ export function JobsList() {
         overflow="hidden"
       >
         <Flex alignItems={"center"}>
-          <Box w={"150px"} h={"60px"}>
+          <Box w={"150px"} h={"60px"} mb={2}>
             <Image
               w={"100%"}
               h={"100%"}
@@ -490,6 +430,7 @@ export function JobsList() {
               objectFit="contain"
             />
           </Box>
+
           <Box w={"60%"} ml={"30px"}>
             <CardBody>
               <Text
@@ -505,26 +446,28 @@ export function JobsList() {
               </Text>
               <Text
                 w={"500px"}
-                mx={"20px"}
+                textIndent={"22px"}
+                fontWeight={"bold"}
                 my={"10px"}
-                fontSize="15px"
+                fontSize="17px"
                 color={"gray.500"}
-                whiteSpace="nowrap" // 줄 바꿈을 막음
-                overflow="hidden" // 넘친 내용을 숨김
-                textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
               >
-                {job.content}
+                {job.storeName}
               </Text>
             </CardBody>
           </Box>
+
           <Box w={"20%"}>
             <Text color="gray.600">{trimmedAddress}</Text>
             <Text fontSize="sm" color={"red.400"}>
-              {" "}
               {job.categoryName}
             </Text>
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
           </Box>
+
           <Box w={"10%"}>
             <Box
               h={"20px"}
