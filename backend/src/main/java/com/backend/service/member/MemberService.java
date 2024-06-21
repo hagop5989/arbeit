@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -144,7 +141,8 @@ public class MemberService {
     }
 
     public void deleteById(Integer id) {
-        mapper.deleteById(id);
+        String deleted = STR."delete.\{UUID.randomUUID().toString()}";
+        mapper.deleteById(id, deleted);
     }
 
     public Map<String, String> passwordMatch(MemberEditForm form) {

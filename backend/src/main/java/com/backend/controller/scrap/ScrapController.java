@@ -1,6 +1,6 @@
 package com.backend.controller.scrap;
 
-import com.backend.controller.application.MemberId;
+import com.backend.controller.application.AuthId;
 import com.backend.domain.scrap.Scrap;
 import com.backend.service.scrap.ScrapService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class ScrapController {
     }
 
     @GetMapping("list")
-    public List<Scrap> list(@MemberId Integer memberId) {
+    public List<Scrap> list(@AuthId Integer memberId) {
         return service.list(memberId);
     }
 

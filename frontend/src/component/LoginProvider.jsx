@@ -31,14 +31,11 @@ export function LoginProvider({ children }) {
 
   // boss 이면 지원 list 데이터 받아오기
   useEffect(() => {
-    if (isBoss())
-      axios
-        .get("/api/jobs/management/alarm-count")
-        .then((res) => {
-          setAlarmNum(res.data);
-        })
-        .catch()
-        .finally(() => {});
+    if (isBoss()) {
+      axios.get("/api/jobs/managements-count").then((res) => {
+        setAlarmNum(res.data);
+      });
+    }
   }, [authority]);
 
   // 최근 본 공고 페이지 URL을 추가하는 함수

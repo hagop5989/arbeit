@@ -18,6 +18,7 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -68,11 +69,12 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
   const [seconds, setSeconds] = useState(120); // 1분 = 60초
   const [isActive, setIsActive] = useState(false);
 
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   const handlePwdClick = () => setPwdShow(!pwdShow);
   const handlePwdCheckClick = () => setPwdCheckShow(!pwdCheckShow);
-
-  const navigate = useNavigate();
-  const { isOpen, onClose, onOpen } = useDisclosure();
 
   // Timer
   useEffect(() => {
@@ -109,6 +111,11 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
     axios
       .post("/api/signup", member)
       .then(() => {
+        toast({
+          status: "success",
+          description: "회원가입 성공",
+          position: "top",
+        });
         navigate("/login");
       })
       .catch((err) => {

@@ -41,45 +41,61 @@ function ScrapHistory(props) {
   }
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
+    <Box w="full" maxW="70%" mx="auto" p={5} minHeight={"600px"} h={"100%"}>
       <Heading mb={"10px"} p={1}>
         스크랩한 공고
       </Heading>
       <Divider mb={"40px"} borderWidth={"2px"} />
-      <Box>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>#</Th>
-              <Th>제목</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {scrapList.map((item, index) => (
-              <Tr
-                key={index}
-                cursor={"pointer"}
-                _hover={{ bgColor: "gray.100" }}
-              >
-                <Td>{index + 1}</Td>
-                <Td
-                  onClick={() => {
-                    navigate(`/jobs/${item.jobsId}`);
-                  }}
-                >
-                  {item.jobsTitle}
-                </Td>
-                <Button
-                  colorScheme={"red"}
-                  onClick={() => handleDelete(item.id)}
-                >
-                  삭제
-                </Button>
+      {scrapList.length === 0 && <Box>스크랩한 공고가 없습니다.</Box>}
+      {scrapList.length === 0 || (
+        <Box>
+          <Table>
+            <Thead>
+              <Tr>
+                <Th w={"50px"} fontSize={"md"}>
+                  #
+                </Th>
+                <Th w={"600px"} fontSize={"md"}>
+                  제목
+                </Th>
+                <Th w={"50px"} fontSize={"md"}>
+                  관리
+                </Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
+            </Thead>
+            <Tbody>
+              {scrapList.map((item, index) => (
+                <Tr
+                  key={index}
+                  cursor={"pointer"}
+                  _hover={{ bgColor: "gray.200" }}
+                >
+                  <Td>{index + 1}</Td>
+                  <Td
+                    onClick={() => {
+                      navigate(`/jobs/${item.jobsId}`);
+                    }}
+                    fontWeight={"700"}
+                  >
+                    {item.jobsTitle}
+                  </Td>
+                  <Td>
+                    <Button
+                      colorScheme={"red"}
+                      variant={"outline"}
+                      size={"sm"}
+                      mt={"10px"}
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      삭제
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
     </Box>
   );
 }

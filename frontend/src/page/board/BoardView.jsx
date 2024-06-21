@@ -41,25 +41,29 @@ export function BoardView() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const account = useContext(LoginContext);
 
-  useEffect(() => {
-    axios
-      .get(`/api/board/${id}`)
-      .then((res) => {
-        setBoard(res.data);
-        setImages(res.data.images);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response.status === 404) {
-          toast({
-            status: "error",
-            description: "게시물이 존재하지않습니다",
-            position: "top",
-          });
-          navigate("/");
-        }
-      });
-  }, [account.id]);
+  useEffect(
+    () => {
+      axios
+        .get(`/api/board/${id}`)
+        .then((res) => {
+          setBoard(res.data.board);
+          setImages(res.data.images);
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.status === 404) {
+            toast({
+              status: "error",
+              description: "게시물이 존재하지않습니다",
+              position: "top",
+            });
+            navigate("/");
+          }
+        });
+    },
+    [account.id],
+    id,
+  );
 
   if (!board) {
     return <Spinner />;
@@ -85,7 +89,7 @@ export function BoardView() {
       });
   }
 
-  function handleCilckLike() {
+  function handleClickLike() {
     axios
       .put(`/api/board/like`, { boardId: board.id })
       .then((res) => {
@@ -101,7 +105,7 @@ export function BoardView() {
         <Heading>{board.name}번 게시물</Heading>
         <Spacer />
         <Flex>
-          <Box onClick={handleCilckLike} fontSize={"2xl"}>
+          <Box onClick={handleClickLike} fontSize={"2xl"}>
             {like.count}
           </Box>
           {like.like && <FontAwesomeIcon icon={fullHeart} />}

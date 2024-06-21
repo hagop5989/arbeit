@@ -12,7 +12,7 @@ import memberRoutes from "./path/memberRoutes.jsx";
 import bossRoutes from "./path/bossRoutes.jsx";
 import storeRoutes from "./path/storeRoutes.jsx";
 import boardRoutes from "./path/boardRoutes.jsx";
-import { NavComponent } from "./NavComponent.jsx";
+import { MainPage } from "./MainPage.jsx";
 import theme from "../index.js";
 import { useEffect } from "react";
 
@@ -46,7 +46,7 @@ function App() {
         </>
       ),
       children: [
-        { index: true, element: <NavComponent /> },
+        { index: true, element: <MainPage /> },
         ...memberRoutes,
         ...bossRoutes,
         ...storeRoutes,

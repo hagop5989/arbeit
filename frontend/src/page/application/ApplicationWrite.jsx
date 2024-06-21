@@ -9,6 +9,7 @@ import {
   Input,
   Select,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -21,20 +22,30 @@ export function ApplicationWrite() {
   const [application, setApplication] = useState({});
   const [jobsTitle, setJobsTitle] = useState("");
   const [resumeList, setResumeList] = useState([]);
+  const toast = useToast();
   const navigate = useNavigate();
 
   // Create
   function handleSubmitApply() {
-    axios
-      .post(`/api/jobs/${id}/apply`, {
-        ...application,
-        memberId: account.id,
-      })
-      .then((res) => {
-        navigate("/jobs/apply/list");
-      })
-      .catch()
-      .finally();
+    const confirm = window.confirm(
+      "신청하시겠습니까? 한 번 신청하면 수정할 수 없습니다.",
+    );
+
+    if (confirm) {
+      axios
+        .post(`/api/jobs/${id}/apply`, application)
+        .then(() => {
+          toast({
+            status: "success",
+            description: "신청되었습니다.",
+            position: "top",
+          });
+          navigate("/jobs/list");
+        })
+        .catch((err) => {
+          alert(err.response.data);
+        });
+    }
   }
 
   // Read (자기 resume 리스트 받기)
@@ -81,12 +92,10 @@ export function ApplicationWrite() {
           <Divider my={2} />
           <FormLabel fontSize={"3xl"}>이력서 첨부</FormLabel>
           <Select
-            value={application.resumeId || ""}
+            defaultValue={application.resumeId}
+            placeholder={"이력서를 선택해주세요."}
             onChange={handleResumeChange}
           >
-            <option value="" disabled>
-              선택
-            </option>
             {resumeList.map((resume) => (
               <option key={resume.id} value={resume.id}>
                 {resume.title}
@@ -101,20 +110,6 @@ export function ApplicationWrite() {
             onChange={handleInputChange("comment")}
           />
           <Button onClick={handleSubmitApply}>지원하기</Button>
-          <Button
-            onClick={() => {
-              navigate("/jobs/apply/list");
-            }}
-          >
-            지원서관리
-          </Button>
-          <Button
-            onClick={() => {
-              navigate("/jobs/list");
-            }}
-          >
-            공고목록
-          </Button>
         </FormControl>
       </Center>
     </Box>

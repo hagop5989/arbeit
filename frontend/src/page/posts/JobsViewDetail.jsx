@@ -15,10 +15,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding } from "@fortawesome/free-solid-svg-icons";
 import KakaoMap2 from "./KakaoMap2.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export function JobDetail({ job, jobsCond, storeMap }) {
   if (!job || !jobsCond) {
@@ -40,11 +39,13 @@ export function JobDetail({ job, jobsCond, storeMap }) {
         <Text fontSize="3xl" fontWeight="bold" letterSpacing={"1px"}>
           {job.title}
         </Text>
-        <Box w={"200px"} h={"60px"}>
+        <Box w={"200px"} h={"150px"}>
           <Image
             w={"100%"}
-            // h={"100%"}
+            h={"100%"}
             p={"10px"}
+            border={"1px solid lightgray"}
+            borderRadius={"8px"}
             src={
               storeMap.images && storeMap.images[0]
                 ? storeMap.images[0].src
@@ -56,7 +57,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
                 : "이미지 없음"
             }
             borderRadius={"4px"}
-            objectFit="cover"
+            objectFit="contain"
           />
         </Box>
       </Flex>
@@ -190,9 +191,12 @@ export function JobLocation({ job, jobsCond, storeMap }) {
       <KakaoMap2
         address={storeMap.store != null ? storeMap.store.address : ""}
       />
-      <Text my={"10px"} fontSize={"xl"}>
-        주소 : {storeMap.store != null ? storeMap.store.address : ""}
-      </Text>
+      <Flex fontSize={"xl"} fontWeight={"bold"} my={"10px"}>
+        <Text>주소 :</Text>
+        <Text ml={2}>
+          {storeMap.store != null ? storeMap.store.address : ""}
+        </Text>
+      </Flex>
     </Box>
   );
 }
@@ -231,7 +235,8 @@ export function JobDetails({ job, jobsCond, images }) {
   );
 }
 
-export function JobContact({ job, jobsCond, boss }) {
+export function JobContact({ job, jobsCond, boss, storeMap }) {
+  const navigate = useNavigate();
   return (
     <Box
       w={"full"}
@@ -263,7 +268,12 @@ export function JobContact({ job, jobsCond, boss }) {
           <Tr>
             <Td fontWeight="bold">홈페이지</Td>
             <Td>
-              <Link color="red.500" href={"job.contactWebsite"} isExternal>
+              <Link
+                onClick={() => navigate(`/store/${storeMap.store.id}`)}
+                color="red.500"
+                href={"job.contactWebsite"}
+                isExternal
+              >
                 홈페이지방문
               </Link>
             </Td>
@@ -278,7 +288,7 @@ export function JobContact({ job, jobsCond, boss }) {
   );
 }
 
-export function JobRequirements({ job, jobsCond }) {
+export function JobRequirements({ job, jobsCond, id }) {
   const navigate = useNavigate();
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -286,6 +296,16 @@ export function JobRequirements({ job, jobsCond }) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return date.toLocaleDateString(undefined, options);
   };
+
+  function handleApplyBtn() {
+    const jobsId = new URLSearchParams();
+    jobsId.append("jobsId", id);
+    axios
+      .post("/api/apply-validate", jobsId)
+      .then(() => navigate(`/jobs/${id}/apply`))
+      .catch((err) => alert(err.response.data));
+  }
+
   return (
     <Box
       w={"full"}
@@ -349,12 +369,7 @@ export function JobRequirements({ job, jobsCond }) {
             </Box>
           </VStack>
         </HStack>
-        <Button
-          onClick={() => navigate(`/jobs/${job.id}/apply`)}
-          colorScheme="red"
-          w="full"
-          my={"10px"}
-        >
+        <Button onClick={handleApplyBtn} colorScheme="red" w="full" my={"10px"}>
           지원하기
         </Button>
       </Box>
@@ -391,8 +406,12 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
       <Divider mb={5} />
       <VStack align="start" spacing={4}>
         <Flex justifyContent="space-between" alignItems="center" w="full">
-          <Box w={"160px"} h={"60px"}>
+          <Box w={"250px"} h={"100px"}>
             <Image
+              w={"100%"}
+              h={"100%"}
+              border={"1px solid lightgray"}
+              borderRadius={"8px"}
               src={
                 storeMap.images && storeMap.images[0]
                   ? storeMap.images[0].src
@@ -403,8 +422,8 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
                   ? storeMap.images[0].name
                   : "이미지 없음"
               }
-              m={"-10px"}
-              objectFit="cover"
+              // m={"-10px"}
+              objectFit="contain"
             />
           </Box>
           <Box flex="1" ml={5}>
@@ -427,55 +446,6 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
             </Flex>
           </Box>
         </Flex>
-        <Divider />
-        <HStack spacing={1} w="full">
-          <Box w={"20%"} fontWeight={"600"} borderRight={"3px solid lightgray"}>
-            안심할 수 있는 기업이에요
-          </Box>
-          <VStack align="start" spacing={2} mx={3} w="40%">
-            <HStack>
-              <FontAwesomeIcon icon={faBuilding} color={"teal"} />
-              <Text fontSize="sm">4대 사회보험 가입 완료</Text>
-            </HStack>
-            <HStack>
-              <FontAwesomeIcon icon={faBuilding} />
-              <Text fontSize="sm">2019년 1월부터 알바몬 이용 중</Text>
-            </HStack>
-            <HStack>
-              <FontAwesomeIcon icon={faBuilding} color={"teal"} />
-              <Text fontSize="sm">설립 6년! 안정적 기업</Text>
-            </HStack>
-            <HStack>
-              <FontAwesomeIcon icon={faBuilding} />
-              <Text fontSize="sm">알바몬 기업인증 완료(23.05.23)</Text>
-            </HStack>
-            <HStack>
-              <FontAwesomeIcon icon={faBuilding} color={"teal"} />
-              <Text fontSize="sm">알바몬 근로계약서 작성 약속</Text>
-            </HStack>
-          </VStack>
-          <VStack align="start" spacing={1} w="60%" h="full">
-            <Flex>
-              <Box
-                w={"35%"}
-                fontWeight={"600"}
-                mr={3}
-                borderRight={"3px solid lightgray"}
-              >
-                <Text mr={2}>구인이 활발한 기업이에요</Text>
-              </Box>
-              <Box mt={-10}>
-                <Text fontSize="sm" ml={2}>
-                  <FontAwesomeIcon icon={faBuilding} color={"teal"} />
-                  {" 최근 1년간 채용 " +
-                    parseInt(Math.random() * 1000) +
-                    " 회 진행"}
-                </Text>
-              </Box>
-            </Flex>
-          </VStack>
-        </HStack>
-        <Divider />
       </VStack>
     </Box>
   );

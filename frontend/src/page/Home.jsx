@@ -15,7 +15,7 @@ export function Home() {
       <Navbar />
       <Flex>
         <LeftNavbar border={"1px solid red"} />
-        <Center width={"1050px"} margin={"auto"}>
+        <Center minWidth={"1050px"} width={"1050px"} margin={"auto"}>
           <Outlet />
         </Center>
         {account.isLoggedIn() && (
@@ -25,7 +25,7 @@ export function Home() {
             position={"fixed"}
             right={"150px"}
             w={"200px"}
-            h={"300px"}
+            h={"330px"}
             borderRadius={"10px"}
             display={{ base: "none", "2xl": "flex" }}
           >

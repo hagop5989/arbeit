@@ -98,11 +98,13 @@ public class JobsService {
         Map<String, Object> result = new HashMap<>();
 
         Jobs jobs = jobsMapper.selectById(jobsId);
-
         if (jobs == null) {
             return null;
         }
-
+        Member member = memberService.findById(jobs.getMemberId());
+        if (member.getName().equals("탈퇴한 유저")) {
+            return null;
+        }
         JobsCond condition = conditionMapper.selectByJobsId(jobsId);
 
         Map<String, Object> storeMap = storeService.findStoreById(jobs.getStoreId());
@@ -182,12 +184,15 @@ public class JobsService {
         jobsMapper.deleteById(jobsId);
     }
 
-    public Map<String, Object> findAll(Integer currentPage, String searchType, String keyword) {
-
+    public Map<String, Object> findAll(Integer currentPage, String searchType, String keyword, String filterType, String filterDetail) {
         Map<String, Integer> pageInfo = new HashMap<>();
+        filterTrim(filterType, filterDetail);
 
-        Integer offset = paging(currentPage, searchType, keyword, pageInfo);
-        List<Jobs> jobsList = jobsMapper.selectAllPaging(offset, searchType, keyword);
+        Integer offset = paging(currentPage, searchType, keyword, pageInfo, filterType, filterDetail);
+        List<Jobs> dbJobsList = jobsMapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail);
+
+        // 탈퇴한 유저의 공고를 삭제함
+        List<Jobs> jobsList = dbJobsList.stream().filter((jobs) -> !jobs.getMemberName().equals("탈퇴한 유저")).toList();
 
         Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
         for (Jobs jobs : jobsList) {
@@ -204,6 +209,11 @@ public class JobsService {
 
         return Map.of("pageInfo", pageInfo,
                 "jobsList", jobsList, "storeImgMap", storeImgMap);
+    }
+
+    // 필터 한글-> db용 이름으로 정리
+    private void filterTrim(String filterType, String filterDetail) {
+
     }
 
 
@@ -239,12 +249,13 @@ public class JobsService {
     }
 
     // 페이징
-    private Integer paging(Integer currentPage, String searchType, String keyword, Map<String, Integer> pageInfo) {
+    private Integer paging(Integer currentPage, String searchType, String keyword, Map<String, Integer> pageInfo, String filterType, String filterDetail) {
 
-        Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword);
-        Integer offset = (currentPage - 1) * 10;
+        Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword, filterType, filterDetail);
+        Integer itemPerPage = 8; // 페이지당 항목 수 지정
+        Integer offset = (currentPage - 1) * itemPerPage;
 
-        Integer lastPageNum = (countAll - 1) / 10 + 1;
+        Integer lastPageNum = (countAll + itemPerPage - 1) / itemPerPage;
         Integer leftPageNum = (currentPage - 1) / 10 * 10 + 1;
         Integer rightPageNum = leftPageNum + 9;
         rightPageNum = Math.min(rightPageNum, lastPageNum);
@@ -265,7 +276,9 @@ public class JobsService {
         pageInfo.put("lastPage", lastPageNum);
         pageInfo.put("leftPage", leftPageNum);
         pageInfo.put("rightPage", rightPageNum);
+
         return offset;
+
     }
 
 

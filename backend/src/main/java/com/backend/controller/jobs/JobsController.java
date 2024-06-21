@@ -48,7 +48,7 @@ public class JobsController {
 
     @GetMapping("/{id}")
     public ResponseEntity view(@PathVariable Integer id) {
-
+        log.info("view.call");
         Map<String, Object> result = service.findById(id);
         if (result == null) {
             return ResponseEntity.notFound().build();
@@ -59,9 +59,11 @@ public class JobsController {
     @GetMapping("/list")
     public Map<String, Object> list(@RequestParam(value = "page", defaultValue = "1") Integer currentPage,
                                     @RequestParam(value = "type", required = false) String searchType,
-                                    @RequestParam(value = "keyword", defaultValue = "") String keyword
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                    @RequestParam(value = "filterType", defaultValue = "") String filterType,
+                                    @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
     ) {
-        return service.findAll(currentPage, searchType, keyword);
+        return service.findAll(currentPage, searchType, keyword, filterType, filterDetail);
     }
 
     @PutMapping("/{id}")

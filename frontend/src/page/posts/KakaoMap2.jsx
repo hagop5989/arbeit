@@ -58,6 +58,7 @@ function KakaoMap2({ address }) {
       const mapContainer = document.getElementById("map");
       const mapOption = {
         center: new kakao.maps.LatLng(lat, lng),
+        draggable: false,
         level: 3,
       };
       const map = new kakao.maps.Map(mapContainer, mapOption);

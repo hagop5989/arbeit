@@ -27,11 +27,7 @@ public class ManagementService {
         mapper.insertDecision(management);
     }
 
-    public void delete(Integer jobsId, Integer memberId) {
-        mapper.delete(jobsId, memberId);
-    }
-
-    public Integer alarmCount(Integer memberId) {
+    public Integer count(Integer memberId) {
         // 합격 여부가 미정인 것 count
         return mapper.alarmCount(memberId);
     }
