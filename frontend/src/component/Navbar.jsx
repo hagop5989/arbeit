@@ -44,21 +44,21 @@ const Navbar = () => {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   return (
-    <Box
-      bg="white"
-      borderBottom="3px solid #eaeaea"
-      height="110px"
-      pt={"20px"}
-      mb={"70px"}
-    >
+    <Box bg="white" borderBottom="3px solid #eaeaea" height="110px" mb={"70px"}>
+      <Box bg={"orange"} h={"3px"} mb={"30px"}></Box>
       <Flex minWidth={"1150px"} mx={{ base: "0px", "2xl": "200px" }}>
-        <HStack w={"90%"} spacing={8} mx={"100px"}>
-          <Box display="flex" width="130px" height="80px">
+        <HStack w={"90%"} spacing={8} mx={"150px"}>
+          <Box
+            display="flex"
+            width="200px"
+            height="55px"
+            mr={"-10px"}
+            ml={"20px"}
+          >
             <Image
               src="/public/alba_connector_logo.png"
-              height={"75px"}
+              height={"55px"}
               cursor={"pointer"}
-              borderRadius={"10px"}
               transition="transform 0.3s ease-in-out"
               _hover={{
                 transform: "scale(0.95)",
@@ -66,7 +66,7 @@ const Navbar = () => {
               onClick={() => navigate("/")}
             />
           </Box>
-          <Flex w={"80%"} mt={"40px"}>
+          <Flex w={"80%"} pt={"10px"}>
             <HStack spacing={10} fontWeight={"600"}>
               <NavLink href="/jobs/list">알바 공고</NavLink>
               <NavLink href="/board/list">질문 게시판</NavLink>
