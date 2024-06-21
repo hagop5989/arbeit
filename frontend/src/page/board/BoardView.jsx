@@ -116,6 +116,22 @@ export function BoardView() {
         <FormControl>
           <FormLabel>제목</FormLabel>
           <Input value={board.title} readOnly></Input>
+          <Box position="relative">
+            {account.hasAccess(board.memberId) && (
+              <Box position="absolute" top={-10} right={-40}>
+                <Button
+                  colorScheme={"blue"}
+                  onClick={() => navigate(`/board/${board.id}/edit`)}
+                  mr={3}
+                >
+                  수정
+                </Button>
+                <Button colorScheme={"red"} onClick={onOpen}>
+                  삭제
+                </Button>
+              </Box>
+            )}
+          </Box>
           <FormLabel>본문</FormLabel>
           <Textarea value={board.content} readOnly></Textarea>
           <FormLabel>첨부사진</FormLabel>
@@ -128,21 +144,7 @@ export function BoardView() {
           <Input value={board.name} readOnly></Input>
         </FormControl>
       </Box>
-      {account.hasAccess(board.memberId) && (
-        <Box>
-          <Box>
-            <Button
-              colorScheme={"blue"}
-              onClick={() => navigate(`/board/${board.id}/edit`)}
-            >
-              수정
-            </Button>
-            <Button colorScheme={"red"} onClick={onOpen}>
-              삭제
-            </Button>
-          </Box>
-        </Box>
-      )}
+
       <Box>
         <CommentComponent boardId={board.id} />
 

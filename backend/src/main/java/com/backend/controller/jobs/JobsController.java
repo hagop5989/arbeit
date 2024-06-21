@@ -63,6 +63,8 @@ public class JobsController {
                                     @RequestParam(value = "filterType", defaultValue = "") String filterType,
                                     @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
     ) {
+
+
         return service.findAll(currentPage, searchType, keyword, filterType, filterDetail);
     }
 

@@ -88,8 +88,41 @@ public class BoardService {
     }
 
 
-    public List<Board> list() {
-        return mapper.selectAll();
+    public Map<String, Object> list(
+            Integer page,
+            String searchType,
+            String keyword
+    ) {
+        Map<String, Object> pageInfo = new HashMap<>();
+        Integer countAll = mapper.countAllWithSearch(searchType, keyword);
+
+        Integer offset = (page - 1) * 10;
+        Integer lastPageNumber = (countAll - 1) / 10 + 1;
+
+        Integer leftPageNumber = ((page - 1) / 10) * 10 + 1;
+        Integer rightPageNumber = leftPageNumber + 9;
+
+        rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
+
+        Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
+        Integer nextPageNumber = (rightPageNumber < lastPageNumber) ? rightPageNumber + 1 : null;
+
+        if (prevPageNumber != null) {
+            pageInfo.put("prevPageNumber", prevPageNumber);
+        }
+        if (nextPageNumber != null) {
+            pageInfo.put("nextPageNumber", nextPageNumber);
+        }
+        pageInfo.put("currentPageNumber", page);
+        pageInfo.put("lastPageNumber", lastPageNumber);
+        pageInfo.put("leftPageNumber", leftPageNumber);
+        pageInfo.put("rightPageNumber", rightPageNumber);
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "boardList", mapper.selectAllPaging(offset, searchType, keyword)
+        );
+
     }
 
     //update

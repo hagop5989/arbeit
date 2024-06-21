@@ -76,6 +76,59 @@ public interface BoardMapper {
             """)
     int deleteByboardId(Integer boardId);
 
+
+    //페이징
+    @Select("""
+              <script>
+             SELECT b.id,
+             b.member_id,
+             b.title,
+             b.inserted
+            FROM board b JOIN member m ON m.id = b.member_id
+             <trim prefix="WHERE" prefixOverrides="OR">
+                    <if test="searchType != null">
+                        <bind name="pattern" value="'%' + keyword + '%'" />
+                        <if test="searchType == 'all' || searchType == 'title'">
+                            OR b.title LIKE #{pattern}
+                            OR b.member_id LIKE #{pattern}
+                        </if>
+                            <if test="searchType == 'all' || searchType == 'memberId'">
+                            OR m.name LIKE #{pattern}
+                        </if>
+                         </if>
+                         </trim>
+                         GROUP BY b.id
+            ORDER BY b.id DESC
+            LIMIT #{offset},10
+                       </script>
+             """)
+    List<Board> selectAllPaging(Integer offset, String searchType, String keyword);
+
+
+    @Select("""
+            SELECT COUNT(*) FROM board
+            """)
+    Integer countAll();
+
+    @Select("""
+            <script>
+            SELECT COUNT(b.id)
+            FROM board b JOIN member m ON b.member_id = m.id
+               <trim prefix="WHERE" prefixOverrides="OR">
+                   <if test="searchType != null">
+                       <bind name="pattern" value="'%' + keyword + '%'" />
+                       <if test="searchType == 'all' || searchType == 'title'">
+                            OR b.title LIKE #{pattern}
+                            OR m.name LIKE #{pattern}
+                       </if>
+                       <if test="searchType == 'all' || searchType == 'memberId'">
+                           OR m.name LIKE #{pattern}
+                       </if> 
+                   </if>
+               </trim>
+            </script>
+            """)
+    Integer countAllWithSearch(String searchType, String keyword);
 }
 
 

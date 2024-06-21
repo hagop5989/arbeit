@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Modal,
@@ -83,13 +84,15 @@ export function CommentList({ boardId }) {
                 <Tr key={comment.id}>
                   <Td>{comment.id}</Td>
                   <Td>
-                    {comment.comment}
-                    {isEditing && (
+                    {isEditing === comment.id ? (
                       <CommentEdit
                         comment={comment}
-                        commentId={comment.id}
                         setIsEditing={setIsEditing}
-                      ></CommentEdit>
+                      />
+                    ) : (
+                      <Flex>
+                        <Box>{comment.comment}</Box>
+                      </Flex>
                     )}
                   </Td>
                   <Td>{comment.memberId}</Td>
@@ -99,7 +102,7 @@ export function CommentList({ boardId }) {
                       <Button
                         colorScheme={"blue"}
                         onClick={() => {
-                          setIsEditing(true);
+                          setIsEditing(comment.id);
                         }}
                       >
                         수정

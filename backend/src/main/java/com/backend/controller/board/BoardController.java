@@ -1,7 +1,6 @@
 package com.backend.controller.board;
 
 
-import com.backend.domain.board.Board;
 import com.backend.domain.board.BoardEditForm;
 import com.backend.domain.board.BoardWriteForm;
 import com.backend.service.board.BoardService;
@@ -17,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -63,9 +61,16 @@ public class BoardController {
     }
 
 
-    @GetMapping("/list")
-    public List<Board> list() {
-        return boardService.list();
+    @GetMapping("list")
+    public Map<String, Object> list(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(value = "type", required = false) String searchType,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword
+    ) {
+        System.out.println("page = " + page);
+        System.out.println("searchType = " + searchType);
+        System.out.println("keyword = " + keyword);
+        return boardService.list(page, searchType, keyword);
     }
 
 
