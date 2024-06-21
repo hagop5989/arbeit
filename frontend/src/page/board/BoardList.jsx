@@ -60,9 +60,13 @@ export function BoardList() {
   }
 
   function handleSearchClick() {
+    setSearchKeyword(searchKeyword);
+    const typeParam = searchType;
+    const kewordParam = searchKeyword;
+
     const params = new URLSearchParams({
-      type: searchType,
-      keyword: searchKeyword,
+      type: typeParam,
+      keyword: kewordParam,
       page: 1,
     });
     navigate(`/?${params.toString()}`);
@@ -135,18 +139,15 @@ export function BoardList() {
             >
               <option value="all">전체</option>
               <option value="title">제목</option>
-              <option value="memberId">작성자</option>
+              <option value="name">작성자</option>
             </Select>
           </Box>
           <Box>
             <Input
-              type="text"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어"
             />
-          </Box>
-          <Box>
             <Button onClick={handleSearchClick}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </Button>

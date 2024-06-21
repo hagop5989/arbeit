@@ -88,7 +88,7 @@ public interface BoardMapper {
              <trim prefix="WHERE" prefixOverrides="OR">
                     <if test="searchType != null">
                         <bind name="pattern" value="'%' + keyword + '%'" />
-                        <if test="searchType == 'all' || searchType == 'title'">
+                        <if test="searchType == 'all' || searchType == 'text'">
                             OR b.title LIKE #{pattern}
                             OR b.member_id LIKE #{pattern}
                         </if>
