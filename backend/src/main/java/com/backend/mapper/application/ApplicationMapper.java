@@ -75,4 +75,5 @@ public interface ApplicationMapper {
             WHERE member_id=#{memberId}
             """)
     Integer selectCountByMemberId(Integer memberId);
+
 }

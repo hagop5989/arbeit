@@ -26,6 +26,13 @@ public interface ScrapMapper {
             """)
     int delete(Integer id);
 
+
+    @Delete("""
+            DELETE FROM scrap
+            WHERE jobs_id = #{jobsId}
+            """)
+    int deleteByJobsId(Integer jobsId);
+
     @Update("""
             UPDATE scrap
             SET favorite = #{favorite}
@@ -33,4 +40,9 @@ public interface ScrapMapper {
             """)
     int update(Scrap scarp);
 
+    @Select("""
+            SELECT jobs_id,COUNT(id) AS jobsFavoriteCount FROM scrap
+            WHERE favorite = 1 GROUP BY jobs_id;
+                        """)
+    List<Scrap> selectAll();
 }

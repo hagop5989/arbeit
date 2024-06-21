@@ -43,6 +43,7 @@ const SmallLink = ({ href, children }) => (
 const Navbar = () => {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
+
   return (
     <Box bg="white" borderBottom="3px solid #eaeaea" height="110px" mb={"70px"}>
       <Box bg={"orange"} h={"3px"} mb={"30px"} />

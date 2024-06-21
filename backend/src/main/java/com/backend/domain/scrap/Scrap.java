@@ -9,4 +9,7 @@ public class Scrap {
     private Integer jobsId;
     private String jobsTitle;
     private Boolean favorite;
+
+    //DB 없음
+    private Integer jobsFavoriteCount;
 }

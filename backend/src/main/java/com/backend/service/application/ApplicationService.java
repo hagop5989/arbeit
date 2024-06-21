@@ -71,4 +71,6 @@ public class ApplicationService {
     public Integer count(Integer authId) {
         return mapper.selectCountByMemberId(authId);
     }
+
+
 }
