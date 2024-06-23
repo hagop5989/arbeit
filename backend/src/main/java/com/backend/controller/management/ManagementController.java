@@ -17,9 +17,9 @@ import java.util.List;
 public class ManagementController {
     private final ManagementService service;
 
-    @PutMapping("{id}/management/decision")
-    public void insertDecision(@RequestBody Management management, @PathVariable Integer id) {
-        service.insertDecision(management);
+    @PutMapping("/management/decision")
+    public void updateDecision(@RequestBody Management management,@AuthId Integer bossId) {
+        service.updateDecision(management,bossId);
     }
 
     @GetMapping("{resumeId}/management/select")
@@ -29,8 +29,7 @@ public class ManagementController {
 
     @GetMapping("management/list")
     public List<Management> list(@AuthId Integer memberId) {
-        List<Management> list = service.list(memberId);
-        return list;
+        return service.list(memberId);
     }
 
     @GetMapping("/managements-count")

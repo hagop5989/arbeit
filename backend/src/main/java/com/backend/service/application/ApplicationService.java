@@ -4,7 +4,10 @@ import com.backend.domain.application.Application;
 import com.backend.domain.application.ApplicationWriteForm;
 import com.backend.domain.resume.Resume;
 import com.backend.mapper.application.ApplicationMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +57,13 @@ public class ApplicationService {
         mapper.update(application);
     }
 
-    public void cancel(Integer jobsId, Integer authId) {
+    public ResponseEntity cancel(Integer jobsId, Integer authId) {
+        Application application = mapper.selectByJobsIdAndMemberId(jobsId, authId);
+        if(application.getIsPassed() == 1){
+            return ResponseEntity.badRequest().body("합격 처리된 지원서는 취소할 수 없습니다.");
+        }
         mapper.deleteByJobsIdAndMemberId(jobsId, authId);
+        return ResponseEntity.ok().build();
     }
 
     public void deleteAllByJobsId(Integer jobsId) {

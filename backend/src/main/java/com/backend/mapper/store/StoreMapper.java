@@ -46,7 +46,7 @@ public interface StoreMapper {
                 inserted,
                 member_id,
                 category_id,
-                c.name category_name
+                c.name categoryName
             FROM store s JOIN category c ON s.category_id = c.id
             WHERE member_id=#{memberId}
             ORDER BY id DESC

@@ -66,7 +66,13 @@ export function ApplicationList() {
           alert("취소되었습니다.");
           setIsCancel(!isCancel);
         })
-        .catch(() => alert("내부 오류 발생"));
+        .catch((err) => {
+          if (err.response && err.response.data) {
+            alert(err.response.data);
+          } else {
+            alert("내부 오류 발생");
+          }
+        });
     }
   }
 

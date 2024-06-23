@@ -1,21 +1,8 @@
 import styled from "@emotion/styled";
-import { Box, HStack, VStack } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 
 export const CalendarWrapper = styled(Box)`
   display: flex;
-`;
-
-export const SmallCalendarContainer = styled(VStack)`
-  width: 1000px;
-  padding: 8px;
-`;
-
-export const LeftCalendarContainer = styled(Box)`
-  position: fixed;
-  left: 0;
-  margin-left: 165px;
-  margin-top: 35px;
-  padding: 16px;
 `;
 
 export const MonthYearSelector = styled(HStack)`
@@ -28,7 +15,7 @@ export const DayBox = styled(Box)`
   background-color: ${(props) => props.bg || "white"};
   color: ${(props) => props.color || "black"};
   font-weight: 500;
-  height: 115px;
+  height: 55px;
   padding: 8px;
   border-radius: 8px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
@@ -93,7 +80,7 @@ export const DayLabelBox = styled(Box)`
   whitespace: nowrap; // 줄 바꿈을 막음
   overflow: hidden; // 넘친 내용을 숨김
   textoverflow: ellipsis; // 넘친 내용을 "..."으로 표시
-  padding: 5px;
+  padding: 1px;
   margin: 1px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;

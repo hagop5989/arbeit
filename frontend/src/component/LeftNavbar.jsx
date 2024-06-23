@@ -9,7 +9,7 @@ import {
   Tr,
   useMediaQuery,
 } from "@chakra-ui/react";
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../provider/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +23,7 @@ export function LeftNavbar() {
     { name: "이력서관리", url: "/resume/list" },
     { name: "지원내역", url: "/apply/list" },
     { name: "캘린더테스트", url: "/test" },
+    { name: "리뷰관리", url: "/alba-review" },
   ];
 
   const bossMenu = [
@@ -32,6 +33,7 @@ export function LeftNavbar() {
     { name: "가게등록", url: "/store/register" },
     { name: "가게목록", url: "/store/list" },
     { name: "캘린더테스트", url: "/test" },
+    { name: "리뷰관리", url: "/boss-review" },
   ];
 
   const menuItems = account.isBoss() ? bossMenu : albaMenu;

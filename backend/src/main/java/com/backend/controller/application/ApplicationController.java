@@ -70,7 +70,7 @@ public class ApplicationController {
 
     @DeleteMapping("/apply/{jobsId}")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
-    public void cancel(@PathVariable Integer jobsId, @AuthId Integer authId) {
-        service.cancel(jobsId, authId);
+    public ResponseEntity cancel(@PathVariable Integer jobsId, @AuthId Integer authId) {
+        return service.cancel(jobsId, authId);
     }
 }
