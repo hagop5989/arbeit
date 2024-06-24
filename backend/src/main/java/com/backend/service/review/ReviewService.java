@@ -28,7 +28,12 @@ public class ReviewService {
     }
 
     public void delete(Integer jobsId, Integer memberId) {
-        mapper.delete(jobsId,memberId);
+        mapper.delete(jobsId, memberId);
+
+    }
+
+    public void update(Review review) {
+        mapper.update(review);
 
     }
 }

@@ -73,7 +73,6 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated BoardEditForm form, BindingResult bindingResult,
                                Authentication authentication) throws IOException {
-        System.out.println("form = " + form);
         log.debug("Number of rows updated: {}", form);
 
         if (!boardService.hasAccess(form, authentication)) {

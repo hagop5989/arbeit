@@ -29,30 +29,34 @@ public class ReviewController {
     }
 
     @GetMapping("list")
-    public Map<String,Object> list(@AuthId Integer memberId, Authentication authentication) {
+    public Map<String, Object> list(@AuthId Integer memberId, Authentication authentication) {
         HashMap<String, Object> map = new HashMap<>();
         List<Contract> contractList = contractService.list(memberId, authentication);
         map.put("contractList", contractList);
 
-        if(checkAuthority(authentication,"SCOPE_BOSS")){
-            map.put("reviewList",service.listForBoss(memberId));
-        } else if(checkAuthority(authentication,"SCOPE_ALBA")){
-            map.put("reviewList",service.listForAlba(memberId));
+        if (checkAuthority(authentication, "SCOPE_BOSS")) {
+            map.put("reviewList", service.listForBoss(memberId));
+        } else if (checkAuthority(authentication, "SCOPE_ALBA")) {
+            map.put("reviewList", service.listForAlba(memberId));
         }
-        System.out.println("map = " + map);
         return map;
     }
 
+    @PutMapping("")
+    public void update(@RequestBody Review review) {
+        service.update(review);
+    }
+
     @DeleteMapping("{jobsId}")
-    public void delete(@PathVariable Integer jobsId,@AuthId Integer memberId) {
-        service.delete(jobsId,memberId);
+    public void delete(@PathVariable Integer jobsId, @AuthId Integer memberId) {
+        service.delete(jobsId, memberId);
     }
 
 
-private boolean checkAuthority(Authentication authentication, String authority) {
-    return authentication.getAuthorities().stream()
-            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority));
-}
+    private boolean checkAuthority(Authentication authentication, String authority) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority));
+    }
 
 
 }

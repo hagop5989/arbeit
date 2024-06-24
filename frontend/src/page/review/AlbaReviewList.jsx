@@ -35,7 +35,6 @@ function AlbaReviewList(props) {
     rating: 0,
   });
   const [reviewList, setReviewList] = useState([]);
-  const [selectedReview, setSelectedReview] = useState(null);
   const [contractList, setContractList] = useState([]);
   const [selectedContract, setSelectedContract] = useState(null);
   const account = useContext(LoginContext);
@@ -45,38 +44,25 @@ function AlbaReviewList(props) {
   const [checkChange, setCheckChange] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure({
     onOpen: () => {
-      // if (selectedContract) {
-      //   selectedReview((prev) => ({
-      //     ...prev,
-      //     storeName: selectedContract.storeName,
-      //   }));
-      // }
-      if (selectedReview) {
-        const contract = contractList.find(
-          (contract) =>
-            contract.jobsId === selectedReview.jobsId &&
-            contract.albaId === selectedReview.memberId,
-        );
-        setReview({
-          ...selectedReview,
+      console.log("onOpen");
+      console.log(review);
+      const contract = contractList.find(
+        (contract) =>
+          contract.jobsId === review.jobsId &&
+          contract.albaId === review.memberId,
+      );
+      if (review.action) {
+        setReview((prev) => ({
+          ...prev,
           startDate: contract ? contract.startDate : "",
           endDate: contract ? contract.endDate : "",
           storeName: contract ? contract.storeName : "",
-        });
+          action: review.action || "",
+        }));
         setSelectedContract(contract || null);
       } else if (contractList.length > 0) {
         const contract = contractList[0];
         setSelectedContract(contract);
-        setReview({
-          memberId: account.id,
-          jobsId: contract.jobsId,
-          jobsTitle: contract.jobsTitle,
-          content: "",
-          rating: 0,
-          startDate: contract.startDate,
-          endDate: contract.endDate,
-          storeName: contract.storeName,
-        });
       }
     },
     onClose: () => {
@@ -90,23 +76,36 @@ function AlbaReviewList(props) {
         startDate: "",
         endDate: "",
         storeName: "",
+        action: "",
       });
-      setSelectedReview(null); // 추가: selectedReview 초기화
     },
   });
 
-  // Read (리스트 받기)
   useEffect(() => {
     if (account.id) {
       axios
         .get("/api/review/list")
         .then((res) => {
           const validContracts = res.data.contractList.filter(
-            // 계약 종료일이 오늘보다 적은 경우의 리스트 추출
             (contract) => contract.endDate <= today,
           );
-          setReviewList(res.data.reviewList);
-          setContractList(validContracts); // 필터링된 contractList 설정
+
+          const updatedReviewList = res.data.reviewList.map((review) => {
+            const contract = validContracts.find(
+              (contract) =>
+                contract.jobsId === review.jobsId &&
+                contract.albaId === review.memberId,
+            );
+            return {
+              ...review,
+              startDate: contract ? contract.startDate : "",
+              endDate: contract ? contract.endDate : "",
+              storeName: contract ? contract.storeName : "",
+            };
+          });
+
+          setReviewList(updatedReviewList);
+          setContractList(validContracts);
         })
         .catch((err) => myToast("로드 오류발생", "error"))
         .finally();
@@ -135,7 +134,7 @@ function AlbaReviewList(props) {
       .finally();
   }
 
-  const handleContractChange = (e) => {
+  const handleModalSelect = (e) => {
     const jobsId = parseInt(e.target.value);
     const contract = contractList.find(
       (contract) => contract.jobsId == jobsId && contract.albaId == account.id,
@@ -146,6 +145,9 @@ function AlbaReviewList(props) {
         ...prev,
         jobsTitle: contract.jobsTitle,
         jobsId: contract.jobsId,
+        startDate: contract.startDate, // 추가
+        endDate: contract.endDate, // 추가
+        storeName: contract.storeName, // 추가
       }));
     }
   };
@@ -153,14 +155,15 @@ function AlbaReviewList(props) {
   // 모달 관련
 
   useEffect(() => {
-    if (isOpen) {
-      if (selectedReview) {
+    if (isOpen && review) {
+      if (review) {
         setReview({
-          memberId: selectedReview.memberId,
-          jobsId: selectedReview.jobsId,
-          jobsTitle: selectedReview.jobsTitle,
-          content: selectedReview.content,
-          rating: selectedReview.rating,
+          memberId: review.memberId,
+          jobsId: review.jobsId,
+          jobsTitle: review.jobsTitle,
+          content: review.content,
+          rating: review.rating,
+          action: review.action || "",
         });
         setSelectedContract(null);
       } else if (contractList.length > 0) {
@@ -172,29 +175,40 @@ function AlbaReviewList(props) {
           jobsTitle: contract.jobsTitle,
           content: "",
           rating: 0,
+          action: "",
         });
       }
     }
-  }, [isOpen, selectedReview, contractList, account.id]);
+  }, [isOpen, contractList, account.id]);
 
-  const handleReviewClick = (review) => {
+  const handleReviewClick = (review, action) => {
+    console.log("handleReviewClick start");
+    console.log(review);
+    // setAction(action);
     const contract = contractList.find(
       (contract) =>
         contract.jobsId === review.jobsId &&
         contract.albaId === review.memberId,
     );
-    setSelectedReview(review);
-    setSelectedContract(contract);
-    setReview({
-      memberId: review.memberId,
-      jobsId: review.jobsId,
-      jobsTitle: review.jobsTitle,
-      content: review.content,
-      rating: review.rating,
+    const updatedReview = {
+      ...review,
       startDate: contract ? contract.startDate : "",
       endDate: contract ? contract.endDate : "",
       storeName: contract ? contract.storeName : "",
-    });
+      action: action || "", // action 설정
+    };
+
+    setReview(updatedReview);
+    console.log("updatedReview");
+    console.log(updatedReview);
+    // setSelectedReview(updatedReview);
+    setSelectedContract(contract);
+    setTimeout(() => onOpen(), 0); // setReview 후에 onOpen 호출
+    console.log("setSelectedContract");
+    console.log(selectedContract);
+    console.log(review);
+    console.log("contractList");
+    console.log(contractList);
     onOpen();
   };
 
@@ -216,6 +230,20 @@ function AlbaReviewList(props) {
     }
   }, [contractList]);
 
+  // Update
+  function handleUpdate(review) {
+    axios
+      .put("api/review", review)
+      .then((res) => {
+        myToast("수정 되었습니다.", "success");
+        onClose();
+        fetchReviewList();
+      })
+      .catch(() => {
+        myToast("에러발생", "error");
+      })
+      .finally();
+  }
   // Delete
   function handleDelete(review) {
     axios
@@ -230,6 +258,7 @@ function AlbaReviewList(props) {
       .finally();
   }
 
+  // 새로고침
   const fetchReviewList = () => {
     if (account.id) {
       axios
@@ -246,13 +275,14 @@ function AlbaReviewList(props) {
     }
   };
 
+  // 별점 매기기 1
   const handleRatingChange = (newRating) => {
     setReview((prev) => ({
       ...prev,
       rating: newRating,
     }));
   };
-
+  // 별점 매기기 2
   const renderStars = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -271,12 +301,6 @@ function AlbaReviewList(props) {
     }
     return stars;
   };
-
-  const selectedValue = selectedReview
-    ? selectedReview.jobsId
-    : selectedContract
-      ? selectedContract.jobsId
-      : "";
 
   // toast 커스텀
   function myToast(text, status) {
@@ -305,26 +329,35 @@ function AlbaReviewList(props) {
         <ModalOverlay />
         <ModalContent maxW="600px" h={"500px"}>
           <ModalBody>
-            <Heading textAlign={"center"}>리뷰작성</Heading>
+            {review && review.action === "선택" && (
+              <Heading textAlign={"center"}>리뷰보기</Heading>
+            )}
+            {(review == null || review.action !== "선택") && (
+              <Heading textAlign={"center"}>리뷰작성</Heading>
+            )}
             <Divider mt={"10px"} borderWidth={"1px"} />
-
-            <Select
-              value={selectedContract ? selectedContract.jobsId : ""}
-              onChange={handleContractChange}
-              // isDisabled={!!selectedReview}
-            >
-              <option value={""} disabled>
-                계약기간 종료된 것만 선택가능 합니다.
-              </option>
-              {contractList.map((contract) => (
-                <option key={contract.jobsId} value={contract.jobsId}>
-                  {contract.jobsTitle}
+            <Text fontSize={"sm"}>공고명</Text>
+            <Text fontSize={"3xl"} fontWeight={"bold"} mb={3}>
+              {review.action && review.jobsTitle}
+            </Text>
+            {!review.action && (
+              <Select
+                value={selectedContract ? selectedContract.jobsId : ""}
+                onChange={handleModalSelect}
+                // isDisabled={!!selectedReview}
+              >
+                <option value={""} disabled>
+                  계약기간 종료된 것만 선택가능 합니다.
                 </option>
-              ))}
-            </Select>
-            <Text fontSize={"sm"}> 항목을 선택해주세요.</Text>
+                {contractList.map((contract) => (
+                  <option key={contract.jobsId} value={contract.jobsId}>
+                    {contract.jobsTitle}
+                  </option>
+                ))}
+              </Select>
+            )}
 
-            {selectedReview && (
+            {review && (
               <Box
                 ml={4}
                 my={4}
@@ -340,7 +373,7 @@ function AlbaReviewList(props) {
                     fontWeight={"bold"}
                     lineHeight={"35px"}
                   >
-                    {selectedReview.startDate} ~ {selectedReview.endDate}
+                    {review.startDate} ~ {review.endDate}
                   </Text>
                 </Box>
                 <Box display={"flex"}>
@@ -352,7 +385,7 @@ function AlbaReviewList(props) {
                     fontWeight={"bold"}
                     lineHeight={"35px"}
                   >
-                    {selectedReview.storeName}
+                    {review.storeName}
                   </Text>
                 </Box>
 
@@ -378,7 +411,7 @@ function AlbaReviewList(props) {
               </Box>
             )}
 
-            {!selectedReview && selectedContract && (
+            {!review && (
               <Box
                 ml={4}
                 my={4}
@@ -433,9 +466,16 @@ function AlbaReviewList(props) {
             )}
           </ModalBody>
           <ModalFooter gap={"10px"} mt={"-40px"}>
-            <Button onClick={handleSubmit} colorScheme={"blue"}>
-              저장
-            </Button>
+            {review.action === "수정" && (
+              <Button onClick={() => handleUpdate(review)} color={"green"}>
+                수정
+              </Button>
+            )}
+            {review.action !== "선택" && review.action !== "수정" && (
+              <Button onClick={handleSubmit} colorScheme={"blue"}>
+                저장
+              </Button>
+            )}
             <Button onClick={onClose} colorScheme={"teal"}>
               취소
             </Button>
@@ -476,7 +516,7 @@ function AlbaReviewList(props) {
                 overflow="hidden"
                 textOverflow="ellipsis"
                 cursor={"pointer"}
-                onClick={() => handleReviewClick(review)}
+                onClick={() => handleReviewClick(review, "선택")}
               >
                 {review.content}
               </Td>
@@ -494,7 +534,7 @@ function AlbaReviewList(props) {
                     fontWeight={"500"}
                     bgColor={"#FF7F3E"}
                     color={"white"}
-                    onClick={() => handleReviewClick(review)}
+                    onClick={() => handleReviewClick(review, "수정")}
                   >
                     수정
                   </Button>

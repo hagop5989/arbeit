@@ -173,8 +173,15 @@ function BossReviewList(props) {
 
   return (
     <Box w={"full"}>
-      <Box w={"full"} h={"30vh"} border={"1px solid blue"}>
-        <Box h={"30vh"} border={"1px solid red"}>
+      <Box
+        w={"full"}
+        h={"30vh"}
+        // border={"1px solid blue"}
+      >
+        <Box
+          h={"30vh"}
+          // border={"1px solid red"}
+        >
           <Box display="flex" justifyContent="space-between">
             <Heading mb={"10px"} p={1}>
               직원 평가
@@ -365,7 +372,11 @@ function BossReviewList(props) {
         </Box>
       </Box>
       {/* 내 사업장 리뷰 */}
-      <Box h={"30vh"} border={"1px solid red"}>
+      <Box
+        h={"30vh"}
+        // border={"1px solid red"}
+        mt={"100px"}
+      >
         <Box display="flex" justifyContent="space-between">
           <Heading mb={"10px"} p={1}>
             내 사업장 리뷰
