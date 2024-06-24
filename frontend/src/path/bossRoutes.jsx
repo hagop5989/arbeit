@@ -13,7 +13,9 @@ import { ManagementView } from "../page/management/ManagementView.jsx";
 import Test1 from "../page/test)calendar/Test1.jsx";
 import VisitHistory from "../component/VisitHistory.jsx";
 import JobsView from "../page/jobs/JobsView.jsx";
-import ScrapHistory from "../component/ScrapHistory.jsx"; // list : jobs , view : detail
+import ScrapHistory from "../component/ScrapHistory.jsx";
+import AlbaReviewList from "../page/review/AlbaReviewList.jsx";
+import BossReviewList from "../page/review/BossReviewList.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
@@ -33,6 +35,8 @@ const bossRoutes = [
   { path: "test", element: <Test1 /> },
   { path: "visit-history", element: <VisitHistory /> },
   { path: "scrap-history", element: <ScrapHistory /> },
+  { path: "alba-review", element: <AlbaReviewList /> },
+  { path: "boss-review", element: <BossReviewList /> },
 ];
 
 export default bossRoutes;

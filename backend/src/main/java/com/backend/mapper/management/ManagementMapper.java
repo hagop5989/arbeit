@@ -17,21 +17,16 @@ public interface ManagementMapper {
             SELECT a.*,
                j.title AS jobsTitle,
                a.member_id AS appliedMemberId,
+               m.name AS albaName,
                a.title AS applicationTitle,
                a.inserted AS applicationInserted
                FROM application a
-               JOIN jobs j ON  j.id = a.jobs_id
+                   JOIN jobs j ON  j.id = a.jobs_id
+                   JOIN member m ON m.id = a.member_id
                WHERE j.member_id = #{memberId}
+               ORDER BY applicationInserted
                 """)
     List<Management> list(Integer memberId);
-
-
-//    @Insert("""
-//    INSERT INTO management (jobs_id, applied_member_id,resume_id,is_passed)
-//    VALUES (#{jobsId},#{memberId},#{resumeId},#{isPassed})
-//    """)
-//    int insert(Application application);
-
 
     @Select("""
             SELECT a.*,
@@ -50,7 +45,7 @@ public interface ManagementMapper {
             SET is_passed = #{isPassed}
             WHERE jobs_id = #{jobsId} AND member_id = #{appliedMemberId}
             """)
-    int insertDecision(Management management);
+    int updateDecision(Management management);
 
     @Delete("""
             DELETE FROM application

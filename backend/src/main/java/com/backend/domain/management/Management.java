@@ -13,7 +13,9 @@ public class Management {
     private Integer resumeId;
     private Integer isPassed;
 
+    // application db에 없음
     private String jobsTitle;
     private String applicationTitle;
     private LocalDate applicationInserted;
+    private String albaName;
 }

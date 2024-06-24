@@ -58,7 +58,6 @@ export function JobDetail({ job, jobsCond, storeMap }) {
                 ? storeMap.images[0].name
                 : "이미지 없음"
             }
-            borderRadius={"4px"}
             objectFit="contain"
           />
         </Box>

@@ -426,7 +426,7 @@ export function JobsList() {
               src={getSrcByStoreId(job.storeId)}
               alt={"이미지 없음"}
               border={"1px solid lightgray"}
-              borderRadius={"5px"}
+              borderRadius={"8px"}
               objectFit="contain"
             />
           </Box>
