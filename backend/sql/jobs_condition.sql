@@ -2,10 +2,10 @@
 DROP TABLE jobs_condition;
 CREATE TABLE jobs_condition
 (
-    jobsId           INT PRIMARY KEY REFERENCES jobs (id),
+    jobs_Id          INT PRIMARY KEY REFERENCES jobs (id),
     education        VARCHAR(50)  NOT NULL,
     education_detail VARCHAR(50)  NOT NULL,
-    age              INT          NOT NULL DEFAULT 0,
+    age              INT          NOT NULL,
     preferred        VARCHAR(200) NOT NULL,
     work_period      VARCHAR(100) NOT NULL,
     work_week        VARCHAR(45)  NOT NULL,
@@ -14,5 +14,8 @@ CREATE TABLE jobs_condition
 SELECT *
 FROM jobs_condition;
 
+
+SELECT *
+FROM jobs;
 
 

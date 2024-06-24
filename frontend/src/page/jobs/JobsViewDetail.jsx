@@ -1,11 +1,13 @@
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Grid,
   HStack,
   Image,
+  ListItem,
   Tab,
   Table,
   TabList,
@@ -13,13 +15,30 @@ import {
   Tbody,
   Td,
   Text,
+  Th,
+  Thead,
   Tr,
+  UnorderedList,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LocationMap from "../../component/LocationMap.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+const styles = {
+  menu: {
+    fontSize: "25px",
+    fontWeight: "800",
+    borderBottom: "3px solid gray",
+    mb: "10px",
+  },
+
+  list: {
+    mb: "5px",
+    fontWeight: "600",
+  },
+};
 
 export function JobDetail({ job, jobsCond, storeMap }) {
   if (!job || !jobsCond) {
@@ -48,16 +67,7 @@ export function JobDetail({ job, jobsCond, storeMap }) {
             p={"10px"}
             border={"1px solid lightgray"}
             borderRadius={"8px"}
-            src={
-              storeMap.images && storeMap.images[0]
-                ? storeMap.images[0].src
-                : ""
-            }
-            alt={
-              storeMap.images && storeMap.images[0]
-                ? storeMap.images[0].name
-                : "이미지 없음"
-            }
+            src={"/public/alba_connector_store_logo.png"}
             objectFit="contain"
           />
         </Box>
@@ -170,19 +180,6 @@ export function JobConditions({ job, jobsCond }) {
             </Text>
             <Text ml={"10px"}>{"알바"}</Text>
           </Box>
-          <Box my={2} display={"flex"}>
-            <Text w={"95px"} fontWeight="bold">
-              복리후생
-            </Text>
-            <Text
-              ml={"10px"}
-              whiteSpace="nowrap" // 줄 바꿈을 막음
-              overflow="hidden" // 넘친 내용을 숨김
-              textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
-            >
-              {"국민연금, 고용보험, 산재보험, 건강보험 "}
-            </Text>
-          </Box>
         </Box>
       </Flex>
     </Box>
@@ -204,6 +201,7 @@ export function JobLocation({ storeMap }) {
         근무지역
       </Text>
       <LocationMap
+        height={"400px"}
         address={storeMap.store != null ? storeMap.store.address : ""}
       />
       <Flex fontSize={"xl"} fontWeight={"bold"} my={"10px"}>
@@ -216,7 +214,7 @@ export function JobLocation({ storeMap }) {
   );
 }
 
-export function JobDetails({ job, images }) {
+export function JobDetails({ job, jobsCond, images }) {
   const navigate = useNavigate();
   return (
     <Box
@@ -233,11 +231,112 @@ export function JobDetails({ job, images }) {
         상세요강
       </Text>
       <Divider my={5} />
+      <Box>
+        <Center
+          h={"70px"}
+          mb={"30px"}
+          bg={"#FF7F3E"}
+          color={"white"}
+          borderRadius={"10px"}
+          fontSize={"30px"}
+          fontWeight={"800"}
+        >
+          <Text>{job.title}</Text>
+        </Center>
+        <Box mb={"70px"}>
+          <Box {...styles.menu}>모집부문</Box>
+          <Table mb={"40px"}>
+            <Thead>
+              <Tr>
+                <Th
+                  border={"1px solid gray"}
+                  fontSize={"20px"}
+                  textAlign={"center"}
+                  w={"200px"}
+                >
+                  모집 분야
+                </Th>
+                <Th
+                  border={"1px solid gray"}
+                  fontSize={"20px"}
+                  textAlign={"center"}
+                >
+                  우대사항
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <Tr>
+                <Td
+                  border={"1px solid gray"}
+                  fontSize={"20px"}
+                  fontWeight={"800"}
+                  textAlign={"center"}
+                >
+                  {job.categoryName}
+                </Td>
+                <Td
+                  border={"1px solid gray"}
+                  fontSize={"17px"}
+                  fontWeight={"800"}
+                  textAlign={"center"}
+                >
+                  {jobsCond.preferred}
+                </Td>
+              </Tr>
+            </Tbody>
+          </Table>
+        </Box>
+        <Box>
+          <Box {...styles.menu}>근무 조건</Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            gap={"10px"}
+            my={"20px"}
+          >
+            <UnorderedList ml={"50px"} fontSize={"20px"}>
+              <ListItem {...styles.list}>
+                근무 기간: {jobsCond.workPeriod}
+              </ListItem>
+              <ListItem {...styles.list}>
+                근무 요일: {jobsCond.workWeek}
+              </ListItem>
+              <ListItem {...styles.list}>
+                근무 시간: {jobsCond.workTime}
+              </ListItem>
+            </UnorderedList>
+          </Box>
+          <Box {...styles.menu} mt={"50px"}>
+            지원 조건
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            gap={"10px"}
+            my={"20px"}
+          >
+            <UnorderedList ml={"50px"} fontSize={"20px"}>
+              <ListItem {...styles.list}>
+                학력: {jobsCond.education} ({jobsCond.educationDetail})
+              </ListItem>
+              <ListItem {...styles.list}>
+                연령: {jobsCond.age == "0" ? "무관" : jobsCond.age}
+              </ListItem>
+            </UnorderedList>
+          </Box>
+          <Box {...styles.menu} mt={"50px"} mb={"30px"}>
+            추가 사항
+          </Box>
+          <Box textIndent={"30px"} mb={"50px"} fontWeight={"600"}>
+            {job.content}
+          </Box>
+        </Box>
+      </Box>
       {images &&
         images.map((image, index) => (
           <Image w={"100%"} key={index} src={image.src} alt={image.name} />
         ))}
-      <Text>{job.content}</Text>
       <Button
         onClick={() => navigate(`/jobs/${job.id}/apply`)}
         bgColor={"#FF7F3E"}
@@ -280,21 +379,6 @@ export function JobContact({ boss, storeMap }) {
           <Tr>
             <Td fontWeight="bold">이메일</Td>
             <Td>{boss.email}</Td>
-          </Tr>
-          <Tr>
-            <Td fontWeight="bold">홈페이지</Td>
-            <Td>
-              {/*/store/${storeMap.store.id}*/}
-              <Box
-                onClick={() => navigate(`/store/${storeMap.store.id}`)}
-                cursor={"pointer"}
-                color="red.500"
-                href={"job.contactWebsite"}
-                isExternal
-              >
-                홈페이지방문
-              </Box>
-            </Td>
           </Tr>
         </Tbody>
       </Table>
@@ -418,7 +502,7 @@ export function JobRequirements({ job, jobsCond, id }) {
                   학력
                 </Text>
                 <Text ml={"0px"}>
-                  {jobsCond.education} {jobsCond.educationDetail}{" "}
+                  {jobsCond.education} {jobsCond.educationDetail}
                 </Text>
               </Box>
               <Box my={2} display={"flex"}>
@@ -454,6 +538,16 @@ export function JobRequirements({ job, jobsCond, id }) {
 }
 
 export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
+  const [src, setSrc] = useState("/public/alba_connector_store_logo.png");
+
+  useEffect(() => {
+    if (storeMap && Array.isArray(storeMap.images)) {
+      // images 배열의 각 항목을 순회하며 src 값을 출력
+      storeMap.images.forEach((image) => {
+        setSrc(image.src);
+      });
+    }
+  }, [storeMap]);
   const navigate = useNavigate();
   return (
     <Box
@@ -464,7 +558,6 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
       borderWidth="1px"
       borderRadius="lg"
       border={"1px solid lightgray"}
-      m="2"
       bg="white"
     >
       <Flex justifyContent="space-between" alignItems="center" fontSize="2xl">
@@ -489,16 +582,7 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
               h={"100%"}
               border={"1px solid lightgray"}
               borderRadius={"8px"}
-              src={
-                storeMap.images && storeMap.images[0]
-                  ? storeMap.images[0].src
-                  : ""
-              }
-              alt={
-                storeMap.images && storeMap.images[0]
-                  ? storeMap.images[0].name
-                  : "이미지 없음"
-              }
+              src={src}
               // m={"-10px"}
               objectFit="contain"
             />
@@ -513,14 +597,6 @@ export function CompanyInfo({ job, jobsCond, storeMap, boss }) {
             <Text fontSize="sm" color="gray.500">
               회사주소: {job.address}
             </Text>
-          </Box>
-          <Box textAlign="right">
-            <Flex alignItems="center">
-              {/*<Icon as={FaHeart} color="red.500" mr={2} />*/}
-              <Text fontSize="sm" color="gray.500">
-                관심기업 {parseInt(Math.random() * 1000)} 명
-              </Text>
-            </Flex>
           </Box>
         </Flex>
       </VStack>

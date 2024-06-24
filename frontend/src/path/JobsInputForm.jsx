@@ -2,14 +2,34 @@ import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
-  Flex,
-  Heading,
+  Center,
   Input,
   ListItem,
+  Table,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
   UnorderedList,
 } from "@chakra-ui/react";
 import html2canvas from "html2canvas";
+
+const styles = {
+  title: {
+    fontSize: "25px",
+    fontWeight: "800",
+    borderBottom: "3px solid gray",
+  },
+  td: {
+    fontSize: "20px",
+    fontWeight: "800",
+    textAlign: "center",
+    color: "black",
+    border: "1px solid gray",
+  },
+};
 
 export function JobsInputForm({
   showCaptureButton = true,
@@ -38,11 +58,28 @@ export function JobsInputForm({
   const MyInput = ({ text, size, weight }) => {
     return (
       <Input
+        w={"100%"}
+        boxSizing={"border-box"}
         border={"none"}
         borderRadius={0}
         placeholder={text}
         fontSize={size}
         fontWeight={weight}
+        opacity={"0.9"}
+      />
+    );
+  };
+
+  const Title = ({ text }) => {
+    return (
+      <Input
+        textAlign={"center"}
+        border={"none"}
+        borderRadius={0}
+        placeholder={text}
+        fontSize={"30px"}
+        fontWeight={"800"}
+        color={"white"}
         opacity={"0.9"}
         h={"50px"}
       />
@@ -61,90 +98,57 @@ export function JobsInputForm({
         borderRadius={"8px"}
       >
         <Box>
-          <Heading my={"10px"} h={"100px"}>
-            <MyInput
-              text={"OOOO 의 직원을 모집합니다."}
-              size={"5xl"}
-              weight={"bold"}
-            />
-          </Heading>
-          <Heading textIndent={"10px"}>모집부문</Heading>
+          <Center
+            h={"70px"}
+            mb={"70px"}
+            bg={"#FF7F3E"}
+            color={"white"}
+            borderRadius={"10px"}
+          >
+            <Title text={"ex) 편의점 직원을 모집합니다."} />
+          </Center>
+          <Box {...styles.title}>모집부문</Box>
           <Box my={4}>
-            <Flex textAlign={"center"} lineHeight={"50px"} h={"60px"}>
-              <Text
-                w={"200px"}
-                border={"1px solid gray"}
-                fontSize={"2xl"}
-                fontWeight={"bold"}
-                borderRight={"none"}
-              >
-                모집분야
-              </Text>
-              <Text
-                w={"80%"}
-                border={"1px solid gray"}
-                fontSize={"2xl"}
-                fontWeight={"bold"}
-              >
-                담당 및 업무 자격조건
-              </Text>
-            </Flex>
-            <Flex borderBottom={"1px solid gray"}>
-              <Box
-                w={"202px"}
-                lineHeight={"80px"}
-                borderRight={"1px solid gray"}
-                borderLeft={"1px solid gray"}
-              >
-                <MyInput text={"일반 음식점"} size={"2xl"} weight={"bold"} />
-              </Box>
-              <Box w={"80%"}>
-                <Flex>
-                  <Text
-                    w={"100px"}
-                    fontSize={"lg"}
-                    fontWeight={"bold"}
-                    borderRight={"1px solid gray"}
-                    borderBottom={"1px solid gray"}
-                    textIndent={"5px"}
-                  >
-                    담당업무
-                  </Text>
-                  <Box
-                    w={"100%"}
-                    borderBottom={"1px solid gray"}
-                    borderRight={"1px solid gray"}
-                  >
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th {...styles.td} w="200px">
+                    모집 분야
+                  </Th>
+                  <Th {...styles.td} colSpan={"2"}>
+                    담당 및 업무 자격 조건
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td rowSpan={"2"} border={"1px solid gray"} w={"200px"}>
+                    <MyInput text={"편의점 관리"} size={"xl"} weight={"bold"} />
+                  </Td>
+                  <Td {...styles.td}>담당업무</Td>
+                  <Td border={"1px solid gray"}>
                     <MyInput
                       text={"OO 업무 및 OO 관리"}
                       size={"medium"}
                       weight={"bold"}
                     />
-                  </Box>
-                </Flex>
-                <Flex>
-                  <Text
-                    w={"100px"}
-                    fontSize={"lg"}
-                    fontWeight={"bold"}
-                    borderRight={"1px solid gray"}
-                    textIndent={"5px"}
-                  >
-                    자격요건
-                  </Text>
-                  <Box w={"100%"} borderRight={"1px solid gray"}>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Td {...styles.td}>자격요건</Td>
+                  <Td border={"1px solid gray"}>
                     <MyInput
                       text={"OO 사용 가능한 분 우대합니다."}
                       size={"medium"}
                       weight={"bold"}
                     />
-                  </Box>
-                </Flex>
-              </Box>
-            </Flex>
+                  </Td>
+                </Tr>
+              </Tbody>
+            </Table>
           </Box>
-          <Box my={4}>
-            <Heading textIndent={"10px"}>근무조건</Heading>
+          <Box my={8}>
+            <Box {...styles.title}>근무조건</Box>
             <Box
               textIndent={"20px"}
               display={"flex"}
@@ -186,7 +190,7 @@ export function JobsInputForm({
               </UnorderedList>
             </Box>
           </Box>
-          <Heading textIndent={"10px"}>지원조건</Heading>
+          <Box {...styles.title}>지원조건</Box>
           <Box
             display={"flex"}
             flexDirection={"column"}
@@ -213,7 +217,7 @@ export function JobsInputForm({
               </ListItem>
             </UnorderedList>
           </Box>
-          <Heading textIndent={"10px"}>접수방법</Heading>
+          <Box {...styles.title}>접수방법</Box>
           <Box
             display={"flex"}
             flexDirection={"column"}

@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -61,9 +60,8 @@ export function MemberInfo() {
           description: "접근 권한이 없습니다.",
           position: "top",
         });
-        navigate("/member/list");
-      })
-      .finally();
+        navigate("/");
+      });
     getProfilePicture();
   }, []);
 
@@ -134,14 +132,21 @@ export function MemberInfo() {
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
-        <Heading mb={"10px"} p={1}>
-          회원정보
-        </Heading>
-        <Divider mb={"40px"} borderWidth={"2px"} />
+        <Box
+          h={"70px"}
+          mb={"70px"}
+          bg={"#FF7F3E"}
+          color={"white"}
+          borderRadius={"10px"}
+        >
+          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+            회원 정보
+          </Heading>
+        </Box>
         <Box>
           <Box>
             {/* 프로필 사진 */}
-            <FormControl>
+            <FormControl mb={"50px"}>
               <Flex>
                 <Box w={"240px"} h={"240px"}>
                   <Image
@@ -162,7 +167,6 @@ export function MemberInfo() {
                         boxSize={"50px"}
                         bgColor="gray.100"
                         borderRadius={100}
-                        ml={"20px"}
                         mt={"-30px"}
                         cursor="pointer"
                         onClick={handleProfilePictureBtn}

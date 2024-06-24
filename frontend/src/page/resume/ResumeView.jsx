@@ -1,11 +1,13 @@
 import {
   Box,
   Button,
-  Divider,
+  Center,
   Flex,
+  FormControl,
   FormLabel,
   Heading,
   Image,
+  Input,
   Tab,
   TabList,
   Tabs,
@@ -18,30 +20,68 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
+const styles = {
+  title: {
+    w: "90px",
+    fontSize: "xl",
+    fontWeight: "bold",
+    borderRight: "3px solid orange",
+    mr: "20px",
+  },
+};
+
 export function ResumeView() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
   const [profileSrc, setProfileSrc] = useState("");
+  const [nowAge, setNowAge] = useState("");
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
   const toast = useToast();
   const navigate = useNavigate();
 
   const account = useContext(LoginContext);
 
+  // 나이 계산
+  const countNowAge = () => {
+    const currentTime = Date.now();
+    const birthTime = new Date(resume.birthDate).getTime();
+    const ageInMilliseconds = currentTime - birthTime;
+    const ageInYears = Math.floor(
+      ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25),
+    ); // 윤년을 고려하여 365.25로 나눔
+    setNowAge(ageInYears);
+  };
+
   useEffect(() => {
+    // TODO : 알바, 사장 접근 가능하게 만들어야함
     axios
-      .get(`/api/resume/${id}`)
-      .then((res) => {
-        setResume(res.data);
+      .get("/api/only-alba")
+      .then(() => {
+        axios
+          .get(`/api/resume/${id}`)
+          .then((res) => {
+            setResume(res.data);
+          })
+          .catch((err) => {
+            if (err.response.status === 404) {
+              navigate("/resume/list");
+            }
+          });
+        if (resume.memberId !== undefined) {
+          getProfilePicture();
+        }
+        if (resume) {
+          countNowAge();
+        }
       })
       .catch((err) => {
-        if (err.response.status === 404) {
-          navigate("/resume/list");
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+        if (err.response.status === 403) {
+          navigate("/");
         }
       });
-    if (resume.memberId !== undefined) {
-      getProfilePicture();
-    }
   }, [resume.memberId]);
 
   function getProfilePicture() {
@@ -79,12 +119,19 @@ export function ResumeView() {
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
-        <Heading mb={"10px"} p={1}>
-          이력서 세부항목
-        </Heading>
-        <Divider mb={"40px"} borderWidth={"2px"} />
-        <Box w="full" gap={"20px"} display={"flex"} flexDirection={"column"}>
-          <Flex>
+        <Box
+          h={"70px"}
+          mb={"70px"}
+          bg={"#FF7F3E"}
+          color={"white"}
+          borderRadius={"10px"}
+        >
+          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+            이력서 정보
+          </Heading>
+        </Box>
+        <Flex gap={"20px"} flexDirection={"column"}>
+          <Center>
             <Box w={"240px"} h={"240px"}>
               <Image
                 w={"100%"}
@@ -97,58 +144,49 @@ export function ResumeView() {
                 objectFit={"contain"}
               />
             </Box>
-            <Box
-              w={"50%"}
-              ml={"50px"}
-              display={"flex"}
-              flexDirection={"column"}
-              gap={"25px"}
-              lineHeight={"30px"}
-            >
-              <Box display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  이름
-                </FormLabel>
+            <Box w={"50%"} ml={"50px"} lineHeight={"30px"}>
+              <Box display={"flex"} mb={"15px"}>
+                <Box {...styles.title}>이름</Box>
                 <Box>{account.name}</Box>
               </Box>
 
-              <Box display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  생년월일
-                </FormLabel>
-                <Box>{resume.birthDate}</Box>
-                {/*<Box ml={"5px"}> (만 {nowAge}세)</Box>*/}
+              <Box display={"flex"} mb={"15px"}>
+                <Box {...styles.title}>생년월일</Box>
+                <Box>
+                  {resume.birthDate} (만 {nowAge}세)
+                </Box>
               </Box>
 
-              <Box display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  성별
-                </FormLabel>
+              <Box display={"flex"} mb={"15px"}>
+                <Box {...styles.title}>성별</Box>
                 <Box>{resume.gender}</Box>
               </Box>
 
-              <Box display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  전화번호
-                </FormLabel>
+              <Box display={"flex"} mb={"15px"}>
+                <Box {...styles.title}>연락처</Box>
                 <Box>{formatPhoneNumber(resume.phone)}</Box>
               </Box>
 
               <Box display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  이메일
-                </FormLabel>
+                <Box {...styles.title}>이메일</Box>
                 <Box>{resume.email}</Box>
               </Box>
             </Box>
-          </Flex>
+          </Center>
 
-          <Box mb={4}>
+          <FormControl my={4}>
+            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+              제목
+            </FormLabel>
+            <Input defaultValue={resume.title} readOnly />
+          </FormControl>
+
+          <FormControl mb={4}>
             <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
               자기소개
             </FormLabel>
             <Textarea defaultValue={resume.content} h={"150px"} readOnly />
-          </Box>
+          </FormControl>
 
           <Box mb={4}>
             <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
@@ -176,12 +214,12 @@ export function ResumeView() {
             </Tabs>
           </Box>
 
-          <Box mb={4}>
+          <FormControl mb={4}>
             <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-              생성일
+              등록일
             </FormLabel>
             <Text>{resume.inserted}</Text>
-          </Box>
+          </FormControl>
           <Flex gap={"10px"}>
             <Button
               w={"50%"}
@@ -200,7 +238,7 @@ export function ResumeView() {
               수정
             </Button>
           </Flex>
-        </Box>
+        </Flex>
       </Box>
     </Box>
   );

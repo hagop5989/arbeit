@@ -17,7 +17,10 @@ export function MemberList() {
   const [memberList, setMemberList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("/api/member/list").then((res) => setMemberList(res.data));
+    axios
+      .get("/api/member/list")
+      .then((res) => setMemberList(res.data))
+      .catch(() => navigate("/"));
   }, []);
 
   return (

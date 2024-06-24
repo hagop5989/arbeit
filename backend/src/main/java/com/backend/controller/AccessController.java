@@ -22,7 +22,7 @@ public class AccessController {
     public void onlyBoss() { //
     }
 
-    @GetMapping("/only_alba")
+    @GetMapping("/only-alba")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
     public void onlyAlba() { //
     }

@@ -35,7 +35,7 @@ public class JobsRegisterForm {
     private String educationDetail;
     @NotNull
     private Integer age;
-    @NotNull
+    @NotBlank
     private String preferred;
     @NotBlank
     private String workPeriod;

@@ -30,7 +30,6 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity info(@PathVariable("id") Integer id, Authentication authentication) {
         if (!memberService.hasAccess(id, authentication)) {
-            log.info("Access denied");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok().body(memberService.findById(id));

@@ -43,8 +43,8 @@ public class ResumeController {
     }
 
     @GetMapping("/{id}/resume/list")
-    @PreAuthorize("isAuthenticated()")
-    public List<Resume> list(@PathVariable("id") Integer memberId, Authentication authentication) {
+    @PreAuthorize("hasAuthority('SCOPE_ALBA')")
+    public List<Resume> list(@PathVariable("id") Integer memberId) {
         return resumeService.findAllByMemberId(memberId);
     }
 
