@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Accordion,
   AccordionButton,
@@ -6,72 +6,34 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
   Heading,
   Tab,
   TabList,
   Tabs,
   Text,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { LoginContext } from "../../component/LoginProvider.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function FAQ() {
   const [selectedTab, setSelectedTab] = useState(0);
   const [expandedIndex, setExpandedIndex] = useState(-1);
+  const [WQnA, setWQnA] = useState([]);
+  const [BQnA, setBQnA] = useState([]);
+  const account = useContext(LoginContext);
+  const navigate = useNavigate();
 
-  const workerFaqs = [
-    {
-      question: "이력서를 쓰고 싶어요.",
-      answer:
-        "오른쪽 위에 이력서 관리에 들어가면 이력서 목록이 나오고 이력서 생성 버튼을 누르면 이력서를 쓸 수 있습니다." +
-        "\n   이 방법 말고도 왼쪽 사이드메뉴에 마우스를 대면 이력서 등록 페이지에 갈 수 있습니다.",
-      open: false,
-    },
-    {
-      question: "제가 봤었던 공고를 다시 보고 싶어요",
-      answer:
-        "오른쪽 사이드바에 최근 본 알바를 클릭하면 봤었던 알바 공고를 다시 확인 할수 있습니다.",
-      open: false,
-    },
-    {
-      question: "알바",
-      answer: "알알알바바바",
-      open: false,
-    },
-    {
-      question: "회원 탈퇴를 하고 싶어요",
-      answer:
-        "오른쪽 위에 로그아웃 옆에 자신의 닉네임을 클릭하게 되면 자신의 회원정보가 나타나게 되는데 아래에 회원 탈퇴버튼이 있습니다.",
-      open: false,
-    },
-    {
-      question: "회원 정보 수정을 하고 싶어요",
-      answer:
-        "오른쪽 위에 로그아웃 옆에 자신의 닉네임을 클릭하게 되면 자신의 회원정보가 나타나게 되는데 아래에 회원 수정버튼이 있습니다.",
-      open: false,
-    },
-  ];
+  useEffect(() => {
+    axios.get("/api/faq/Wlist").then((res) => setWQnA(res.data));
+  }, []);
 
-  const ownerFaqs = [
-    {
-      question: "공고를 등록하려면 어떻게 해야하나요?",
-      answer:
-        "오른쪽 위에 공고 등록을 이용하면 됩니다. 그 옆에 있는 가게 등록을 먼저 하셔야 공고 등록에 필요한 정보를 다 입력할 수 있습니다.",
-      open: false,
-    },
-    {
-      question: "회원 탈퇴를 하고 싶어요",
-      answer:
-        "오른쪽 위에 로그아웃 옆에 자신의 닉네임을 클릭하게 되면 자신의 회원정보가 나타나게 되는데 아래에 회원 탈퇴버튼이 있습니다.",
-      open: false,
-    },
-    {
-      question: "회원 정보 수정을 하고 싶어요",
-      answer:
-        "오른쪽 위에 로그아웃 옆에 자신의 닉네임을 클릭하게 되면 자신의 회원정보가 나타나게 되는데 아래에 회원 수정버튼이 있습니다.",
-      open: false,
-    },
-  ];
+  useEffect(() => {
+    axios.get("/api/faq/Blist").then((res) => setBQnA(res.data));
+  }, []);
 
-  const faqs = selectedTab === 0 ? workerFaqs : ownerFaqs;
+  const faqs = selectedTab === 0 ? WQnA : BQnA;
 
   const handleTabChange = (index) => {
     setSelectedTab(index);
@@ -128,16 +90,21 @@ export function FAQ() {
               pt={4}
               sx={{ transition: "none" }}
             >
-              <Text>
+              <Box>
                 <Text as="span" fontSize="lg" color="red.500">
                   A.
                 </Text>{" "}
                 <Text whiteSpace="pre-line">{faq.answer}</Text>
-              </Text>
+              </Box>
             </AccordionPanel>
           </AccordionItem>
         ))}
       </Accordion>
+      <Box>
+        {account.isAdmin() && (
+          <Button onClick={() => navigate("/faq/manage")}>FAQ 수정</Button>
+        )}
+      </Box>
     </Box>
   );
 }
