@@ -33,10 +33,12 @@ export function FAQManage() {
   const account = useContext(LoginContext);
 
   useEffect(() => {
-    axios.get("/api/faq/Wlist").then((res) => setWQnA(res.data));
-  }, []);
+    const savedTab = localStorage.getItem("selectedTab");
+    if (savedTab !== null) {
+      setSelectedTab(parseInt(savedTab, 10));
+    }
 
-  useEffect(() => {
+    axios.get("/api/faq/Wlist").then((res) => setWQnA(res.data));
     axios.get("/api/faq/Blist").then((res) => setBQnA(res.data));
   }, []);
 
@@ -44,6 +46,7 @@ export function FAQManage() {
 
   const handleTabChange = (index) => {
     setSelectedTab(index);
+    localStorage.setItem("selectedTab", index);
     setExpandedIndex(-1);
   };
 
@@ -52,36 +55,34 @@ export function FAQManage() {
   };
 
   const handleDelete = (id) => {
-    const apiEndpoint =
-      selectedTab === 0 ? `/api/faq/w/${id}` : `/api/faq/b/${id}`;
-    axios.delete(apiEndpoint).then(() => {
-      if (selectedTab === 0) {
-        setWQnA((prev) => prev.filter((faq) => faq.id !== id));
-      } else {
-        setBQnA((prev) => prev.filter((faq) => faq.id !== id));
-      }
-    });
+    if (window.confirm("정말로 삭제하시겠습니까?")) {
+      const apiEndpoint =
+        selectedTab === 0 ? `/api/faq/w/${id}` : `/api/faq/b/${id}`;
+      axios
+        .delete(apiEndpoint)
+        .then(() => {
+          if (selectedTab === 0) {
+            setWQnA((prev) => prev.filter((faq) => faq.id !== id));
+          } else {
+            setBQnA((prev) => prev.filter((faq) => faq.id !== id));
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting FAQ:", error);
+        });
+    }
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (newQuestion && newAnswer) {
       const newFAQ = { question: newQuestion, answer: newAnswer };
       const apiEndpoint = selectedTab === 0 ? "/api/faq/wadd" : "/api/faq/badd";
-      axios
-        .post(apiEndpoint, newFAQ)
-        .then((res) => {
-          const addedFAQ = res.data;
-          if (selectedTab === 0) {
-            setWQnA((prev) => [addedFAQ, ...prev]);
-          } else {
-            setBQnA((prev) => [addedFAQ, ...prev]);
-          }
-          setNewQuestion("");
-          setNewAnswer("");
-        })
-        .catch((error) => {
-          console.error("Error adding FAQ:", error);
-        });
+      try {
+        await axios.post(apiEndpoint, newFAQ);
+        window.location.reload(); // 페이지 새로고침
+      } catch (error) {
+        console.error("Error adding FAQ:", error);
+      }
     }
   };
 
@@ -92,7 +93,7 @@ export function FAQManage() {
     setEditAnswer(faq.answer);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     const updatedFAQ = {
       id: editId,
       question: editQuestion,
@@ -100,7 +101,8 @@ export function FAQManage() {
     };
     const apiEndpoint =
       selectedTab === 0 ? `/api/faq/w/${editId}` : `/api/faq/b/${editId}`;
-    axios.put(apiEndpoint, updatedFAQ).then(() => {
+    try {
+      await axios.put(apiEndpoint, updatedFAQ);
       if (selectedTab === 0) {
         setWQnA((prev) =>
           prev.map((faq) => (faq.id === editId ? updatedFAQ : faq)),
@@ -113,13 +115,20 @@ export function FAQManage() {
       setEditId(null);
       setEditQuestion("");
       setEditAnswer("");
-    });
+    } catch (error) {
+      console.error("Error updating FAQ:", error);
+    }
   };
 
   return (
     <Box width="100%" mt="5" borderRadius="md">
       <Box>
-        <Tabs variant="enclosed" mt={2} onChange={handleTabChange}>
+        <Tabs
+          variant="enclosed"
+          mt={2}
+          onChange={handleTabChange}
+          index={selectedTab}
+        >
           <TabList>
             <Tab w={"200px"} h={"50px"}>
               알바
@@ -145,7 +154,7 @@ export function FAQManage() {
         onChange={handleAccordionChange}
       >
         {faqs.map((faq, i) => (
-          <AccordionItem key={i} sx={{ transition: "none" }}>
+          <AccordionItem key={faq.id} sx={{ transition: "none" }}>
             <AccordionButton p={"30px"}>
               <Box flex="1" textAlign="left">
                 <Text as="span" fontSize="lg" color="orange.500">

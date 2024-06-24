@@ -100,7 +100,7 @@ export function FAQ() {
           </AccordionItem>
         ))}
       </Accordion>
-      <Box>
+      <Box m={"30px"}>
         {account.isAdmin() && (
           <Button onClick={() => navigate("/faq/manage")}>FAQ 수정</Button>
         )}
