@@ -28,8 +28,9 @@ import { useNavigate } from "react-router-dom";
 
 function AlbaReviewList(props) {
   const [review, setReview] = useState({
-    memberId: "",
+    albaId: "",
     jobsId: "",
+    storeId: "",
     jobsTitle: "",
     content: "",
     rating: 0,
@@ -44,12 +45,10 @@ function AlbaReviewList(props) {
   const [checkChange, setCheckChange] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure({
     onOpen: () => {
-      console.log("onOpen");
-      console.log(review);
       const contract = contractList.find(
         (contract) =>
-          contract.jobsId === review.jobsId &&
-          contract.albaId === review.memberId,
+          contract.storeId === review.storeId &&
+          contract.albaId === review.albaId,
       );
       if (review.action) {
         setReview((prev) => ({
@@ -57,6 +56,7 @@ function AlbaReviewList(props) {
           startDate: contract ? contract.startDate : "",
           endDate: contract ? contract.endDate : "",
           storeName: contract ? contract.storeName : "",
+          storeId: contract ? contract.storeId : "",
           action: review.action || "",
         }));
         setSelectedContract(contract || null);
@@ -67,71 +67,96 @@ function AlbaReviewList(props) {
     },
     onClose: () => {
       setSelectedContract(null);
-      setReview({
-        memberId: "",
-        jobsId: "",
-        jobsTitle: "",
-        content: "",
-        rating: 0,
-        startDate: "",
-        endDate: "",
-        storeName: "",
-        action: "",
-      });
+      initializeReview();
     },
   });
+  /**/
+  // 상태 초기화 함수
+  const initializeReview = () => {
+    setReview({
+      albaId: "",
+      jobsId: "",
+      storeId: "",
+      jobsTitle: "",
+      content: "",
+      rating: 0,
+      startDate: "",
+      endDate: "",
+      storeName: "",
+      action: "",
+    });
+  };
 
+  // 계약 선택 함수
+  const selectContract = (contract) => {
+    setSelectedContract(contract);
+    setReview((prev) => ({
+      ...prev,
+      jobsTitle: contract.jobsTitle,
+      jobsId: contract.jobsId,
+      storeId: contract.storeId,
+      startDate: contract.startDate,
+      endDate: contract.endDate,
+      storeName: contract.storeName,
+    }));
+  };
+
+  /**/
+  // Read (리스트 받기)
   useEffect(() => {
     if (account.id) {
       axios
-        .get("/api/review/list")
+        .get("/api/review/store/list")
         .then((res) => {
           const validContracts = res.data.contractList.filter(
             (contract) => contract.endDate <= today,
           );
-
           const updatedReviewList = res.data.reviewList.map((review) => {
             const contract = validContracts.find(
               (contract) =>
-                contract.jobsId === review.jobsId &&
-                contract.albaId === review.memberId,
+                contract.storeId === review.storeId &&
+                contract.albaId === review.albaId,
             );
             return {
               ...review,
               startDate: contract ? contract.startDate : "",
               endDate: contract ? contract.endDate : "",
               storeName: contract ? contract.storeName : "",
+              storeId: contract ? contract.storeId : "",
+              jobsId: contract ? contract.jobsId : "",
             };
           });
 
           setReviewList(updatedReviewList);
           setContractList(validContracts);
         })
-        .catch((err) => myToast("로드 오류발생", "error"))
-        .finally();
+        .catch((err) => myToast("로드 오류발생", "error"));
     }
   }, [account.id, checkChange]);
 
   // Create
   function handleSubmit() {
+    // setReview가 완료된 후에 axios.post를 호출하도록 함
     setReview((prev) => ({
       ...prev,
-      memberId: account.id,
+      albaId: account.id,
     }));
-    axios
-      .post("/api/review", review)
-      .then((res) => {
-        myToast("작성이 완료되었습니다.", "success");
-        onClose();
-        setCheckChange(!checkChange);
-      })
-      .catch(() => {
-        myToast(
-          `작성 불가. \n 빈칸이나, 이미 작성하신 내역이 있는지 확인해주세요.`,
-          "error",
-        );
-      })
-      .finally();
+
+    setTimeout(() => {
+      axios
+        .post("/api/review/store", { ...review, albaId: account.id })
+        .then((res) => {
+          myToast("작성이 완료되었습니다.", "success");
+          onClose();
+          setCheckChange(!checkChange);
+        })
+        .catch(() => {
+          myToast(
+            `작성 불가. \n 빈칸이나, 이미 작성하신 내역이 있는지 확인해주세요.`,
+            "error",
+          );
+        });
+    }, 0);
   }
 
   const handleModalSelect = (e) => {
@@ -139,76 +164,49 @@ function AlbaReviewList(props) {
     const contract = contractList.find(
       (contract) => contract.jobsId == jobsId && contract.albaId == account.id,
     );
-    if (contract) {
-      setSelectedContract(contract);
-      setReview((prev) => ({
-        ...prev,
-        jobsTitle: contract.jobsTitle,
-        jobsId: contract.jobsId,
-        startDate: contract.startDate, // 추가
-        endDate: contract.endDate, // 추가
-        storeName: contract.storeName, // 추가
-      }));
-    }
+    if (contract) selectContract(contract);
   };
 
   // 모달 관련
-
   useEffect(() => {
-    if (isOpen && review) {
-      if (review) {
-        setReview({
-          memberId: review.memberId,
-          jobsId: review.jobsId,
-          jobsTitle: review.jobsTitle,
-          content: review.content,
-          rating: review.rating,
-          action: review.action || "",
-        });
-        setSelectedContract(null);
-      } else if (contractList.length > 0) {
-        const contract = contractList[0];
+    if (isOpen) {
+      const contract = contractList.find(
+        (contract) =>
+          contract.storeId === review.storeId &&
+          contract.albaId === review.albaId,
+      );
+      if (contract) {
         setSelectedContract(contract);
-        setReview({
-          memberId: account.id,
+        setReview((prev) => ({
+          ...prev,
+          startDate: contract.startDate,
+          endDate: contract.endDate,
+          storeName: contract.storeName,
+          action: review.action || "",
           jobsId: contract.jobsId,
-          jobsTitle: contract.jobsTitle,
-          content: "",
-          rating: 0,
-          action: "",
-        });
+        }));
+      } else if (contractList.length > 0) {
+        selectContract(contractList[0]);
       }
     }
   }, [isOpen, contractList, account.id]);
 
   const handleReviewClick = (review, action) => {
-    console.log("handleReviewClick start");
-    console.log(review);
-    // setAction(action);
     const contract = contractList.find(
       (contract) =>
-        contract.jobsId === review.jobsId &&
-        contract.albaId === review.memberId,
+        contract.storeId === review.storeId &&
+        contract.albaId === review.albaId,
     );
-    const updatedReview = {
+    setReview({
       ...review,
       startDate: contract ? contract.startDate : "",
       endDate: contract ? contract.endDate : "",
       storeName: contract ? contract.storeName : "",
-      action: action || "", // action 설정
-    };
-
-    setReview(updatedReview);
-    console.log("updatedReview");
-    console.log(updatedReview);
-    // setSelectedReview(updatedReview);
+      storeId: contract ? contract.storeId : "",
+      jobsId: review.jobsId || (contract ? contract.jobsId : ""),
+      action: action || "",
+    });
     setSelectedContract(contract);
-    setTimeout(() => onOpen(), 0); // setReview 후에 onOpen 호출
-    console.log("setSelectedContract");
-    console.log(selectedContract);
-    console.log(review);
-    console.log("contractList");
-    console.log(contractList);
     onOpen();
   };
 
@@ -233,7 +231,7 @@ function AlbaReviewList(props) {
   // Update
   function handleUpdate(review) {
     axios
-      .put("api/review", review)
+      .put("api/review/store", review)
       .then((res) => {
         myToast("수정 되었습니다.", "success");
         onClose();
@@ -246,35 +244,54 @@ function AlbaReviewList(props) {
   }
   // Delete
   function handleDelete(review) {
-    axios
-      .delete(`/api/review/${review.jobsId}`)
-      .then((res) => {
-        myToast("삭제 되었습니다.", "success");
-        fetchReviewList();
-      })
-      .catch(() => {
-        myToast("에러발생", "error");
-      })
-      .finally();
+    if (review.storeId) {
+      axios
+        .delete(`/api/review/store/${review.storeId}`)
+        .then((res) => {
+          myToast("삭제 되었습니다.", "success");
+          fetchReviewList();
+        })
+
+        .catch(() => {
+          myToast("에러발생", "error");
+        })
+        .finally();
+    } else {
+      console.log(review);
+      myToast("storeId가 없습니다.", "error"); // 추가된 부분
+    }
   }
 
   // 새로고침
   const fetchReviewList = () => {
     if (account.id) {
       axios
-        .get("/api/review/list")
+        .get("/api/review/store/list")
         .then((res) => {
           const validContracts = res.data.contractList.filter(
             (contract) => contract.endDate <= today,
           );
-          setReviewList(res.data.reviewList);
+          const updatedReviewList = res.data.reviewList.map((review) => {
+            const contract = validContracts.find(
+              (contract) =>
+                contract.storeId === review.storeId &&
+                contract.albaId === review.albaId,
+            );
+            return {
+              ...review,
+              jobsId: review.jobsId || (contract ? contract.jobsId : ""), // 추가된 부분
+              startDate: contract ? contract.startDate : "",
+              endDate: contract ? contract.endDate : "",
+              storeName: contract ? contract.storeName : "",
+              storeId: contract ? contract.storeId : "",
+            };
+          });
+          setReviewList(updatedReviewList);
           setContractList(validContracts);
         })
-        .catch((err) => myToast("로드 오류발생", "error"))
-        .finally();
+        .catch((err) => myToast("로드 오류발생", "error"));
     }
   };
-
   // 별점 매기기 1
   const handleRatingChange = (newRating) => {
     setReview((prev) => ({
@@ -302,6 +319,18 @@ function AlbaReviewList(props) {
     return stars;
   };
 
+  /* 내 평판 리뷰(사장) */
+  const [reviewToStoreList, setReviewToStoreList] = useState([]);
+  useEffect(() => {
+    axios
+      .get("api/review/store/to-alba")
+      .then((res) => {
+        setReviewToStoreList(res.data);
+      })
+      .catch()
+      .finally();
+  }, []);
+
   // toast 커스텀
   function myToast(text, status) {
     toast({
@@ -318,11 +347,10 @@ function AlbaReviewList(props) {
         <Heading mb={"10px"} p={1}>
           리뷰관리(알바)
         </Heading>
-        {account.isAlba() && (
-          <Button onClick={onOpen} w={"70px"} colorScheme={"blue"}>
-            입력
-          </Button>
-        )}
+
+        <Button onClick={onOpen} w={"70px"} colorScheme={"blue"}>
+          입력
+        </Button>
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose} w={"800px"}>
@@ -391,13 +419,20 @@ function AlbaReviewList(props) {
 
                 <Box mt={6}>
                   <Heading fontSize={"2xl"}>한 줄 리뷰</Heading>
-                  <Input
-                    w={"500px"}
-                    mt={2}
-                    value={review.content}
-                    onChange={handleInputChange("content")}
-                    placeholder={"리뷰를 입력해주세요."}
-                  />
+                  {review.action === "선택" || (
+                    <Input
+                      w={"500px"}
+                      mt={2}
+                      value={review.content}
+                      onChange={handleInputChange("content")}
+                      placeholder={"리뷰를 입력해주세요."}
+                    />
+                  )}
+                  {review.action === "선택" && (
+                    <Text fontSize={"lg"} my={3}>
+                      {review.content}
+                    </Text>
+                  )}
                 </Box>
                 <Box>
                   <Flex>
@@ -552,6 +587,87 @@ function AlbaReviewList(props) {
           ))}
         </Tbody>
       </Table>
+      <Box>
+        {/* 내 평판 리뷰 */}
+        <Box
+          h={"30vh"}
+          // border={"1px solid red"}
+          mt={"100px"}
+        >
+          <Box display="flex" justifyContent="space-between">
+            <Heading mb={"10px"} p={1}>
+              내 평판 리뷰
+            </Heading>
+          </Box>
+
+          <Divider mb={"40px"} borderWidth={"2px"} />
+          <Table>
+            <Thead>
+              <Tr>
+                <Th fontSize={"medium"}>#</Th>
+                <Th fontSize={"medium"}>날짜</Th>
+                {/*<Th fontSize={"medium"}>사업장명</Th>*/}
+                <Th fontSize={"medium"}>공고명</Th>
+                <Th fontSize={"medium"}>리뷰평</Th>
+                <Th fontSize={"medium"}>평점</Th>
+                {/*<Th fontSize={"medium"}>관리</Th>*/}
+              </Tr>
+            </Thead>
+            <Tbody>
+              {reviewToStoreList.map((review, index) => (
+                <Tr
+                  key={index}
+                  fontSize={"15px"}
+                  _hover={{ bgColor: "orange.50" }}
+                >
+                  <Td minW={"80px"}>{index + 1}</Td>
+                  {/* 날짜 */}
+                  <Td fontSize={"sm"} minW={"130px"}>
+                    {review.inserted}
+                  </Td>
+                  {/* 공고명 */}
+                  <Td
+                    whiteSpace="nowrap" // 줄 바꿈을 막음
+                    overflow="hidden" // 넘친 내용을 숨김
+                    textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                    cursor={"pointer"}
+                    onClick={() => navigate(`/jobs/${review.jobsId}`)}
+                  >
+                    {review.jobsTitle}
+                  </Td>
+                  {/* 리뷰평 */}
+                  <Td
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    cursor={"pointer"}
+                    // onClick={() =>
+                    //   navigate(`/jobs/${review.resumeId}/review/select`, {
+                    //     state: { jobsId: review.jobsId },
+                    //   })
+                    // }
+                  >
+                    {review.content}
+                  </Td>
+                  {/*평점*/}
+                  <Td
+                    minW={"90px"}
+                    fontSize={"2xl"}
+                    fontWeight={"bold"}
+                    color={"teal"}
+                  >
+                    {review.rating}
+                  </Td>
+
+                  {/* 관리 버튼*/}
+                  {/*<Td></Td>*/}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+        {/* 내 평판 리뷰 */}
+      </Box>
     </Box>
   );
 }

@@ -21,18 +21,18 @@ public class ContractService {
 
     }
 
-    public void deleteByIds(Management management, Integer bossId) {
+    public void deleteByIds(Management management) {
         // 불합격 처리인경우 boss,alba,jobs Id를 사용하여 기존 생성된 contract 있다면 삭제.
-         if(mapper.selectByIds(management, bossId) != null){
-            mapper.deleteByIds(management,bossId);
-         }
+        if (mapper.selectByIds(management) != null) {
+            mapper.deleteByIds(management);
+        }
     }
 
     public List<Contract> list(Integer memberId, Authentication authentication) {
 
-        if(checkAuthority(authentication,"SCOPE_BOSS")) {
+        if (checkAuthority(authentication, "SCOPE_BOSS")) {
             return mapper.listForBoss(memberId);
-        } else if (checkAuthority(authentication,"SCOPE_ALBA")) {
+        } else if (checkAuthority(authentication, "SCOPE_ALBA")) {
             return mapper.listForAlba(memberId);
         }
         return null;

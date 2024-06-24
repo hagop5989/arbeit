@@ -18,8 +18,8 @@ public class ManagementController {
     private final ManagementService service;
 
     @PutMapping("/management/decision")
-    public void updateDecision(@RequestBody Management management,@AuthId Integer bossId) {
-        service.updateDecision(management,bossId);
+    public void updateDecision(@RequestBody Management management) {
+        service.updateDecision(management);
     }
 
     @GetMapping("{resumeId}/management/select")

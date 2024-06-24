@@ -66,7 +66,7 @@ export function ManagementList() {
       setContract({
         jobsId: management.jobsId,
         albaId: management.appliedMemberId,
-        bossId: account.id,
+        storeId: management.storeId,
         startDate: "",
         endDate: "",
       });
@@ -107,7 +107,9 @@ export function ManagementList() {
       await axios.put(`/api/jobs/management/decision`, {
         ...updatedManagement,
       });
+
       /* 합격일 때 contract 정보 전송 */
+
       if (updatedManagement && updatedManagement.isPassed === 1 && contract) {
         await axios.post("/api/contract", { ...contract });
       }
@@ -356,7 +358,8 @@ export function ManagementList() {
                                   if (
                                     selectedManagement &&
                                     contract.startDate &&
-                                    contract.endDate
+                                    contract.endDate &&
+                                    contract.storeId
                                   ) {
                                     handleSubmit(selectedManagement, contract);
                                   } else {

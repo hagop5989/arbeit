@@ -17,12 +17,14 @@ public interface ManagementMapper {
             SELECT a.*,
                j.title AS jobsTitle,
                a.member_id AS appliedMemberId,
-               m.name AS albaName,
                a.title AS applicationTitle,
-               a.inserted AS applicationInserted
+               a.inserted AS applicationInserted,
+               m.name AS albaName,
+               s.id AS storeId
                FROM application a
                    JOIN jobs j ON  j.id = a.jobs_id
                    JOIN member m ON m.id = a.member_id
+                   JOIN store s ON s.id = j.store_id 
                WHERE j.member_id = #{memberId}
                ORDER BY applicationInserted
                 """)
