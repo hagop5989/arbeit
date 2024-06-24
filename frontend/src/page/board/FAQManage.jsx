@@ -18,7 +18,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function FAQManage() {
   const [selectedTab, setSelectedTab] = useState(0);

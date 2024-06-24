@@ -140,7 +140,7 @@ export function ManagementList() {
   }
 
   return (
-    <Box h={"80vh"} mb={"50px"}>
+    <Box h={"80vh"} mb={"150px"}>
       {account.isAlba() && (
         <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
           사장만 접근 가능한 페이지 입니다.
@@ -215,6 +215,7 @@ export function ManagementList() {
                       <Td
                         minW={"90px"}
                         fontWeight={"bold"}
+                        fontSize={"16px"}
                         color={
                           management.isPassed != null && management.isPassed
                             ? "teal"
@@ -230,19 +231,21 @@ export function ManagementList() {
                       <Flex gap={"5px"}>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
-                          // onClick={onOpen}
+                          w={"75px"}
                           fontWeight={"bold"}
                           variant={"outline"}
                           colorScheme={"teal"}
+                          _hover={{ bg: "teal", color: "white" }}
                           borderWidth={"2px"}
                         >
-                          합격
+                          합 격
                         </Button>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
                           fontWeight={"bold"}
                           variant={"outline"}
-                          colorScheme={"red"}
+                          colorScheme="red"
+                          _hover={{ bg: "#E74133", color: "white" }}
                           borderWidth={"2px"}
                         >
                           불합격
