@@ -1,6 +1,8 @@
 package com.backend.service.jobs;
 
-import com.backend.domain.jobs.*;
+import com.backend.domain.jobs.Jobs;
+import com.backend.domain.jobs.JobsCond;
+import com.backend.domain.jobs.JobsImage;
 import com.backend.domain.jobs.form.JobsEditForm;
 import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.domain.member.Member;
@@ -13,6 +15,7 @@ import com.backend.service.member.MemberService;
 import com.backend.service.scrap.ScrapService;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
@@ -70,6 +74,7 @@ public class JobsService {
         );
         jobsMapper.insert(jobs);
 
+        log.info("jobs={}", jobs);
         // JobsCondition 저장
         Integer jobsId = jobs.getId();
         JobsCond jobsCond = new JobsCond(
@@ -82,6 +87,7 @@ public class JobsService {
                 form.getWorkWeek(),
                 form.getWorkTime()
         );
+        log.info("jobsCond={}", jobsCond);
         conditionMapper.insert(jobsCond);
 
         // 사진 저장

@@ -8,9 +8,9 @@ create table jobs
     category_id        int           not null,
     title              varchar(100)  not null,
     content            varchar(3000) not null,
-    salary             int           not null,
-    deadline           datetime      not null,
-    recruitment_number int           not null,
+    salary             int,
+    deadline           datetime,
+    recruitment_number int,
     constraint jobs_ibfk_1
         foreign key (member_id) references member (id),
     constraint jobs_ibfk_2
@@ -18,11 +18,21 @@ create table jobs
     constraint jobs_ibfk_3
         foreign key (category_id) references category (id)
 );
+
+ALTER TABLE jobs
+    MODIFY salary int NOT NULL;
+
+
+DESC jobs;
+DELETE
+FROM jobs
+WHERE id = 119;
+DELETE
+FROM jobs_condition
+WHERE jobs_Id = 119;
 SELECT *
 FROM jobs;
 SELECT *
 FROM member;
 
 
-SELECT *
-FROM jobs_file;

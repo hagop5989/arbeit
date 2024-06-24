@@ -36,7 +36,7 @@ function LocationMap({ address, height }) {
 
   useEffect(() => {
     const removeScript = loadKakaoMapScript(() => {
-      if (address !== undefined) {
+      if (address) {
         const geocoder = new kakao.maps.services.Geocoder();
         geocoder.addressSearch(address, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {

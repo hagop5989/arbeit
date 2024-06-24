@@ -48,7 +48,6 @@ public class JobsController {
 
     @GetMapping("/{id}")
     public ResponseEntity view(@PathVariable Integer id) {
-        log.info("view.call");
         Map<String, Object> result = service.findById(id);
         if (result == null) {
             return ResponseEntity.notFound().build();
