@@ -16,22 +16,20 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ScrapHistory(props) {
-  const account = useContext(LoginContext);
   const [scrapList, setScrapList] = useState([]);
-  const navigate = useNavigate();
   const [post, setPost] = useState(false);
+  const navigate = useNavigate();
+  const account = useContext(LoginContext);
   useEffect(() => {
-    axios
-      .get("/api/scrap/list")
-      .then((res) => {
+    if (account.id !== "") {
+      axios.get("/api/scrap/list").then((res) => {
         // favorite 상태가 true인 항목만 필터링
         const filteredScrapList = res.data.filter(
           (item) => item.favorite === true,
         );
         setScrapList(filteredScrapList);
-      })
-      .catch()
-      .finally();
+      });
+    }
   }, [account.recentJobPages, post]);
 
   function handleDelete(id) {

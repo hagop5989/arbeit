@@ -1,17 +1,17 @@
 import {
   Box,
   Button,
-  Divider,
-  Flex,
+  Center,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   Heading,
+  Image,
   Input,
   Tab,
   TabList,
   Tabs,
-  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -20,17 +20,29 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
+const styles = {
+  title: {
+    w: "90px",
+    fontSize: "md",
+    fontWeight: "bold",
+    mr: "20px",
+  },
+};
+
 export function ResumeEdit() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
   const [errors, setErrors] = useState({});
   const [nowAge, setNowAge] = useState("");
+  const [profileSrc, setProfileSrc] = useState("");
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
 
   const navigate = useNavigate();
   const toast = useToast();
 
   const account = useContext(LoginContext);
+
+  const isError = (prop) => prop !== undefined;
 
   useEffect(() => {
     axios
@@ -48,13 +60,31 @@ export function ResumeEdit() {
           navigate("/resume/list");
         }
       });
-  }, []);
+    if (resume.memberId !== undefined) {
+      getProfilePicture();
+    }
+  }, [resume.memberId]);
 
   useEffect(() => {
     if (resume) {
       countNowAge();
     }
   }, [resume]);
+
+  function getProfilePicture() {
+    axios
+      .get(`/api/profile/${resume.memberId}`)
+      .then((res) => {
+        setProfileSrc(res.data);
+      })
+      .catch(() =>
+        toast({
+          status: "error",
+          description: "내부 오류 발생",
+          position: "top",
+        }),
+      );
+  }
 
   function handleRookieBtn(prop) {
     setResume({ ...resume, isRookie: prop });
@@ -78,19 +108,22 @@ export function ResumeEdit() {
 
   // Update
   function handleSaveBtn() {
-    axios
-      .put(`/api/resume/${id}`, resume)
-      .then(() => {
-        toast({
-          status: "success",
-          description: "수정 완료",
-          position: "top",
+    const confirm = window.confirm("수정하시겠습니까?");
+    if (confirm) {
+      axios
+        .put(`/api/resume/${id}`, resume)
+        .then(() => {
+          toast({
+            status: "success",
+            description: "수정 완료",
+            position: "top",
+          });
+          navigate(`/resume/${id}`);
+        })
+        .catch((err) => {
+          setErrors(err.response.data);
         });
-        navigate(`/resume/${id}`);
-      })
-      .catch((err) => {
-        setErrors(err.response.data);
-      });
+    }
   }
 
   // 나이 계산
@@ -106,122 +139,123 @@ export function ResumeEdit() {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5} lineHeight="30px">
-      <Heading mb={"10px"} p={1}>
-        이력서 수정
-      </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Box
+        h={"70px"}
+        mb={"70px"}
+        bg={"#FF7F3E"}
+        color={"white"}
+        borderRadius={"10px"}
+      >
+        <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+          이력서 수정
+        </Heading>
+      </Box>
       <Box>
-        <FormControl>
-          <Box w="full" gap={"15px"} display={"flex"} flexDirection={"column"}>
-            <Box display={"flex"}>
-              <Box w={"50%"} display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  이름
-                </FormLabel>
-                <Text h={"50px"}>{account.name}</Text>
-              </Box>
-              <Box w={"50%"} display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  성별
-                </FormLabel>
-                <Text>{resume.gender}</Text>
-              </Box>
+        <Box>
+          <Center>
+            <Box w={"150px"} h={"150px"}>
+              <Image
+                w={"100%"}
+                h={"100%"}
+                border={"1px solid gray"}
+                borderRadius={"50%"}
+                src={
+                  profileSrc === "" ? "/public/base_profile.png" : profileSrc
+                }
+                objectFit={"contain"}
+              />
             </Box>
+            <Box w={"50%"} ml={"50px"} lineHeight={"30px"} fontSize={"15px"}>
+              <Box display={"flex"}>
+                <Box {...styles.title}>이름</Box>
+                <Box>{account.name}</Box>
+              </Box>
 
-            <Flex mb={4}>
-              <Box w={"50%"} display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  생년월일{" "}
-                </FormLabel>
-                <Text>
+              <Box display={"flex"}>
+                <Box {...styles.title}>생년월일</Box>
+                <Box>
                   {resume.birthDate} (만 {nowAge}세)
-                </Text>
+                </Box>
               </Box>
-              <Box w={"50%"} display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  전화번호
-                </FormLabel>
-                <Text>{resume.phone}</Text>
-              </Box>
-            </Flex>
 
-            <Flex gap={"10px"} mb={4}>
-              <Box w={"50%"} display={"flex"}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  이메일
-                </FormLabel>
-                <Text>{resume.email}</Text>
+              <Box display={"flex"}>
+                <Box {...styles.title}>성별</Box>
+                <Box>{resume.gender}</Box>
               </Box>
-            </Flex>
-            <Box mb={4}>
-              <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"} mt={8}>
-                제목
-              </FormLabel>
-              <Input
-                placeholder="제목을 입력해주세요."
-                defaultValue={resume.title}
-                onChange={handleInputChange("title")}
-                h={"50px"}
-                mb={4}
-              />
-              {errors && (
-                <FormHelperText color="red.500">{errors.title}</FormHelperText>
-              )}
-            </Box>
-            <Box mb={4}>
-              <FormLabel fontSize={"xl"} fontWeight={"bold"}>
-                경력
-              </FormLabel>
-              <Tabs variant="solid-rounded" index={initialIndex}>
-                <TabList>
-                  <Tab
-                    onClick={() => handleRookieBtn(1)}
-                    w={"160px"}
-                    h={"50px"}
-                    border={"1px solid lightgray"}
-                  >
-                    신입
-                  </Tab>
-                  <Tab
-                    onClick={() => handleRookieBtn(0)}
-                    w={"160px"}
-                    h={"50px"}
-                    border={"1px solid lightgray"}
-                  >
-                    경력
-                  </Tab>
-                </TabList>
-              </Tabs>
-            </Box>
-            <Box>
-              <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
-                자기 소개
-              </FormLabel>
-              <Textarea
-                placeholder="자기소개를 써주세요."
-                defaultValue={resume.content}
-                onChange={handleInputChange("content")}
-                mb={4}
-                h={"150px"}
-              />
-              {errors && (
-                <FormHelperText color="red.500">
-                  {errors.content}
-                </FormHelperText>
-              )}
 
-              <Button
-                onClick={handleSaveBtn}
-                bgColor={"#FF7F3E"}
-                color={"white"}
-                w="full"
-                h={"50px"}
-              >
-                이력서 수정
-              </Button>
+              <Box display={"flex"}>
+                <Box {...styles.title}>연락처</Box>
+                <Box>{formatPhoneNumber(resume.phone)}</Box>
+              </Box>
+
+              <Box display={"flex"}>
+                <Box {...styles.title}>이메일</Box>
+                <Box>{resume.email}</Box>
+              </Box>
             </Box>
+          </Center>
+          <Box h={"3px"} bg={"#E0E0E0"} mt={"40px"} />
+          <FormControl mb={4} isInvalid={isError(errors.title)}>
+            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"} mt={8}>
+              제목
+            </FormLabel>
+            <Input
+              placeholder="제목을 입력해주세요."
+              defaultValue={resume.title}
+              onChange={handleInputChange("title")}
+              h={"50px"}
+            />
+            {errors && <FormErrorMessage>{errors.title}</FormErrorMessage>}
+          </FormControl>
+          <Box mb={4}>
+            <FormLabel fontSize={"xl"} fontWeight={"bold"}>
+              경력
+            </FormLabel>
+            <Tabs variant="solid-rounded" index={initialIndex}>
+              <TabList>
+                <Tab
+                  onClick={() => handleRookieBtn(1)}
+                  w={"160px"}
+                  h={"50px"}
+                  border={"1px solid lightgray"}
+                >
+                  신입
+                </Tab>
+                <Tab
+                  onClick={() => handleRookieBtn(0)}
+                  w={"160px"}
+                  h={"50px"}
+                  border={"1px solid lightgray"}
+                >
+                  경력
+                </Tab>
+              </TabList>
+            </Tabs>
           </Box>
-        </FormControl>
+          <FormControl isInvalid={isError(errors.content)} mb={10}>
+            <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+              자기 소개
+            </FormLabel>
+            <Textarea
+              placeholder="자기소개를 써주세요."
+              defaultValue={resume.content}
+              onChange={handleInputChange("content")}
+              h={"150px"}
+            />
+            {errors && (
+              <FormHelperText color="red.500">{errors.content}</FormHelperText>
+            )}
+          </FormControl>
+          <Button
+            onClick={handleSaveBtn}
+            bgColor={"#FF7F3E"}
+            color={"white"}
+            w="100%"
+            h={"50px"}
+          >
+            이력서 수정
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

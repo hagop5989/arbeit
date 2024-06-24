@@ -380,10 +380,14 @@ export function JobsList() {
 
     // 스크랩 하기
     const handleScraping = (e, job) => {
-      e.stopPropagation();
-      const newStatus = !favorite;
-      setFavorite(newStatus);
-      updateScrapStatus(job.id, newStatus); // job 대신 job.id와 newStatus를 전달
+      if (account.id !== "") {
+        e.stopPropagation();
+        const newStatus = !favorite;
+        setFavorite(newStatus);
+        updateScrapStatus(job.id, newStatus); // job 대신 job.id와 newStatus를 전달
+      } else {
+        alert("로그인 후 이용가능합니다.");
+      }
     };
     /* 스크랩 관련 끝*/
 
@@ -404,21 +408,14 @@ export function JobsList() {
 
     return (
       <Card
-        onClick={() => {
-          navigate(`/jobs/${job.id}`);
-          addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
-        }}
-        _hover={{ bgColor: "orange.50" }}
         w={"1050px"}
         h={"140px"}
-        p={5}
-        cursor={"pointer"}
-        borderRadius="0"
+        px={"10px"}
         borderY={"1px solid lightgray"}
         overflow="hidden"
       >
-        <Flex alignItems={"center"}>
-          <Box w={"150px"} h={"60px"} mb={2}>
+        <Center h={"100%"}>
+          <Box w={"150px"} h={"60px"}>
             <Image
               w={"100%"}
               h={"100%"}
@@ -441,14 +438,19 @@ export function JobsList() {
                 whiteSpace="nowrap" // 줄 바꿈을 막음
                 overflow="hidden" // 넘친 내용을 숨김
                 textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                onClick={() => {
+                  navigate(`/jobs/${job.id}`);
+                  addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
+                }}
+                _hover={{ textDecoration: "underline" }}
+                cursor={"pointer"}
               >
                 {job.title}
               </Text>
               <Text
                 w={"500px"}
-                textIndent={"22px"}
                 fontWeight={"bold"}
-                my={"10px"}
+                my={"5px"}
                 fontSize="17px"
                 color={"gray.500"}
                 whiteSpace="nowrap"
@@ -469,14 +471,9 @@ export function JobsList() {
           </Box>
 
           <Box w={"10%"}>
-            <Box
-              h={"20px"}
-              lineHeight={"20px"}
-              mt={"-20px"}
-              mb={2}
-              textIndent={"60px"}
-            >
+            <Box textIndent={"60px"}>
               <FontAwesomeIcon
+                cursor={"pointer"}
                 onClick={(e) => handleScraping(e, job)}
                 color={"orange"}
                 icon={favorite ? fullStar : emptyStar}
@@ -484,7 +481,7 @@ export function JobsList() {
               />
             </Box>
           </Box>
-        </Flex>
+        </Center>
       </Card>
     );
   }
