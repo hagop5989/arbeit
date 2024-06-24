@@ -242,6 +242,7 @@ function AlbaReviewList(props) {
       })
       .finally();
   }
+
   // Delete
   function handleDelete(review) {
     if (review.storeId) {
@@ -305,12 +306,13 @@ function AlbaReviewList(props) {
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <Box
+          zIndex={"2"}
           as="span"
           key={i}
           onClick={() => handleRatingChange(i)}
           color={review.rating >= i ? "gold" : "gray.300"}
           cursor="pointer"
-          fontSize="2xl"
+          fontSize="3xl"
         >
           ★
         </Box>,
@@ -355,93 +357,92 @@ function AlbaReviewList(props) {
 
       <Modal isOpen={isOpen} onClose={onClose} w={"800px"}>
         <ModalOverlay />
-        <ModalContent maxW="600px" h={"500px"}>
-          <ModalBody>
+        <ModalContent maxW="600px" h={"530px"} p={5}>
+          <ModalBody lineHeight={"60px"}>
             {review && review.action === "선택" && (
               <Heading textAlign={"center"}>리뷰보기</Heading>
             )}
             {(review == null || review.action !== "선택") && (
               <Heading textAlign={"center"}>리뷰작성</Heading>
             )}
-            <Divider mt={"10px"} borderWidth={"1px"} />
-            <Text fontSize={"sm"}>공고명</Text>
-            <Text fontSize={"3xl"} fontWeight={"bold"} mb={3}>
-              {review.action && review.jobsTitle}
-            </Text>
-            {!review.action && (
-              <Select
-                value={selectedContract ? selectedContract.jobsId : ""}
-                onChange={handleModalSelect}
-                // isDisabled={!!selectedReview}
-              >
-                <option value={""} disabled>
-                  계약기간 종료된 것만 선택가능 합니다.
-                </option>
-                {contractList.map((contract) => (
-                  <option key={contract.jobsId} value={contract.jobsId}>
-                    {contract.jobsTitle}
+            <Divider my={"10px"} borderWidth={"1px"} />
+            <Flex>
+              <Text fontSize={"xl"} w={"80px"} ml={4} fontWeight={"bold"}>
+                공고명
+              </Text>
+              <Text fontSize={"xl"} ml={7}>
+                {review.action && review.jobsTitle}
+              </Text>
+              {!review.action && (
+                <Select
+                  lineHeight={"25px"}
+                  ml={4}
+                  value={selectedContract ? selectedContract.jobsId : ""}
+                  onChange={handleModalSelect}
+                  // isDisabled={!!selectedReview}
+                >
+                  <option value={""} disabled>
+                    계약기간 종료된 것만 선택가능 합니다.
                   </option>
-                ))}
-              </Select>
-            )}
+                  {contractList.map((contract) => (
+                    <option key={contract.jobsId} value={contract.jobsId}>
+                      {contract.jobsTitle}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </Flex>
 
             {review && (
               <Box
                 ml={4}
-                my={4}
+                mb={4}
                 display={"flex"}
                 flexDirection={"column"}
                 gap={"20px"}
               >
                 <Box display={"flex"}>
-                  <Heading fontSize={"2xl"}>알바기간</Heading>
-                  <Text
-                    ml={10}
-                    fontSize="lg"
-                    fontWeight={"bold"}
-                    lineHeight={"35px"}
-                  >
+                  <Heading fontSize={"xl"}>알바기간</Heading>
+                  <Text ml={10} fontSize="lg" lineHeight={"25px"}>
                     {review.startDate} ~ {review.endDate}
                   </Text>
                 </Box>
                 <Box display={"flex"}>
-                  <Heading fontSize={"2xl"}>사업장명</Heading>
+                  <Heading fontSize={"xl"}>사업장명</Heading>
                   <Text
                     ml={10}
                     letterSpacing={"1px"}
                     fontSize="xl"
-                    fontWeight={"bold"}
-                    lineHeight={"35px"}
+                    lineHeight={"25px"}
                   >
                     {review.storeName}
                   </Text>
                 </Box>
 
                 <Box mt={6}>
-                  <Heading fontSize={"2xl"}>한 줄 리뷰</Heading>
+                  <Heading fontSize={"xl"}>한 줄 리뷰</Heading>
                   {review.action === "선택" || (
                     <Input
-                      w={"500px"}
-                      mt={2}
+                      fontWeight={"bold"}
                       value={review.content}
                       onChange={handleInputChange("content")}
                       placeholder={"리뷰를 입력해주세요."}
                     />
                   )}
                   {review.action === "선택" && (
-                    <Text fontSize={"lg"} my={3}>
+                    <Text fontSize={"lg"} ml={3}>
                       {review.content}
                     </Text>
                   )}
                 </Box>
                 <Box>
-                  <Flex>
-                    <Heading fontSize={"2xl"}>평점</Heading>
+                  <Flex mt={4}>
+                    <Heading fontSize={"xl"}>평점</Heading>
                     <Heading fontSize={"2xl"} ml={3}>
                       {review.rating}
                     </Heading>
                   </Flex>
-                  <Flex mt={2}>{renderStars()}</Flex>
+                  <Flex>{renderStars()}</Flex>
                 </Box>
               </Box>
             )}
@@ -481,7 +482,6 @@ function AlbaReviewList(props) {
                 <Box mt={6}>
                   <Heading fontSize={"2xl"}>한 줄 리뷰</Heading>
                   <Input
-                    w={"500px"}
                     mt={2}
                     value={review.content}
                     onChange={handleInputChange("content")}
@@ -500,20 +500,20 @@ function AlbaReviewList(props) {
               </Box>
             )}
           </ModalBody>
-          <ModalFooter gap={"10px"} mt={"-40px"}>
-            {review.action === "수정" && (
-              <Button onClick={() => handleUpdate(review)} color={"green"}>
-                수정
-              </Button>
-            )}
+          <ModalFooter gap={"10px"} mt={"-80px"}>
+            <Button onClick={onClose} variant={"outline"} colorScheme={"teal"}>
+              닫기
+            </Button>
             {review.action !== "선택" && review.action !== "수정" && (
-              <Button onClick={handleSubmit} colorScheme={"blue"}>
+              <Button onClick={handleSubmit} colorScheme={"teal"}>
                 저장
               </Button>
             )}
-            <Button onClick={onClose} colorScheme={"teal"}>
-              취소
-            </Button>
+            {review.action === "수정" && (
+              <Button onClick={() => handleUpdate(review)} colorScheme={"teal"}>
+                수정
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -561,6 +561,15 @@ function AlbaReviewList(props) {
                 fontWeight={"bold"}
                 color={"teal"}
               >
+                <Box
+                  as="span"
+                  mr={2}
+                  color={"gold"}
+                  fontSize="2xl"
+                  cursor="pointer"
+                >
+                  ★
+                </Box>
                 {review.rating}
               </Td>
               <Td>
@@ -641,11 +650,7 @@ function AlbaReviewList(props) {
                     overflow="hidden"
                     textOverflow="ellipsis"
                     cursor={"pointer"}
-                    // onClick={() =>
-                    //   navigate(`/jobs/${review.resumeId}/review/select`, {
-                    //     state: { jobsId: review.jobsId },
-                    //   })
-                    // }
+                    onClick={() => handleReviewClick(review, "선택")}
                   >
                     {review.content}
                   </Td>
@@ -656,6 +661,15 @@ function AlbaReviewList(props) {
                     fontWeight={"bold"}
                     color={"teal"}
                   >
+                    <Box
+                      as="span"
+                      mr={2}
+                      color={"gold"}
+                      fontSize="2xl"
+                      cursor="pointer"
+                    >
+                      ★
+                    </Box>
                     {review.rating}
                   </Td>
 
