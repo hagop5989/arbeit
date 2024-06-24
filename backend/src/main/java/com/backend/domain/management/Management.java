@@ -14,6 +14,7 @@ public class Management {
     private Integer isPassed;
 
     // application db에 없음
+    private Integer storeId;
     private String jobsTitle;
     private String applicationTitle;
     private LocalDate applicationInserted;

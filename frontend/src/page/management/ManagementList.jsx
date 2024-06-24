@@ -66,7 +66,7 @@ export function ManagementList() {
       setContract({
         jobsId: management.jobsId,
         albaId: management.appliedMemberId,
-        bossId: account.id,
+        storeId: management.storeId,
         startDate: "",
         endDate: "",
       });
@@ -107,7 +107,9 @@ export function ManagementList() {
       await axios.put(`/api/jobs/management/decision`, {
         ...updatedManagement,
       });
+
       /* 합격일 때 contract 정보 전송 */
+
       if (updatedManagement && updatedManagement.isPassed === 1 && contract) {
         await axios.post("/api/contract", { ...contract });
       }
@@ -138,7 +140,7 @@ export function ManagementList() {
   }
 
   return (
-    <Box w={"full"} h={"80vh"}>
+    <Box h={"80vh"} mb={"50px"}>
       {account.isAlba() && (
         <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
           사장만 접근 가능한 페이지 입니다.
@@ -153,7 +155,7 @@ export function ManagementList() {
             <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
           <Box>
-            <Table>
+            <Table w={"1050px"}>
               <Thead>
                 <Tr>
                   <Th fontSize={"medium"}>#</Th>
@@ -202,17 +204,26 @@ export function ManagementList() {
                       {management.applicationTitle}
                     </Td>
                     {/* 합격 여부 */}
-                    <Td
-                      minW={"90px"}
-                      fontWeight={"bold"}
-                      color={
-                        management.isPassed != null && management.isPassed
-                          ? "teal"
-                          : "red"
-                      }
-                    >
-                      {isPassedToString(management.isPassed)}
-                    </Td>
+                    {management.isPassed == null && (
+                      <Td minW={"90px"}>
+                        <Text color={"gray.500"} fontWeight={"bold"}>
+                          미정
+                        </Text>
+                      </Td>
+                    )}
+                    {management.isPassed == null || (
+                      <Td
+                        minW={"90px"}
+                        fontWeight={"bold"}
+                        color={
+                          management.isPassed != null && management.isPassed
+                            ? "teal"
+                            : "red"
+                        }
+                      >
+                        {isPassedToString(management.isPassed)}
+                      </Td>
+                    )}
 
                     {/* 합격 결정 버튼 */}
                     <Td>
@@ -220,17 +231,19 @@ export function ManagementList() {
                         <Button
                           onClick={(e) => handleDecision(e, management)}
                           // onClick={onOpen}
-                          fontWeight={"500"}
-                          bgColor={"#FF7F3E"}
-                          color={"white"}
+                          fontWeight={"bold"}
+                          variant={"outline"}
+                          colorScheme={"teal"}
+                          borderWidth={"2px"}
                         >
                           합격
                         </Button>
                         <Button
                           onClick={(e) => handleDecision(e, management)}
-                          fontWeight={"500"}
-                          bgColor={"red.500"}
-                          color={"white"}
+                          fontWeight={"bold"}
+                          variant={"outline"}
+                          colorScheme={"red"}
+                          borderWidth={"2px"}
                         >
                           불합격
                         </Button>
@@ -345,7 +358,8 @@ export function ManagementList() {
                                   if (
                                     selectedManagement &&
                                     contract.startDate &&
-                                    contract.endDate
+                                    contract.endDate &&
+                                    contract.storeId
                                   ) {
                                     handleSubmit(selectedManagement, contract);
                                   } else {

@@ -16,20 +16,22 @@ public class ContractController {
     private final ContractService service;
 
     @PostMapping("")
-    public void insert(@RequestBody Contract contract){
-        System.out.println("contract = " + contract);
+    public void insert(@RequestBody Contract contract) {
         service.insert(contract);
 
     }
-    @GetMapping("list")
-    public List<Contract> list(@AuthId Integer memberId, Authentication authentication){
-        List<Contract> list = service.list(memberId, authentication);
 
-        System.out.println("list = " + list);
+    @GetMapping("list")
+    public List<Contract> list(@AuthId Integer memberId, Authentication authentication) {
+        List<Contract> list = service.list(memberId, authentication);
         return list;
     }
-    public void update(){}
-    public void delete(){}
+
+    public void update() {
+    }
+
+    public void delete() {
+    }
 
 
 }

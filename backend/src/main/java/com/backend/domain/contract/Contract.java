@@ -9,7 +9,7 @@ public class Contract {
     /* jobsId,albaId,bossId 3개가 묶여서 pk */
     private Integer jobsId; // fk  (jobs)
     private Integer albaId; // fk (member)
-    private Integer bossId; // fk (member)
+    private Integer storeId; // fk (member)
     private LocalDate startDate;
     private LocalDate endDate;
 

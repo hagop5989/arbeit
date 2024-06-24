@@ -25,10 +25,10 @@ public class ManagementService {
         return mapper.selectByResumeIdAndJobs(jobsId, resumeId);
     }
 
-    public void updateDecision(Management management, Integer bossId) {
-        if(management != null &&management.getIsPassed() == 0 ){
+    public void updateDecision(Management management) {
+        if (management != null && management.getIsPassed() == 0) {
             // 불합격 처리인경우 boss,alba,jobs Id를 사용하여 기존 생성된 contract 있다면 삭제.
-            contractService.deleteByIds(management,bossId);
+            contractService.deleteByIds(management);
         }
         mapper.updateDecision(management);
     }
