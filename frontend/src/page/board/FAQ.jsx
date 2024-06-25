@@ -14,8 +14,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function FAQ() {
   const [selectedTab, setSelectedTab] = useState(0);
