@@ -32,38 +32,33 @@ export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState({});
   const [images, setImages] = useState([]);
-  const [like, setLike] = useState({
-    like: false,
-    count: 0,
-  });
+  const [like, setLike] = useState(null);
+  const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const account = useContext(LoginContext);
 
-  useEffect(
-    () => {
-      axios
-        .get(`/api/board/${id}`)
-        .then((res) => {
-          setBoard(res.data.board);
-          setImages(res.data.images);
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.status === 404) {
-            toast({
-              status: "error",
-              description: "게시물이 존재하지않습니다",
-              position: "top",
-            });
-            navigate("/");
-          }
-        });
-    },
-    [account.id],
-    id,
-  );
+  useEffect(() => {
+    axios
+      .get(`/api/board/${id}`)
+      .then((res) => {
+        setBoard(res.data.board);
+        setImages(res.data.images);
+        setLike(res.data.like);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 404) {
+          toast({
+            status: "error",
+            description: "게시물이 존재하지않습니다",
+            position: "top",
+          });
+          navigate("/");
+        }
+      });
+  }, [account.id, id]);
 
   if (!board) {
     return <Spinner />;
@@ -89,14 +84,18 @@ export function BoardView() {
       });
   }
 
+  //좋아용
   function handleClickLike() {
+    setIsLikeProcessing(true);
     axios
       .put(`/api/board/like`, { boardId: board.id })
       .then((res) => {
         setLike(res.data);
       })
       .catch(() => {})
-      .finally(() => {});
+      .finally(() => {
+        setIsLikeProcessing(false);
+      });
   }
 
   return (
@@ -104,13 +103,18 @@ export function BoardView() {
       <Flex>
         <Heading>{board.name}번 게시물</Heading>
         <Spacer />
-        <Flex>
-          <Box onClick={handleClickLike} fontSize={"2xl"}>
-            {like.count}
-          </Box>
-          {like.like && <FontAwesomeIcon icon={fullHeart} />}
-          {like.like || <FontAwesomeIcon icon={emptyHeart} />}
-        </Flex>
+        {isLikeProcessing || (
+          <Flex>
+            <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
+              {like && like.like ? (
+                <FontAwesomeIcon icon={fullHeart} />
+              ) : (
+                <FontAwesomeIcon icon={emptyHeart} />
+              )}
+            </Box>
+            <Box fontSize="3xl">{like ? like.count : 0} </Box>
+          </Flex>
+        )}
       </Flex>
       <Box>
         <FormControl>

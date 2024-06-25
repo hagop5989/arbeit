@@ -88,12 +88,12 @@ public interface BoardMapper {
              <trim prefix="WHERE" prefixOverrides="OR">
                     <if test="searchType != null">
                         <bind name="pattern" value="'%' + keyword + '%'" />
-                        <if test="searchType == 'all' || searchType == 'text'">
+                        <if test="searchType == 'all' || searchType == 'title'">
                             OR b.title LIKE #{pattern}
                             OR b.member_id LIKE #{pattern}
                         </if>
-                            <if test="searchType == 'all' || searchType == 'memberId'">
-                            OR m.name LIKE #{pattern}
+                            <if test="searchType == 'all' || searchType == 'name'">
+                            OR m.id LIKE #{pattern}
                         </if>
                          </if>
                          </trim>
@@ -117,11 +117,11 @@ public interface BoardMapper {
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
                        <bind name="pattern" value="'%' + keyword + '%'" />
-                       <if test="searchType == 'all' || searchType == 'title'">
+                       <if test="searchType == 'all' || searchType == 'name'">
                             OR b.title LIKE #{pattern}
-                            OR m.name LIKE #{pattern}
+                            OR m.id LIKE #{pattern}
                        </if>
-                       <if test="searchType == 'all' || searchType == 'memberId'">
+                       <if test="searchType == 'all' || searchType == 'm.id'">
                            OR m.name LIKE #{pattern}
                        </if> 
                    </if>
@@ -129,6 +129,29 @@ public interface BoardMapper {
             </script>
             """)
     Integer countAllWithSearch(String searchType, String keyword);
+
+
+    @Delete("""
+                DELETE FROM board_like
+                            WHERE board_id = #{boardId}
+                            AND member_id = #{memberId};
+            """)
+    int deleteLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
+
+    @Insert("""
+                   INSERT INTO board_like (board_id, member_id)
+                   VALUES (#{boardId}, #{memberId})
+            """)
+    int insertLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
+    @Select("""
+                SELECT  COUNT(*)
+                FROM board_like
+                WHERE board_id = #{boardId}
+            """)
+    int selectCountLike(Integer boardId);
+
 }
 
 

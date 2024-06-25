@@ -20,6 +20,7 @@ public class Board {
 
     private LocalDateTime inserted;
 
+
     public Board(Integer id, String title, String content) {
         this.id = id;
         this.title = title;

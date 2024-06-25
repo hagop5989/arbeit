@@ -3,6 +3,7 @@ package com.backend.controller.board;
 
 import com.backend.domain.board.BoardEditForm;
 import com.backend.domain.board.BoardWriteForm;
+import com.backend.mapper.board.BoardMapper;
 import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardMapper boardMapper;
 
 
     @PostMapping("/write")
@@ -45,21 +47,20 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> findById(@PathVariable Integer id, Authentication authentication) {
         try {
-            Map<String, Object> result = boardService.findById(id);
+            Map<String, Object> result = boardService.findById(id, authentication);
             if (result == null) {
                 return ResponseEntity.notFound().build();
             }
-
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             // 예외 처리
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
 
+    }
 
     @GetMapping("list")
     public Map<String, Object> list(
@@ -101,7 +102,6 @@ public class BoardController {
         boardService.delete(id);
     }
 
-
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
         Map<String, String> errors = new ConcurrentHashMap<>();
         for (FieldError error : bindingResult.getFieldErrors()) {
@@ -109,4 +109,7 @@ public class BoardController {
         }
         return errors;
     }
+
 }
+
+

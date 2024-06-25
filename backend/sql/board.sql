@@ -1,4 +1,6 @@
 use arbeit;
+
+/*게시물 */
 create table board
 (
     id        int auto_increment
@@ -16,7 +18,7 @@ SELECT *
 FROM board;
 
 
-
+/*파일*/
 CREATE TABLE board_image
 (
     board_id INT REFERENCES board (id),
@@ -33,7 +35,7 @@ DROP TABLE board;
 DROP TABLE board_image;
 
 
-
+/*게시물 여러번 만들기*/
 INSERT INTO board
     (title, content, member_id)
 SELECT title, content, member_id

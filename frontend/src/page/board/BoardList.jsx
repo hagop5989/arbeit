@@ -62,20 +62,21 @@ export function BoardList() {
   function handleSearchClick() {
     setSearchKeyword(searchKeyword);
     const typeParam = searchType;
-    const kewordParam = searchKeyword;
+    const keywordParam = searchKeyword;
 
     const params = new URLSearchParams({
       type: typeParam,
-      keyword: kewordParam,
+      keyword: keywordParam,
       page: 1,
     });
-    navigate(`/?${params.toString()}`);
+
+    navigate(`./?${params.toString()}`);
     console.log("Search params:", params.toString()); // 콘솔에 출력하여
   }
 
   function handlePageButtonClick(pageNumber) {
     searchParams.set("page", pageNumber);
-    setSearchParams(searchParams); // This updates the URL with the new page number
+    setSearchParams(searchParams);
   }
 
   return (
@@ -139,7 +140,7 @@ export function BoardList() {
             >
               <option value="all">전체</option>
               <option value="title">제목</option>
-              <option value="name">작성자</option>
+              <option value="memberId">작성자</option>
             </Select>
           </Box>
           <Box>

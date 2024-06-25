@@ -63,7 +63,7 @@ public class BoardService {
         }
     }
 
-    public Map<String, Object> findById(Integer boardId) {
+    public Map<String, Object> findById(Integer boardId, Authentication authentication) {
 
         Map<String, Object> result = new HashMap<>();
 
