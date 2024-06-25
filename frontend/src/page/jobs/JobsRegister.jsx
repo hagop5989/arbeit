@@ -85,11 +85,20 @@ export function JobsRegister() {
   // Create 관련 필요정보 얻기(store,category)
   useEffect(() => {
     axios
-      .get("/api/jobs/store-names")
-      .then((res) => {
-        setStoreList(res.data);
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get("/api/jobs/store-names")
+          .then((res) => {
+            setStoreList(res.data);
+          })
+          .catch();
       })
-      .catch();
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.id]);
 
   // Create

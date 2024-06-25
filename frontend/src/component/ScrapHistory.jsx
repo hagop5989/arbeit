@@ -21,15 +21,22 @@ function ScrapHistory(props) {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   useEffect(() => {
-    if (account.id !== "") {
-      axios.get("/api/scrap/list").then((res) => {
-        // favorite 상태가 true인 항목만 필터링
-        const filteredScrapList = res.data.filter(
-          (item) => item.favorite === true,
-        );
-        setScrapList(filteredScrapList);
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios.get("/api/scrap/list").then((res) => {
+          // favorite 상태가 true인 항목만 필터링
+          const filteredScrapList = res.data.filter(
+            (item) => item.favorite === true,
+          );
+          setScrapList(filteredScrapList);
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
       });
-    }
   }, [account, post]);
 
   function handleDelete(id) {

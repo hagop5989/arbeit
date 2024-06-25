@@ -8,6 +8,7 @@ import com.backend.service.contract.ContractService;
 import com.backend.service.review.ReviewToStoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('SCOPE_ALBA')")
 @RequestMapping("/api/review/store")
 public class ReviewToStoreController {
     /* 알바 -> 가게 평가 */

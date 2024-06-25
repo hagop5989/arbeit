@@ -88,24 +88,31 @@ export function JobsEdit() {
 
   // Read
   useEffect(() => {
-    if (account.id !== null) {
-      axios
-        .get(`/api/jobs/${id}`)
-        .then((res) => {
-          setJobs(res.data.jobs);
-          setJobsCondition(res.data.jobsCondition);
-          setImages(res.data.images);
-          setChecked(images.length !== 0);
-        })
-        .catch((err) => {
-          if (err.response && err.response.status === 404) {
-            navigate("/jobs/list");
-          }
-        });
-      if (jobsCondition.age == 0) {
-        setIsAgeLimitChecked(true);
-      }
-    }
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get(`/api/jobs/${id}`)
+          .then((res) => {
+            setJobs(res.data.jobs);
+            setJobsCondition(res.data.jobsCondition);
+            setImages(res.data.images);
+            setChecked(images.length !== 0);
+          })
+          .catch((err) => {
+            if (err.response && err.response.status === 404) {
+              navigate("/jobs/list");
+            }
+          });
+        if (jobsCondition.age == 0) {
+          setIsAgeLimitChecked(true);
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.id, jobsCondition.age]);
 
   const handleImageChange = (event) => {

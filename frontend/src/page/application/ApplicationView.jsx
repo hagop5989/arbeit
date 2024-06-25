@@ -8,6 +8,7 @@ import {
   Heading,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -20,15 +21,30 @@ export function ApplicationView() {
   const [application, setApplication] = useState({});
   const [jobsTitle, setJobsTitle] = useState();
   const navigate = useNavigate();
+  const toast = useToast();
 
   // Read (리스트 받기)
   useEffect(() => {
-    if (account.id) {
-      axios.get(`/api/jobs/${id}/apply/select`).then((res) => {
-        setJobsTitle(res.data.jobsTitle);
-        setApplication(res.data);
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get(`/api/jobs/${id}/apply/select`)
+          .then((res) => {
+            setJobsTitle(res.data.jobsTitle);
+            setApplication(res.data);
+          })
+          .catch((err) => {
+            if (err.response.status === 403 || 404) {
+              navigate("/");
+            }
+          });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
       });
-    }
   }, [account.id, id, application.resumeId]);
 
   return (

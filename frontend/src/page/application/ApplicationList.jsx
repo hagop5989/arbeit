@@ -4,6 +4,7 @@ import {
   Divider,
   Heading,
   Link,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -19,29 +20,25 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function ApplicationList() {
   const account = useContext(LoginContext);
-  const [applicationList, setApplicationList] = useState([]);
+  const [applicationList, setApplicationList] = useState(null);
   const [isCancel, setIsCancel] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
 
   // Read (jobs 리스트 받기)
   useEffect(() => {
-    if (account.id) {
-      axios
-        .get(`/api/apply/list`)
-        .then((res) => {
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios.get(`/api/apply/list`).then((res) => {
           setApplicationList(res.data);
-        })
-        .catch((err) => {
-          if (err.responsse.status === 403) {
-            toast({
-              status: "warning",
-              description: "접근 권한이 없습니다.",
-              position: "top",
-            });
-          }
         });
-    }
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.id, isCancel]);
 
   // 합격 여부 문자열 변환 함수
@@ -75,6 +72,9 @@ export function ApplicationList() {
         });
     }
   }
+  if (account.id === "") {
+    return <Spinner />;
+  }
 
   return (
     <Box w={"100%"} h={"55vh"}>
@@ -105,43 +105,44 @@ export function ApplicationList() {
               </Tr>
             </Thead>
             <Tbody>
-              {applicationList.map((application, index) => (
-                <Tr key={index}>
-                  <Td>{application.inserted}</Td>
-                  <Td fontWeight={"700"}>
-                    <Link href={`jobs/${application.jobsId}`}>
-                      {application.jobsTitle}
-                    </Link>
-                  </Td>
-                  <Td fontWeight={"700"}>
-                    <Link href={`/jobs/${application.jobsId}/apply/select`}>
-                      {application.title}
-                    </Link>
-                  </Td>
-                  <Td
-                    minW={"90px"}
-                    fontWeight={"bold"}
-                    color={
-                      application.isPassed != null && application.isPassed
-                        ? "teal"
-                        : "red"
-                    }
-                  >
-                    {isPassedToString(application.isPassed)}
-                  </Td>
-                  <Td>
-                    <Button
-                      colorScheme="red"
-                      variant="outline"
-                      _hover={{ bg: "#E74133", color: "white" }}
-                      size={"sm"}
-                      onClick={() => handleCancelBtn(application.jobsId)}
+              {applicationList &&
+                applicationList.map((application, index) => (
+                  <Tr key={index}>
+                    <Td>{application.inserted}</Td>
+                    <Td fontWeight={"700"}>
+                      <Link href={`jobs/${application.jobsId}`}>
+                        {application.jobsTitle}
+                      </Link>
+                    </Td>
+                    <Td fontWeight={"700"}>
+                      <Link href={`/jobs/${application.jobsId}/apply/select`}>
+                        {application.title}
+                      </Link>
+                    </Td>
+                    <Td
+                      minW={"90px"}
+                      fontWeight={"bold"}
+                      color={
+                        application.isPassed != null && application.isPassed
+                          ? "teal"
+                          : "red"
+                      }
                     >
-                      취소
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
+                      {isPassedToString(application.isPassed)}
+                    </Td>
+                    <Td>
+                      <Button
+                        colorScheme="red"
+                        variant="outline"
+                        _hover={{ bg: "#E74133", color: "white" }}
+                        size={"sm"}
+                        onClick={() => handleCancelBtn(application.jobsId)}
+                      >
+                        취소
+                      </Button>
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         </Box>
