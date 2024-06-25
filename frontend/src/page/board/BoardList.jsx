@@ -24,11 +24,11 @@ import {
   faAnglesLeft,
   faAnglesRight,
   faComments,
+  faHeart as fullHeart,
   faMagnifyingGlass,
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
-import { ViewIcon } from "@chakra-ui/icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -105,7 +105,7 @@ export function BoardList() {
                   <FontAwesomeIcon icon={faImages} />
                 </Th>
                 <Th>
-                  <FontAwesomeIcon icon={ViewIcon} />
+                  <FontAwesomeIcon icon={fullHeart} />
                 </Th>
               </Tr>
             </Thead>
@@ -151,13 +151,13 @@ export function BoardList() {
                   </Td>
 
                   <Td>
-                    {board.numberOfview > 0 && (
+                    {board.numberOfLike > 0 && (
                       <Badge ml={2}>
                         <Flex gap={1}>
                           <Box>
-                            <FontAwesomeIcon icon={ViewIcon} />
+                            <FontAwesomeIcon icon={fullHeart} />
                           </Box>
-                          {board.numberOfview}
+                          <Box>{board.numberOfLike}</Box>
                         </Flex>
                       </Badge>
                     )}
@@ -187,10 +187,12 @@ export function BoardList() {
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어"
             />
-            <Button onClick={handleSearchClick}>
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </Button>
           </Box>
+          <Button onClick={handleSearchClick}>
+            <Box>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Box>
+          </Button>
         </Flex>
       </Center>
 
