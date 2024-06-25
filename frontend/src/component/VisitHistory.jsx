@@ -12,14 +12,23 @@ import {
 } from "@chakra-ui/react";
 import { LoginContext } from "../provider/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function VisitHistory(props) {
   const account = useContext(LoginContext);
   const [visitList, setVisitList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    setVisitList(account.recentJobPages);
-    console.log(account.recentJobPages);
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        setVisitList(account.recentJobPages);
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.recentJobPages]);
 
   return (

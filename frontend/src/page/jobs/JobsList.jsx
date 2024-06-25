@@ -67,21 +67,28 @@ export function JobsList() {
     if (typeParam) {
       setSearchType(typeParam);
     }
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios.get("/api/jobs/list", { params }).then((res) => {
+          setStoreImages(res.data.storeImgMap);
+          setJobsList(res.data.jobsList);
 
-    axios.get("/api/jobs/list", { params }).then((res) => {
-      setStoreImages(res.data.storeImgMap);
-      setJobsList(res.data.jobsList);
-
-      if (categoryNames.length === 0) {
-        // categoryName 추출해서 배열에 담기 (중복값 제거)
-        const newCategoryNames = Array.from(
-          new Set(res.data.jobsList.map((job) => job.categoryName)),
-        );
-        setCategoryNames(newCategoryNames);
-      }
-
-      setPageInfo(res.data.pageInfo);
-    });
+          if (categoryNames.length === 0) {
+            // categoryName 추출해서 배열에 담기 (중복값 제거)
+            const newCategoryNames = Array.from(
+              new Set(res.data.jobsList.map((job) => job.categoryName)),
+            );
+            setCategoryNames(newCategoryNames);
+          }
+          setPageInfo(res.data.pageInfo);
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [currentPage, searchParams, account, filterType, selectedFilterDetail]);
 
   // favorite 리스트 받기

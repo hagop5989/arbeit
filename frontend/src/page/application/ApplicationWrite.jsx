@@ -50,12 +50,31 @@ export function ApplicationWrite() {
 
   // Read (자기 resume 리스트 받기)
   useEffect(() => {
-    if (account.id) {
-      axios.get(`/api/jobs/${id}/apply`).then((res) => {
-        setJobsTitle(res.data.jobsTitle);
-        setResumeList(res.data.resumes);
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get(`/api/jobs/${id}/apply`)
+          .then((res) => {
+            setJobsTitle(res.data.jobsTitle);
+            setResumeList(res.data.resumes);
+          })
+          .catch((err) => {
+            if (err.response.status === 403) {
+              toast({
+                status: "warning",
+                description: "접근 권한이 없습니다.",
+                position: "top",
+              });
+              navigate("/");
+            }
+          });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
       });
-    }
   }, [account.id, id, application.resumeId]);
 
   const handleInputChange = (field) => (e) => {

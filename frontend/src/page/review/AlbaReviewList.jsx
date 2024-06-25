@@ -98,34 +98,48 @@ function AlbaReviewList(props) {
   /**/
   // Read (리스트 받기)
   useEffect(() => {
-    if (account.id) {
-      axios
-        .get("/api/review/store/list")
-        .then((res) => {
-          const validContracts = res.data.contractList.filter(
-            (contract) => contract.endDate <= today,
-          );
-          const updatedReviewList = res.data.reviewList.map((review) => {
-            const contract = validContracts.find(
-              (contract) =>
-                contract.storeId === review.storeId &&
-                contract.albaId === review.albaId,
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get("/api/review/store/list")
+          .then((res) => {
+            const validContracts = res.data.contractList.filter(
+              (contract) => contract.endDate <= today,
             );
-            return {
-              ...review,
-              startDate: contract ? contract.startDate : "",
-              endDate: contract ? contract.endDate : "",
-              storeName: contract ? contract.storeName : "",
-              storeId: contract ? contract.storeId : "",
-              jobsId: contract ? contract.jobsId : "",
-            };
-          });
+            const updatedReviewList = res.data.reviewList.map((review) => {
+              const contract = validContracts.find(
+                (contract) =>
+                  contract.storeId === review.storeId &&
+                  contract.albaId === review.albaId,
+              );
+              return {
+                ...review,
+                startDate: contract ? contract.startDate : "",
+                endDate: contract ? contract.endDate : "",
+                storeName: contract ? contract.storeName : "",
+                storeId: contract ? contract.storeId : "",
+                jobsId: contract ? contract.jobsId : "",
+              };
+            });
 
-          setReviewList(updatedReviewList);
-          setContractList(validContracts);
-        })
-        .catch((err) => myToast("로드 오류발생", "error"));
-    }
+            setReviewList(updatedReviewList);
+            setContractList(validContracts);
+          })
+          .catch((err) => {
+            if (err.response.status === 403) {
+              myToast("접근 권한이 없습니다.", "error");
+              navigate("/");
+            } else {
+              myToast("로드 오류발생", "error");
+            }
+          });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.id, checkChange]);
 
   // Create
@@ -319,12 +333,21 @@ function AlbaReviewList(props) {
   const [reviewToStoreList, setReviewToStoreList] = useState([]);
   useEffect(() => {
     axios
-      .get("api/review/store/to-alba")
-      .then((res) => {
-        setReviewToStoreList(res.data);
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get("api/review/store/to-alba")
+          .then((res) => {
+            setReviewToStoreList(res.data);
+          })
+          .catch()
+          .finally();
       })
-      .catch()
-      .finally();
+      .catch(() => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, []);
 
   // toast 커스텀
