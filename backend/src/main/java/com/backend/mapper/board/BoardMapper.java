@@ -83,8 +83,14 @@ public interface BoardMapper {
              SELECT b.id,
              b.member_id,
              b.title,
-             b.inserted
+             b.inserted,
+                   COUNT(DISTINCT c.id)  AS number_of_comments,
+             COUNT(DISTINCT f.name)  AS number_of_images,
+             COUNT(DISTINCT l.member_id)  AS number_of_View
             FROM board b JOIN member m ON m.id = b.member_id
+             LEFT JOIN board_image f ON b.id = f.board_id
+                         LEFT JOIN board_like l ON b.id = l.board_id
+                         LEFT JOIN comment c ON b.id = c.board_id
              <trim prefix="WHERE" prefixOverrides="OR">
                     <if test="searchType != null">
                         <bind name="pattern" value="'%' + keyword + '%'" />
@@ -104,11 +110,6 @@ public interface BoardMapper {
              """)
     List<Board> selectAllPaging(Integer offset, String searchType, String keyword);
 
-
-    @Select("""
-            SELECT COUNT(*) FROM board
-            """)
-    Integer countAll();
 
     @Select("""
             <script>
@@ -152,6 +153,13 @@ public interface BoardMapper {
             """)
     int selectCountLike(Integer boardId);
 
+
+    @Select("""
+            SELECT COUNT(*) FROM board_like
+            WHERE board_id=#{boardId}
+              AND member_id=#{memberId}
+            """)
+    int selectLikeByBoardIdAndMemberId(Integer boardId, String memberId);
 }
 
 

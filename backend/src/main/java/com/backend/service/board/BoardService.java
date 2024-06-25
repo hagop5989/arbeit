@@ -46,7 +46,9 @@ public class BoardService {
                 null,
                 form.getTitle(),
                 form.getContent(),
-                null
+                null,
+                null,
+                null, null
         );
         mapper.insert(board);
 
@@ -73,6 +75,17 @@ public class BoardService {
             return null;
         }
 
+        Map<String, Object> like = new HashMap<>();
+        if (authentication == null) {
+            like.put("like", false);
+        } else {
+            int c = mapper.selectLikeByBoardIdAndMemberId(boardId, authentication.getName());
+            like.put("like", c == 1);
+        }
+        like.put("count", mapper.selectCountLike(boardId));
+        result.put("board", board);
+        result.put("like", like);
+
 
         List<String> imagesNames = mapper.selectImageNameById(boardId);
         List<BoardImage> images = imagesNames.stream()
@@ -81,6 +94,7 @@ public class BoardService {
 
         result.put("board", board);
         result.put("images", images);
+        result.put("like", like);
 
         return result;
 
@@ -92,6 +106,7 @@ public class BoardService {
             Integer page,
             String searchType,
             String keyword
+
     ) {
         Map<String, Object> pageInfo = new HashMap<>();
         Integer countAll = mapper.countAllWithSearch(searchType, keyword);
@@ -220,4 +235,27 @@ public class BoardService {
             return false; // 예외 발생 시 기본 동작
         }
     }
+
+
+    public Map<String, Object> like(Map<String, Object> req, Authentication authentication) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("like", false);
+        Integer boardId = (Integer) req.get("boardId");
+        Integer memberId = Integer.valueOf(authentication.getName());
+
+
+        int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
+
+
+        if (count == 0) {
+            mapper.insertLikeByBoardIdAndMemberId(boardId, memberId);
+            result.put("like", true);
+        }
+
+        result.put("count", mapper.selectCountLike(boardId));
+
+        return result;
+    }
+
+
 }

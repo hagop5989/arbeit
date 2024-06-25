@@ -110,6 +110,18 @@ public class BoardController {
         return errors;
     }
 
+
+    @PutMapping("like")
+    @PreAuthorize("isAuthenticated()")
+    public Map<String, Object> like(@RequestBody Map<String, Object> req,
+                                    Authentication authentication) throws IOException {
+        System.out.println("req = " + req);
+        return boardService.like(req, authentication);
+
+
+    }
+
+
 }
 
 

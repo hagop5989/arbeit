@@ -27,6 +27,8 @@ import {
   faMagnifyingGlass,
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
+import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
+import { ViewIcon } from "@chakra-ui/icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -96,6 +98,15 @@ export function BoardList() {
                   <FontAwesomeIcon icon={faUserPen} />
                 </Th>
                 <Th>작성일시</Th>
+                <Th>
+                  <FontAwesomeIcon icon={faComments} />
+                </Th>
+                <Th>
+                  <FontAwesomeIcon icon={faImages} />
+                </Th>
+                <Th>
+                  <FontAwesomeIcon icon={ViewIcon} />
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -109,8 +120,11 @@ export function BoardList() {
                   key={board.id}
                 >
                   <Td>{board.id}</Td>
+                  <Td>{board.title}</Td>
+                  <Td>{board.memberId}</Td>
+                  <Td>{board.inserted}</Td>
+
                   <Td>
-                    {board.title}
                     {board.numberOfComments > 0 && (
                       <Badge ml={2}>
                         <Flex gap={1}>
@@ -122,8 +136,32 @@ export function BoardList() {
                       </Badge>
                     )}
                   </Td>
-                  <Td>{board.memberId}</Td>
-                  <Td>{board.inserted}</Td>
+
+                  <Td>
+                    {board.numberOfImages > 0 && (
+                      <Badge ml={2}>
+                        <Flex gap={1}>
+                          <Box>
+                            <FontAwesomeIcon icon={faImages} />
+                          </Box>
+                          {board.numberOfImages}
+                        </Flex>
+                      </Badge>
+                    )}
+                  </Td>
+
+                  <Td>
+                    {board.numberOfview > 0 && (
+                      <Badge ml={2}>
+                        <Flex gap={1}>
+                          <Box>
+                            <FontAwesomeIcon icon={ViewIcon} />
+                          </Box>
+                          {board.numberOfview}
+                        </Flex>
+                      </Badge>
+                    )}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
