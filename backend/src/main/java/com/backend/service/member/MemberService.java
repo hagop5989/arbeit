@@ -180,4 +180,9 @@ public class MemberService {
         String encoded = passwordEncoder.encode(password);
         mapper.updatePwdByEmail(email, encoded);
     }
+
+    public boolean canDelete(String password, Integer id) {
+        Member dbMember = mapper.selectById(id);
+        return passwordEncoder.matches(password, dbMember.getPassword());
+    }
 }

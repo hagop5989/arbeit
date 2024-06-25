@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Center,
   Divider,
   Flex,
   Image,
@@ -18,7 +17,7 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faThumbtack } from "@fortawesome/free-solid-svg-icons";
 
 const styles = {
   menu: {
@@ -53,31 +52,23 @@ export function JobsViewDetails({ job, jobsCond, images, src, storeMap }) {
       <Divider my={5} />
       {images.length === 0 && (
         <Box>
-          <Center
+          <Box
             borderY={"3px solid gray"}
             w={"400px"}
-            h={"160px"}
+            h={"115px"}
             margin={"auto"}
+            p={"15px"}
           >
             <Box textAlign={"center"}>
-              <Box w={"150px"} h={"60px"}>
-                <Image
-                  w={"100%"}
-                  h={"100%"}
-                  border={"1px solid lightgray"}
-                  borderRadius={"8px"}
-                  src={src}
-                  objectFit="contain"
-                />
-              </Box>
-              <Text fontWeight={"700"} fontSize={"20px"}>
+              <Text fontWeight={"700"} fontSize={"17px"} color={"#616D8A"}>
+                <FontAwesomeIcon icon={faThumbtack} mr={"10px"} />{" "}
                 {storeMap.store.name}
               </Text>
               <Text fontWeight={"700"} fontSize={"25px"} mt={"20px"}>
                 {job.title}
               </Text>
             </Box>
-          </Center>
+          </Box>
           <Box my={"70px"} w={"600px"} mx={"60px"}>
             <Flex {...styles.menu}>
               <Text>

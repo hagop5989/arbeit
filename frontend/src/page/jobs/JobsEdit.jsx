@@ -88,39 +88,51 @@ export function JobsEdit() {
 
   // Read
   useEffect(() => {
+    const param = new URLSearchParams();
+    param.append("id", id);
     axios
-      .get("/api/only-login")
+      .post("/api/access-jobs", param)
       .then(() => {
-        axios
-          .get(`/api/jobs/${id}`)
-          .then((res) => {
-            setJobs(res.data.jobs);
-            setJobsCondition(res.data.jobsCondition);
-            setImages(res.data.images);
-            setChecked(images.length !== 0);
-          })
-          .catch((err) => {
-            if (err.response && err.response.status === 404) {
-              navigate("/jobs/list");
-            }
-          });
-        if (jobsCondition.age == 0) {
-          setIsAgeLimitChecked(true);
+        if (account.id !== null) {
+          axios
+            .get(`/api/jobs/${id}`)
+            .then((res) => {
+              setJobs(res.data.jobs);
+              setJobsCondition(res.data.jobsCondition);
+              setImages(res.data.images);
+              setChecked(images.length !== 0);
+            })
+            .catch((err) => {
+              if (err.response && err.response.status === 404) {
+                navigate("/jobs/list");
+              }
+            });
+          if (jobsCondition.age == 0) {
+            setIsAgeLimitChecked(true);
+          }
         }
       })
       .catch((err) => {
         if (err.response.status === 401) {
           navigate("/login");
         }
+        if (err.response.status === 403) {
+          navigate("/");
+        }
       });
-  }, [account.id, jobsCondition.age]);
+  }, [account.id]);
 
   const handleImageChange = (event) => {
     const newImages = Array.from(event.target.files);
+    if (newImages.length === 0) {
+      return;
+    }
     if (images.length + newImages.length > 5) {
       alert("이미지는 최대 5개까지 입력가능합니다.");
       return;
     }
+    setAddImages(event.target.files);
+    setJobs({ ...jobs, content: "추가사항 없음" });
     setImages((prevImageFiles) => {
       let updatedImageFiles = [...prevImageFiles];
 
@@ -130,8 +142,8 @@ export function JobsEdit() {
           (file) => file.name === newImageName,
         );
         if (index !== -1) {
-          // 이름이 중복될 경우 덮어쓰기
           updatedImageFiles[index] = newImage;
+          updatedImageFiles[index].dupl = 1;
         } else {
           // 새로운 이미지 파일 추가
           updatedImageFiles.push(newImage);
@@ -140,8 +152,6 @@ export function JobsEdit() {
 
       return updatedImageFiles;
     });
-    setAddImages(event.target.files);
-    setJobs({ ...jobs, content: "추가사항 없음" });
   };
 
   // update
@@ -159,16 +169,16 @@ export function JobsEdit() {
           myToast("수정이 완료됐습니다.", "success");
           navigate(`/jobs/${id}`);
         })
-        .catch(() => alert("오류 발생"));
+        .catch((err) => setErrors(err.response.data));
     }
   }
 
   const handleAgeLimitChange = (e) => {
     const isChecked = e.target.checked;
-    setIsAgeLimitChecked(isChecked);
     if (isChecked) {
-      setJobs({ ...jobs, age: 0 });
+      setJobsCondition({ ...jobsCondition, age: 0 });
     }
+    setIsAgeLimitChecked(isChecked);
   };
 
   const handleInputChange = (prop) => (e) => {
@@ -213,6 +223,15 @@ export function JobsEdit() {
 
   function handleCheckboxChange() {
     setChecked(!checked);
+    if (checked === true) {
+      setRemoveImages(
+        images.map((image) => {
+          return image.name;
+        }),
+      );
+    } else {
+      setRemoveImages([]);
+    }
   }
 
   if (jobs === null) {
@@ -281,20 +300,27 @@ export function JobsEdit() {
                 pl={"20px"}
                 borderRadius={"10px"}
               >
-                <Text fontWeight={"800"} fontSize={"18px"} mb={"5px"}>
-                  이미지 목록 (이미지는 순서대로 출력됩니다.)
+                <Text fontWeight={"800"} fontSize={"15px"} mb={"5px"}>
+                  이미지 목록 (이미지는 A~z, 가 ~ 힣 순서로 출력됩니다.)
                 </Text>
                 <OrderedList>
                   {images.map((image, index) => (
                     <ListItem key={index}>
                       <Flex>
                         <Text>{image.name}</Text>
-                        <FontAwesomeIcon
-                          icon={faXmark}
-                          color={"red"}
-                          onClick={() => handleRemoveImage(image.name)}
-                          cursor={"pointer"}
-                        />
+                        <Box mx={2}>
+                          <FontAwesomeIcon
+                            icon={faXmark}
+                            color={"red"}
+                            onClick={() => handleRemoveImage(image.name)}
+                            cursor={"pointer"}
+                          />
+                        </Box>
+                        {image.dupl === 1 && (
+                          <Text color={"red"} fontWeight={"700"}>
+                            덮어쓰기
+                          </Text>
+                        )}
                       </Flex>
                     </ListItem>
                   ))}
@@ -427,24 +453,25 @@ export function JobsEdit() {
               >
                 <Text fontSize={"sm"}>연령무관</Text>
               </Checkbox>
-              <InputGroup>
-                <InputRightElement
-                  w={"50px"}
-                  mx={3}
-                  fontSize={"sm"}
-                  color={"gray.500"}
-                >
-                  세 이상
-                </InputRightElement>
-                <Input
-                  mb={4}
-                  defaultValue={jobsCondition.age}
-                  placeholder="연령을 입력해주세요."
-                  onChange={handleInputChange("age")}
-                  type="number"
-                  disabled={isAgeLimitChecked}
-                />
-              </InputGroup>
+              {!isAgeLimitChecked && (
+                <InputGroup>
+                  <Input
+                    defaultValue={jobsCondition.age}
+                    placeholder="연령을 입력해주세요."
+                    onChange={handleCondInputChange("age")}
+                    type="number"
+                    disabled={isAgeLimitChecked}
+                  />
+                  <InputRightElement
+                    w={"50px"}
+                    mx={3}
+                    fontSize={"sm"}
+                    color={"gray.500"}
+                  >
+                    세 이상
+                  </InputRightElement>
+                </InputGroup>
+              )}
               {errors.age && <FormErrorMessage>{errors.age}</FormErrorMessage>}
             </FormControl>
             <FormControl w={"50%"} isInvalid={isError(errors.workPeriod)}>

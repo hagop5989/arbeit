@@ -1,12 +1,13 @@
 package com.backend.controller;
 
+import com.backend.controller.application.AuthId;
+import com.backend.service.jobs.JobsService;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AccessController {
 
     private final StoreService storeService;
+    private final JobsService jobsService;
 
     @GetMapping("/only-boss")
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
@@ -40,9 +42,20 @@ public class AccessController {
 
     @PostMapping("/access-store")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity onlySameId(@RequestParam Integer id, Authentication authentication) {
-        Integer memberId = storeService.findMemberIdByAuthId(id);
-        if (memberId.equals(Integer.valueOf(authentication.getName()))) {
+    public ResponseEntity onlySameId(@RequestParam("id") Integer storeId, @AuthId Integer authId) {
+        Integer memberId = storeService.findMemberIdByAuthId(storeId);
+        if (memberId.equals(authId)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @PostMapping("/access-jobs")
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity onlyBossSameId(@RequestParam("id") Integer jobsId, @AuthId Integer authId) {
+        Integer memberId = jobsService.findMemberIdById(jobsId);
+        if (memberId.equals(authId)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

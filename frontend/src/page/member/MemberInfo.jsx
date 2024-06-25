@@ -4,11 +4,23 @@ import {
   Center,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -16,18 +28,30 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCamera,
+  faEye,
+  faEyeSlash,
+  faKey,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function MemberInfo() {
   const { id } = useParams();
   const [member, setMember] = useState(null);
   const [profileSrc, setProfileSrc] = useState("");
   const [nowAge, setNowAge] = useState("");
+  const [show, setShow] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+
   const fileInputRef = useRef({});
   const navigate = useNavigate();
   const toast = useToast();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClick = () => setShow(!show);
   const account = useContext(LoginContext);
+
+  const isMatch = password === passwordCheck;
 
   function getProfilePicture() {
     axios
@@ -72,19 +96,33 @@ export function MemberInfo() {
   }, [member]);
 
   function handleRemoveBtn() {
-    axios
-      .post(`/api/member/${id}/delete`)
-      .then(() => {
-        toast({
-          status: "warning",
-          description: "탈퇴되었습니다.",
-          position: "top",
+    const confirm = window.confirm("정말 탈퇴하시겠습니까?");
+    if (confirm) {
+      const params = new URLSearchParams();
+      params.append("password", password);
+      axios
+        .post(`/api/member/${id}/delete`, params)
+        .then(() => {
+          toast({
+            status: "warning",
+            description: "탈퇴되었습니다.",
+            position: "top",
+          });
+          account.logout();
+          navigate("/login");
+        })
+        .catch((err) => {
+          if (err.response.status === 403) {
+            toast({
+              status: "warning",
+              description: "비밀번호가 일치하지 않습니다.",
+              position: "top",
+            });
+            navigate(`/member/${id}`);
+          }
         });
-        account.logout();
-        navigate("/login");
-      })
-      .catch(() => alert("내부 오류 발생"))
-      .finally();
+    }
+    onClose();
   }
 
   if (member === null) {
@@ -248,7 +286,7 @@ export function MemberInfo() {
                       w={"50%"}
                       bgColor={"red.500"}
                       color={"white"}
-                      onClick={handleRemoveBtn}
+                      onClick={onOpen}
                     >
                       회원 탈퇴
                     </Button>
@@ -259,6 +297,64 @@ export function MemberInfo() {
           </Box>
         </Box>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>회원 삭제</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl mb={"5px"} isInvalid={!isMatch}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" color={"gray.400"}>
+                  <FontAwesomeIcon icon={faKey} />
+                </InputLeftElement>
+                <Input
+                  type={show ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="비밀번호"
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? (
+                      <FontAwesomeIcon icon={faEyeSlash} />
+                    ) : (
+                      <FontAwesomeIcon icon={faEye} />
+                    )}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl isInvalid={!isMatch}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" color={"gray.400"}>
+                  <FontAwesomeIcon icon={faKey} />
+                </InputLeftElement>
+                <Input
+                  type={show ? "text" : "password"}
+                  onChange={(e) => setPasswordCheck(e.target.value)}
+                  placeholder="비밀번호 확인"
+                />
+              </InputGroup>
+              <FormErrorMessage>
+                비밀번호와 비밀번호 확인이 일치하지 않습니다.
+              </FormErrorMessage>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              취소
+            </Button>
+            <Button
+              isDisabled={!isMatch}
+              colorScheme={"red"}
+              variant="outline"
+              onClick={handleRemoveBtn}
+            >
+              회원 삭제
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

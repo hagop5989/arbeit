@@ -81,10 +81,16 @@ public class MemberController {
     @PostMapping("/{id}/delete")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity delete(@PathVariable("id") Integer id,
+                                 @RequestParam String password,
                                  Authentication authentication) {
+
         if (!memberService.hasAccess(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        if (!memberService.canDelete(password, id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         memberService.deleteById(id);
         return ResponseEntity.ok().build();
     }
