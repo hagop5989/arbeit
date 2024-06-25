@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -28,8 +28,8 @@ public class ManagementController {
     }
 
     @GetMapping("management/list")
-    public List<Management> list(@AuthId Integer memberId) {
-        return service.list(memberId);
+    public Map<String, Object> list(@AuthId Integer memberId, @RequestParam(value = "page", defaultValue = "1") Integer currentPage) {
+        return service.list(memberId, currentPage);
     }
 
     @GetMapping("/managements-count")

@@ -203,6 +203,7 @@ public class JobsService {
         // 탈퇴한 유저의 공고를 삭제함
         List<Jobs> jobsList = dbJobsList.stream().filter((jobs) -> !jobs.getMemberName().equals("탈퇴한 유저")).toList();
 
+
         Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
         for (Jobs jobs : jobsList) {
             Map<String, Object> imageInfo = new HashMap<>();

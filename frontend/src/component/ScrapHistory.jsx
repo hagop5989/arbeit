@@ -30,7 +30,7 @@ function ScrapHistory(props) {
         setScrapList(filteredScrapList);
       });
     }
-  }, [account.recentJobPages, post]);
+  }, [account, post]);
 
   function handleDelete(id) {
     axios.delete(`/api/scrap/delete/${id}`).then(() => {

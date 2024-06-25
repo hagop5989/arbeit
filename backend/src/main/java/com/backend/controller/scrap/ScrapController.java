@@ -19,7 +19,7 @@ public class ScrapController {
         service.insert(scarp);
     }
 
-    @GetMapping("/list")
+    @GetMapping("list")
     public List<Scrap> list(@AuthId Integer authId) {
         return service.list(authId);
     }
@@ -29,7 +29,7 @@ public class ScrapController {
         service.update(scarp);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("delete/{id}")
     public void delete(@PathVariable Integer id) {
         service.delete(id);
     }

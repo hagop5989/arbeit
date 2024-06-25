@@ -38,15 +38,18 @@ public interface ReviewToAlbaMapper {
             """)
     int update(ReviewToAlba review);
 
+
+    /* 알바의 가게 평가 가져오기(boss가 가진 store id 기준) */
     @Select("""
-            SELECT rts.*,
-                   j.title AS jobsTitle
+            SELECT rts.*, j.title AS jobsTitle
             FROM review_to_store rts
-            JOIN jobs j ON j.store_id = rts.store_id 
-            WHERE rts.store_id
-              IN (SELECT id FROM store WHERE store.member_id = #{bossId})
+                JOIN contract c ON c.alba_id = rts.alba_id AND c.store_id = rts.store_id
+                JOIN jobs j ON j.id = c.jobs_id AND j.store_id = rts.store_id
+            WHERE j.member_id = #{bossId}
+            ORDER BY rts.alba_id, rts.store_id;
             """)
-        /* 알바의 가게 평가 가져오기(boss가 가진 store id 기준) */
     List<ReviewToStore> listToStore(Integer bossId);
 
 }
+
+

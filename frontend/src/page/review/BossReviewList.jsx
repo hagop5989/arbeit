@@ -12,13 +12,7 @@ import {
   ModalFooter,
   ModalOverlay,
   Select,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -344,6 +338,7 @@ function BossReviewList(props) {
         </Button>
       </Box>
 
+      {/* 입력,수정,선택 모달 */}
       <Modal isOpen={isOpen} onClose={onClose} w={"800px"}>
         <ModalOverlay />
         <ModalContent maxW="600px" h={"530px"} p={5}>
@@ -507,173 +502,171 @@ function BossReviewList(props) {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      {/* 입력,수정,선택 모달 끝 */}
 
       <Divider mb={"40px"} borderWidth={"2px"} />
-      <Table>
-        <Thead>
-          <Tr>
-            <Th fontSize={"medium"}>#</Th>
-            <Th fontSize={"medium"}>날짜</Th>
-            <Th fontSize={"medium"}>공고명</Th>
-            <Th fontSize={"medium"}>리뷰평</Th>
-            <Th fontSize={"medium"}>평점</Th>
-            <Th fontSize={"medium"}>관리</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {reviewList.map((review, index) => (
-            <Tr key={index} fontSize={"15px"} _hover={{ bgColor: "orange.50" }}>
-              <Td minW={"80px"}>{index + 1}</Td>
-              <Td fontSize={"sm"} minW={"130px"}>
-                {review.inserted}
-              </Td>
-              <Td
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-                cursor={"pointer"}
-                onClick={() => navigate(`/jobs/${review.jobsId}`)}
-              >
-                {review.jobsTitle}
-              </Td>
-              <Td
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-                cursor={"pointer"}
-                onClick={() => handleReviewClick(review, "선택")}
-              >
-                {review.content}
-              </Td>
-              <Td
-                minW={"90px"}
-                fontSize={"2xl"}
-                fontWeight={"bold"}
-                color={"teal"}
-              >
-                <Box
-                  as="span"
-                  mr={2}
-                  color={"gold"}
-                  fontSize="2xl"
-                  cursor="pointer"
-                >
-                  ★
-                </Box>
-                {review.rating}
-              </Td>
-              <Td>
-                <Flex gap={"5px"}>
-                  <Button
-                    fontWeight={"500"}
-                    bgColor={"#FF7F3E"}
-                    color={"white"}
-                    onClick={() => handleReviewClick(review, "수정")}
-                  >
-                    수정
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(review)}
-                    fontWeight={"500"}
-                    bgColor={"red.500"}
-                    color={"white"}
-                  >
-                    삭제
-                  </Button>
-                </Flex>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+      {/* 리뷰관리(알바) */}
+      <CustomTable
+        reviewList={reviewList}
+        onReviewClick={handleReviewClick}
+        onDelete={handleDelete}
+        navigate={navigate}
+        action={"작성용"}
+      />
+
+      {/* 내 사업장 리뷰 */}
       <Box>
-        {/* 내 사업장 리뷰 */}
-        <Box
-          h={"30vh"}
-          // border={"1px solid red"}
-          mt={"100px"}
-        >
+        <Box h={"30vh"} mt={"100px"}>
           <Box display="flex" justifyContent="space-between">
             <Heading mb={"10px"} p={1}>
               내 평판 리뷰
             </Heading>
           </Box>
-
           <Divider mb={"40px"} borderWidth={"2px"} />
-          <Table>
-            <Thead>
-              <Tr>
-                <Th fontSize={"medium"}>#</Th>
-                <Th fontSize={"medium"}>날짜</Th>
-                {/*<Th fontSize={"medium"}>사업장명</Th>*/}
-                <Th fontSize={"medium"}>공고명</Th>
-                <Th fontSize={"medium"}>리뷰평</Th>
-                <Th fontSize={"medium"}>평점</Th>
-                {/*<Th fontSize={"medium"}>관리</Th>*/}
-              </Tr>
-            </Thead>
-            <Tbody>
-              {reviewToStoreList.map((review, index) => (
-                <Tr
-                  key={review.jobsId}
-                  fontSize={"15px"}
-                  _hover={{ bgColor: "orange.50" }}
-                >
-                  <Td minW={"80px"}>{index + 1}</Td>
-                  {/* 날짜 */}
-                  <Td fontSize={"sm"} minW={"130px"}>
-                    {review.inserted}
-                  </Td>
-                  {/* 공고명 */}
-                  <Td
-                    whiteSpace="nowrap" // 줄 바꿈을 막음
-                    overflow="hidden" // 넘친 내용을 숨김
-                    textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
-                    cursor={"pointer"}
-                    onClick={() => navigate(`/jobs/${review.jobsId}`)}
-                  >
-                    {review.jobsTitle}
-                  </Td>
-                  {/* 리뷰평 */}
-                  <Td
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                    cursor={"pointer"}
-                    onClick={() => handleReviewClick(review, "선택")}
-                  >
-                    {review.content}
-                  </Td>
-                  {/*평점*/}
-                  <Td
-                    minW={"90px"}
-                    fontSize={"2xl"}
-                    fontWeight={"bold"}
-                    color={"teal"}
-                  >
-                    <Box
-                      as="span"
-                      mr={2}
-                      color={"gold"}
-                      fontSize="2xl"
-                      cursor="pointer"
-                    >
-                      ★
-                    </Box>
-                    {review.rating}
-                  </Td>
-
-                  {/* 관리 버튼*/}
-                  {/*<Td></Td>*/}
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+          <CustomTable
+            reviewList={reviewToStoreList}
+            onReviewClick={handleReviewClick}
+            // onDelete={handleDelete}
+            navigate={navigate}
+            action={"읽기용"}
+          />
         </Box>
         {/* 내 사업장 리뷰 */}
       </Box>
     </Box>
   );
 }
+
+/* 커스텀 테이블 */
+const TableHeader = ({ action }) => (
+  <Flex
+    bg="gray.100"
+    p={2}
+    fontWeight="bold"
+    borderBottom="1px"
+    borderColor="gray.200"
+    textIndent={"7px"}
+  >
+    <Box flex="1" fontSize="medium">
+      #
+    </Box>
+    <Box flex="2" fontSize="medium">
+      날짜
+    </Box>
+    <Box flex="4" fontSize="medium">
+      공고명
+    </Box>
+    <Box flex="4" fontSize="medium">
+      리뷰평
+    </Box>
+    <Box flex="2" fontSize="medium">
+      평점
+    </Box>
+    {action === "작성용" && (
+      <Box flex="3" fontSize="medium">
+        관리
+      </Box>
+    )}
+  </Flex>
+);
+
+const TableRow = ({
+  review,
+  index,
+  onReviewClick,
+  onDelete,
+  navigate,
+  action,
+}) => (
+  <Flex
+    maxH={"45px"}
+    p={2}
+    fontSize="15px"
+    borderBottom="1px"
+    borderColor="gray.200"
+    _hover={{ bgColor: "orange.50" }}
+    alignItems="center"
+    height="50px"
+  >
+    <Box flex="1" minW="80px">
+      {index + 1}
+    </Box>
+    <Box flex="2" fontSize="sm" minW="130px">
+      {review.inserted}
+    </Box>
+    <Box
+      flex="4"
+      whiteSpace="nowrap"
+      overflow="hidden"
+      textOverflow="ellipsis"
+      cursor="pointer"
+      onClick={() => navigate(`/jobs/${review.jobsId}`)}
+    >
+      {review.jobsTitle}
+    </Box>
+    <Box
+      flex="4"
+      whiteSpace="nowrap"
+      overflow="hidden"
+      textOverflow="ellipsis"
+      cursor="pointer"
+      onClick={() => onReviewClick(review, "선택")}
+    >
+      {review.content}
+    </Box>
+    <Flex flex="2" alignItems="center" minW="90px">
+      <Text color="gold" fontSize="2xl" mr={2}>
+        ★
+      </Text>
+      <Text fontSize="2xl" fontWeight="bold" color="teal">
+        {review.rating}
+      </Text>
+    </Flex>
+    {action === "작성용" && (
+      <Flex flex="3" gap="5px">
+        <Button
+          fontWeight="500"
+          bgColor="#FF7F3E"
+          color="white"
+          onClick={() => onReviewClick(review, "수정")}
+        >
+          수정
+        </Button>
+        <Button
+          fontWeight="500"
+          bgColor="red.500"
+          color="white"
+          onClick={() => onDelete(review)}
+        >
+          삭제
+        </Button>
+      </Flex>
+    )}
+  </Flex>
+);
+
+const CustomTable = ({
+  reviewList,
+  onReviewClick,
+  onDelete,
+  navigate,
+  action,
+}) => (
+  <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <TableHeader action={action} />
+    {reviewList.map((review, index) => (
+      <TableRow
+        key={index}
+        review={review}
+        index={index}
+        onReviewClick={onReviewClick}
+        onDelete={onDelete}
+        navigate={navigate}
+        action={action}
+      />
+    ))}
+  </Box>
+);
+/* 커스텀 테이블 끝 */
 
 export default BossReviewList;
