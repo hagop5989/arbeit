@@ -179,32 +179,135 @@ export function ManagementList() {
       duration: "700",
     });
   }
-  /* 커스텀 테이블 */
-  const CustomTable = ({
-    managementList,
-    navigate,
-    handleDecision,
-    isPassedToString,
-    isModalOpen,
-    handleCloseModal,
-    selectedManagement,
-    contract,
-    handleContractChange,
-    handleSubmit,
-  }) => (
-    <Box borderWidth="1px" borderRadius="lg" overflow="hidden" w="1050px">
-      <TableHeader />
-      {managementList.map((management, index) => (
-        <TableRow
-          key={index}
-          management={management}
-          index={index}
-          navigate={navigate}
-          handleDecision={handleDecision}
-          isPassedToString={isPassedToString}
-        />
-      ))}
-      {/*모달 컴포넌트 렌더링*/}
+
+  return (
+    <Box h={"700px"} mb={"150px"}>
+      {account.isAlba() && (
+        <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
+          사장만 접근 가능한 페이지 입니다.
+        </Heading>
+      )}
+      {account.isBoss() && (
+        <Box h={"600px"}>
+          <Box>
+            <Heading mb={"10px"} p={1}>
+              지원내역(사장)
+            </Heading>
+            <Divider mb={"40px"} borderWidth={"2px"} />
+          </Box>
+          <Box borderWidth="1px" borderRadius="lg" overflow="hidden" w="1050px">
+            <Flex
+              bg="gray.100"
+              p={2}
+              textIndent={13}
+              fontWeight="bold"
+              borderBottom="1px"
+              borderColor="gray.200"
+            >
+              <Box flex="1" fontSize="medium">
+                #
+              </Box>
+              <Box flex="2" fontSize="medium">
+                지원일
+              </Box>
+              <Box flex="4" fontSize="medium">
+                진행공고명
+              </Box>
+              <Box flex="4" fontSize="medium">
+                지원서 제목
+              </Box>
+              <Box flex="2" fontSize="medium">
+                상태
+              </Box>
+              <Box flex="3" fontSize="medium">
+                관리
+              </Box>
+            </Flex>
+            {managementList.map((management, index) => (
+              <Flex
+                key={index}
+                p={2}
+                fontSize="15px"
+                borderBottom="1px"
+                borderColor="gray.200"
+                _hover={{ bgColor: "orange.50" }}
+                alignItems="center"
+              >
+                <Box flex="1" minW="80px">
+                  {index + 1}
+                </Box>
+                <Box flex="2" fontSize="sm" minW="130px">
+                  {management.applicationInserted}
+                </Box>
+                <Box
+                  mr={7}
+                  flex="4"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  cursor="pointer"
+                  onClick={() => navigate(`/jobs/${management.jobsId}`)}
+                >
+                  {management.jobsTitle}
+                </Box>
+                <Box
+                  flex="4"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  cursor="pointer"
+                  onClick={() =>
+                    navigate(`/jobs/${management.resumeId}/management/select`, {
+                      state: { jobsId: management.jobsId },
+                    })
+                  }
+                >
+                  {management.applicationTitle}
+                </Box>
+                <Box flex="2" minW="90px">
+                  {management.isPassed == null ? (
+                    <Text color="gray.500" fontWeight="bold">
+                      미정
+                    </Text>
+                  ) : (
+                    <Text
+                      fontWeight="bold"
+                      fontSize="16px"
+                      color={management.isPassed ? "teal" : "red"}
+                    >
+                      {isPassedToString(management.isPassed)}
+                    </Text>
+                  )}
+                </Box>
+                <Flex flex="3" gap="5px">
+                  <Button
+                    onClick={(e) => handleDecision(e, management)}
+                    w="75px"
+                    fontWeight="bold"
+                    variant="outline"
+                    colorScheme="teal"
+                    _hover={{ bg: "teal", color: "white" }}
+                    borderWidth="2px"
+                  >
+                    합 격
+                  </Button>
+                  <Button
+                    onClick={(e) => handleDecision(e, management)}
+                    fontWeight="bold"
+                    variant="outline"
+                    colorScheme="red"
+                    _hover={{ bg: "#E74133", color: "white" }}
+                    borderWidth="2px"
+                  >
+                    불합격
+                  </Button>
+                </Flex>
+              </Flex>
+            ))}
+          </Box>
+        </Box>
+      )}
+      <Box my={6}>{Paging()}</Box>
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -312,157 +415,6 @@ export function ManagementList() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
-  );
-
-  const TableHeader = () => (
-    <Flex
-      bg="gray.100"
-      p={2}
-      textIndent={13}
-      fontWeight="bold"
-      borderBottom="1px"
-      borderColor="gray.200"
-    >
-      <Box flex="1" fontSize="medium">
-        #
-      </Box>
-      <Box flex="2" fontSize="medium">
-        지원일
-      </Box>
-      <Box flex="4" fontSize="medium">
-        진행공고명
-      </Box>
-      <Box flex="4" fontSize="medium">
-        지원서 제목
-      </Box>
-      <Box flex="2" fontSize="medium">
-        상태
-      </Box>
-      <Box flex="3" fontSize="medium">
-        관리
-      </Box>
-    </Flex>
-  );
-
-  const TableRow = ({
-    management,
-    index,
-    navigate,
-    handleDecision,
-    isPassedToString,
-  }) => (
-    <Flex
-      p={2}
-      fontSize="15px"
-      borderBottom="1px"
-      borderColor="gray.200"
-      _hover={{ bgColor: "orange.50" }}
-      alignItems="center"
-    >
-      <Box flex="1" minW="80px">
-        {index + 1}
-      </Box>
-      <Box flex="2" fontSize="sm" minW="130px">
-        {management.applicationInserted}
-      </Box>
-      <Box
-        mr={7}
-        flex="4"
-        whiteSpace="nowrap"
-        overflow="hidden"
-        textOverflow="ellipsis"
-        cursor="pointer"
-        onClick={() => navigate(`/jobs/${management.jobsId}`)}
-      >
-        {management.jobsTitle}
-      </Box>
-      <Box
-        flex="4"
-        whiteSpace="nowrap"
-        overflow="hidden"
-        textOverflow="ellipsis"
-        cursor="pointer"
-        onClick={() =>
-          navigate(`/jobs/${management.resumeId}/management/select`, {
-            state: { jobsId: management.jobsId },
-          })
-        }
-      >
-        {management.applicationTitle}
-      </Box>
-      <Box flex="2" minW="90px">
-        {management.isPassed == null ? (
-          <Text color="gray.500" fontWeight="bold">
-            미정
-          </Text>
-        ) : (
-          <Text
-            fontWeight="bold"
-            fontSize="16px"
-            color={management.isPassed ? "teal" : "red"}
-          >
-            {isPassedToString(management.isPassed)}
-          </Text>
-        )}
-      </Box>
-      <Flex flex="3" gap="5px">
-        <Button
-          onClick={(e) => handleDecision(e, management)}
-          w="75px"
-          fontWeight="bold"
-          variant="outline"
-          colorScheme="teal"
-          _hover={{ bg: "teal", color: "white" }}
-          borderWidth="2px"
-        >
-          합 격
-        </Button>
-        <Button
-          onClick={(e) => handleDecision(e, management)}
-          fontWeight="bold"
-          variant="outline"
-          colorScheme="red"
-          _hover={{ bg: "#E74133", color: "white" }}
-          borderWidth="2px"
-        >
-          불합격
-        </Button>
-      </Flex>
-    </Flex>
-  );
-  /* 커스텀 테이블 끝 */
-
-  return (
-    <Box h={"700px"} mb={"150px"}>
-      {account.isAlba() && (
-        <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
-          사장만 접근 가능한 페이지 입니다.
-        </Heading>
-      )}
-      {account.isBoss() && (
-        <Box h={"600px"}>
-          <Box>
-            <Heading mb={"10px"} p={1}>
-              지원내역(사장)
-            </Heading>
-            <Divider mb={"40px"} borderWidth={"2px"} />
-          </Box>
-          <CustomTable
-            managementList={managementList}
-            navigate={navigate}
-            handleDecision={handleDecision}
-            isPassedToString={isPassedToString}
-            isModalOpen={isModalOpen}
-            handleCloseModal={handleCloseModal}
-            selectedManagement={selectedManagement}
-            contract={contract}
-            handleContractChange={handleContractChange}
-            handleSubmit={handleSubmit}
-          />
-        </Box>
-      )}
-      <Box my={6}>{Paging()}</Box>
     </Box>
   );
 

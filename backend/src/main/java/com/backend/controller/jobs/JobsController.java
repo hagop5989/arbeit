@@ -3,8 +3,11 @@ package com.backend.controller.jobs;
 import com.backend.domain.jobs.form.JobsEditForm;
 import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.service.jobs.JobsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/api/jobs")
 public class JobsController {
     private final JobsService service;
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public JobsController(ObjectMapper objectMapper, JobsService service) {
+        this.objectMapper = objectMapper;
+        this.service = service;
+    }
+
 
     @GetMapping("/store-names")
     @PreAuthorize("isAuthenticated()")
@@ -52,6 +63,12 @@ public class JobsController {
         if (result == null) {
             return ResponseEntity.notFound().build();
         }
+        try {
+            objectMapper.writeValueAsString(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 직렬화 오류");
+        }
+
         return ResponseEntity.ok().body(result);
     }
 
