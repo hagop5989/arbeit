@@ -57,12 +57,27 @@ export function ManagementList() {
   // Read (jobs 리스트 받기)
 
   useEffect(() => {
-    if (account.id) {
-      axios.get("/api/jobs/management/list", { params }).then((res) => {
-        setManagementList(res.data.managementList);
-        setPageInfo(res.data.pageInfo);
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get("/api/jobs/management/list", { params })
+          .then((res) => {
+            setManagementList(res.data.managementList);
+            setPageInfo(res.data.pageInfo);
+          })
+          .catch((err) => {
+            if (err.response.status === 403) {
+              navigate("/");
+              myToast("접근 권한이 없습니다.", "error");
+            }
+          });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
       });
-    }
   }, [account.id, checkChange, currentPage]);
 
   // 합격 로직

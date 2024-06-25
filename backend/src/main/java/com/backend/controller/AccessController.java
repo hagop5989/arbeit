@@ -34,6 +34,12 @@ public class AccessController {
     public void onlyAdmin() { //
     }
 
+    @GetMapping("/only-login")
+    @PreAuthorize("isAuthenticated()")
+    public void onlyLogin() { //
+    }
+
+
     @PostMapping("/access-store")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity onlySameId(@RequestParam("id") Integer storeId, @AuthId Integer authId) {

@@ -18,7 +18,7 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 export function ManagementView() {
   const { id } = useParams();
   const location = useLocation();
-  const { jobsId } = location.state;
+  const { jobsId } = location.state || {};
   const account = useContext(LoginContext);
   const [management, setManagement] = useState({});
   const toast = useToast();
@@ -26,15 +26,24 @@ export function ManagementView() {
 
   // Read (리스트 받기)
   useEffect(() => {
-    if (account.id) {
-      axios
-        .get(`/api/jobs/${id}/management/select`, {
-          params: { jobsId: jobsId },
-        })
-        .then((res) => {
-          setManagement(res.data);
-        });
-    }
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        if (account.id) {
+          axios
+            .get(`/api/jobs/${id}/management/select`, {
+              params: { jobsId: jobsId },
+            })
+            .then((res) => {
+              setManagement(res.data);
+            });
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.id, id, management.resumeId]);
 
   // 합격 로직

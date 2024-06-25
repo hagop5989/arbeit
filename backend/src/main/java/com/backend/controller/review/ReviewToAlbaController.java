@@ -8,6 +8,7 @@ import com.backend.service.contract.ContractService;
 import com.backend.service.review.ReviewToAlbaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/review/alba")
+@PreAuthorize("hasAuthority('SCOPE_BOSS')")
 public class ReviewToAlbaController {
     /* 사장 -> 알바 평가 */
     private final ReviewToAlbaService service;

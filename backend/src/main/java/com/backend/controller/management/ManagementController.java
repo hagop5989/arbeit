@@ -6,6 +6,7 @@ import com.backend.domain.management.Management;
 import com.backend.service.management.ManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/jobs")
+@PreAuthorize("hasAuthority('SCOPE_BOSS')")
 public class ManagementController {
     private final ManagementService service;
 

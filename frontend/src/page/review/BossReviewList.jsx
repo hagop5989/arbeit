@@ -100,40 +100,47 @@ function BossReviewList(props) {
   /**/
   // Read (리스트 받기)
   useEffect(() => {
-    if (account.id) {
-      axios
-        .get("/api/review/alba/list")
-        .then((res) => {
-          const validContracts = res.data.contractList.filter(
-            (contract) => contract.endDate <= today,
-          );
-
-          const contractsWithBossId = validContracts.map((contract) => ({
-            ...contract,
-            bossId: parseInt(account.id),
-          }));
-          setContractList(contractsWithBossId);
-          const updatedReviewList = res.data.reviewList.map((review) => {
-            const contract = contractsWithBossId.find(
-              (contract) =>
-                contract.albaId === review.albaId &&
-                contract.bossId === review.bossId,
+    axios
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get("/api/review/alba/list")
+          .then((res) => {
+            const validContracts = res.data.contractList.filter(
+              (contract) => contract.endDate <= today,
             );
 
-            return {
-              ...review,
-              startDate: contract ? contract.startDate : "",
-              endDate: contract ? contract.endDate : "",
-              storeName: contract ? contract.storeName : "",
-              albaName: contract ? contract.albaName : "",
-              jobsTitle: contract ? contract.jobsTitle : "", // jobsTitle 추가
-            };
-          });
+            const contractsWithBossId = validContracts.map((contract) => ({
+              ...contract,
+              bossId: parseInt(account.id),
+            }));
+            setContractList(contractsWithBossId);
+            const updatedReviewList = res.data.reviewList.map((review) => {
+              const contract = contractsWithBossId.find(
+                (contract) =>
+                  contract.albaId === review.albaId &&
+                  contract.bossId === review.bossId,
+              );
 
-          setReviewList(updatedReviewList);
-        })
-        .catch((err) => myToast("로드 오류발생", "error"));
-    }
+              return {
+                ...review,
+                startDate: contract ? contract.startDate : "",
+                endDate: contract ? contract.endDate : "",
+                storeName: contract ? contract.storeName : "",
+                albaName: contract ? contract.albaName : "",
+                jobsTitle: contract ? contract.jobsTitle : "", // jobsTitle 추가
+              };
+            });
+
+            setReviewList(updatedReviewList);
+          })
+          .catch((err) => myToast("로드 오류발생", "error"));
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
   }, [account.id, checkChange]);
 
   // Create
