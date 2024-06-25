@@ -46,27 +46,18 @@ export function JobsView() {
   // Read
   useEffect(() => {
     axios
-      .get("/api/only-login")
-      .then(() => {
-        axios
-          .get(`/api/jobs/${id}`)
-          .then((res) => {
-            setJobs(res.data.jobs);
-            setJobsCond(res.data.jobsCondition);
-            setImages(res.data.images);
-            setStoreMap(res.data.storeMap);
-            setBoss(res.data.boss);
-          })
-          .catch((err) => {
-            if (err.response && err.response.status === 404) {
-              myToast("해당 게시물이 존재하지 않습니다", "error");
-              navigate("/jobs/list");
-            }
-          });
+      .get(`/api/jobs/${id}`)
+      .then((res) => {
+        setJobs(res.data.jobs);
+        setJobsCond(res.data.jobsCondition);
+        setImages(res.data.images);
+        setStoreMap(res.data.storeMap);
+        setBoss(res.data.boss);
       })
       .catch((err) => {
-        if (err.response.status === 401) {
-          navigate("/login");
+        if (err.response && err.response.status === 404) {
+          myToast("해당 게시물이 존재하지 않습니다", "error");
+          navigate("/jobs/list");
         }
       });
   }, [id]);
