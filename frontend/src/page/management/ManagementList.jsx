@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Heading,
@@ -10,54 +11,69 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faAnglesLeft,
+  faAnglesRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function ManagementList() {
   const account = useContext(LoginContext);
   const [managementList, setManagementList] = useState([]);
   const [selectedManagement, setSelectedManagement] = useState(null);
   const [contract, setContract] = useState({});
+  const pageNums = [];
+  const [pageInfo, setPageInfo] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const toast = useToast();
   const navigate = useNavigate();
   const [checkChange, setCheckChange] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    onClose: () => {
-      setSelectedManagement(null);
-      setContract({});
-    },
-  });
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedManagement(null);
+    setContract({});
+  };
+
+  const params = {
+    page: currentPage,
+  };
 
   // Read (jobs 리스트 받기)
 
   useEffect(() => {
     if (account.id) {
-      axios.get("/api/jobs/management/list").then((res) => {
-        setManagementList(res.data);
+      axios.get("/api/jobs/management/list", { params }).then((res) => {
+        setManagementList(res.data.managementList);
+        setPageInfo(res.data.pageInfo);
       });
     }
-  }, [account.id, checkChange]);
+  }, [account.id, checkChange, currentPage]);
 
   // 합격 로직
   function handleDecision(e, management) {
+    console.log("handleDecision start");
     const decision = e.target.innerText;
     let isPassed = null;
 
-    if (decision === "합격") {
+    if (decision === "합 격") {
       if (management.isPassed == 1) {
-        /* 이미 합격된 사람인데 합격버튼 누를 떄 */
+        /* 이미 합격된 사람인데 합격버튼 누를 때 */
         myToast("이미 합격된 지원자 입니다.", "error");
         return null;
       }
@@ -71,7 +87,7 @@ export function ManagementList() {
         endDate: "",
       });
       setSelectedManagement({ ...management, isPassed });
-      onOpen();
+      handleOpenModal();
     } else if (decision === "불합격") {
       isPassed = 0;
       const updatedManagement = {
@@ -82,10 +98,10 @@ export function ManagementList() {
     }
   }
 
-  const handleContractChange = (field) => (e) => {
+  const handleContractChange = (field, value) => {
     setContract((prev) => ({
       ...prev,
-      [field]: e.target.value,
+      [field]: value,
     }));
   };
 
@@ -122,11 +138,21 @@ export function ManagementList() {
         ),
       );
       setCheckChange(!checkChange);
-      onClose(); // 모달 닫기
+      handleCloseModal(); // 모달 닫기
     } catch (error) {
       console.log(error);
       myToast("오류 발생", "error");
     }
+  }
+
+  // 페이징, 검색 관련
+  for (let i = pageInfo.leftPage; i <= pageInfo.rightPage; i++) {
+    pageNums.push(i);
+  }
+
+  function handlePageButtonClick(currentPage) {
+    setCurrentPage(currentPage);
+    console.log(currentPage);
   }
 
   // toast 커스텀
@@ -138,261 +164,330 @@ export function ManagementList() {
       duration: "700",
     });
   }
+  /* 커스텀 테이블 */
+  const CustomTable = ({
+    managementList,
+    navigate,
+    handleDecision,
+    isPassedToString,
+    isModalOpen,
+    handleCloseModal,
+    selectedManagement,
+    contract,
+    handleContractChange,
+    handleSubmit,
+  }) => (
+    <Box borderWidth="1px" borderRadius="lg" overflow="hidden" w="1050px">
+      <TableHeader />
+      {managementList.map((management, index) => (
+        <TableRow
+          key={index}
+          management={management}
+          index={index}
+          navigate={navigate}
+          handleDecision={handleDecision}
+          isPassedToString={isPassedToString}
+        />
+      ))}
+      {/*모달 컴포넌트 렌더링*/}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        closeOnOverlayClick={false}
+        closeOnEsc={false}
+        trapFocus={true}
+      >
+        <ModalOverlay />
+        <ModalContent
+          maxW="600px"
+          h="530px"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ModalBody onClick={(e) => e.stopPropagation()}>
+            <Heading
+              fontSize="3xl"
+              my={8}
+              letterSpacing="1px"
+              textAlign="center"
+            >
+              지원자 확정
+            </Heading>
+            <Divider mt="10px" borderWidth="1px" />
+            <Box>
+              <Flex alignItems={"center"}>
+                <Heading w="80px" fontSize="xl" my="20px">
+                  공고제목
+                </Heading>
+                <Text
+                  ml={3}
+                  fontSize="20px"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {selectedManagement ? selectedManagement.jobsTitle : ""}
+                </Text>
+              </Flex>
+              <Flex lineHeight={"45px"}>
+                <Heading w="80px" fontSize="xl" my="10px">
+                  지원자
+                </Heading>
+                <Text ml={3} fontSize="xl">
+                  {selectedManagement ? selectedManagement.albaName : ""} 님
+                </Text>
+              </Flex>
+            </Box>
+            <Box lineHeight="40px">
+              <Heading w="80px" fontSize="xl" my="40px" fontWeight="bold">
+                계약기간
+              </Heading>
+              <Flex gap="20px">
+                <Flex>
+                  <Text w="100px" fontSize="lg" fontWeight="bold">
+                    시작일
+                  </Text>
+                  <Input
+                    type="date"
+                    value={contract.startDate || ""}
+                    onChange={(e) =>
+                      handleContractChange("startDate", e.target.value)
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  />
+                </Flex>
+                <Flex>
+                  <Text w="100px" fontSize="lg" fontWeight="bold">
+                    종료일
+                  </Text>
+                  <Input
+                    type="date"
+                    value={contract.endDate || ""}
+                    onChange={(e) =>
+                      handleContractChange("endDate", e.target.value)
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  />
+                </Flex>
+              </Flex>
+            </Box>
+          </ModalBody>
+          <ModalFooter onClick={(e) => e.stopPropagation()} gap="10px">
+            <Button
+              onClick={() => {
+                if (
+                  selectedManagement &&
+                  contract.startDate &&
+                  contract.endDate &&
+                  contract.storeId
+                ) {
+                  handleSubmit(selectedManagement, contract);
+                } else {
+                  myToast("계약 기간을 입력해 주세요.", "warning");
+                }
+              }}
+              colorScheme="blue"
+            >
+              합격
+            </Button>
+            <Button onClick={handleCloseModal} colorScheme="teal">
+              닫기
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
+
+  const TableHeader = () => (
+    <Flex
+      bg="gray.100"
+      p={2}
+      textIndent={13}
+      fontWeight="bold"
+      borderBottom="1px"
+      borderColor="gray.200"
+    >
+      <Box flex="1" fontSize="medium">
+        #
+      </Box>
+      <Box flex="2" fontSize="medium">
+        지원일
+      </Box>
+      <Box flex="4" fontSize="medium">
+        진행공고명
+      </Box>
+      <Box flex="4" fontSize="medium">
+        지원서 제목
+      </Box>
+      <Box flex="2" fontSize="medium">
+        상태
+      </Box>
+      <Box flex="3" fontSize="medium">
+        관리
+      </Box>
+    </Flex>
+  );
+
+  const TableRow = ({
+    management,
+    index,
+    navigate,
+    handleDecision,
+    isPassedToString,
+  }) => (
+    <Flex
+      p={2}
+      fontSize="15px"
+      borderBottom="1px"
+      borderColor="gray.200"
+      _hover={{ bgColor: "orange.50" }}
+      alignItems="center"
+    >
+      <Box flex="1" minW="80px">
+        {index + 1}
+      </Box>
+      <Box flex="2" fontSize="sm" minW="130px">
+        {management.applicationInserted}
+      </Box>
+      <Box
+        mr={7}
+        flex="4"
+        whiteSpace="nowrap"
+        overflow="hidden"
+        textOverflow="ellipsis"
+        cursor="pointer"
+        onClick={() => navigate(`/jobs/${management.jobsId}`)}
+      >
+        {management.jobsTitle}
+      </Box>
+      <Box
+        flex="4"
+        whiteSpace="nowrap"
+        overflow="hidden"
+        textOverflow="ellipsis"
+        cursor="pointer"
+        onClick={() =>
+          navigate(`/jobs/${management.resumeId}/management/select`, {
+            state: { jobsId: management.jobsId },
+          })
+        }
+      >
+        {management.applicationTitle}
+      </Box>
+      <Box flex="2" minW="90px">
+        {management.isPassed == null ? (
+          <Text color="gray.500" fontWeight="bold">
+            미정
+          </Text>
+        ) : (
+          <Text
+            fontWeight="bold"
+            fontSize="16px"
+            color={management.isPassed ? "teal" : "red"}
+          >
+            {isPassedToString(management.isPassed)}
+          </Text>
+        )}
+      </Box>
+      <Flex flex="3" gap="5px">
+        <Button
+          onClick={(e) => handleDecision(e, management)}
+          w="75px"
+          fontWeight="bold"
+          variant="outline"
+          colorScheme="teal"
+          _hover={{ bg: "teal", color: "white" }}
+          borderWidth="2px"
+        >
+          합 격
+        </Button>
+        <Button
+          onClick={(e) => handleDecision(e, management)}
+          fontWeight="bold"
+          variant="outline"
+          colorScheme="red"
+          _hover={{ bg: "#E74133", color: "white" }}
+          borderWidth="2px"
+        >
+          불합격
+        </Button>
+      </Flex>
+    </Flex>
+  );
+  /* 커스텀 테이블 끝 */
 
   return (
-    <Box h={"80vh"} mb={"150px"}>
+    <Box h={"700px"} mb={"150px"}>
       {account.isAlba() && (
         <Heading m={"auto"} color={"white"} bgColor={"orange"} p={5}>
           사장만 접근 가능한 페이지 입니다.
         </Heading>
       )}
       {account.isBoss() && (
-        <Box>
+        <Box h={"600px"}>
           <Box>
             <Heading mb={"10px"} p={1}>
               지원내역(사장)
             </Heading>
             <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
-          <Box>
-            <Table w={"1050px"}>
-              <Thead>
-                <Tr>
-                  <Th fontSize={"medium"}>#</Th>
-                  <Th fontSize={"medium"}>지원일</Th>
-                  <Th fontSize={"medium"}>진행공고명</Th>
-                  <Th fontSize={"medium"}>지원서 제목</Th>
-                  <Th fontSize={"medium"}>상태</Th>
-                  <Th fontSize={"medium"}>관리</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {managementList.map((management, index) => (
-                  <Tr
-                    key={management.id}
-                    fontSize={"15px"}
-                    _hover={{ bgColor: "orange.50" }}
-                  >
-                    <Td minW={"80px"}>{index + 1}</Td>
-                    {/* 지원일 */}
-                    <Td fontSize={"sm"} minW={"130px"}>
-                      {management.applicationInserted}
-                    </Td>
-                    {/* 공고 제목 */}
-                    <Td
-                      whiteSpace="nowrap" // 줄 바꿈을 막음
-                      overflow="hidden" // 넘친 내용을 숨김
-                      textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
-                      cursor={"pointer"}
-                      onClick={() => navigate(`/jobs/${management.jobsId}`)}
-                    >
-                      {management.jobsTitle}
-                    </Td>
-                    {/* 지원 제목 */}
-                    <Td
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      cursor={"pointer"}
-                      onClick={() =>
-                        navigate(
-                          `/jobs/${management.resumeId}/management/select`,
-                          { state: { jobsId: management.jobsId } },
-                        )
-                      }
-                    >
-                      {management.applicationTitle}
-                    </Td>
-                    {/* 합격 여부 */}
-                    {management.isPassed == null && (
-                      <Td minW={"90px"}>
-                        <Text color={"gray.500"} fontWeight={"bold"}>
-                          미정
-                        </Text>
-                      </Td>
-                    )}
-                    {management.isPassed == null || (
-                      <Td
-                        minW={"90px"}
-                        fontWeight={"bold"}
-                        fontSize={"16px"}
-                        color={
-                          management.isPassed != null && management.isPassed
-                            ? "teal"
-                            : "red"
-                        }
-                      >
-                        {isPassedToString(management.isPassed)}
-                      </Td>
-                    )}
-
-                    {/* 합격 결정 버튼 */}
-                    <Td>
-                      <Flex gap={"5px"}>
-                        <Button
-                          onClick={(e) => handleDecision(e, management)}
-                          w={"75px"}
-                          fontWeight={"bold"}
-                          variant={"outline"}
-                          colorScheme={"teal"}
-                          _hover={{ bg: "teal", color: "white" }}
-                          borderWidth={"2px"}
-                        >
-                          합 격
-                        </Button>
-                        <Button
-                          onClick={(e) => handleDecision(e, management)}
-                          fontWeight={"bold"}
-                          variant={"outline"}
-                          colorScheme="red"
-                          _hover={{ bg: "#E74133", color: "white" }}
-                          borderWidth={"2px"}
-                        >
-                          불합격
-                        </Button>
-
-                        {/* 합격 관련 모달 */}
-                        <Modal
-                          isOpen={isOpen}
-                          onClose={onClose}
-                          w={"800px"}
-                          closeOnOverlayClick={false}
-                        >
-                          <ModalOverlay />
-                          <ModalContent maxW="600px" h={"500px"}>
-                            <ModalBody>
-                              <Heading
-                                fontSize={"3xl"}
-                                my={8}
-                                letterSpacing={"1px"}
-                                textAlign={"center"}
-                              >
-                                지원자 확정
-                              </Heading>
-                              <Divider mt={"10px"} borderWidth={"1px"} />
-                              <Box>
-                                <Flex lineHeight={"80px"}>
-                                  <Heading
-                                    w={"130px"}
-                                    fontSize={"3xl"}
-                                    my={"20px"}
-                                  >
-                                    공고제목
-                                  </Heading>
-                                  <Text
-                                    ml={2}
-                                    fontSize={"20px"}
-                                    fontWeight={"bold"}
-                                    whiteSpace="nowrap"
-                                    overflow="hidden"
-                                    textOverflow="ellipsis"
-                                  >
-                                    {selectedManagement
-                                      ? selectedManagement.jobsTitle
-                                      : ""}
-                                  </Text>
-                                </Flex>
-                                <Flex lineHeight={"75px"}>
-                                  <Heading
-                                    w={"130px"}
-                                    fontSize={"3xl"}
-                                    my={"20px"}
-                                  >
-                                    지원자
-                                  </Heading>
-                                  <Text
-                                    ml={1}
-                                    fontSize={"22px"}
-                                    fontWeight={"bold"}
-                                  >
-                                    {selectedManagement
-                                      ? selectedManagement.albaName
-                                      : ""}{" "}
-                                    님
-                                  </Text>
-                                </Flex>
-                              </Box>
-
-                              <Box lineHeight={"40px"}>
-                                <Heading
-                                  w={"130px"}
-                                  fontSize={"3xl"}
-                                  my={"30px"}
-                                >
-                                  계약기간
-                                </Heading>
-                                <Flex gap={"20px"}>
-                                  <Flex>
-                                    <Text
-                                      w={"100px"}
-                                      fontSize={"lg"}
-                                      fontWeight={"bold"}
-                                    >
-                                      시작일
-                                    </Text>
-                                    <Input
-                                      type={"date"}
-                                      value={contract.startDate || ""}
-                                      onChange={handleContractChange(
-                                        "startDate",
-                                      )}
-                                    />
-                                  </Flex>
-                                  <Flex>
-                                    <Text
-                                      w={"100px"}
-                                      fontSize={"lg"}
-                                      fontWeight={"bold"}
-                                    >
-                                      종료일
-                                    </Text>
-                                    <Input
-                                      type={"date"}
-                                      value={contract.endDate || ""}
-                                      onChange={handleContractChange("endDate")}
-                                    />
-                                  </Flex>
-                                </Flex>
-                              </Box>
-                            </ModalBody>
-                            <ModalFooter gap={"10px"}>
-                              <Button
-                                onClick={() => {
-                                  if (
-                                    selectedManagement &&
-                                    contract.startDate &&
-                                    contract.endDate &&
-                                    contract.storeId
-                                  ) {
-                                    handleSubmit(selectedManagement, contract);
-                                  } else {
-                                    myToast(
-                                      "계약 기간을 입력해 주세요.",
-                                      "warning",
-                                    );
-                                  }
-                                }}
-                                colorScheme={"blue"}
-                              >
-                                합격
-                              </Button>
-                              <Button onClick={onClose} colorScheme={"teal"}>
-                                취소
-                              </Button>
-                            </ModalFooter>
-                          </ModalContent>
-                        </Modal>
-
-                        {/* 합격 관련 모달 */}
-                      </Flex>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </Box>
+          <CustomTable
+            managementList={managementList}
+            navigate={navigate}
+            handleDecision={handleDecision}
+            isPassedToString={isPassedToString}
+            isModalOpen={isModalOpen}
+            handleCloseModal={handleCloseModal}
+            selectedManagement={selectedManagement}
+            contract={contract}
+            handleContractChange={handleContractChange}
+            handleSubmit={handleSubmit}
+          />
         </Box>
       )}
+      <Box my={6}>{Paging()}</Box>
     </Box>
   );
+
+  /* 페이징 */
+  function Paging() {
+    return (
+      <Center gap={3} mt={2}>
+        <Flex gap={2}>
+          {pageInfo.prevPage && (
+            <>
+              <Button onClick={() => handlePageButtonClick(1)}>
+                <FontAwesomeIcon icon={faAnglesLeft} />
+              </Button>
+              <Button onClick={() => handlePageButtonClick(pageInfo.prevPage)}>
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </Button>
+            </>
+          )}
+
+          {pageNums.map((pageNum) => (
+            <Button
+              onClick={() => handlePageButtonClick(pageNum)}
+              key={pageNum}
+              colorScheme={pageNum === pageInfo.currentPage ? "blue" : "gray"}
+            >
+              {pageNum}
+            </Button>
+          ))}
+          {pageInfo.nextPage && (
+            <>
+              <Button onClick={() => handlePageButtonClick(pageInfo.nextPage)}>
+                <FontAwesomeIcon icon={faAngleRight} />
+              </Button>
+              <Button onClick={() => handlePageButtonClick(pageInfo.lastPage)}>
+                <FontAwesomeIcon icon={faAnglesRight} />
+              </Button>
+            </>
+          )}
+        </Flex>
+      </Center>
+    );
+  }
 }
