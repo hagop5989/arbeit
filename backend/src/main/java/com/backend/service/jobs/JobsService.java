@@ -74,7 +74,6 @@ public class JobsService {
         );
         jobsMapper.insert(jobs);
 
-        log.info("jobs={}", jobs);
         // JobsCondition 저장
         Integer jobsId = jobs.getId();
         JobsCond jobsCond = new JobsCond(
@@ -87,7 +86,6 @@ public class JobsService {
                 form.getWorkWeek(),
                 form.getWorkTime()
         );
-        log.info("jobsCond={}", jobsCond);
         conditionMapper.insert(jobsCond);
 
         // 사진 저장
@@ -173,7 +171,8 @@ public class JobsService {
         if (addImages != null) {
             for (MultipartFile image : addImages) {
                 String imageName = image.getOriginalFilename();
-                imageMapper.insertImage(jobsId, imageName);
+                int i = imageMapper.insertImage(jobsId, imageName);
+                log.info("i={}", i);
                 saveJobsImageToS3(image, jobsId, image.getOriginalFilename());
             }
         }
@@ -294,6 +293,10 @@ public class JobsService {
 
     public boolean hasAccess(JobsEditForm form, Authentication authentication) {
         return String.valueOf(form.getMemberId()).equals(authentication.getName());
+    }
+
+    public Integer findMemberIdById(Integer id) {
+        return jobsMapper.selectMemberIdById(id);
     }
 }
 

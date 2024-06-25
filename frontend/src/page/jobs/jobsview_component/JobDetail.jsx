@@ -1,5 +1,7 @@
 import { Box, Flex, Grid, Image, Spacer, Text } from "@chakra-ui/react";
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbtack } from "@fortawesome/free-solid-svg-icons";
 
 /**
  *
@@ -25,22 +27,27 @@ export function JobDetail({ jobs, jobsCond, src }) {
       >
         <Flex>
           <Box>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="gray.500" ml={"5px"}>
               # {jobsCond.preferred}
             </Text>
 
-            <Flex
+            <Box
               fontSize="3xl"
               fontWeight="bold"
               letterSpacing={"1px"}
               w={"450px"}
               h={"110px"}
             >
-              [{jobs.storeName}]
-              <Box wordBreak={"break-word"} w={"70%"} ml={"5px"}>
+              <Flex fontSize={"md"} color={"#616D8A"} ml={"5px"}>
+                <Box>
+                  <FontAwesomeIcon icon={faThumbtack} mr={"10px"} />
+                </Box>
+                <Box ml={"10px"}>{jobs.storeName}</Box>
+              </Flex>
+              <Box wordBreak={"break-word"} w={"100%"} ml={"5px"}>
                 {jobs.title}
               </Box>
-            </Flex>
+            </Box>
           </Box>
           <Spacer />
           <Box w={"200px"} h={"100px"}>

@@ -403,7 +403,7 @@ export function JobsList() {
       if (storeImageInfo) {
         return storeImageInfo.src;
       }
-      return null;
+      return "/public/alba_connector_store_logo.png";
     };
 
     return (
@@ -421,7 +421,6 @@ export function JobsList() {
               h={"100%"}
               p={"8px"}
               src={getSrcByStoreId(job.storeId)}
-              alt={"이미지 없음"}
               border={"1px solid lightgray"}
               borderRadius={"8px"}
               objectFit="contain"

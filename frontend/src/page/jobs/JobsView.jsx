@@ -72,7 +72,10 @@ export function JobsView() {
   }, [storeMap]);
 
   function handleRemoveBtn() {
-    axios.delete(`/api/jobs/${id}`).then(() => navigate("/jobs/list"));
+    const confirm = window.confirm("정말 삭제하시겠습니까?");
+    if (confirm) {
+      axios.delete(`/api/jobs/${id}`).then(() => navigate("/jobs/list"));
+    }
   }
 
   function handleApplyBtn() {

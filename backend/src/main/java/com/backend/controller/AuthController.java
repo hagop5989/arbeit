@@ -108,6 +108,9 @@ public class AuthController {
         if (!mailService.checkRegex(email)) {
             return ResponseEntity.badRequest().build();
         }
+        if (memberService.findByEmail(email) == null) {
+            return ResponseEntity.ok(false);
+        }
         try {
             String number = String.valueOf(mailService.sendMail(email));
             putValue(email, number);
