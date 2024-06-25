@@ -15,33 +15,33 @@ import java.util.List;
 @AllArgsConstructor
 public class JobsRegisterForm {
     private Integer memberId; //frk-member
-    @NotNull
+    @NotNull(message = "지점을 선택은 필수입니다.")
     private Integer storeId; //frk-store
     @NotNull
     private Integer categoryId; //frk-category
-    @NotBlank
+    @NotBlank(message = "공고 제목을 입력해주세요.")
     private String title;
-    @NotBlank
+    @NotBlank(message = "추가 사항을 입력해주세요.")
     private String content;
-    @NotNull
+    @NotNull(message = "급여를 입력해주세요.")
     private Integer salary;
-    @NotNull
+    @NotNull(message = "공고 마감일을 선택해주세요.")
     private LocalDateTime deadline;
-    @NotNull
+    @NotNull(message = "모집인원을 입력해주세요.")
     private Integer recruitmentNumber;
-    @NotBlank
+    @NotBlank(message = "학력을 선택해주세요.")
     private String education;
-    @NotBlank
+    @NotBlank(message = "학력 상세을 선택해주세요.")
     private String educationDetail;
-    @NotNull
+    @NotNull(message = "최소 연령을 입력해주세요.")
     private Integer age;
-    @NotBlank
+    @NotBlank(message = "우대 사항을 입력해주세요.")
     private String preferred;
-    @NotBlank
+    @NotBlank(message = "근무 기간을 선택해주세요.")
     private String workPeriod;
-    @NotBlank
+    @NotBlank(message = "근무 요일을 선택해주세요.")
     private String workWeek;
-    @NotBlank
+    @NotBlank(message = "근무 시간을 선택해주세요.")
     private String workTime;
     private List<MultipartFile> images;
 }

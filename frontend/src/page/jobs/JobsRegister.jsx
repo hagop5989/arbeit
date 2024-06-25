@@ -5,15 +5,17 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
+  ListItem,
+  OrderedList,
   Select,
   Text,
   Textarea,
-  UnorderedList,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -49,22 +51,16 @@ const styles = {
     borderBottom: "2px solid #1F3042",
     marginBottom: 6,
   },
-  center: {
-    width: "97%",
-    margin: "auto",
-    display: "block",
-  },
 };
 
 export function JobsRegister() {
   const account = useContext(LoginContext);
-  const printRef = useRef();
-
   const [storeList, setStoreList] = useState([]);
   const [category, setCategory] = useState("");
   const [jobs, setJobs] = useState({});
   const [isAgeLimitChecked, setIsAgeLimitChecked] = useState(false);
   const [images, setImages] = useState([]);
+  const [errors, setErrors] = useState({});
   const [checked, setChecked] = useState(false);
 
   const toast = useToast();
@@ -77,33 +73,14 @@ export function JobsRegister() {
     });
   }
   const navigate = useNavigate();
-
-  // 첨부파일 리스트에서 특정 파일을 삭제하는 함수
-  const handleRemoveImage = (index) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
+  const inputRef = useRef(null);
+  const handleButtonClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
   };
 
-  // file 목록
-  const imageNameList = [];
-  for (let i = 0; i < images.length; i++) {
-    imageNameList.push(
-      <li key={i}>
-        <Flex>
-          {images[i].name}
-          <Box w={"10px"} h={"5px"} ml={3} onClick={() => handleRemoveImage(i)}>
-            <FontAwesomeIcon
-              icon={faX}
-              bgcolor="gray"
-              size="sm"
-              color={"red"}
-            />
-          </Box>
-        </Flex>
-      </li>,
-    );
-  }
+  const isError = (prop) => prop !== undefined;
 
   // Create 관련 필요정보 얻기(store,category)
   useEffect(() => {
@@ -123,11 +100,36 @@ export function JobsRegister() {
         myToast("공고생성 되었습니다", "success");
         navigate("/jobs/list");
       })
-      .catch((e) => {
-        myToast("입력 값을 확인해주세요.", "error");
-        console.log(e);
-      })
-      .finally(() => {});
+      .catch((err) => {
+        setErrors(err.response.data);
+      });
+  }
+
+  // 첨부파일 리스트에서 특정 파일을 삭제하는 함수
+  const handleRemoveImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
+
+  // file 목록
+  const imageNameList = [];
+  for (let i = 0; i < images.length; i++) {
+    imageNameList.push(
+      <ListItem key={i}>
+        <Flex>
+          {images[i].name}
+          <Box w={"10px"} h={"5px"} ml={3} onClick={() => handleRemoveImage(i)}>
+            <FontAwesomeIcon
+              icon={faX}
+              bgcolor="gray"
+              size="sm"
+              color={"red"}
+            />
+          </Box>
+        </Flex>
+      </ListItem>,
+    );
   }
 
   // 연령무관 체크박스
@@ -157,6 +159,19 @@ export function JobsRegister() {
     setChecked(!checked);
   }
 
+  const handleImageChange = (event) => {
+    if (images.length !== 0) {
+      images.length = 0;
+    }
+    const newImages = Array.from(event.target.files);
+    if (images.length + newImages.length > 5) {
+      alert("이미지는 최대 5개까지 입력가능합니다.");
+      return;
+    }
+    setImages((prevImages) => [...prevImages, ...newImages]);
+    setJobs({ ...jobs, content: "추가사항 없음" });
+  };
+
   return (
     <Box w="100%" mx="auto" p={5}>
       <Box
@@ -171,19 +186,24 @@ export function JobsRegister() {
         </Heading>
       </Box>
       <Box w="full" gap={"20px"}>
-        <FormControl {...styles.formControl}>
+        <FormControl {...styles.formControl} isInvalid={isError(errors.title)}>
           <FormLabel {...styles.mainFormLabel}>제목</FormLabel>
           <Input
             h={"50px"}
             placeholder="제목을 입력해주세요."
             onChange={handleInputChange("title")}
           />
+          {errors.title && <FormErrorMessage>{errors.title}</FormErrorMessage>}
         </FormControl>
 
-        <FormControl w={"100%"} mr={"50px"} mb={"50px"}>
+        <FormControl
+          w={"100%"}
+          mr={"50px"}
+          mb={"50px"}
+          isInvalid={isError(errors.storeId)}
+        >
           <FormLabel {...styles.mainFormLabel}>지점 선택</FormLabel>
           <Select
-            mb={4}
             onChange={(e) => handleSelectChange(e.target.value)}
             placeholder={"지점을 선택해주세요."}
           >
@@ -193,6 +213,9 @@ export function JobsRegister() {
               </option>
             ))}
           </Select>
+          {errors.storeId && (
+            <FormErrorMessage mb={4}>{errors.storeId}</FormErrorMessage>
+          )}
           <Flex>
             <Box fontWeight={"700"} mr={"10px"}>
               카테고리 :{" "}
@@ -202,6 +225,7 @@ export function JobsRegister() {
         </FormControl>
 
         <Box mb={"20px"}>
+          <Box {...styles.mainFormLabel}>개인 폼 사용여부</Box>
           <Checkbox
             size="lg"
             colorScheme="orange"
@@ -211,35 +235,39 @@ export function JobsRegister() {
           </Checkbox>
         </Box>
         {checked && (
-          <FormControl {...styles.formControl}>
+          <FormControl {...styles.formControl} mb={"100px"}>
             <Flex>
-              <FormLabel
-                textAlign={"center"}
-                lineHeight={"50px"}
-                fontWeight={"700"}
-                fontSize={"20px"}
-                w={"150px"}
-              >
-                이미지 등록
-              </FormLabel>
+              <Box mr={"20px"}>
+                <Text>최대 5개까지 첨부가능합니다.</Text>
+                <Button onClick={handleButtonClick} colorScheme={"orange"}>
+                  {images.length !== 0 ? "다시 등록" : "이미지 등록"}
+                </Button>
+              </Box>
               <Input
+                ref={inputRef}
+                maxLength={"5"}
+                display={"none"}
                 multiple
                 type="file"
                 p={2}
                 h={"50px"}
-                value={""} // 추가: file input을 초기화하여 파일 목록이 겹치지 않도록 함
-                onChange={(e) => {
-                  setImages(e.target.files);
-                }}
+                onChange={handleImageChange}
               />
+              {imageNameList.length > 0 && (
+                <Box
+                  bg={"#E8E8E8"}
+                  w={"400px"}
+                  p={"10px"}
+                  pl={"20px"}
+                  borderRadius={"10px"}
+                >
+                  <Text fontWeight={"800"} fontSize={"18px"} mb={"5px"}>
+                    이미지 목록 (이미지는 순서대로 출력됩니다.)
+                  </Text>
+                  <OrderedList>{imageNameList}</OrderedList>
+                </Box>
+              )}
             </Flex>
-            {imageNameList.length > 0 && (
-              <Box mt={2}>
-                <Text>첨부파일 리스트:</Text>
-                <UnorderedList>{imageNameList}</UnorderedList>
-              </Box>
-            )}
-            <Box>미리보기</Box>
           </FormControl>
         )}
 
@@ -251,40 +279,54 @@ export function JobsRegister() {
             <Divider />
           </Box>
           <Flex mb={"20px"}>
-            <FormControl w={"45%"} mr={"50px"}>
+            <FormControl
+              w={"45%"}
+              mr={"50px"}
+              isInvalid={isError(errors.salary)}
+            >
               <FormLabel {...styles.formLabel}>시급</FormLabel>
               <InputGroup>
                 <InputRightElement mx={3}>원</InputRightElement>
                 <Input
-                  mb={4}
                   type="number"
                   placeholder="시급을 입력해주세요."
                   onChange={handleInputChange("salary")}
                 />
               </InputGroup>
+              {errors.salary && (
+                <FormErrorMessage>{errors.salary}</FormErrorMessage>
+              )}
             </FormControl>
 
-            <FormControl w={"50%"}>
+            <FormControl w={"50%"} isInvalid={isError(errors.deadline)}>
               <FormLabel {...styles.formLabel}>공고 마감일</FormLabel>
               <Input
-                mb={4}
                 type="datetime-local"
                 placeholder="마감일을 선택해주세요."
                 onChange={handleInputChange("deadline")}
               />
+              {errors.deadline && (
+                <FormErrorMessage>{errors.deadline}</FormErrorMessage>
+              )}
             </FormControl>
           </Flex>
-          <FormControl w={"45%"} mr={"50px"}>
+          <FormControl
+            w={"45%"}
+            mr={"50px"}
+            isInvalid={isError(errors.recruitmentNumber)}
+          >
             <FormLabel {...styles.formLabel}>모집인원</FormLabel>
             <InputGroup>
-              <InputRightElement mx={3}>명</InputRightElement>
               <Input
-                mb={4}
                 type="number"
                 placeholder="모집인원을 입력해주세요."
                 onChange={handleInputChange("recruitmentNumber")}
               />
+              <InputRightElement mx={3}>명</InputRightElement>
             </InputGroup>
+            {errors.recruitmentNumber && (
+              <FormErrorMessage>{errors.recruitmentNumber}</FormErrorMessage>
+            )}
           </FormControl>
           <Box mb={4}>
             <Box mt={"50px"}>
@@ -294,7 +336,12 @@ export function JobsRegister() {
               <Divider />
             </Box>
             <Flex w={"100%"} mb={"-30px"}>
-              <FormControl w="45%" mr={"50px"} {...styles.formControl}>
+              <FormControl
+                w="45%"
+                mr={"50px"}
+                {...styles.formControl}
+                isInvalid={isError(errors.education)}
+              >
                 <FormLabel {...styles.formLabel}>최소학력</FormLabel>
                 <Select
                   onChange={handleInputChange("education")}
@@ -306,8 +353,14 @@ export function JobsRegister() {
                     </option>
                   ))}
                 </Select>
+                {errors.education && (
+                  <FormErrorMessage>{errors.education}</FormErrorMessage>
+                )}
               </FormControl>
-              <FormControl w={"50%"}>
+              <FormControl
+                w={"50%"}
+                isInvalid={isError(errors.educationDetail)}
+              >
                 <FormLabel {...styles.formLabel}>학력상세</FormLabel>
                 <Select
                   onChange={handleInputChange("educationDetail")}
@@ -319,19 +372,29 @@ export function JobsRegister() {
                     </option>
                   ))}
                 </Select>
+                {errors.educationDetail && (
+                  <FormErrorMessage>{errors.educationDetail}</FormErrorMessage>
+                )}
               </FormControl>
             </Flex>
 
-            <FormControl mb={"30px"}>
+            <FormControl mb={"30px"} isInvalid={isError(errors.preferred)}>
               <FormLabel {...styles.formLabel}>우대사항</FormLabel>
               <Input
                 placeholder="우대사항을 입력해주세요."
                 onChange={handleInputChange("preferred")}
               />
+              {errors.preferred && (
+                <FormErrorMessage>{errors.preferred}</FormErrorMessage>
+              )}
             </FormControl>
 
             <Flex mb={"30px"}>
-              <FormControl w={"45%"} mr={"50px"}>
+              <FormControl
+                w={"45%"}
+                mr={"50px"}
+                isInvalid={isError(errors.age)}
+              >
                 <FormLabel {...styles.formLabel}>연령제한</FormLabel>
                 <Checkbox
                   p={1}
@@ -350,20 +413,21 @@ export function JobsRegister() {
                     세 이상
                   </InputRightElement>
                   <Input
-                    mb={4}
                     placeholder="연령을 입력해주세요."
                     onChange={handleInputChange("age")}
                     type="number"
                     disabled={isAgeLimitChecked}
                   />
                 </InputGroup>
+                {errors.age && (
+                  <FormErrorMessage>{errors.age}</FormErrorMessage>
+                )}
               </FormControl>
-              <FormControl w={"50%"}>
+              <FormControl w={"50%"} isInvalid={isError(errors.workPeriod)}>
                 <FormLabel {...styles.formLabel} mb={"52px"}>
                   근무기간
                 </FormLabel>
                 <Select
-                  mb={4}
                   onChange={handleInputChange("workPeriod")}
                   placeholder={"선택해주세요."}
                 >
@@ -373,14 +437,20 @@ export function JobsRegister() {
                     </option>
                   ))}
                 </Select>
+                {errors.workPeriod && (
+                  <FormErrorMessage>{errors.workPeriod}</FormErrorMessage>
+                )}
               </FormControl>
             </Flex>
 
             <Flex>
-              <FormControl w={"45%"} mr={"50px"}>
+              <FormControl
+                w={"45%"}
+                mr={"50px"}
+                isInvalid={isError(errors.workWeek)}
+              >
                 <FormLabel {...styles.formLabel}>근무요일</FormLabel>
                 <Select
-                  mb={4}
                   onChange={handleInputChange("workWeek")}
                   placeholder={"선택해주세요."}
                 >
@@ -390,12 +460,14 @@ export function JobsRegister() {
                     </option>
                   ))}
                 </Select>
+                {errors.workWeek && (
+                  <FormErrorMessage>{errors.workWeek}</FormErrorMessage>
+                )}
               </FormControl>
 
-              <FormControl w={"50%"}>
+              <FormControl w={"50%"} isInvalid={isError(errors.workTime)}>
                 <FormLabel {...styles.formLabel}>근무시간</FormLabel>
                 <Select
-                  mb={4}
                   onChange={handleInputChange("workTime")}
                   placeholder={"선택해주세요."}
                 >
@@ -405,19 +477,26 @@ export function JobsRegister() {
                     </option>
                   ))}
                 </Select>
+                {errors.workTime && (
+                  <FormErrorMessage>{errors.workTime}</FormErrorMessage>
+                )}
               </FormControl>
             </Flex>
-            <Box mt={"50px"}>
-              <Text {...styles.mainFormLabel} mb={"40px"}>
-                추가 사항
-              </Text>
-            </Box>
-            <Textarea
-              mb={"50px"}
-              h={"100px"}
-              defaultValue={jobs.content}
-              onChange={handleInputChange("content")}
-            ></Textarea>
+            <FormControl isInvalid={isError(errors.content)}>
+              <Box mt={"50px"}>
+                <Text {...styles.mainFormLabel} mb={"40px"}>
+                  추가 사항
+                </Text>
+              </Box>
+              <Textarea
+                h={"100px"}
+                defaultValue={jobs.content}
+                onChange={handleInputChange("content")}
+              ></Textarea>
+              {errors.content && (
+                <FormErrorMessage>{errors.content}</FormErrorMessage>
+              )}
+            </FormControl>
           </Box>
         </>
       </Box>
