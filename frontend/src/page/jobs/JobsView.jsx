@@ -9,28 +9,27 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import {
-  CompanyInfo,
-  JobConditions,
-  JobContact,
-  JobDetail,
-  JobDetails,
-  JobLocation,
-  JobRequirements,
-  JobReview,
-} from "./JobsViewDetail.jsx";
+import { JobsViewDetails } from "./jobsview_component/JobsViewDetail.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { JobConditions } from "./jobsview_component/JobConditions.jsx";
+import { JobDetail } from "./jobsview_component/JobDetail.jsx";
+import { JobLocation } from "./jobsview_component/JobLocation.jsx";
+import { JobContact } from "./jobsview_component/JobContact.jsx";
+import { CompanyInfo } from "./jobsview_component/CompanyInfo.jsx";
+import { JobReview } from "./jobsview_component/JobReview.jsx";
+import { JobRequirements } from "./jobsview_component/JobRequirements.jsx";
 
 export function JobsView() {
   const account = useContext(LoginContext);
   const { id } = useParams();
-  const [jobs, setJobs] = useState({});
-  const [jobsCond, setJobsCond] = useState({});
+  const [jobs, setJobs] = useState(null);
+  const [jobsCond, setJobsCond] = useState(null);
   const [storeMap, setStoreMap] = useState({});
   const [images, setImages] = useState([]);
   const [boss, setBoss] = useState({});
+  const [src, setSrc] = useState("/public/alba_connector_store_logo.png");
 
   const toast = useToast();
 
@@ -42,12 +41,7 @@ export function JobsView() {
       duration: "700",
     });
   }
-
   const navigate = useNavigate();
-
-  function handleRemoveBtn() {
-    axios.delete(`/api/jobs/${id}`).then(() => navigate("/jobs/list"));
-  }
 
   // Read
   useEffect(() => {
@@ -68,6 +62,19 @@ export function JobsView() {
       });
   }, [id]);
 
+  useEffect(() => {
+    if (storeMap && Array.isArray(storeMap.images)) {
+      // images 배열의 각 항목을 순회하며 src 값을 출력
+      storeMap.images.forEach((image) => {
+        setSrc(image.src);
+      });
+    }
+  }, [storeMap]);
+
+  function handleRemoveBtn() {
+    axios.delete(`/api/jobs/${id}`).then(() => navigate("/jobs/list"));
+  }
+
   function handleApplyBtn() {
     const jobsId = new URLSearchParams();
     jobsId.append("jobsId", id);
@@ -78,7 +85,7 @@ export function JobsView() {
   }
 
   // 스피너
-  if (!jobs || !jobsCond) {
+  if (jobs === null && jobsCond === null) {
     return (
       <Center height="100vh">
         <Spinner size="xl" />
@@ -89,7 +96,7 @@ export function JobsView() {
   return (
     <Center flexDirection="column" p={5} bg="#f7f9fc">
       <Stack spacing={6}>
-        <JobDetail job={jobs} storeMap={storeMap} />
+        <JobDetail jobs={jobs} jobsCond={jobsCond} src={src} />
         <Divider />
         <JobRequirements job={jobs} jobsCond={jobsCond} id={id} />
         <Divider />
@@ -97,7 +104,13 @@ export function JobsView() {
         <Divider />
         <JobConditions job={jobs} jobsCond={jobsCond} />
         <Divider />
-        <JobDetails job={jobs} jobsCond={jobsCond} images={images} />
+        <JobsViewDetails
+          job={jobs}
+          jobsCond={jobsCond}
+          images={images}
+          storeMap={storeMap}
+          src={src}
+        />
         <Divider />
         <JobContact boss={boss} storeMap={storeMap} />
         <Divider />
@@ -106,9 +119,10 @@ export function JobsView() {
           jobsCond={jobsCond}
           storeMap={storeMap}
           boss={boss}
+          src={src}
         />
         <Divider />
-        <JobReview job={jobs} jobsCond={jobsCond} />
+        <JobReview />
       </Stack>
       {account.isAlba() && (
         <Flex w={"100%"} gap={5} my={"40px"}>
@@ -126,15 +140,21 @@ export function JobsView() {
       )}
 
       {account.isBoss() && (
-        <Flex w={"100%"} gap={5} my={"40px"}>
+        <Flex w={"100%"} gap={2} my={"40px"}>
           <Button
             onClick={() => navigate(`/jobs/${id}/edit`)}
             w={"50%"}
-            colorScheme={"purple"}
+            colorScheme={"blue"}
+            variant={"outline"}
           >
             수정
           </Button>
-          <Button onClick={handleRemoveBtn} w={"50%"} colorScheme={"red"}>
+          <Button
+            onClick={handleRemoveBtn}
+            w={"50%"}
+            colorScheme={"red"}
+            variant={"outline"}
+          >
             삭제
           </Button>
         </Flex>

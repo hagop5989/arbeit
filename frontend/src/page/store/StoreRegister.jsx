@@ -18,7 +18,6 @@ import {
   Text,
   Textarea,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -55,7 +54,6 @@ export function StoreRegister() {
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
 
-  const toast = useToast();
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const account = useContext(LoginContext);

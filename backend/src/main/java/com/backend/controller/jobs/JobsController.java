@@ -37,6 +37,7 @@ public class JobsController {
     public ResponseEntity register(@Validated JobsRegisterForm form, BindingResult bindingResult,
                                    Authentication authentication) throws IOException {
 
+        log.info("form={}", form);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
