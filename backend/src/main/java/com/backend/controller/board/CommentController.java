@@ -92,15 +92,4 @@ CommentController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity info(@PathVariable Integer id) {
-        Comment comment = service.findById(id);
-
-        if (comment == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(comment);
-    }
-
 }

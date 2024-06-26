@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
-export function BoardWrite() {
+export function BoardWrite({ setIsWriteing }) {
   const [board, setBoard] = useState({});
   const [errors, setErrors] = useState({});
   const [images, setImages] = useState([]);
@@ -62,6 +62,7 @@ export function BoardWrite() {
         }
       })
       .finally();
+    setIsWriteing(false);
   }
 
   function handleWritecancel() {

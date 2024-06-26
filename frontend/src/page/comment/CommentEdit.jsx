@@ -71,11 +71,13 @@ export function CommentEdit({ comment, setIsEditing }) {
           <Button size={"sm"} colorScheme="blue" onClick={onOpen}>
             수정
           </Button>
-          <Box>
-            <Button colorScheme="grey" onClick={() => setIsEditing(false)}>
-              취소
-            </Button>
-          </Box>
+          <Button
+            size={"sm"}
+            colorScheme="red"
+            onClick={() => setIsEditing(false)}
+          >
+            취소
+          </Button>
         </Box>
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />

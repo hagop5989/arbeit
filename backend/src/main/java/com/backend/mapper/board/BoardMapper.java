@@ -42,8 +42,7 @@ public interface BoardMapper {
     @Update("""
             UPDATE board
             SET title=#{title},
-                content=#{content},
-                memberId = #{memberId}
+                content=#{content}
             WHERE id=#{id}
             """)
     int update(Board board);
@@ -76,6 +75,129 @@ public interface BoardMapper {
             WHERE board_id=#{boardId}
             """)
     int deleteByboardId(Integer boardId);
+
+
+    //페이징
+    @Select("""
+              <script>
+             SELECT b.id,
+             b.member_id,
+             b.title,
+             b.inserted,
+                   COUNT(DISTINCT c.id)  AS number_of_comments,
+             COUNT(DISTINCT f.name)  AS number_of_images,
+             COUNT(DISTINCT l.member_id)  AS number_of_like,
+             COUNT(DISTINCT v.member_id)  AS number_of_view
+            FROM board b JOIN member m ON m.id = b.member_id
+             LEFT JOIN board_image f ON b.id = f.board_id
+                         LEFT JOIN board_like l ON b.id = l.board_id
+                         LEFT JOIN comment c ON b.id = c.board_id
+                         LEFT JOIN board_view v ON b.id = v.board_id
+             <trim prefix="WHERE" prefixOverrides="OR">
+                    <if test="searchType != null">
+                        <bind name="pattern" value="'%' + keyword + '%'" />
+                        <if test="searchType == 'all' || searchType == 'title'">
+                            OR b.title LIKE #{pattern}
+                            OR b.member_id LIKE #{pattern}
+                        </if>
+                            <if test="searchType == 'all' || searchType == 'name'">
+                            OR m.id LIKE #{pattern}
+                        </if>
+                         </if>
+                         </trim>
+                         GROUP BY b.id
+            ORDER BY b.id DESC
+             <choose>
+                    <when test="filterType == '작성일순'">
+                        ORDER BY b.inserted DESC
+                    </when>
+                    <when test="filterType == '조회수순'">
+                        ORDER BY number_of_view DESC
+                    </when>
+                    <when test="filterType == '좋아요순'">
+                        ORDER BY number_of_like DESC
+                    </when>
+                    <otherwise>
+                        ORDER BY b.id DESC
+                    </otherwise>
+                </choose>
+                LIMIT #{offset}, 10
+                </script>
+             """)
+    List<Board> selectAllPaging(Integer offset, String searchType, String keyword, String filterType, String filterDetail);
+
+
+    @Select("""
+            <script>
+            SELECT COUNT(b.id)
+            FROM board b JOIN member m ON b.member_id = m.id
+               <trim prefix="WHERE" prefixOverrides="OR">
+                   <if test="searchType != null">
+                       <bind name="pattern" value="'%' + keyword + '%'" />
+                       <if test="searchType == 'all' || searchType == 'name'">
+                            OR b.title LIKE #{pattern}
+                            OR m.id LIKE #{pattern}
+                       </if>
+                       <if test="searchType == 'all' || searchType == 'm.id'">
+                           OR m.name LIKE #{pattern}
+                       </if> 
+                   </if>
+               </trim>
+            </script>
+            """)
+    Integer countAllWithSearch(String searchType, String keyword, String filterType, String filterDetail);
+
+
+    @Delete("""
+                DELETE FROM board_like
+                            WHERE board_id = #{boardId}
+                            AND member_id = #{memberId};
+            """)
+    int deleteLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
+
+    @Insert("""
+                   INSERT INTO board_like (board_id, member_id)
+                   VALUES (#{boardId}, #{memberId})
+            """)
+    int insertLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
+    @Select("""
+                SELECT  COUNT(*)
+                FROM board_like
+                WHERE board_id = #{boardId}
+            """)
+    int selectCountLike(Integer boardId);
+
+
+    @Select("""
+            SELECT COUNT(*) FROM board_like
+            WHERE board_id=#{boardId}
+              AND member_id=#{memberId}
+            """)
+    int selectLikeByBoardIdAndMemberId(Integer boardId, String memberId);
+
+/*
+    @Select("""
+            SELECT COUNT(*)
+            FROM board_view
+            WHERE board_id=#{boardId}
+              AND member_id=#{memberId}
+            """)
+    int selectViewByBoardIdAndMemberId(@Param("boardId") Integer boardId, @Param("memberId") Integer memberId);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM board_view
+            WHERE board_id = #{boardId}
+            """)
+    int selectCountView(Integer boardId);
+
+    @Insert("""
+            INSERT INTO board_view (board_id, member_id)
+            VALUES (#{boardId}, #{memberId})
+            """)
+    void insertViewByBoardIdAndMemberId(Integer boardId, Integer memberId);*/
 
 }
 

@@ -46,7 +46,9 @@ public class BoardService {
                 null,
                 form.getTitle(),
                 form.getContent(),
-                null
+                null,
+                null,
+                null, null, null
         );
         mapper.insert(board);
 
@@ -63,7 +65,7 @@ public class BoardService {
         }
     }
 
-    public Map<String, Object> findById(Integer boardId) {
+    public Map<String, Object> findById(Integer boardId, Authentication authentication) {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -73,7 +75,24 @@ public class BoardService {
             return null;
         }
 
+        Map<String, Object> like = new HashMap<>();
+        if (authentication == null) {
+            like.put("like", false);
+        } else {
+            int c = mapper.selectLikeByBoardIdAndMemberId(boardId, authentication.getName());
+            like.put("like", c == 1);
+        }
+        like.put("count", mapper.selectCountLike(boardId));
+        result.put("board", board);
+        result.put("like", like);
+        //
 
+
+       /* Map<String, Object> viewInfo = new HashMap<>();
+        viewInfo.put("count", mapper.selectCountView(boardId));
+        result.put("view", viewInfo);
+
+*/
         List<String> imagesNames = mapper.selectImageNameById(boardId);
         List<BoardImage> images = imagesNames.stream()
                 .map(imageName -> new BoardImage(imageName, STR."arbeit/board/\{boardId}/\{imageName}"))
@@ -81,6 +100,8 @@ public class BoardService {
 
         result.put("board", board);
         result.put("images", images);
+        result.put("like", like);
+
 
         return result;
 
@@ -88,8 +109,41 @@ public class BoardService {
     }
 
 
-    public List<Board> list() {
-        return mapper.selectAll();
+    public Map<String, Object> list(
+            Integer page,
+            String searchType,
+            String keyword,
+            String filterType, String filterDetail) {
+        Map<String, Object> pageInfo = new HashMap<>();
+        Integer countAll = mapper.countAllWithSearch(searchType, keyword, filterType, filterDetail);
+
+        Integer offset = (page - 1) * 10;
+        Integer lastPageNumber = (countAll - 1) / 10 + 1;
+
+        Integer leftPageNumber = ((page - 1) / 10) * 10 + 1;
+        Integer rightPageNumber = leftPageNumber + 9;
+
+        rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
+
+        Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
+        Integer nextPageNumber = (rightPageNumber < lastPageNumber) ? rightPageNumber + 1 : null;
+
+        if (prevPageNumber != null) {
+            pageInfo.put("prevPageNumber", prevPageNumber);
+        }
+        if (nextPageNumber != null) {
+            pageInfo.put("nextPageNumber", nextPageNumber);
+        }
+        pageInfo.put("currentPageNumber", page);
+        pageInfo.put("lastPageNumber", lastPageNumber);
+        pageInfo.put("leftPageNumber", leftPageNumber);
+        pageInfo.put("rightPageNumber", rightPageNumber);
+
+        return Map.of(
+                "pageInfo", pageInfo,
+                "boardList", mapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail)
+        );
+
     }
 
     //update
@@ -115,6 +169,7 @@ public class BoardService {
         }
         //사진 추가
         List<MultipartFile> addImages = form.getAddImages();
+
         if (addImages != null) {
             for (MultipartFile addImage : addImages) {
                 String imageName = addImage.getOriginalFilename();
@@ -172,7 +227,7 @@ public class BoardService {
     public boolean hasAccess(BoardEditForm form, Authentication authentication) {
 
         try {
-            Board board = mapper.selectById(form.getMemberId());
+            Board board = mapper.selectById(form.getId());
             if (board == null) {
                 return false; // 혹은 예외 처리
             }
@@ -186,4 +241,33 @@ public class BoardService {
             return false; // 예외 발생 시 기본 동작
         }
     }
+
+
+    public Map<String, Object> like(Map<String, Object> req, Authentication authentication) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("like", false);
+        Integer boardId = (Integer) req.get("boardId");
+        Integer memberId = Integer.valueOf(authentication.getName());
+
+
+        int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
+
+
+        if (count == 0) {
+            mapper.insertLikeByBoardIdAndMemberId(boardId, memberId);
+            result.put("like", true);
+        }
+
+        result.put("count", mapper.selectCountLike(boardId));
+
+        return result;
+    }
+
+/*
+    public void view(Map<String, Object> req, Authentication authentication) {
+        Integer boardId = (Integer) req.get("boardId");
+        Integer memberId = Integer.valueOf(authentication.getName());
+        mapper.insertViewByBoardIdAndMemberId(boardId, memberId);
+    }*/
 }
+

@@ -17,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,13 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardMapper boardMapper;
 
 
     @PostMapping("/write")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity write(@Validated BoardWriteForm form, BindingResult bindingResult,
                                 Authentication authentication) throws IOException {
-        System.out.println("form = " + form);
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
@@ -47,13 +46,12 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> findById(@PathVariable Integer id, Authentication authentication) {
         try {
-            Map<String, Object> result = boardService.findById(id);
+            Map<String, Object> result = boardService.findById(id, authentication);
             if (result == null) {
                 return ResponseEntity.notFound().build();
             }
-
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             // 예외 처리
@@ -62,18 +60,25 @@ public class BoardController {
         }
     }
 
-
     @GetMapping("/list")
-    public List<Board> list() {
-        return boardService.list();
+    public Map<String, Object> list(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(value = "type", required = false) String searchType,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword,
+            @RequestParam(value = "filterType", defaultValue = "") String filterType,
+            @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
+    ) {
+
+        return boardService.list(page, searchType, keyword, filterType, filterDetail);
     }
 
 
-    @PutMapping("edit")
+    @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity edit(@Validated BoardEditForm form, BindingResult bindingResult,
-                               Authentication authentication) throws IOException {
-        log.debug("Number of rows updated: {}", form);
+    public ResponseEntity edit(
+            @Validated BoardEditForm form, BindingResult bindingResult,
+            Authentication authentication) throws IOException {
+        System.out.println("form = " + form);
 
         if (!boardService.hasAccess(form, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -86,15 +91,12 @@ public class BoardController {
 
         boardService.edit(form, authentication);
         return ResponseEntity.ok().build();
-
-
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         boardService.delete(id);
     }
-
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
         Map<String, String> errors = new ConcurrentHashMap<>();
@@ -103,4 +105,22 @@ public class BoardController {
         }
         return errors;
     }
+
+
+    @PutMapping("like")
+    @PreAuthorize("isAuthenticated()")
+    public Map<String, Object> like(@RequestBody Map<String, Object> req,
+                                    Authentication authentication) throws IOException {
+
+        return boardService.like(req, authentication);
+
+
+    }
+
+   /* @PutMapping("/view")
+    public void viewBoard(@RequestBody Map<String, Object> req, Authentication authentication) {
+        boardService.view(req, authentication);
+    }*/
 }
+
+

@@ -22,5 +22,4 @@ public class BoardWriteForm {
 
     private List<MultipartFile> images;
 
-
 }
