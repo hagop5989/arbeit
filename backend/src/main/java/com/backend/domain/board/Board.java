@@ -24,6 +24,7 @@ public class Board {
     private Integer numberOfComments;
     private Integer numberOfImages;
     private Integer numberOfLike;
+    private Integer numberOfView;
 
     public Board(Integer id, String title, String content) {
         this.id = id;

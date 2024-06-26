@@ -48,7 +48,7 @@ public class BoardService {
                 form.getContent(),
                 null,
                 null,
-                null, null
+                null, null, null
         );
         mapper.insert(board);
 
@@ -85,8 +85,14 @@ public class BoardService {
         like.put("count", mapper.selectCountLike(boardId));
         result.put("board", board);
         result.put("like", like);
+        //
 
 
+       /* Map<String, Object> viewInfo = new HashMap<>();
+        viewInfo.put("count", mapper.selectCountView(boardId));
+        result.put("view", viewInfo);
+
+*/
         List<String> imagesNames = mapper.selectImageNameById(boardId);
         List<BoardImage> images = imagesNames.stream()
                 .map(imageName -> new BoardImage(imageName, STR."arbeit/board/\{boardId}/\{imageName}"))
@@ -95,6 +101,7 @@ public class BoardService {
         result.put("board", board);
         result.put("images", images);
         result.put("like", like);
+
 
         return result;
 
@@ -105,11 +112,10 @@ public class BoardService {
     public Map<String, Object> list(
             Integer page,
             String searchType,
-            String keyword
-
-    ) {
+            String keyword,
+            String filterType, String filterDetail) {
         Map<String, Object> pageInfo = new HashMap<>();
-        Integer countAll = mapper.countAllWithSearch(searchType, keyword);
+        Integer countAll = mapper.countAllWithSearch(searchType, keyword, filterType, filterDetail);
 
         Integer offset = (page - 1) * 10;
         Integer lastPageNumber = (countAll - 1) / 10 + 1;
@@ -135,7 +141,7 @@ public class BoardService {
 
         return Map.of(
                 "pageInfo", pageInfo,
-                "boardList", mapper.selectAllPaging(offset, searchType, keyword)
+                "boardList", mapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail)
         );
 
     }
@@ -257,5 +263,11 @@ public class BoardService {
         return result;
     }
 
-
+/*
+    public void view(Map<String, Object> req, Authentication authentication) {
+        Integer boardId = (Integer) req.get("boardId");
+        Integer memberId = Integer.valueOf(authentication.getName());
+        mapper.insertViewByBoardIdAndMemberId(boardId, memberId);
+    }*/
 }
+

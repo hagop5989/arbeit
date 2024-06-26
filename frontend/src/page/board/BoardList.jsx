@@ -29,6 +29,7 @@ import {
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
+import { ViewIcon } from "@chakra-ui/icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -37,15 +38,46 @@ export function BoardList() {
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [filterType, setFilterType] = useState("");
+  const [selectedFilterDetail, setSelectedFilterDetail] = useState([]);
+
+  const filterBoardList = (board, filterType) => {
+    let filterBoard = [...board];
+
+    if (filterType === "작성일순") {
+      filterBoard.sort((a, b) => new Date(a.deadline) - new Date(a.deadline));
+    }
+    if (filterType === "조회수순") {
+      filterBoard.sort((a, b) => new Date(a.deadline) - new Date(a.deadline));
+    }
+    if (filterType === "좋아요순") {
+      filterBoard.sort((a, b) => new Date(a.deadline) - new Date(a.deadline));
+    }
+
+    return filterBoard;
+  };
 
   useEffect(() => {
     const typeParam = searchParams.get("type") || "all";
     const keywordParam = searchParams.get("keyword") || "";
     const pageParam = searchParams.get("page") || 1;
 
+    const params = {
+      page: pageParam,
+      type: typeParam,
+      keyword: keywordParam,
+      filterType,
+      filterDetail: selectedFilterDetail,
+    };
+
+    if (typeParam) {
+      setSearchType(typeParam);
+    }
+
     axios
       .get(
         `/api/board/list?type=${typeParam}&keyword=${keywordParam}&page=${pageParam}`,
+        { params },
       )
       .then((res) => {
         setBoardList(res.data.boardList);
@@ -54,7 +86,7 @@ export function BoardList() {
 
     setSearchType(typeParam);
     setSearchKeyword(keywordParam);
-  }, [searchParams]);
+  }, [searchParams, filterType, selectedFilterDetail]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -62,7 +94,6 @@ export function BoardList() {
   }
 
   function handleSearchClick() {
-    setSearchKeyword(searchKeyword);
     const typeParam = searchType;
     const keywordParam = searchKeyword;
 
@@ -73,7 +104,6 @@ export function BoardList() {
     });
 
     navigate(`./?${params.toString()}`);
-    console.log("Search params:", params.toString()); // 콘솔에 출력하여
   }
 
   function handlePageButtonClick(pageNumber) {
@@ -81,15 +111,54 @@ export function BoardList() {
     setSearchParams(searchParams);
   }
 
+  function handleFilterChange(e) {
+    setFilterType(e.target.value);
+    setSelectedFilterDetail([]);
+
+    const params = new URLSearchParams({
+      type: searchType,
+      keyword: searchKeyword,
+      filterType: e.target.value,
+      filterDetail: [],
+    });
+    navigate(`./?${params.toString()}`);
+  }
+
   return (
-    <Box>
-      <Box>
-        <Heading>게시글 목록</Heading>
-      </Box>
-      <Box>
-        {boardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
-        {boardList.length > 0 && (
-          <Table>
+    <Box p={4}>
+      <Heading as="h2" size="lg" mb={4}>
+        자유게시판
+      </Heading>
+
+      <Flex justifyContent={"center"} mb={"30px"} mt={"-20px"}>
+        <Select
+          w="150px"
+          value={filterType}
+          onChange={handleFilterChange}
+          mr={2}
+        >
+          <option value="작성일순">작성일순</option>
+          <option value="조회수순">조회수순</option>
+          <option value="좋아요순">좋아요순</option>
+        </Select>
+
+        <Input
+          w="300px"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          placeholder="제목+작성자 검색"
+          mr={2}
+        />
+        <Button colorScheme="blue" onClick={handleSearchClick}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} />
+        </Button>
+      </Flex>
+
+      <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
+        {boardList.length === 0 ? (
+          <Center>조회 결과가 없습니다.</Center>
+        ) : (
+          <Table variant="simple">
             <Thead>
               <Tr>
                 <Th>#</Th>
@@ -107,15 +176,16 @@ export function BoardList() {
                 <Th>
                   <FontAwesomeIcon icon={fullHeart} />
                 </Th>
+                <Th>
+                  <FontAwesomeIcon icon={ViewIcon} />
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
               {boardList.map((board) => (
                 <Tr
-                  _hover={{
-                    bg: "blue.200",
-                  }}
-                  cursor={"pointer"}
+                  _hover={{ bg: "gray.100" }}
+                  cursor="pointer"
                   onClick={() => navigate(`/board/${board.id}`)}
                   key={board.id}
                 >
@@ -123,97 +193,71 @@ export function BoardList() {
                   <Td>{board.title}</Td>
                   <Td>{board.memberId}</Td>
                   <Td>{board.inserted}</Td>
-
                   <Td>
                     {board.numberOfComments > 0 && (
-                      <Badge ml={2}>
-                        <Flex gap={1}>
-                          <Box>
-                            <FontAwesomeIcon icon={faComments} />
-                          </Box>
-                          {board.numberOfComments}
+                      <Badge ml={2} colorScheme="green">
+                        <Flex alignItems="center">
+                          <FontAwesomeIcon icon={faComments} />
+                          <Box ml={1}>{board.numberOfComments}</Box>
                         </Flex>
                       </Badge>
                     )}
                   </Td>
-
                   <Td>
                     {board.numberOfImages > 0 && (
-                      <Badge ml={2}>
-                        <Flex gap={1}>
-                          <Box>
-                            <FontAwesomeIcon icon={faImages} />
-                          </Box>
-                          {board.numberOfImages}
+                      <Badge ml={2} colorScheme="blue">
+                        <Flex alignItems="center">
+                          <FontAwesomeIcon icon={faImages} />
+                          <Box ml={1}>{board.numberOfImages}</Box>
                         </Flex>
                       </Badge>
                     )}
                   </Td>
-
                   <Td>
                     {board.numberOfLike > 0 && (
-                      <Badge ml={2}>
-                        <Flex gap={1}>
-                          <Box>
-                            <FontAwesomeIcon icon={fullHeart} />
-                          </Box>
-                          <Box>{board.numberOfLike}</Box>
+                      <Badge ml={2} colorScheme="red">
+                        <Flex alignItems="center">
+                          <FontAwesomeIcon icon={fullHeart} />
+                          <Box ml={1}>{board.numberOfLike}</Box>
                         </Flex>
                       </Badge>
                     )}
                   </Td>
+                  {/*<Td>
+                    {board.numberOfView > 0 && (
+                      <Badge ml={2} colorScheme="red">
+                        <Flex alignItems="center">
+                          <FontAwesomeIcon icon={ViewIcon} />
+                          <Box ml={1}>{board.numberOfView}</Box>
+                        </Flex>
+                      </Badge>
+                    )}
+                  </Td>*/}
                 </Tr>
               ))}
             </Tbody>
           </Table>
         )}
       </Box>
-      {/* 검색창 */}
-      <Center mb={10}>
-        <Flex gap={1}>
-          <Box>
-            <Select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-            >
-              <option value="all">전체</option>
-              <option value="title">제목</option>
-              <option value="memberId">작성자</option>
-            </Select>
-          </Box>
-          <Box>
-            <Input
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              placeholder="검색어"
-            />
-          </Box>
-          <Button onClick={handleSearchClick}>
-            <Box>
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </Box>
-          </Button>
-        </Flex>
-      </Center>
 
-      <Center>
-        <Flex gap={1}>
+      <Center mt={4}>
+        <Flex gap={2}>
           {pageInfo.prevPageNumber && (
             <>
-              <Button onClick={() => handlePageButtonClick(1)}>
-                <FontAwesomeIcon icon={faAnglesLeft} />
-              </Button>
+              <Button
+                onClick={() => handlePageButtonClick(1)}
+                leftIcon={<FontAwesomeIcon icon={faAnglesLeft} />}
+              />
               <Button
                 onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
-              >
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </Button>
+                leftIcon={<FontAwesomeIcon icon={faAngleLeft} />}
+              />
             </>
           )}
           {pageNumbers.map((pageNumber) => (
             <Button
-              onClick={() => handlePageButtonClick(pageNumber)}
               key={pageNumber}
+              onClick={() => handlePageButtonClick(pageNumber)}
               colorScheme={
                 pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
               }
@@ -225,14 +269,12 @@ export function BoardList() {
             <>
               <Button
                 onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-              >
-                <FontAwesomeIcon icon={faAngleRight} />
-              </Button>
+                rightIcon={<FontAwesomeIcon icon={faAngleRight} />}
+              />
               <Button
                 onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-              >
-                <FontAwesomeIcon icon={faAnglesRight} />
-              </Button>
+                rightIcon={<FontAwesomeIcon icon={faAnglesRight} />}
+              />
             </>
           )}
         </Flex>

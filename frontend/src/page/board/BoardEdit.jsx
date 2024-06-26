@@ -121,10 +121,6 @@ export function BoardEdit() {
       });
   }
 
-  const handleInputChange = (prop) => (e) => {
-    setBoard({ ...board, [prop]: e.target.value });
-  };
-
   if (board == null) {
     return <Spinner />;
   }

@@ -35,7 +35,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity write(@Validated BoardWriteForm form, BindingResult bindingResult,
                                 Authentication authentication) throws IOException {
-        System.out.println("form = " + form);
+
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
@@ -62,16 +62,16 @@ public class BoardController {
 
     }
 
-    @GetMapping("list")
+    @GetMapping("/list")
     public Map<String, Object> list(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(value = "type", required = false) String searchType,
-            @RequestParam(value = "keyword", defaultValue = "") String keyword
+            @RequestParam(value = "keyword", defaultValue = "") String keyword,
+            @RequestParam(value = "filterType", defaultValue = "") String filterType,
+            @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
     ) {
-        System.out.println("page = " + page);
-        System.out.println("searchType = " + searchType);
-        System.out.println("keyword = " + keyword);
-        return boardService.list(page, searchType, keyword);
+
+        return boardService.list(page, searchType, keyword, filterType, filterDetail);
     }
 
 
@@ -115,13 +115,16 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public Map<String, Object> like(@RequestBody Map<String, Object> req,
                                     Authentication authentication) throws IOException {
-        System.out.println("req = " + req);
+
         return boardService.like(req, authentication);
 
 
     }
 
-
+   /* @PutMapping("/view")
+    public void viewBoard(@RequestBody Map<String, Object> req, Authentication authentication) {
+        boardService.view(req, authentication);
+    }*/
 }
 
 

@@ -14,3 +14,5 @@ SELECT *
 FROM board_like;
 
 
+DROP TABLE
+    board_like;

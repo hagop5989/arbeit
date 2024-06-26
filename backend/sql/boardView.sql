@@ -5,8 +5,9 @@ use arbeit;
 
 CREATE TABLE board_view
 (
-    board_id  INT NOT NULL REFERENCES board (id),
-    member_id INT NOT NULL REFERENCES member (id),
+    view_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    board_id       INT NOT NULL REFERENCES board (id),
+    member_id      INT NOT NULL REFERENCES member (id),
     PRIMARY KEY (board_id, member_id)
 );
 
@@ -17,3 +18,4 @@ SELECT *
 FROM board_view;
 
 
+DROP TABLE board_view;
