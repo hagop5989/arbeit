@@ -32,5 +32,9 @@ CREATE TABLE category
     name VARCHAR(45) NOT NULL UNIQUE,
     icon VARCHAR(45) NOT NULL
 );
+
+
 SELECT *
 FROM category;
+
+DESC category;
