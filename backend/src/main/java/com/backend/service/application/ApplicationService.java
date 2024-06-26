@@ -80,7 +80,9 @@ public class ApplicationService {
     }
 
     public Integer count(Integer authId) {
-        return mapper.selectCountByMemberId(authId);
+        Integer count = mapper.selectCountByMemberId(authId);
+
+        return count;
     }
 
 

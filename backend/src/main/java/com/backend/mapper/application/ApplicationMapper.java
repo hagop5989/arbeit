@@ -73,6 +73,8 @@ public interface ApplicationMapper {
             SELECT COUNT(*)
             FROM application
             WHERE member_id=#{memberId}
+                    AND is_passed IS NOT NULL
+                    AND inserted BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 WEEK) AND NOW();
             """)
     Integer selectCountByMemberId(Integer memberId);
 

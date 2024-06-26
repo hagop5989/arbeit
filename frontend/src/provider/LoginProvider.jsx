@@ -36,6 +36,11 @@ export function LoginProvider({ children }) {
         setAlarmNum(res.data);
       });
     }
+    if (isAlba()) {
+      axios.get("/api/applications-count").then((res) => {
+        setAlarmNum(res.data);
+      });
+    }
   }, [authority]);
 
   // 최근 본 공고 페이지 URL을 추가하는 함수

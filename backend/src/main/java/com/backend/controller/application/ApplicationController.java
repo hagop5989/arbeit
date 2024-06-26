@@ -3,6 +3,7 @@ package com.backend.controller.application;
 import com.backend.domain.application.Application;
 import com.backend.domain.application.ApplicationWriteForm;
 import com.backend.service.application.ApplicationService;
+import com.backend.service.resume.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/api")
 public class ApplicationController {
     private final ApplicationService service;
+    private final ResumeService resumeService;
 
     @GetMapping("/jobs/{jobsId}/apply")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
@@ -59,15 +61,16 @@ public class ApplicationController {
         return service.count(authId);
     }
 
-    @GetMapping("/{jobsId}/apply/select")
-    public Application view(@PathVariable Integer jobsId, @AuthId Integer authId) {
-        Application application = service.findByJobsIdAndMemberId(jobsId, authId);
-        return application;
-    }
-
     @GetMapping("/apply/list")
     public List<Application> list(@AuthId Integer authId) {
         return service.findAllByAuthId(authId);
+    }
+
+    @PostMapping("/resume/application-view")
+    @PreAuthorize("hasAuthority('SCOPE_ALBA')")
+    public ResponseEntity resumeInfo(@RequestParam String resumeId) {
+        Map<String, String> result = resumeService.findMemberNameAndTitleById(Integer.valueOf(resumeId));
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/apply/{jobsId}")

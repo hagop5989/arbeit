@@ -82,15 +82,6 @@ export function JobsView() {
     }
   }
 
-  function handleApplyBtn() {
-    const jobsId = new URLSearchParams();
-    jobsId.append("jobsId", id);
-    axios
-      .post("/api/apply-validate", jobsId)
-      .then(() => navigate(`/jobs/${id}/apply`))
-      .catch((err) => alert(err.response.data));
-  }
-
   // 스피너
   if (jobs === null && jobsCond === null) {
     return (

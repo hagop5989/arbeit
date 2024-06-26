@@ -24,8 +24,8 @@ public class ManagementController {
         service.updateDecision(management);
     }
 
-    @GetMapping("{resumeId}/management/select")
-    public Application select(@RequestParam Integer jobsId, @PathVariable Integer resumeId) {
+    @GetMapping("/{jobsId}/management/application-view")
+    public Application select(@RequestParam Integer resumeId, @PathVariable Integer jobsId) {
         return service.select(jobsId, resumeId);
     }
 

@@ -5,6 +5,7 @@ import com.backend.domain.resume.ResumeForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ResumeMapper {
@@ -68,12 +69,19 @@ public interface ResumeMapper {
                      JOIN jobs j ON a.jobs_id = j.id
             WHERE resume_id = #{resumeId};
             """)
-    List<Integer> findBossIdsById(Integer resumeId);
+    List<Integer> selectBossIdsById(Integer resumeId);
 
     @Select("""
             SELECT member_id
             FROM resume
             WHERE id=#{id}
             """)
-    Integer findMemberIdById(Integer id);
+    Integer selectMemberIdById(Integer id);
+
+    @Select("""
+            SELECT name, title
+            FROM resume r JOIN member m ON r.member_id = m.id
+            WHERE r.id=#{id}
+            """)
+    Map<String, String> selectMemberIdAndTitleById(Integer id);
 }

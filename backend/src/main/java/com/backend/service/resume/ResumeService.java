@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -68,14 +69,14 @@ public class ResumeService {
 
     public boolean accessValidate(Integer resumeId, Integer authId) {
 
-        Integer memberId = mapper.findMemberIdById(resumeId);
+        Integer memberId = mapper.selectMemberIdById(resumeId);
         if (memberId != null) {
             if (memberId.equals(authId)) {
                 return true;
             }
         }
 
-        List<Integer> bossIds = mapper.findBossIdsById(resumeId);
+        List<Integer> bossIds = mapper.selectBossIdsById(resumeId);
         if (bossIds != null) {
             for (Integer bossId : bossIds) {
                 if (bossId.equals(authId)) {
@@ -85,5 +86,10 @@ public class ResumeService {
         }
 
         return false;
+    }
+
+    public Map<String, String> findMemberNameAndTitleById(Integer resumeId) {
+
+        return mapper.selectMemberIdAndTitleById(resumeId);
     }
 }
