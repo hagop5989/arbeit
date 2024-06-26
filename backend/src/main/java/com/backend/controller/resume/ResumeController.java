@@ -1,5 +1,6 @@
 package com.backend.controller.resume;
 
+import com.backend.controller.application.AuthId;
 import com.backend.domain.resume.Resume;
 import com.backend.domain.resume.ResumeForm;
 import com.backend.service.resume.ResumeService;
@@ -50,15 +51,14 @@ public class ResumeController {
 
     @GetMapping("/resume/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity view(@PathVariable("id") Integer id,
-                               Authentication authentication) {
+    public ResponseEntity view(@PathVariable("id") Integer id, @AuthId Integer authId) {
         Resume resume = resumeService.findById(id);
 
         if (resume == null) {
             return ResponseEntity.notFound().build();
         }
 
-        if (!resumeService.hasAccess(id, authentication)) {
+        if (!resumeService.accessValidate(id, authId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

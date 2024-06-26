@@ -129,7 +129,7 @@ public class JobsService {
         return result;
     }
 
-    public void update(JobsEditForm form, Authentication authentication) throws IOException {
+    public void update(JobsEditForm form) throws IOException {
 
         // update
         Integer jobsId = form.getId();
@@ -291,8 +291,8 @@ public class JobsService {
     }
 
 
-    public boolean hasAccess(JobsEditForm form, Authentication authentication) {
-        return String.valueOf(form.getMemberId()).equals(authentication.getName());
+    public boolean hasAccess(Integer id, Integer authId) {
+        return id.equals(authId);
     }
 
     public Integer findMemberIdById(Integer id) {

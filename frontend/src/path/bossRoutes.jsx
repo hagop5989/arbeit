@@ -5,7 +5,6 @@ import { ResumeList } from "../page/resume/ResumeList.jsx";
 import { ResumeEdit } from "../page/resume/ResumeEdit.jsx";
 import { JobsEdit } from "../page/jobs/JobsEdit.jsx";
 import { ResumeView } from "../page/resume/ResumeView.jsx";
-import { ApplicationWrite } from "../page/application/ApplicationWrite.jsx";
 import { ApplicationList } from "../page/application/ApplicationList.jsx";
 import { ApplicationView } from "../page/application/ApplicationView.jsx";
 import { ManagementList } from "../page/management/ManagementList.jsx";
@@ -23,10 +22,9 @@ const bossRoutes = [
   { path: "jobs/list", element: <JobsList /> },
   { path: "jobs/:id", element: <JobsView /> },
   { path: "jobs/:id/edit", element: <JobsEdit /> },
-  { path: "jobs/:id/management/select", element: <ManagementView /> },
+  { path: "jobs/:id/application-view", element: <ManagementView /> },
   { path: "jobs/management/list", element: <ManagementList /> },
-  { path: "jobs/:id/apply", element: <ApplicationWrite /> },
-  { path: "jobs/:id/apply/select", element: <ApplicationView /> },
+  { path: "jobs/:id/application", element: <ApplicationView /> },
   { path: "apply/list", element: <ApplicationList /> },
   { path: "resume/register", element: <ResumeRegister /> },
   { path: "resume/list", element: <ResumeList /> },

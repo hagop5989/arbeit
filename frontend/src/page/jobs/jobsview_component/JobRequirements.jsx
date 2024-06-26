@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Box,
   Button,
@@ -11,13 +9,14 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
+import { LoginContext } from "../../../provider/LoginProvider.jsx";
 
 /**
  * 모집 조건
  */
-export function JobRequirements({ job, jobsCond, id }) {
-  const navigate = useNavigate();
+export function JobRequirements({ onOpen, job, jobsCond, id }) {
+  const account = useContext(LoginContext);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -25,15 +24,6 @@ export function JobRequirements({ job, jobsCond, id }) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return date.toLocaleDateString(undefined, options);
   };
-
-  function handleApplyBtn() {
-    const jobsId = new URLSearchParams();
-    jobsId.append("jobsId", id);
-    axios
-      .post("/api/apply-validate", jobsId)
-      .then(() => navigate(`/jobs/${id}/apply`))
-      .catch((err) => alert(err.response.data));
-  }
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -150,14 +140,11 @@ export function JobRequirements({ job, jobsCond, id }) {
               </Box>
             </VStack>
           </HStack>
-          <Button
-            onClick={handleApplyBtn}
-            colorScheme="red"
-            w="full"
-            my={"10px"}
-          >
-            지원하기
-          </Button>
+          {account.isAlba() && (
+            <Button onClick={onOpen} colorScheme="red" w="full" my={"10px"}>
+              지원하기
+            </Button>
+          )}
         </Box>
       </Box>
     </>

@@ -1,7 +1,9 @@
 package com.backend.controller;
 
 import com.backend.controller.application.AuthId;
+import com.backend.service.application.ApplicationService;
 import com.backend.service.jobs.JobsService;
+import com.backend.service.resume.ResumeService;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,8 @@ public class AccessController {
 
     private final StoreService storeService;
     private final JobsService jobsService;
+    private final ApplicationService applicationService;
+    private final ResumeService resumeService;
 
     @GetMapping("/only-boss")
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
@@ -44,6 +48,9 @@ public class AccessController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity onlySameId(@RequestParam("id") Integer storeId, @AuthId Integer authId) {
         Integer memberId = storeService.findMemberIdByAuthId(storeId);
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         if (memberId.equals(authId)) {
             return ResponseEntity.ok().build();
         } else {
@@ -55,6 +62,9 @@ public class AccessController {
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
     public ResponseEntity onlyBossSameId(@RequestParam("id") Integer jobsId, @AuthId Integer authId) {
         Integer memberId = jobsService.findMemberIdById(jobsId);
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         if (memberId.equals(authId)) {
             return ResponseEntity.ok().build();
         } else {

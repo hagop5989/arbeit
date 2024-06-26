@@ -1,13 +1,10 @@
 import {
   Box,
   Button,
-  Divider,
+  Center,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
-  Input,
-  Textarea,
+  Spacer,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -15,6 +12,13 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
+const styles = {
+  text: {
+    fontSize: "16px",
+    fontWeight: "600",
+    mr: "20px",
+  },
+};
 export function ApplicationView() {
   const { id } = useParams();
   const account = useContext(LoginContext);
@@ -29,16 +33,12 @@ export function ApplicationView() {
       .get("/api/only-login")
       .then(() => {
         axios
-          .get(`/api/jobs/${id}/apply/select`)
+          .get(`/api/jobs/${id}/application`)
           .then((res) => {
             setJobsTitle(res.data.jobsTitle);
             setApplication(res.data);
           })
-          .catch((err) => {
-            if (err.response.status === 403 || 404) {
-              navigate("/");
-            }
-          });
+          .catch((err) => {});
       })
       .catch((err) => {
         if (err.response.status === 401) {
@@ -49,43 +49,73 @@ export function ApplicationView() {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
-      <Heading mb={"10px"} p={1}>
-        지원서 보기
-      </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Box>지원한 공고 : {application.title}</Box>
+      <Box
+        h={"70px"}
+        mb={"30px"}
+        bg={"#FF7F3E"}
+        color={"white"}
+        borderRadius={"10px"}
+      >
+        <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+          000 님의 지원서
+        </Heading>
+      </Box>
       <Box>
-        <FormControl>
-          <FormLabel>공고글 제목</FormLabel>
-          <Input defaultValue={jobsTitle} value={jobsTitle} ReadOnly />
-          <Divider my={2} />
-          <FormLabel>이력서 첨부</FormLabel>
-          <Input value={application.title || ""} ReadOnly />
-          <Divider my={2} />
-          <FormLabel>지원메세지</FormLabel>
-          <Textarea h={"300px"} value={application.comment || ""} ReadOnly />
+        <Center
+          border={"2px solid #E0E0E0"}
+          h={"100px"}
+          borderRadius={"10px"}
+          mb={"20px"}
+        >
+          <Box>
+            <Box {...styles.text} mb={"5px"}>
+              이름: 하정현
+            </Box>
+            <Flex>
+              <Box {...styles.text}>연락처: 010-7178-2025</Box>
+              <Box {...styles.text}>이메일: aszx2024@naver.com</Box>
+            </Flex>
+          </Box>
+          <Button
+            colorScheme={"yellow"}
+            ml={"20px"}
+            onClick={() => navigate(`/resume/${application.resumeId}`)}
+          >
+            이력서 확인하기
+          </Button>
+        </Center>
+        <Box>
+          <Box
+            h={"300px"}
+            border={"2px solid #E0E0E0"}
+            borderRadius={"10px"}
+            p={"20px"}
+            fontSize={"17px"}
+          >
+            <Box
+              {...styles.text}
+              mb={"10px"}
+              borderBottom={"1px solid #E0E0E0"}
+            >
+              지원메세지
+            </Box>
+            {application.comment}
+          </Box>
           <Flex gap={"10px"} my={8}>
+            <Spacer />
             <Button
               onClick={() => {
                 navigate("/jobs/apply/list");
               }}
-              w={"50%"}
+              w={"150px"}
               bgColor={"gray.500"}
               color={"white"}
             >
               목록
             </Button>
-            <Button
-              onClick={() => {
-                navigate(`/jobs/${id}/apply/edit`);
-              }}
-              w={"50%"}
-              bgColor={"#FF7F3E"}
-              color={"white"}
-            >
-              수정하기
-            </Button>
           </Flex>
-        </FormControl>
+        </Box>
       </Box>
     </Box>
   );

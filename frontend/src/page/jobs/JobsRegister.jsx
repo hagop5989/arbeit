@@ -10,6 +10,7 @@ import {
   Heading,
   Input,
   InputGroup,
+  InputLeftAddon,
   InputRightElement,
   ListItem,
   OrderedList,
@@ -316,11 +317,13 @@ export function JobsRegister() {
 
                 <FormControl w={"50%"} isInvalid={isError(errors.deadline)}>
                   <FormLabel {...styles.formLabel}>공고 마감일</FormLabel>
-                  <Input
-                    type="datetime-local"
-                    placeholder="마감일을 선택해주세요."
-                    onChange={handleInputChange("deadline")}
-                  />
+                  <InputGroup w={"65%"}>
+                    <InputLeftAddon>마감일</InputLeftAddon>
+                    <Input
+                      type={"datetime-local"}
+                      onChange={handleInputChange("deadline")}
+                    />
+                  </InputGroup>
                   {errors.deadline && (
                     <FormErrorMessage>{errors.deadline}</FormErrorMessage>
                   )}

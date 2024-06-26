@@ -2,8 +2,15 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   Heading,
   Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
   Table,
   Tbody,
@@ -11,19 +18,33 @@ import {
   Th,
   Thead,
   Tr,
-  useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
+const styles = {
+  th: {
+    borderBottom: "1px solid gray",
+    fontSize: "medium",
+  },
+  td: {
+    borderBottom: "1px solid #E0E0E0",
+  },
+};
+
 export function ApplicationList() {
   const account = useContext(LoginContext);
   const [applicationList, setApplicationList] = useState(null);
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [name, setName] = useState("");
+  const [resumeTitle, setResumeTitle] = useState("");
   const [isCancel, setIsCancel] = useState(false);
   const navigate = useNavigate();
-  const toast = useToast();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Read (jobs 리스트 받기)
   useEffect(() => {
@@ -72,6 +93,20 @@ export function ApplicationList() {
         });
     }
   }
+
+  function handleOpenApplication(application) {
+    setSelectedApplication(application);
+    onOpen();
+    if (application.resumeId) {
+      const param = new URLSearchParams();
+      param.append("resumeId", application.resumeId);
+      axios.post(`/api/resume/application-view`, param).then((res) => {
+        setName(res.data.name);
+        setResumeTitle(res.data.title);
+      });
+    }
+  }
+
   if (account.id === "") {
     return <Spinner />;
   }
@@ -80,26 +115,26 @@ export function ApplicationList() {
     <Box w={"100%"} h={"55vh"}>
       <Box>
         <Heading mb={"10px"} p={1}>
-          지원 내역
+          나의 지원 내역
         </Heading>
         <Divider mb={"40px"} borderWidth={"2px"} />
         <Box>
           <Table>
             <Thead>
               <Tr borderTop={"1px solid gray"}>
-                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
-                  작성일
+                <Th {...styles.th} w={"150px"}>
+                  지원 일자
                 </Th>
-                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                <Th {...styles.th} w={"32%"}>
                   지원 공고
                 </Th>
-                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
-                  지원서 제목
+                <Th {...styles.th} w={"32%"}>
+                  지원서
                 </Th>
-                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                <Th {...styles.th} w={"40px"}>
                   상태
                 </Th>
-                <Th borderBottom={"1px solid gray"} fontSize={"medium"}>
+                <Th {...styles.th} w={"120px"}>
                   지원 취소
                 </Th>
               </Tr>
@@ -108,29 +143,30 @@ export function ApplicationList() {
               {applicationList &&
                 applicationList.map((application, index) => (
                   <Tr key={index}>
-                    <Td>{application.inserted}</Td>
-                    <Td fontWeight={"700"}>
-                      <Link href={`jobs/${application.jobsId}`}>
+                    <Td {...styles.td}>{application.inserted}</Td>
+                    <Td {...styles.td}>
+                      <Link
+                        href={`/jobs/${application.jobsId}`}
+                        fontWeight={"800"}
+                      >
                         {application.jobsTitle}
                       </Link>
                     </Td>
-                    <Td fontWeight={"700"}>
-                      <Link href={`/jobs/${application.jobsId}/apply/select`}>
-                        {application.title}
-                      </Link>
+                    <Td {...styles.td}>
+                      <Box
+                        color={"#FF982A"}
+                        onClick={() => handleOpenApplication(application)}
+                        fontWeight={"700"}
+                        cursor={"pointer"}
+                        _hover={{ textDecoration: "underline" }}
+                      >
+                        지원서 보기
+                      </Box>
                     </Td>
-                    <Td
-                      minW={"90px"}
-                      fontWeight={"bold"}
-                      color={
-                        application.isPassed != null && application.isPassed
-                          ? "teal"
-                          : "red"
-                      }
-                    >
+                    <Td {...styles.td} minW={"90px"} fontWeight={"bold"}>
                       {isPassedToString(application.isPassed)}
                     </Td>
-                    <Td>
+                    <Td {...styles.td}>
                       <Button
                         colorScheme="red"
                         variant="outline"
@@ -146,16 +182,63 @@ export function ApplicationList() {
             </Tbody>
           </Table>
         </Box>
-        <Button
-          onClick={() => navigate("/resume/register")}
-          colorScheme={"green"}
-          w={120}
-          mt={3}
-          mb={7}
-        >
-          이력서 등록
-        </Button>
       </Box>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            <Box
+              h={"40px"}
+              bg={"#FF7F3E"}
+              color={"white"}
+              borderRadius={"10px"}
+            >
+              <Heading size={"md"} textAlign={"center"} lineHeight={"40px"}>
+                {name} 님의 지원서
+              </Heading>
+            </Box>
+          </ModalHeader>
+          <ModalBody>
+            {selectedApplication && (
+              <>
+                <Box fontWeight={"600"} mb={"10px"}>
+                  <Flex>
+                    <Box mr={"20px"}>지원 공고</Box>
+                    <Link href={`/jobs/${selectedApplication.jobsId}`}>
+                      {selectedApplication.jobsTitle}
+                    </Link>
+                  </Flex>
+                </Box>
+                <Box fontWeight={"600"} mb={"10px"}>
+                  <Flex>
+                    <Box mr={"20px"}>첨부된 이력서: </Box>
+                    <Link
+                      color={"orange"}
+                      href={`/resume/${selectedApplication.resumeId}`}
+                    >
+                      {resumeTitle}
+                    </Link>
+                  </Flex>
+                </Box>
+                <Box bg={"#E0E0E0"} h={"2px"} mb={"20px"} />
+                <Box fontWeight={"600"} mb={"10px"}>
+                  <Box mb={"10px"}>지원메시지</Box>
+                  <Box fontWeight={"500"} whiteSpace="pre-wrap">
+                    {selectedApplication.comment}
+                  </Box>
+                </Box>
+              </>
+            )}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="gray" mr={3} onClick={onClose}>
+              닫기
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

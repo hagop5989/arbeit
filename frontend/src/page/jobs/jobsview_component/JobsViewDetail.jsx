@@ -14,10 +14,10 @@ import {
   Tr,
   UnorderedList,
 } from "@chakra-ui/react";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faThumbtack } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../../provider/LoginProvider.jsx";
 
 const styles = {
   menu: {
@@ -33,8 +33,8 @@ const styles = {
   },
 };
 
-export function JobsViewDetails({ job, jobsCond, images, src, storeMap }) {
-  const navigate = useNavigate();
+export function JobsViewDetails({ onOpen, job, jobsCond, images, storeMap }) {
+  const account = useContext(LoginContext);
   return (
     <Box
       id={"상세요강"}
@@ -182,15 +182,17 @@ export function JobsViewDetails({ job, jobsCond, images, src, storeMap }) {
         images.map((image, index) => (
           <Image w={"100%"} key={index} src={image.src} alt={image.name} />
         ))}
-      <Button
-        onClick={() => navigate(`/jobs/${job.id}/apply`)}
-        bgColor={"#FF7F3E"}
-        color={"white"}
-        mt={5}
-        w="full"
-      >
-        지원하기
-      </Button>
+      {account.isAlba() && (
+        <Button
+          onClick={onOpen}
+          bgColor={"#FF7F3E"}
+          color={"white"}
+          mt={5}
+          w="full"
+        >
+          지원하기
+        </Button>
+      )}
     </Box>
   );
 }

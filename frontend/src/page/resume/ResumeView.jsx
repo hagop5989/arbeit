@@ -53,28 +53,15 @@ export function ResumeView() {
   };
 
   useEffect(() => {
-    // TODO : 알바, 사장 접근 가능하게 만들어야함
     axios
-      .get("/api/only-alba")
-      .then(() => {
-        axios
-          .get(`/api/resume/${id}`)
-          .then((res) => {
-            setResume(res.data);
-          })
-          .catch((err) => {
-            if (err.response.status === 404) {
-              navigate("/resume/list");
-            }
-          });
-        if (resume.memberId !== undefined) {
-          getProfilePicture();
-        }
-        if (resume) {
-          countNowAge();
-        }
+      .get(`/api/resume/${id}`)
+      .then((res) => {
+        setResume(res.data);
       })
       .catch((err) => {
+        if (err.response.status === 404) {
+          navigate("/");
+        }
         if (err.response.status === 401) {
           navigate("/login");
         }
@@ -82,6 +69,12 @@ export function ResumeView() {
           navigate("/");
         }
       });
+    if (resume.memberId !== undefined) {
+      getProfilePicture();
+    }
+    if (resume) {
+      countNowAge();
+    }
   }, [resume.memberId]);
 
   function getProfilePicture() {

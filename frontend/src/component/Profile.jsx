@@ -54,19 +54,18 @@ export function Profile() {
       </Center>
       <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
         <Link href={isBoss ? "/jobs/management/list" : "/apply/list"}>
-          지원 내역
+          지원내역
         </Link>
-        {isBoss && (
-          <Center
-            w={"20px"}
-            h={"20px"}
-            bg={"yellow"}
-            borderRadius={150}
-            ml={"5px"}
-          >
-            {account.alarmNum}
-          </Center>
-        )}
+
+        <Center
+          w={"20px"}
+          h={"20px"}
+          bg={"yellow"}
+          borderRadius={150}
+          ml={"5px"}
+        >
+          {account.alarmNum}
+        </Center>
       </Flex>
       <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
         <Link href={"/scrap-history"}>스크랩 알바</Link>

@@ -21,7 +21,7 @@ public class JobsEditForm {
     @NotNull
     private Integer categoryId; //frk-category
 
-    @Pattern(regexp = "^[a-zA-Z가-힣\\s]{2,30}$", message = "최소 2글자, 최대 30글자")
+    @Pattern(regexp = "^[a-zA-Z가-힣0-9\\s]{2,30}$", message = "최소 2글자, 최대 30글자")
     @NotBlank(message = "공고 제목을 입력해주세요.")
     private String title;
 

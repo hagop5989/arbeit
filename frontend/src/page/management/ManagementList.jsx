@@ -11,7 +11,12 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  Table,
+  Tbody,
+  Td,
   Text,
+  Thead,
+  Tr,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -26,6 +31,12 @@ import {
   faAnglesLeft,
   faAnglesRight,
 } from "@fortawesome/free-solid-svg-icons";
+
+const styles = {
+  th: {
+    borderBottom: "2px solid #E0E0E0",
+  },
+};
 
 export function ManagementList() {
   const account = useContext(LoginContext);
@@ -88,8 +99,7 @@ export function ManagementList() {
 
     if (decision === "합 격") {
       if (management.isPassed == 1) {
-        /* 이미 합격된 사람인데 합격버튼 누를 때 */
-        myToast("이미 합격된 지원자 입니다.", "error");
+        alert("이미 합격된 지원자입니다.");
         return null;
       }
       isPassed = 1;
@@ -195,116 +205,103 @@ export function ManagementList() {
             </Heading>
             <Divider mb={"40px"} borderWidth={"2px"} />
           </Box>
-          <Box borderWidth="1px" borderRadius="lg" overflow="hidden" w="1050px">
-            <Flex
-              bg="gray.100"
-              p={2}
-              textIndent={13}
-              fontWeight="bold"
-              borderBottom="1px"
-              borderColor="gray.200"
-            >
-              <Box flex="1" fontSize="medium">
-                #
-              </Box>
-              <Box flex="2" fontSize="medium">
-                지원일
-              </Box>
-              <Box flex="4" fontSize="medium">
-                진행공고명
-              </Box>
-              <Box flex="4" fontSize="medium">
-                지원서 제목
-              </Box>
-              <Box flex="2" fontSize="medium">
-                상태
-              </Box>
-              <Box flex="3" fontSize="medium">
-                관리
-              </Box>
-            </Flex>
-            {managementList.map((management, index) => (
-              <Flex
-                key={index}
-                p={2}
-                fontSize="15px"
-                borderBottom="1px"
-                borderColor="gray.200"
-                _hover={{ bgColor: "orange.50" }}
-                alignItems="center"
-              >
-                <Box flex="1" minW="80px">
-                  {index + 1}
-                </Box>
-                <Box flex="2" fontSize="sm" minW="130px">
-                  {management.applicationInserted}
-                </Box>
-                <Box
-                  mr={7}
-                  flex="4"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  cursor="pointer"
-                  onClick={() => navigate(`/jobs/${management.jobsId}`)}
-                >
-                  {management.jobsTitle}
-                </Box>
-                <Box
-                  flex="4"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  cursor="pointer"
-                  onClick={() =>
-                    navigate(`/jobs/${management.resumeId}/management/select`, {
-                      state: { jobsId: management.jobsId },
-                    })
-                  }
-                >
-                  {management.applicationTitle}
-                </Box>
-                <Box flex="2" minW="90px">
-                  {management.isPassed == null ? (
-                    <Text color="gray.500" fontWeight="bold">
-                      미정
-                    </Text>
-                  ) : (
+          <Table borderRadius="lg" w="1050px">
+            <Thead bg="gray.100" p={2} fontWeight="bold">
+              <Tr>
+                <Td w={"20px"} {...styles.th}>
+                  #
+                </Td>
+                <Td {...styles.th}>지원 공고</Td>
+                <Td w={"200px"} {...styles.th}>
+                  지원서
+                </Td>
+                <Td w={"150px"} {...styles.th}>
+                  지원 일자
+                </Td>
+                <Td w={"80px"} {...styles.th}>
+                  상태
+                </Td>
+                <Td w={"100px"} {...styles.th}>
+                  처리
+                </Td>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {managementList.map((management, index) => (
+                <Tr key={index}>
+                  <Td>{index + 1}</Td>
+                  <Td
+                    fontWeight={"800"}
+                    cursor="pointer"
+                    onClick={() => navigate(`/jobs/${management.jobsId}`)}
+                  >
                     <Text
-                      fontWeight="bold"
-                      fontSize="16px"
-                      color={management.isPassed ? "teal" : "red"}
+                      cursor="pointer"
+                      _hover={{ textDecoration: "underline" }}
                     >
-                      {isPassedToString(management.isPassed)}
+                      {management.jobsTitle}
                     </Text>
-                  )}
-                </Box>
-                <Flex flex="3" gap="5px">
-                  <Button
-                    onClick={(e) => handleDecision(e, management)}
-                    w="75px"
-                    fontWeight="bold"
-                    variant="outline"
-                    colorScheme="teal"
-                    _hover={{ bg: "teal", color: "white" }}
-                    borderWidth="2px"
+                  </Td>
+                  <Td
+                    fontWeight={"800"}
+                    color={"#FF8400"}
+                    onClick={() =>
+                      navigate(`/jobs/${management.jobsId}/application-view`, {
+                        state: { resumeId: management.resumeId },
+                      })
+                    }
                   >
-                    합 격
-                  </Button>
-                  <Button
-                    onClick={(e) => handleDecision(e, management)}
-                    fontWeight="bold"
-                    variant="outline"
-                    colorScheme="red"
-                    _hover={{ bg: "#E74133", color: "white" }}
-                    borderWidth="2px"
-                  >
-                    불합격
-                  </Button>
-                </Flex>
-              </Flex>
-            ))}
-          </Box>
+                    <Text
+                      cursor="pointer"
+                      _hover={{ textDecoration: "underline" }}
+                    >
+                      지원서 확인하기
+                    </Text>
+                  </Td>
+                  <Td>{management.applicationInserted}</Td>
+                  <Td>
+                    {management.isPassed == null ? (
+                      <Text color="gray.500" fontWeight="bold">
+                        미정
+                      </Text>
+                    ) : (
+                      <Text
+                        fontWeight="bold"
+                        fontSize="16px"
+                        color={management.isPassed ? "teal" : "red"}
+                      >
+                        {isPassedToString(management.isPassed)}
+                      </Text>
+                    )}
+                  </Td>
+                  <Td>
+                    <Flex gap={1}>
+                      <Button
+                        onClick={(e) => handleDecision(e, management)}
+                        variant="outline"
+                        colorScheme="teal"
+                        _hover={{ bg: "teal", color: "white" }}
+                        borderWidth="2px"
+                        size={"sm"}
+                      >
+                        합격
+                      </Button>
+                      <Button
+                        onClick={(e) => handleDecision(e, management)}
+                        variant="outline"
+                        colorScheme="red"
+                        _hover={{ bg: "#E74133", color: "white" }}
+                        borderWidth="2px"
+                        size={"sm"}
+                      >
+                        불합격
+                      </Button>
+                    </Flex>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
         </Box>
       )}
       <Box my={6}>{Paging()}</Box>
