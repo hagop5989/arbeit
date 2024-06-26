@@ -59,14 +59,15 @@ public interface JobsMapper {
             JOIN category c ON c.id = j.category_id
             JOIN jobs_condition jc ON jc.jobs_id = j.id
             <where>
+                m.name != '탈퇴한 유저'
                 <if test="searchType != null">
                     <bind name="pattern" value="'%' + keyword + '%'" />
                     <choose>
                         <when test="searchType == 'all' || searchType == 'text'">
-                            (j.title LIKE #{pattern} OR j.content LIKE #{pattern})
+                            AND (j.title LIKE #{pattern} OR j.content LIKE #{pattern})
                         </when>
-                        <when test="searchType == 'nickName'">
-                            (m.name LIKE #{pattern})
+                      <when test="searchType == 'nickName'">
+                            AND m.name LIKE #{pattern}
                         </when>
                     </choose>
                 </if>

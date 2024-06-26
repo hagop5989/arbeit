@@ -1,10 +1,12 @@
 package com.backend.domain.reviw;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true) // 필드에 정의되지 않은 것이 넘어올 경우 무시.
 public class ReviewToStore {
     /* albaId,storeId 가 묶여서 pk */
     private Integer albaId; // fk
