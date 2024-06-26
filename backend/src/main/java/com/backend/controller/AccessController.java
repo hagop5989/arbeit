@@ -71,13 +71,4 @@ public class AccessController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
-
-    @PostMapping("/access-resume")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity onlyAuthMember(@RequestParam("id") Integer resumeId, @AuthId Integer authId) {
-        if (!resumeService.accessValidate(resumeId, authId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok().build();
-    }
 }

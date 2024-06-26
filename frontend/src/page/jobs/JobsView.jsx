@@ -7,6 +7,7 @@ import {
   Flex,
   Spinner,
   Stack,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { JobsViewDetails } from "./jobsview_component/JobsViewDetail.jsx";
@@ -20,6 +21,7 @@ import { JobContact } from "./jobsview_component/JobContact.jsx";
 import { CompanyInfo } from "./jobsview_component/CompanyInfo.jsx";
 import { JobReview } from "./jobsview_component/JobReview.jsx";
 import { JobRequirements } from "./jobsview_component/JobRequirements.jsx";
+import { ApplicationWriteModal } from "../application/ApplicationWriteModal.jsx";
 
 export function JobsView() {
   const account = useContext(LoginContext);
@@ -30,6 +32,8 @@ export function JobsView() {
   const [images, setImages] = useState([]);
   const [boss, setBoss] = useState({});
   const [src, setSrc] = useState("/public/alba_connector_store_logo.png");
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toast = useToast();
 
@@ -101,18 +105,23 @@ export function JobsView() {
       <Stack spacing={6}>
         <JobDetail jobs={jobs} jobsCond={jobsCond} src={src} />
         <Divider />
-        <JobRequirements job={jobs} jobsCond={jobsCond} id={id} />
+        <JobRequirements
+          onOpen={onOpen}
+          job={jobs}
+          jobsCond={jobsCond}
+          id={id}
+        />
         <Divider />
         <JobLocation storeMap={storeMap} />
         <Divider />
         <JobConditions job={jobs} jobsCond={jobsCond} />
         <Divider />
         <JobsViewDetails
+          onOpen={onOpen}
           job={jobs}
           jobsCond={jobsCond}
           images={images}
           storeMap={storeMap}
-          src={src}
         />
         <Divider />
         <JobContact boss={boss} storeMap={storeMap} />
@@ -128,21 +137,30 @@ export function JobsView() {
         <JobReview />
       </Stack>
       {account.isAlba() && (
-        <Flex w={"100%"} gap={5} my={"40px"}>
-          <Button
-            onClick={() => navigate("/jobs/list")}
-            w={"50%"}
-            colorScheme={"green"}
-          >
-            목록
-          </Button>
-          <Button onClick={handleApplyBtn} w={"50%"} colorScheme={"blue"}>
-            지원하기
-          </Button>
-        </Flex>
+        <>
+          <Flex w={"100%"} gap={5} my={"40px"}>
+            <Button
+              onClick={() => navigate("/jobs/list")}
+              w={"50%"}
+              colorScheme={"green"}
+            >
+              목록
+            </Button>
+            <Button onClick={onOpen} w={"50%"} colorScheme={"blue"}>
+              지원하기
+            </Button>
+          </Flex>
+          <ApplicationWriteModal
+            id={id}
+            src={src}
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
+          />
+        </>
       )}
 
-      {account.isBoss() && (
+      {account.hasAccess(jobs.memberId) && (
         <Flex w={"100%"} gap={2} my={"40px"}>
           <Button
             onClick={() => navigate(`/jobs/${id}/edit`)}
