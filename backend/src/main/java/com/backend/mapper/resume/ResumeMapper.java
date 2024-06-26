@@ -61,4 +61,19 @@ public interface ResumeMapper {
             """)
     int update(ResumeForm form);
 
+    @Select("""
+            SELECT DISTINCT j.member_id boss_id
+            FROM resume r
+                     JOIN application a ON r.id = a.resume_id
+                     JOIN jobs j ON a.jobs_id = j.id
+            WHERE resume_id = #{resumeId};
+            """)
+    List<Integer> findBossIdsById(Integer resumeId);
+
+    @Select("""
+            SELECT member_id
+            FROM resume
+            WHERE id=#{id}
+            """)
+    Integer findMemberIdById(Integer id);
 }

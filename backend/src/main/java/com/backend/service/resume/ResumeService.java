@@ -2,6 +2,7 @@ package com.backend.service.resume;
 
 import com.backend.domain.resume.Resume;
 import com.backend.domain.resume.ResumeForm;
+import com.backend.mapper.jobs.JobsMapper;
 import com.backend.mapper.resume.ResumeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.List;
 @Slf4j
 public class ResumeService {
     private final ResumeMapper mapper;
+    private final JobsMapper jobsMapper;
 
     public void register(ResumeForm form, Authentication authentication) {
         form.setMemberId(Integer.valueOf(authentication.getName()));
@@ -62,5 +64,26 @@ public class ResumeService {
         String authId = authentication.getName();
 
         return memberId.equals(authId);
+    }
+
+    public boolean accessValidate(Integer resumeId, Integer authId) {
+
+        Integer memberId = mapper.findMemberIdById(resumeId);
+        if (memberId != null) {
+            if (memberId.equals(authId)) {
+                return true;
+            }
+        }
+
+        List<Integer> bossIds = mapper.findBossIdsById(resumeId);
+        if (bossIds != null) {
+            for (Integer bossId : bossIds) {
+                if (bossId.equals(authId)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -1,10 +1,10 @@
 package com.backend.controller.jobs;
 
+import com.backend.controller.application.AuthId;
 import com.backend.domain.jobs.form.JobsEditForm;
 import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.service.jobs.JobsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +85,9 @@ public class JobsController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
     public ResponseEntity update(@Validated JobsEditForm form, BindingResult bindingResult,
-                                 Authentication authentication) throws IOException {
+                                 @AuthId Integer authId) throws IOException {
 
-        if (!service.hasAccess(form, authentication)) {
+        if (!service.hasAccess(form.getMemberId(), authId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -96,13 +96,20 @@ public class JobsController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        service.update(form, authentication);
+        service.update(form);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity delete(@PathVariable Integer id, @AuthId Integer authId) {
+
+        if (!service.hasAccess(service.findMemberIdById(id), authId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         service.deleteByJobsId(id);
+        return ResponseEntity.ok().build();
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {

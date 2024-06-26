@@ -14,7 +14,7 @@ public class StoreEditForm {
 
     @NotNull
     private Integer id;
-    @Pattern(regexp = "^[a-zA-Z가-힣\\s]{2,20}$", message = "최소 2글자, 최대 20글자")
+    @Pattern(regexp = "^[a-zA-Z가-힣0-9\\s]{2,20}$", message = "최소 2글자, 최대 20글자")
     @NotBlank(message = "지점명을 입력해주세요.")
     private String name;
     @NotBlank(message = "지점을 소개해주세요.")
