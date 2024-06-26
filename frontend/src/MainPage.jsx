@@ -3,6 +3,8 @@ import {
   faBeerMugEmpty,
   faDesktop,
   faFaceLaughBeam,
+  faFileCircleCheck,
+  faFileCirclePlus,
   faFilm,
   faIndustry,
   faMotorcycle,
@@ -15,7 +17,9 @@ import {
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react"; // 중복 스타일을 객체로 정의
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "./provider/LoginProvider.jsx"; // 중복 스타일을 객체로 정의
 
 // 중복 스타일을 객체로 정의
 const buttonStyle = {
@@ -34,6 +38,7 @@ const buttonStyle = {
 };
 
 const needStyle = {
+  marginTop: "10px",
   width: "70%",
   borderRadius: "20px",
   borderBottom: "4px solid #CCD4E0",
@@ -49,6 +54,17 @@ const needStyle = {
 };
 
 export function MainPage() {
+  const [hoveredBox, setHoveredBox] = useState(null);
+  const account = useContext(LoginContext);
+  const navigate = useNavigate();
+
+  const handleMouseEnter = (box) => {
+    setHoveredBox(box);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredBox(null);
+  };
   return (
     <Box w={"100%"} h={"600px"}>
       <Box height={"15%"}>
@@ -58,6 +74,231 @@ export function MainPage() {
           h={"100%"}
         />
       </Box>
+      {account.isAlba() && (
+        <>
+          <Center
+            height={"40px"}
+            bg={"#CCD4E0"}
+            color={"black"}
+            fontSize={"1.5rem"}
+            fontWeight={"700"}
+            mt={"25px"}
+            mb={"5px"}
+            borderRadius={"10px"}
+          >
+            알바 채용을 위한 첫 걸음
+          </Center>
+          <Flex>
+            <Box
+              w={"30%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/resume/register")}
+              >
+                <FontAwesomeIcon icon={faFileCirclePlus} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  이력서 작성하기
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box1"
+                      ? "/public/write-export.gif"
+                      : "/public/write-export.png"
+                  }
+                  height={"128px"}
+                  mt={"50px"}
+                  ml={"100px"}
+                />
+              </Box>
+            </Box>
+            <Box
+              ml={"5%"}
+              w={"30%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box2")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/resume/list")}
+              >
+                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  이력서 확인하기
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box2"
+                      ? "/public/scan-export.gif"
+                      : "/public/scan-export.png"
+                  }
+                  height={"128px"}
+                  mt={"50px"}
+                  ml={"100px"}
+                />
+              </Box>
+            </Box>
+            {/*<Box*/}
+            {/*  ml={"5%"}*/}
+            {/*  w={"30%"}*/}
+            {/*  border={"2px solid #CCD4E0"}*/}
+            {/*  height={"50%"}*/}
+            {/*  borderRadius={"20px"}*/}
+            {/*  onMouseEnter={() => handleMouseEnter("box3")}*/}
+            {/*  onMouseLeave={handleMouseLeave}*/}
+            {/*>*/}
+            {/*  <Center*/}
+            {/*    margin={"auto"}*/}
+            {/*    {...needStyle}*/}
+            {/*    as="div"*/}
+            {/*    cursor={"pointer"}*/}
+            {/*    onClick={() => navigate("/jobs/list")}*/}
+            {/*  >*/}
+            {/*    <FontAwesomeIcon icon={faThumbtack} />*/}
+            {/*    <Box mx={3}>공고 확인하기</Box>*/}
+            {/*    <FontAwesomeIcon*/}
+            {/*      icon={faRightToBracket}*/}
+            {/*      fontSize={"20px"}*/}
+            {/*      color={"gray"}*/}
+            {/*    />*/}
+            {/*  </Center>*/}
+            {/*  <Box>*/}
+            {/*    <Image*/}
+            {/*      src={*/}
+            {/*        hoveredBox === "box3"*/}
+            {/*          ? "/public/job-export.gif"*/}
+            {/*          : "/public/job-export.png"*/}
+            {/*      }*/}
+            {/*      height={"128px"}*/}
+            {/*      mt={"50px"}*/}
+            {/*      ml={"100px"}*/}
+            {/*    />*/}
+            {/*  </Box>*/}
+            {/*</Box>*/}
+          </Flex>
+        </>
+      )}
+      {/*사장 쪽*/}
+      <Center
+        height={"40px"}
+        bg={"#CCD4E0"}
+        color={"black"}
+        fontSize={"1.5rem"}
+        fontWeight={"700"}
+        mt={"25px"}
+        mb={"5px"}
+        borderRadius={"10px"}
+      >
+        사장 메뉴
+      </Center>
+      <Flex>
+        <Box
+          ml={"5%"}
+          w={"40%"}
+          border={"2px solid #CCD4E0"}
+          height={"50%"}
+          borderRadius={"20px"}
+          onMouseEnter={() => handleMouseEnter("box1")}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Center
+            margin={"auto"}
+            {...needStyle}
+            as="div"
+            cursor={"pointer"}
+            onClick={() => navigate("/resume/register")}
+          >
+            <FontAwesomeIcon icon={faFileCirclePlus} />
+            <Box color={"#ff5a3d"} mx={3}>
+              이력서 작성하기
+            </Box>
+            <FontAwesomeIcon
+              icon={faRightToBracket}
+              fontSize={"20px"}
+              color={"gray"}
+            />
+          </Center>
+          <Box>
+            <Image
+              src={
+                hoveredBox === "box1"
+                  ? "/public/write-export.gif"
+                  : "/public/write-export.png"
+              }
+              height={"128px"}
+              mt={"50px"}
+              ml={"100px"}
+            />
+          </Box>
+        </Box>
+        <Box
+          ml={"10%"}
+          w={"40%"}
+          border={"2px solid #CCD4E0"}
+          height={"50%"}
+          borderRadius={"20px"}
+          onMouseEnter={() => handleMouseEnter("box2")}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Center
+            margin={"auto"}
+            {...needStyle}
+            as="div"
+            cursor={"pointer"}
+            onClick={() => navigate("/resume/list")}
+          >
+            <FontAwesomeIcon icon={faFileCircleCheck} />
+            <Box color={"#ff5a3d"} mx={3}>
+              이력서 확인하기
+            </Box>
+            <FontAwesomeIcon
+              icon={faRightToBracket}
+              fontSize={"20px"}
+              color={"gray"}
+            />
+          </Center>
+          <Box>
+            <Image
+              src={
+                hoveredBox === "box2"
+                  ? "/public/scan-export.gif"
+                  : "/public/scan-export.png"
+              }
+              height={"128px"}
+              mt={"50px"}
+              ml={"100px"}
+            />
+          </Box>
+        </Box>
+      </Flex>
       <Center
         height={"40px"}
         bg={"#CCD4E0"}
@@ -183,33 +424,6 @@ export function MainPage() {
             />
           </Center>
         </Flex>
-      </Box>
-      <Box
-        w={"30%"}
-        border={"1px solid green"}
-        height={"50%"}
-        borderRadius={"20px"}
-      >
-        <Center m={"10px"} fontSize={"1.5rem"}>
-          알바 채용을 위한 첫 걸음
-        </Center>
-        <Center margin={"auto"} {...needStyle} as="div">
-          <FontAwesomeIcon icon={faTruck} />
-          <Box mx={3}>이력서 작성하기</Box>
-          <FontAwesomeIcon
-            icon={faRightToBracket}
-            fontSize={"20px"}
-            color={"gray"}
-          />
-        </Center>
-        <Box>
-          <Image
-            mt={"30px"}
-            ml={"100px"}
-            src="/public/man1.png"
-            height={"192px"}
-          />
-        </Box>
       </Box>
     </Box>
   );
