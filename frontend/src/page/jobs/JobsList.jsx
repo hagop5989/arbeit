@@ -293,7 +293,7 @@ export function JobsList() {
         </Box>
       </Flex>
       <Center>
-        <Box>
+        <Box border={"1px solid red"} h={"55vh"}>
           {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
           {(searchParams || filterType) && jobsList.length == 0 && (
             <Center w={"1050px"} h={"55vh"}>
@@ -315,9 +315,9 @@ export function JobsList() {
           </Grid>
 
           {/* 페이징 */}
-          {Paging()}
         </Box>
       </Center>
+      {jobsList.length != null && jobsList.length > 0 && <Box>{Paging()}</Box>}
     </Box>
   );
 
