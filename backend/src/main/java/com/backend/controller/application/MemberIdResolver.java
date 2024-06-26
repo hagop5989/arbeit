@@ -21,7 +21,11 @@ public class MemberIdResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getName() != null) {
-            return Integer.valueOf(authentication.getName());
+            String sub = authentication.getName();
+            if (sub.equals("anonymousUser")) {
+                return null;
+            }
+            return Integer.valueOf(sub);
         }
         return null;
     }

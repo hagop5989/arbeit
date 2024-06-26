@@ -1,7 +1,7 @@
 package com.backend.controller;
 
-import com.backend.domain.member.MemberLoginForm;
-import com.backend.domain.member.MemberSignupForm;
+import com.backend.domain.member.form.MemberLoginForm;
+import com.backend.domain.member.form.MemberSignupForm;
 import com.backend.service.member.MailService;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +92,10 @@ public class AuthController {
 
     @PostMapping("/find-email")
     public ResponseEntity findEmail(@RequestParam String name, @RequestParam String phone) {
+
+        if (name.equals("탈퇴한 유저")) {
+            return ResponseEntity.badRequest().build();
+        }
         String email = memberService.findByNameAndPhone(name, phone);
         if (email != null) {
             return ResponseEntity.ok(email);
@@ -103,6 +107,9 @@ public class AuthController {
     public ResponseEntity authEmail(@RequestParam String email) {
         if (!mailService.checkRegex(email)) {
             return ResponseEntity.badRequest().build();
+        }
+        if (memberService.findByEmail(email) == null) {
+            return ResponseEntity.ok(false);
         }
         try {
             String number = String.valueOf(mailService.sendMail(email));
@@ -126,7 +133,6 @@ public class AuthController {
         memberService.updatePwdByEmail(email, password);
         return ResponseEntity.ok().build();
     }
-
 
     private void putValue(String key, String value) {
         numbers.put(key, value);

@@ -74,6 +74,7 @@ export function FindPassword() {
   }
 
   function handleSendMailBtn() {
+    axios.get();
     alert("인증번호를 발신합니다. 최대 1분 소요됩니다.");
     if (isSendMail) {
       setSeconds(120);
@@ -85,7 +86,12 @@ export function FindPassword() {
     param.append("email", email);
     axios
       .post(`/api/auth-email`, param)
-      .then()
+      .then((res) => {
+        if (res.data === false) {
+          alert("일치하는 정보가 없습니다.");
+          setIsSendMail(false);
+        }
+      })
       .catch((err) => {
         if (err.response.status === 400) {
           alert("이메일 형식을 맞춰주세요.");

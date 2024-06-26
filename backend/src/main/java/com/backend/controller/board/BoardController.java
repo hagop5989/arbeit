@@ -1,9 +1,9 @@
 package com.backend.controller.board;
 
 
-import com.backend.domain.board.BoardEditForm;
-import com.backend.domain.board.BoardWriteForm;
-import com.backend.mapper.board.BoardMapper;
+import com.backend.domain.board.Board;
+import com.backend.domain.board.form.BoardEditForm;
+import com.backend.domain.board.form.BoardWriteForm;
 import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,6 @@ public class BoardController {
     public ResponseEntity write(@Validated BoardWriteForm form, BindingResult bindingResult,
                                 Authentication authentication) throws IOException {
 
-
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
@@ -59,7 +58,6 @@ public class BoardController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
     @GetMapping("/list")
@@ -93,8 +91,6 @@ public class BoardController {
 
         boardService.edit(form, authentication);
         return ResponseEntity.ok().build();
-
-
     }
 
     @DeleteMapping("/{id}")

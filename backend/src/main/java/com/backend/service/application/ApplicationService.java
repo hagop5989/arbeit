@@ -2,9 +2,10 @@ package com.backend.service.application;
 
 import com.backend.domain.application.Application;
 import com.backend.domain.application.ApplicationWriteForm;
-import com.backend.domain.member.resume.Resume;
+import com.backend.domain.resume.Resume;
 import com.backend.mapper.application.ApplicationMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +31,9 @@ public class ApplicationService {
         return result;
     }
 
-    public void write(ApplicationWriteForm form, Integer authId) {
+    public void write(ApplicationWriteForm form, Integer jobsId, Integer authId) {
         Application application = new Application(
-                form.getJobsId(),
+                jobsId,
                 authId,
                 form.getResumeId(),
                 form.getTitle(),
@@ -54,8 +55,18 @@ public class ApplicationService {
         mapper.update(application);
     }
 
-    public void cancel(Integer jobsId, Integer authId) {
+
+    // TODO : 반환 타입 고쳐야함
+    public ResponseEntity cancel(Integer jobsId, Integer authId) {
+        Application application = mapper.selectByJobsIdAndMemberId(jobsId, authId);
+        Integer isPassed = application.getIsPassed();
+        if (isPassed != null) {
+            if (isPassed == 1) {
+                return ResponseEntity.badRequest().body("합격 처리된 지원서는 취소할 수 없습니다.");
+            }
+        }
         mapper.deleteByJobsIdAndMemberId(jobsId, authId);
+        return ResponseEntity.ok().build();
     }
 
     public void deleteAllByJobsId(Integer jobsId) {
@@ -69,6 +80,10 @@ public class ApplicationService {
     }
 
     public Integer count(Integer authId) {
-        return mapper.selectCountByMemberId(authId);
+        Integer count = mapper.selectCountByMemberId(authId);
+
+        return count;
     }
+
+
 }

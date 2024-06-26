@@ -25,6 +25,10 @@ CREATE TABLE authority
 
 SELECT *
 FROM member;
+UPDATE member
+SET email='1651324384.delete',
+    name='탈퇴한 유저'
+WHERE id = 55;
 DESC member;
 
 SELECT *

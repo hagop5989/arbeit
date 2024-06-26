@@ -2,33 +2,56 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCamera,
+  faEye,
+  faEyeSlash,
+  faKey,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function MemberInfo() {
   const { id } = useParams();
   const [member, setMember] = useState(null);
   const [profileSrc, setProfileSrc] = useState("");
   const [nowAge, setNowAge] = useState("");
+  const [show, setShow] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+
   const fileInputRef = useRef({});
   const navigate = useNavigate();
   const toast = useToast();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClick = () => setShow(!show);
   const account = useContext(LoginContext);
+
+  const isMatch = password === passwordCheck;
 
   function getProfilePicture() {
     axios
@@ -61,9 +84,8 @@ export function MemberInfo() {
           description: "접근 권한이 없습니다.",
           position: "top",
         });
-        navigate("/member/list");
-      })
-      .finally();
+        navigate("/");
+      });
     getProfilePicture();
   }, []);
 
@@ -74,17 +96,33 @@ export function MemberInfo() {
   }, [member]);
 
   function handleRemoveBtn() {
-    axios
-      .delete(`/api/member/${id}`)
-      .then(() => {
-        toast({
-          status: "success",
-          description: "삭제되었습니다.",
-          position: "top",
+    const confirm = window.confirm("정말 탈퇴하시겠습니까?");
+    if (confirm) {
+      const params = new URLSearchParams();
+      params.append("password", password);
+      axios
+        .post(`/api/member/${id}/delete`, params)
+        .then(() => {
+          toast({
+            status: "warning",
+            description: "탈퇴되었습니다.",
+            position: "top",
+          });
+          account.logout();
+          navigate("/login");
+        })
+        .catch((err) => {
+          if (err.response.status === 403) {
+            toast({
+              status: "warning",
+              description: "비밀번호가 일치하지 않습니다.",
+              position: "top",
+            });
+            navigate(`/member/${id}`);
+          }
         });
-      })
-      .catch()
-      .finally();
+    }
+    onClose();
   }
 
   if (member === null) {
@@ -132,30 +170,60 @@ export function MemberInfo() {
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
       <Box>
-        <Heading mb={"10px"} p={1}>
-          회원정보
-        </Heading>
-        <Divider mb={"40px"} borderWidth={"2px"} />
+        <Box
+          h={"70px"}
+          mb={"70px"}
+          bg={"#FF7F3E"}
+          color={"white"}
+          borderRadius={"10px"}
+        >
+          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+            회원 정보
+          </Heading>
+        </Box>
         <Box>
           <Box>
             {/* 프로필 사진 */}
-            <FormControl>
+            <FormControl mb={"50px"}>
               <Flex>
-                <Box w={"230px"} h={"230px"} ml={"40px"}>
+                <Box w={"240px"} h={"240px"}>
                   <Image
                     w={"100%"}
                     h={"100%"}
                     border={"1px solid gray"}
-                    borderRadius={150}
+                    borderRadius={"50%"}
                     src={
                       profileSrc === ""
-                        ? "https://contents.albamon.kr/monimg/msa/assets/images/icon_profile_male80.svg"
+                        ? "/public/base_profile.png"
                         : profileSrc
                     }
+                    objectFit={"contain"}
                   />
+                  {account.hasAccess(id) && (
+                    <Box w={"50px"} h={"50px"}>
+                      <Center
+                        boxSize={"50px"}
+                        bgColor="gray.100"
+                        borderRadius={100}
+                        mt={"-30px"}
+                        cursor="pointer"
+                        onClick={handleProfilePictureBtn}
+                      >
+                        <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
+                      </Center>
+                      <Input
+                        w={"50px"}
+                        type={"file"}
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
+                    </Box>
+                  )}
                 </Box>
                 <Box
-                  ml={"120px"}
+                  w={"50%"}
+                  ml={"50px"}
                   display={"flex"}
                   flexDirection={"column"}
                   gap={"25px"}
@@ -182,6 +250,7 @@ export function MemberInfo() {
                     </FormLabel>
                     <Box>{member.gender}</Box>
                   </Box>
+
                   <Box display={"flex"}>
                     <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       전화번호
@@ -190,28 +259,6 @@ export function MemberInfo() {
                   </Box>
                 </Box>
               </Flex>
-              {account.hasAccess(id) && (
-                <Box>
-                  <Center
-                    boxSize={"50px"}
-                    bgColor="gray.100"
-                    borderRadius={100}
-                    ml={"30px"}
-                    mt={"-30px"}
-                    cursor="pointer"
-                    onClick={handleProfilePictureBtn}
-                  >
-                    <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
-                  </Center>
-                  <Input
-                    w={"50px"}
-                    type={"file"}
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                </Box>
-              )}
             </FormControl>
             {/* 회원 정보 */}
             <FormControl>
@@ -239,7 +286,7 @@ export function MemberInfo() {
                       w={"50%"}
                       bgColor={"red.500"}
                       color={"white"}
-                      onClick={handleRemoveBtn}
+                      onClick={onOpen}
                     >
                       회원 탈퇴
                     </Button>
@@ -250,6 +297,64 @@ export function MemberInfo() {
           </Box>
         </Box>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>회원 삭제</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl mb={"5px"} isInvalid={!isMatch}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" color={"gray.400"}>
+                  <FontAwesomeIcon icon={faKey} />
+                </InputLeftElement>
+                <Input
+                  type={show ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="비밀번호"
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? (
+                      <FontAwesomeIcon icon={faEyeSlash} />
+                    ) : (
+                      <FontAwesomeIcon icon={faEye} />
+                    )}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl isInvalid={!isMatch}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" color={"gray.400"}>
+                  <FontAwesomeIcon icon={faKey} />
+                </InputLeftElement>
+                <Input
+                  type={show ? "text" : "password"}
+                  onChange={(e) => setPasswordCheck(e.target.value)}
+                  placeholder="비밀번호 확인"
+                />
+              </InputGroup>
+              <FormErrorMessage>
+                비밀번호와 비밀번호 확인이 일치하지 않습니다.
+              </FormErrorMessage>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              취소
+            </Button>
+            <Button
+              isDisabled={!isMatch}
+              colorScheme={"red"}
+              variant="outline"
+              onClick={handleRemoveBtn}
+            >
+              회원 삭제
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

@@ -2,9 +2,9 @@ package com.backend.service.member;
 
 import com.backend.domain.authority.MemberAuth;
 import com.backend.domain.member.Member;
-import com.backend.domain.member.MemberEditForm;
-import com.backend.domain.member.MemberLoginForm;
-import com.backend.domain.member.MemberSignupForm;
+import com.backend.domain.member.form.MemberEditForm;
+import com.backend.domain.member.form.MemberLoginForm;
+import com.backend.domain.member.form.MemberSignupForm;
 import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -144,7 +141,8 @@ public class MemberService {
     }
 
     public void deleteById(Integer id) {
-        mapper.deleteById(id);
+        String deleted = STR."delete.\{UUID.randomUUID().toString()}";
+        mapper.deleteById(id, deleted);
     }
 
     public Map<String, String> passwordMatch(MemberEditForm form) {
@@ -181,5 +179,10 @@ public class MemberService {
     public void updatePwdByEmail(String email, String password) {
         String encoded = passwordEncoder.encode(password);
         mapper.updatePwdByEmail(email, encoded);
+    }
+
+    public boolean canDelete(String password, Integer id) {
+        Member dbMember = mapper.selectById(id);
+        return passwordEncoder.matches(password, dbMember.getPassword());
     }
 }

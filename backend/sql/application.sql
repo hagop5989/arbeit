@@ -24,3 +24,10 @@ create index resume_id
 
 select *
 from application;
+
+SELECT DISTINCT j.member_id boss_id, r.member_id
+FROM resume r
+         JOIN application a ON r.id = a.resume_id
+         JOIN jobs j ON a.jobs_id = j.id
+WHERE resume_id = 36;
+

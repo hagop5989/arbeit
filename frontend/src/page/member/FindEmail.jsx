@@ -25,7 +25,9 @@ export function FindEmail() {
     axios
       .post("/api/find-email", memberInfo)
       .then((res) => setEmail(res.data))
-      .catch(() => alert("일치하는 정보가 없습니다."));
+      .catch(() => {
+        alert("일치하는 정보가 없습니다.");
+      });
   }
 
   return (

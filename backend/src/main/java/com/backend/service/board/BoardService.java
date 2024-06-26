@@ -1,9 +1,9 @@
 package com.backend.service.board;
 
 import com.backend.domain.board.Board;
-import com.backend.domain.board.BoardEditForm;
+import com.backend.domain.board.form.BoardEditForm;
 import com.backend.domain.board.BoardImage;
-import com.backend.domain.board.BoardWriteForm;
+import com.backend.domain.board.form.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

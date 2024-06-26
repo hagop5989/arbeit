@@ -1,7 +1,7 @@
 package com.backend.mapper.application;
 
 import com.backend.domain.application.Application;
-import com.backend.domain.member.resume.Resume;
+import com.backend.domain.resume.Resume;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -73,6 +73,9 @@ public interface ApplicationMapper {
             SELECT COUNT(*)
             FROM application
             WHERE member_id=#{memberId}
+                    AND is_passed IS NOT NULL
+                    AND inserted BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 WEEK) AND NOW();
             """)
     Integer selectCountByMemberId(Integer memberId);
+
 }

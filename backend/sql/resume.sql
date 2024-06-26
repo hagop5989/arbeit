@@ -9,3 +9,5 @@ CREATE TABLE resume
     is_rookie BOOLEAN       NOT NULL,
     inserted  DATETIME      NOT NULL DEFAULT NOW()
 );
+SELECT *
+FROM resume;

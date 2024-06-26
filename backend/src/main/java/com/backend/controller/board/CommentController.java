@@ -1,8 +1,8 @@
 package com.backend.controller.board;
 
 import com.backend.domain.board.Comment;
-import com.backend.domain.board.CommentEditForm;
-import com.backend.domain.board.CommentWriterForm;
+import com.backend.domain.board.form.CommentEditForm;
+import com.backend.domain.board.form.CommentWriterForm;
 import com.backend.service.board.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

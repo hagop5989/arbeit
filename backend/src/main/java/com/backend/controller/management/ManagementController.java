@@ -6,31 +6,32 @@ import com.backend.domain.management.Management;
 import com.backend.service.management.ManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/jobs")
+@PreAuthorize("hasAuthority('SCOPE_BOSS')")
 public class ManagementController {
     private final ManagementService service;
 
-    @PutMapping("{id}/management/decision")
-    public void insertDecision(@RequestBody Management management, @PathVariable Integer id) {
-        service.insertDecision(management);
+    @PutMapping("/management/decision")
+    public void updateDecision(@RequestBody Management management) {
+        service.updateDecision(management);
     }
 
-    @GetMapping("{resumeId}/management/select")
-    public Application select(@RequestParam Integer jobsId, @PathVariable Integer resumeId) {
+    @GetMapping("/{jobsId}/management/application-view")
+    public Application select(@RequestParam Integer resumeId, @PathVariable Integer jobsId) {
         return service.select(jobsId, resumeId);
     }
 
     @GetMapping("management/list")
-    public List<Management> list(@AuthId Integer memberId) {
-        List<Management> list = service.list(memberId);
-        return list;
+    public Map<String, Object> list(@AuthId Integer memberId, @RequestParam(value = "page", defaultValue = "1") Integer currentPage) {
+        return service.list(memberId, currentPage);
     }
 
     @GetMapping("/managements-count")

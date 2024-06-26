@@ -2,7 +2,7 @@ package com.backend.mapper.store;
 
 import com.backend.domain.store.Category;
 import com.backend.domain.store.Store;
-import com.backend.domain.store.StoreEditForm;
+import com.backend.domain.store.form.StoreEditForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public interface StoreMapper {
                 inserted,
                 member_id,
                 category_id,
-                c.name category_name
+                c.name categoryName
             FROM store s JOIN category c ON s.category_id = c.id
             WHERE member_id=#{memberId}
             ORDER BY id DESC

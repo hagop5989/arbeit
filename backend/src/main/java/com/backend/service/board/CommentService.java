@@ -1,8 +1,8 @@
 package com.backend.service.board;
 
 import com.backend.domain.board.Comment;
-import com.backend.domain.board.CommentEditForm;
-import com.backend.domain.board.CommentWriterForm;
+import com.backend.domain.board.form.CommentEditForm;
+import com.backend.domain.board.form.CommentWriterForm;
 import com.backend.mapper.board.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

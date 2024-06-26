@@ -19,7 +19,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { CommentEdit } from "./CommentEdit.jsx";
 
 export function CommentList({ boardId }) {

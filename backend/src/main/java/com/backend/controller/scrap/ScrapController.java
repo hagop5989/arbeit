@@ -20,8 +20,8 @@ public class ScrapController {
     }
 
     @GetMapping("list")
-    public List<Scrap> list(@AuthId Integer memberId) {
-        return service.list(memberId);
+    public List<Scrap> list(@AuthId Integer authId) {
+        return service.list(authId);
     }
 
     @PutMapping()

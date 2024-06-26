@@ -201,5 +201,10 @@ public interface JobsMapper {
             """)
     int deleteById(Integer id);
 
-
+    @Select("""
+            SELECT member_id
+            FROM jobs
+            WHERE id=#{id}
+            """)
+    Integer selectMemberIdById(Integer id);
 }

@@ -1,7 +1,7 @@
 package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
-import com.backend.domain.member.MemberEditForm;
+import com.backend.domain.member.form.MemberEditForm;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,6 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity info(@PathVariable("id") Integer id, Authentication authentication) {
         if (!memberService.hasAccess(id, authentication)) {
-            log.info("Access denied");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok().body(memberService.findById(id));
@@ -79,11 +78,16 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}/delete")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity delete(@PathVariable("id") Integer id,
+                                 @RequestParam String password,
                                  Authentication authentication) {
+
         if (!memberService.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        if (!memberService.canDelete(password, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

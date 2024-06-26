@@ -1,6 +1,10 @@
 package com.backend.service.jobs;
 
-import com.backend.domain.jobs.*;
+import com.backend.domain.jobs.Jobs;
+import com.backend.domain.jobs.JobsCond;
+import com.backend.domain.jobs.JobsImage;
+import com.backend.domain.jobs.form.JobsEditForm;
+import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.domain.member.Member;
 import com.backend.mapper.jobs.JobsConditionMapper;
 import com.backend.mapper.jobs.JobsImageMapper;
@@ -11,6 +15,7 @@ import com.backend.service.member.MemberService;
 import com.backend.service.scrap.ScrapService;
 import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
@@ -98,11 +104,13 @@ public class JobsService {
         Map<String, Object> result = new HashMap<>();
 
         Jobs jobs = jobsMapper.selectById(jobsId);
-
         if (jobs == null) {
             return null;
         }
-
+        Member member = memberService.findById(jobs.getMemberId());
+        if (member.getName().equals("탈퇴한 유저")) {
+            return null;
+        }
         JobsCond condition = conditionMapper.selectByJobsId(jobsId);
 
         Map<String, Object> storeMap = storeService.findStoreById(jobs.getStoreId());
@@ -121,7 +129,7 @@ public class JobsService {
         return result;
     }
 
-    public void update(JobsEditForm form, Authentication authentication) throws IOException {
+    public void update(JobsEditForm form) throws IOException {
 
         // update
         Integer jobsId = form.getId();
@@ -163,7 +171,8 @@ public class JobsService {
         if (addImages != null) {
             for (MultipartFile image : addImages) {
                 String imageName = image.getOriginalFilename();
-                imageMapper.insertImage(jobsId, imageName);
+                int i = imageMapper.insertImage(jobsId, imageName);
+                log.info("i={}", i);
                 saveJobsImageToS3(image, jobsId, image.getOriginalFilename());
             }
         }
@@ -174,6 +183,7 @@ public class JobsService {
         // file 명 조회
         List<String> fileNames = imageMapper.selectImageNameByJobsId(jobsId);
 
+        scrapService.deleteByJobsId(jobsId);
         applicationService.deleteAllByJobsId(jobsId);
         // s3,db jobsFile 삭제
         removeJobsImageToS3(jobsId, fileNames);
@@ -187,7 +197,11 @@ public class JobsService {
         filterTrim(filterType, filterDetail);
 
         Integer offset = paging(currentPage, searchType, keyword, pageInfo, filterType, filterDetail);
-        List<Jobs> jobsList = jobsMapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail);
+        List<Jobs> dbJobsList = jobsMapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail);
+
+        // 탈퇴한 유저의 공고를 삭제함
+        List<Jobs> jobsList = dbJobsList.stream().filter((jobs) -> !jobs.getMemberName().equals("탈퇴한 유저")).toList();
+
 
         Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
         for (Jobs jobs : jobsList) {
@@ -277,8 +291,12 @@ public class JobsService {
     }
 
 
-    public boolean hasAccess(JobsEditForm form, Authentication authentication) {
-        return String.valueOf(form.getMemberId()).equals(authentication.getName());
+    public boolean hasAccess(Integer id, Integer authId) {
+        return id.equals(authId);
+    }
+
+    public Integer findMemberIdById(Integer id) {
+        return jobsMapper.selectMemberIdById(id);
     }
 }
 

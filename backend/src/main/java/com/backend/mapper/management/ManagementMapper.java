@@ -15,26 +15,6 @@ public interface ManagementMapper {
 
     @Select("""
             SELECT a.*,
-               j.title AS jobsTitle,
-               a.member_id AS appliedMemberId,
-               a.title AS applicationTitle,
-               a.inserted AS applicationInserted
-               FROM application a
-               JOIN jobs j ON  j.id = a.jobs_id
-               WHERE j.member_id = #{memberId}
-                """)
-    List<Management> list(Integer memberId);
-
-
-//    @Insert("""
-//    INSERT INTO management (jobs_id, applied_member_id,resume_id,is_passed)
-//    VALUES (#{jobsId},#{memberId},#{resumeId},#{isPassed})
-//    """)
-//    int insert(Application application);
-
-
-    @Select("""
-            SELECT a.*,
                j.title AS jobsTitle
             FROM application a
             JOIN jobs j ON j.id = a.jobs_id
@@ -50,7 +30,7 @@ public interface ManagementMapper {
             SET is_passed = #{isPassed}
             WHERE jobs_id = #{jobsId} AND member_id = #{appliedMemberId}
             """)
-    int insertDecision(Management management);
+    int updateDecision(Management management);
 
     @Delete("""
             DELETE FROM application
@@ -66,4 +46,48 @@ public interface ManagementMapper {
             """)
     Integer alarmCount(Integer memberId);
 
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM application a
+            JOIN jobs j ON j.id = a.jobs_id
+            JOIN member m ON m.id = a.member_id
+            WHERE j.member_id = #{bossId};
+            """)
+    Integer countAll(Integer bossId);
+
+    @Select("""
+            SELECT a.*,
+               j.title AS jobsTitle,
+               a.member_id AS appliedMemberId,
+               a.title AS applicationTitle,
+               a.inserted AS applicationInserted,
+               m.name AS albaName,
+               s.id AS storeId
+               FROM application a
+                   JOIN jobs j ON  j.id = a.jobs_id
+                   JOIN member m ON m.id = a.member_id
+                   JOIN store s ON s.id = j.store_id 
+               WHERE j.member_id = #{memberId}
+               ORDER BY applicationInserted
+                """)
+    List<Management> list(Integer memberId);
+
+    @Select("""
+            SELECT a.*,
+                j.title AS jobsTitle,
+                a.member_id AS appliedMemberId,
+                a.title AS applicationTitle,
+                a.inserted AS applicationInserted,
+                m.name AS albaName,
+                s.id AS storeId
+            FROM application a
+                JOIN jobs j ON  j.id = a.jobs_id
+                JOIN member m ON m.id = a.member_id
+                JOIN store s ON s.id = j.store_id 
+            WHERE j.member_id = #{memberId}
+            ORDER BY applicationInserted
+            LIMIT #{offset},8
+            """)
+    List<Management> selectAllPaging(Integer memberId, Integer offset);
 }

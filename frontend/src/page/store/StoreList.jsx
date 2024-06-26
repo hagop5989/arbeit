@@ -1,7 +1,9 @@
 import {
   Box,
   Button,
+  Divider,
   Heading,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -12,15 +14,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LoginContext } from "../../component/LoginProvider.jsx";
-import {
-  faBriefcase,
-  faEllipsisH,
-  faIndustry,
-  faScissors,
-  faTruck,
-  faUtensils,
-} from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function StoreList() {
   const [storeList, setStoreList] = useState([]);
@@ -28,72 +22,78 @@ export function StoreList() {
   const account = useContext(LoginContext);
 
   useEffect(() => {
-    axios.get("/api/store/list").then((res) => setStoreList(res.data));
-  }, []);
+    axios
+      .get("/api/only-boss")
+      .then(() => {
+        axios.get("/api/store/list").then((res) => setStoreList(res.data));
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          navigate("/");
+        }
+        if (err.response.status === 401) {
+          navigate("/login");
+        }
+      });
+  }, [account.id]);
 
-  const iconMapping = {
-    utensils: faUtensils,
-    scissors: faScissors,
-    truck: faTruck,
-    briefcase: faBriefcase,
-    industry: faIndustry,
-    ellipsis: faEllipsisH,
-  };
+  if (account.id === "") {
+    return <Spinner />;
+  }
 
   return (
-    <Box w={"100%"}>
-      <Box>
-        <Box
-          h={"70px"}
-          mb={"50px"}
-          bg={"#FF7F3E"}
-          color={"white"}
-          borderRadius={"10px"}
-        >
-          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
-            가게 목록
-          </Heading>
-        </Box>
-        <Box float={"right"} mb={"35px"}>
-          <Button
-            colorSzcheme="green"
-            onClick={() => navigate("/store/register")}
-          >
-            가게 등록
-          </Button>
-        </Box>
-        <Table>
-          <Thead>
-            <Tr bgColor="#ffa33f">
-              <Th fontSize={"medium"}>id</Th>
-              <Th fontSize={"medium"}>가게명</Th>
-              <Th fontSize={"medium"}>주소</Th>
-              <Th fontSize={"medium"}>등록일</Th>
-              <Th fontSize={"medium"}>전화 번호</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {storeList.map((store) => (
-              <Tr
-                key={store.id}
-                _hover={{
-                  bgColor: "gray.200",
-                }}
-                cursor={"pointer"}
-                onClick={() => navigate(`/store/${store.id}`)}
-                height="4cm"
-                overflow="hidden"
+    <>
+      {account.isBoss() && (
+        <Box w={"100%"} minHeight={"500px"}>
+          <Box>
+            <Box>
+              <Heading mb={"10px"} p={1}>
+                사업장 목록
+              </Heading>
+              <Divider mb={"20px"} borderWidth={"2px"} />
+            </Box>
+            <Box mb={"20px"}>
+              <Button
+                colorScheme="orange"
+                variant={"outline"}
+                onClick={() => navigate("/store/register")}
               >
-                <Td>{store.id}</Td>
-                <Td>{store.name}</Td>
-                <Td>{store.address}</Td>
-                <Td>{store.inserted}</Td>
-                <Td>{store.phone}</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
-    </Box>
+                가게 등록
+              </Button>
+            </Box>
+            <Table>
+              <Thead borderY={"2px solid #CCD4E0"}>
+                <Tr h={"20px"}>
+                  <Th fontSize={"medium"}>#</Th>
+                  <Th fontSize={"medium"}>사업장명</Th>
+                  <Th fontSize={"medium"}>주소</Th>
+                  <Th fontSize={"medium"}>사업장 등록일</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {storeList.map((store) => (
+                  <Tr
+                    key={store.id}
+                    _hover={{
+                      bgColor: "gray.200",
+                    }}
+                    cursor={"pointer"}
+                    onClick={() => navigate(`/store/${store.id}`)}
+                    height="100px"
+                    overflow="hidden"
+                    borderBottom={"2px solid #E9E9E9"}
+                  >
+                    <Td w={"50px"}>{store.id}</Td>
+                    <Td>{store.name}</Td>
+                    <Td>{store.address}</Td>
+                    <Td w={"150px"}>{store.inserted}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </Box>
+      )}
+    </>
   );
 }

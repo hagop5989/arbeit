@@ -1,10 +1,13 @@
 package com.backend.controller.jobs;
 
-import com.backend.domain.jobs.JobsEditForm;
-import com.backend.domain.jobs.JobsRegisterForm;
+import com.backend.controller.application.AuthId;
+import com.backend.domain.jobs.form.JobsEditForm;
+import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.service.jobs.JobsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/api/jobs")
 public class JobsController {
     private final JobsService service;
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public JobsController(ObjectMapper objectMapper, JobsService service) {
+        this.objectMapper = objectMapper;
+        this.service = service;
+    }
+
 
     @GetMapping("/store-names")
     @PreAuthorize("isAuthenticated()")
@@ -48,11 +59,16 @@ public class JobsController {
 
     @GetMapping("/{id}")
     public ResponseEntity view(@PathVariable Integer id) {
-
         Map<String, Object> result = service.findById(id);
         if (result == null) {
             return ResponseEntity.notFound().build();
         }
+        try {
+            objectMapper.writeValueAsString(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 직렬화 오류");
+        }
+
         return ResponseEntity.ok().body(result);
     }
 
@@ -71,9 +87,9 @@ public class JobsController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_BOSS')")
     public ResponseEntity update(@Validated JobsEditForm form, BindingResult bindingResult,
-                                 Authentication authentication) throws IOException {
+                                 @AuthId Integer authId) throws IOException {
 
-        if (!service.hasAccess(form, authentication)) {
+        if (!service.hasAccess(form.getMemberId(), authId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -82,13 +98,20 @@ public class JobsController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        service.update(form, authentication);
+        service.update(form);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    @PreAuthorize("hasAuthority('SCOPE_BOSS')")
+    public ResponseEntity delete(@PathVariable Integer id, @AuthId Integer authId) {
+
+        if (!service.hasAccess(service.findMemberIdById(id), authId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         service.deleteByJobsId(id);
+        return ResponseEntity.ok().build();
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
