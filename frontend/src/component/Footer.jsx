@@ -1,6 +1,8 @@
 import { Box, Flex, Select, Text, useMediaQuery } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export function Footer() {
+  const navigate = useNavigate();
   const [isNeedResize] = useMediaQuery("(max-width: 1050px)");
   const footerList = [
     "회사소개",
@@ -13,8 +15,24 @@ export function Footer() {
     "모바일",
   ];
 
+  const familySites = [
+    { name: "잡코리아", url: "https://www.jobkorea.co.kr/" },
+    { name: "알바몬", url: "https://www.albamon.com/" },
+    { name: "알바천국", url: "https://www.alba.co.kr/" },
+  ];
+
+  const handleFamilySites = (e) => {
+    const selectedSite = familySites.find(
+      (site) => site.name === e.target.value,
+    );
+    if (selectedSite) {
+      // window.location.href = selectedSite.url;
+      window.open(selectedSite.url, "_blank"); // 새 창에서 띄우기
+    }
+  };
+
   return (
-    <Box h={"200px"} bg={"#E9E9E9"}>
+    <Box h={"200px"} bg={"transparent"}>
       <Box
         w={"full"}
         // my={"20px"}
@@ -47,11 +65,12 @@ export function Footer() {
               fontSize={"sm"}
               color={"gray.500"}
               border={"2px solid lightgray"}
+              onChange={(e) => handleFamilySites(e)}
             >
-              <option>Family Site</option>
-              <option>잡코리아</option>
-              <option>알바몬</option>
-              <option>알바천국</option>
+              <option value="">FamilySites</option>
+              {familySites.map((item, index) => (
+                <option key={index}>{item.name}</option>
+              ))}
             </Select>
           </Box>
         </Flex>

@@ -329,7 +329,7 @@ function AlbaReviewList(props) {
     return stars;
   };
 
-  /* 내 평판 리뷰(사장) */
+  /* 내 평판 리뷰(알바) */
   const [reviewToStoreList, setReviewToStoreList] = useState([]);
   useEffect(() => {
     axios
@@ -359,35 +359,6 @@ function AlbaReviewList(props) {
       duration: "700",
     });
   }
-
-  const TableHeader = () => (
-    <Flex
-      bg="gray.100"
-      p={2}
-      fontWeight="bold"
-      borderBottom="1px"
-      borderColor="gray.200"
-    >
-      <Box flex="1" fontSize="medium">
-        #
-      </Box>
-      <Box flex="2" fontSize="medium">
-        날짜
-      </Box>
-      <Box flex="4" fontSize="medium">
-        공고명
-      </Box>
-      <Box flex="4" fontSize="medium">
-        리뷰평
-      </Box>
-      <Box flex="2" fontSize="medium">
-        평점
-      </Box>
-      <Box flex="3" fontSize="medium">
-        관리
-      </Box>
-    </Flex>
-  );
 
   return (
     <Box w={"full"} h={"80vh"}>
@@ -573,6 +544,7 @@ function AlbaReviewList(props) {
         onReviewClick={handleReviewClick}
         onDelete={handleDelete}
         navigate={navigate}
+        action={"작성용"}
       />
       {/* 내 평판 리뷰 */}
       <Box>
@@ -589,6 +561,7 @@ function AlbaReviewList(props) {
             onReviewClick={handleReviewClick}
             // onDelete={handleDelete}
             navigate={navigate}
+            action={"읽기용"}
           />
         </Box>
         {/* 내 평판 리뷰 */}
@@ -600,26 +573,25 @@ function AlbaReviewList(props) {
 /* 커스텀 테이블 */
 const TableHeader = ({ action }) => (
   <Flex
-    bg="gray.100"
     p={2}
     fontWeight="bold"
-    borderBottom="1px"
     borderColor="gray.200"
-    textIndent={"5px"}
+    textAlign="center" // 가운데 정렬
+    borderY={"1px solid gray"}
   >
-    <Box flex="1" fontSize="medium">
+    <Box flex="1" fontSize="medium" mx="2">
       #
     </Box>
-    <Box flex="2" fontSize="medium">
+    <Box flex="2" fontSize="medium" mx="2">
       날짜
     </Box>
-    <Box flex="4" fontSize="medium">
+    <Box flex="4" fontSize="medium" mx="2">
       공고명
     </Box>
-    <Box flex="4" fontSize="medium">
+    <Box flex="4" fontSize="medium" mx="2">
       리뷰평
     </Box>
-    <Box flex="2" fontSize="medium">
+    <Box flex="2" fontSize="medium" ml="2">
       평점
     </Box>
     {action === "작성용" && (
@@ -642,16 +614,17 @@ const TableRow = ({
     maxH={"45px"}
     p={2}
     fontSize="15px"
+    borderTop={"none"}
     borderBottom="1px"
     borderColor="gray.200"
     _hover={{ bgColor: "orange.50" }}
     alignItems="center"
-    height="50px"
+    textAlign="center" // 가운데 정렬
   >
-    <Box flex="1" minW="80px">
+    <Box flex="1" minW="80px" mx="1">
       {index + 1}
     </Box>
-    <Box flex="2" fontSize="sm" minW="130px">
+    <Box flex="2" fontSize="sm" minW="130px" mx="2">
       {review.inserted}
     </Box>
     <Box
@@ -661,6 +634,10 @@ const TableRow = ({
       textOverflow="ellipsis"
       cursor="pointer"
       onClick={() => navigate(`/jobs/${review.jobsId}`)}
+      mx="2"
+      w={"100px"}
+      textAlign="left"
+      textIndent={"20px"}
     >
       {review.jobsTitle}
     </Box>
@@ -671,10 +648,20 @@ const TableRow = ({
       textOverflow="ellipsis"
       cursor="pointer"
       onClick={() => onReviewClick(review, "선택")}
+      mx="2"
+      w={"100px"}
+      textAlign="left"
+      textIndent={"20px"}
     >
       {review.content}
     </Box>
-    <Flex flex="2" alignItems="center" minW="90px">
+    <Flex
+      flex="2"
+      justifyContent={"center"}
+      alignItems="center"
+      w={"90px"}
+      mx="2"
+    >
       <Text color="gold" fontSize="2xl" mr={2}>
         ★
       </Text>
@@ -683,8 +670,9 @@ const TableRow = ({
       </Text>
     </Flex>
     {action === "작성용" && (
-      <Flex flex="3" gap="5px">
+      <Flex flex="3" gap="5px" justifyContent={"center"} mx="2">
         <Button
+          w={"50px"}
           fontWeight="500"
           bgColor="#FF7F3E"
           color="white"
@@ -693,6 +681,7 @@ const TableRow = ({
           수정
         </Button>
         <Button
+          w={"50px"}
           fontWeight="500"
           bgColor="red.500"
           color="white"
@@ -712,7 +701,7 @@ const CustomTable = ({
   navigate,
   action,
 }) => (
-  <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
+  <Box borderWidth="1px" overflow="hidden" borderX={"none"}>
     <TableHeader action={action} />
     {reviewList.map((review, index) => (
       <TableRow

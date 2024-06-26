@@ -66,7 +66,7 @@ export function MainPage() {
     setHoveredBox(null);
   };
   return (
-    <Box w={"100%"} h={"600px"}>
+    <Box w={"100%"} h={"650px"}>
       <Box height={"15%"}>
         <Image
           src="/public/main_page_logo.png"

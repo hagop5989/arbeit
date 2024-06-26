@@ -253,7 +253,7 @@ export function JobsList() {
           )}
           {filterType === "근무시간" && (
             <Select
-              w={150}
+              w={250}
               value={selectedFilterDetail}
               onChange={handleDetailFilterChange}
             >
@@ -293,13 +293,13 @@ export function JobsList() {
         </Box>
       </Flex>
       <Center>
-        <Box border={"1px solid red"} h={"55vh"}>
+        {(searchParams || filterType) && jobsList.length == 0 && (
+          <Center w={"1050px"} h={"55vh"} mt={"3px"}>
+            <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
+          </Center>
+        )}
+        <Box border={"1px solid red"} h={"50vh"}>
           {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
-          {(searchParams || filterType) && jobsList.length == 0 && (
-            <Center w={"1050px"} h={"55vh"}>
-              <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
-            </Center>
-          )}
 
           {/* 그리드로 공고 카드 보여주기 */}
           <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
