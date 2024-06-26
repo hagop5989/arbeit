@@ -207,224 +207,312 @@ export function MainPage() {
         </>
       )}
       {/*사장 쪽*/}
-      <Center
-        height={"40px"}
-        bg={"#CCD4E0"}
-        color={"black"}
-        fontSize={"1.5rem"}
-        fontWeight={"700"}
-        mt={"25px"}
-        mb={"5px"}
-        borderRadius={"10px"}
-      >
-        사장 메뉴
-      </Center>
-      <Flex>
-        <Box
-          ml={"5%"}
-          w={"40%"}
-          border={"2px solid #CCD4E0"}
-          height={"50%"}
-          borderRadius={"20px"}
-          onMouseEnter={() => handleMouseEnter("box1")}
-          onMouseLeave={handleMouseLeave}
-        >
+      {account.isBoss() && (
+        <>
           <Center
-            margin={"auto"}
-            {...needStyle}
-            as="div"
-            cursor={"pointer"}
-            onClick={() => navigate("/resume/register")}
+            height={"40px"}
+            bg={"#CCD4E0"}
+            color={"black"}
+            fontSize={"1.5rem"}
+            fontWeight={"700"}
+            mt={"25px"}
+            mb={"5px"}
+            borderRadius={"10px"}
           >
-            <FontAwesomeIcon icon={faFileCirclePlus} />
-            <Box color={"#ff5a3d"} mx={3}>
-              이력서 작성하기
-            </Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
+            사장 메뉴
           </Center>
-          <Box>
-            <Image
-              src={
-                hoveredBox === "box1"
-                  ? "/public/write-export.gif"
-                  : "/public/write-export.png"
-              }
-              height={"128px"}
-              mt={"50px"}
-              ml={"100px"}
-            />
-          </Box>
-        </Box>
-        <Box
-          ml={"10%"}
-          w={"40%"}
-          border={"2px solid #CCD4E0"}
-          height={"50%"}
-          borderRadius={"20px"}
-          onMouseEnter={() => handleMouseEnter("box2")}
-          onMouseLeave={handleMouseLeave}
-        >
+          <Flex>
+            <Box
+              ml={"5%"}
+              w={"40%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/resume/register")}
+              >
+                <FontAwesomeIcon icon={faFileCirclePlus} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  공고 등록
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box1"
+                      ? "/public/write-export.gif"
+                      : "/public/write-export.png"
+                  }
+                  height={"128px"}
+                  mt={"50px"}
+                  ml={"100px"}
+                />
+              </Box>
+            </Box>
+            <Box
+              ml={"10%"}
+              w={"40%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box2")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/resume/list")}
+              >
+                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  나의 공고 목록
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box2"
+                      ? "/public/scan-export.gif"
+                      : "/public/scan-export.png"
+                  }
+                  height={"128px"}
+                  mt={"50px"}
+                  ml={"100px"}
+                />
+              </Box>
+            </Box>
+          </Flex>
+          <Flex mt={"20px"}>
+            <Box
+              ml={"5%"}
+              w={"40%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/resume/register")}
+              >
+                <FontAwesomeIcon icon={faFileCirclePlus} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  지원 내역
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box1"
+                      ? "/public/write-export.gif"
+                      : "/public/write-export.png"
+                  }
+                  height={"128px"}
+                  mt={"50px"}
+                  ml={"100px"}
+                />
+              </Box>
+            </Box>
+            <Box
+              ml={"10%"}
+              w={"40%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box2")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/resume/list")}
+              >
+                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  나의 사업장 목록
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box2"
+                      ? "/public/scan-export.gif"
+                      : "/public/scan-export.png"
+                  }
+                  height={"128px"}
+                  mt={"50px"}
+                  ml={"100px"}
+                />
+              </Box>
+            </Box>
+          </Flex>
+        </>
+      )}
+      {!account.isBoss() && (
+        <>
           <Center
-            margin={"auto"}
-            {...needStyle}
-            as="div"
-            cursor={"pointer"}
-            onClick={() => navigate("/resume/list")}
+            height={"40px"}
+            bg={"#CCD4E0"}
+            color={"black"}
+            fontSize={"20px"}
+            fontWeight={"700"}
+            mt={"25px"}
+            mb={"5px"}
+            borderRadius={"10px"}
           >
-            <FontAwesomeIcon icon={faFileCircleCheck} />
-            <Box color={"#ff5a3d"} mx={3}>
-              이력서 확인하기
-            </Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
+            알바 공고 보러가기
           </Center>
-          <Box>
-            <Image
-              src={
-                hoveredBox === "box2"
-                  ? "/public/scan-export.gif"
-                  : "/public/scan-export.png"
-              }
-              height={"128px"}
-              mt={"50px"}
-              ml={"100px"}
-            />
+          <Box height={"30%"} mb={"30px"}>
+            <Flex w={"100%"} h={"50%"} mb={"1px"}>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faIndustry} />
+                <Box mx={3}>생산업</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faScissors} />
+                <Box mx={3}>미용</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faDesktop} />
+                <Box mx={3}>사무업무</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faMugSaucer} />
+                <Box mx={3}>카페</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faShop} />
+                <Box mx={3}>편의점</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faBeerMugEmpty} />
+                <Box mx={3}>술집</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+            </Flex>
+            <Flex w={"100%"} h={"50%"}>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faFilm} />
+                <Box mx={3}>영화관</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faFaceLaughBeam} />
+                <Box mx={3}>놀이공원</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faMotorcycle} />
+                <Box mx={3}>배달</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faUtensils} />
+                <Box mx={3}>요식업</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faTruck} />
+                <Box mx={3}>유통</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center {...buttonStyle} as="div">
+                <FontAwesomeIcon icon={faPaperclip} />
+                <Box mx={3}>기타</Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+            </Flex>
           </Box>
-        </Box>
-      </Flex>
-      <Center
-        height={"40px"}
-        bg={"#CCD4E0"}
-        color={"black"}
-        fontSize={"20px"}
-        fontWeight={"700"}
-        mt={"25px"}
-        mb={"5px"}
-        borderRadius={"10px"}
-      >
-        알바 공고 보러가기
-      </Center>
-      <Box height={"30%"} mb={"30px"}>
-        <Flex w={"100%"} h={"50%"} mb={"1px"}>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faIndustry} />
-            <Box mx={3}>생산업</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faScissors} />
-            <Box mx={3}>미용</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faDesktop} />
-            <Box mx={3}>사무업무</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faMugSaucer} />
-            <Box mx={3}>카페</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faShop} />
-            <Box mx={3}>편의점</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faBeerMugEmpty} />
-            <Box mx={3}>술집</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-        </Flex>
-        <Flex w={"100%"} h={"50%"}>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faFilm} />
-            <Box mx={3}>영화관</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faFaceLaughBeam} />
-            <Box mx={3}>놀이공원</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faMotorcycle} />
-            <Box mx={3}>배달</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faUtensils} />
-            <Box mx={3}>요식업</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faTruck} />
-            <Box mx={3}>유통</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-          <Center {...buttonStyle} as="div">
-            <FontAwesomeIcon icon={faPaperclip} />
-            <Box mx={3}>기타</Box>
-            <FontAwesomeIcon
-              icon={faRightToBracket}
-              fontSize={"20px"}
-              color={"gray"}
-            />
-          </Center>
-        </Flex>
-      </Box>
+        </>
+      )}
     </Box>
   );
 }
