@@ -4,6 +4,7 @@ package com.backend.controller.board;
 import com.backend.domain.board.Board;
 import com.backend.domain.board.form.BoardEditForm;
 import com.backend.domain.board.form.BoardWriteForm;
+import com.backend.mapper.board.BoardMapper;
 import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
