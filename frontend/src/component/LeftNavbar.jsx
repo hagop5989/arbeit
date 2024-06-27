@@ -21,18 +21,18 @@ export function LeftNavbar() {
     { name: "공고리스트", url: "/jobs/list" },
     { name: "이력서등록", url: "/resume/register" },
     { name: "이력서관리", url: "/resume/list" },
-    { name: "지원내역", url: "/apply/list" },
-    { name: "캘린더테스트", url: "/test" },
+    { name: "지원내역", url: "/application/list" },
+    { name: "캘린더테스트", url: "/test1" },
     { name: "리뷰관리", url: "/alba-review" },
   ];
 
   const bossMenu = [
     { name: "공고생성", url: "/jobs/register" },
     { name: "공고리스트", url: "/jobs/list" },
-    { name: "지원내역", url: "/jobs/management/list" },
+    { name: "지원내역", url: "/application-manage/list" },
     { name: "가게등록", url: "/store/register" },
     { name: "가게목록", url: "/store/list" },
-    { name: "캘린더테스트", url: "/test" },
+    { name: "캘린더테스트", url: "/test1" },
     { name: "리뷰관리", url: "/boss-review" },
   ];
 
