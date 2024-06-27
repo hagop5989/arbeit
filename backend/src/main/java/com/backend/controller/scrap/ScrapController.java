@@ -1,6 +1,6 @@
 package com.backend.controller.scrap;
 
-import com.backend.controller.application.AuthId;
+import com.backend.config.AuthId;
 import com.backend.domain.scrap.Scrap;
 import com.backend.service.scrap.ScrapService;
 import lombok.RequiredArgsConstructor;

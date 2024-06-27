@@ -1,4 +1,4 @@
-package com.backend.controller.application;
+package com.backend.config;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;

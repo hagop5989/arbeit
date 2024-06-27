@@ -49,15 +49,16 @@ export function ApplicationList() {
   // Read (jobs 리스트 받기)
   useEffect(() => {
     axios
-      .get("/api/only-login")
-      .then(() => {
-        axios.get(`/api/apply/list`).then((res) => {
-          setApplicationList(res.data);
-        });
+      .get(`/api/apply/list`)
+      .then((res) => {
+        setApplicationList(res.data);
       })
       .catch((err) => {
         if (err.response.status === 401) {
           navigate("/login");
+        }
+        if (err.response.status === 403) {
+          navigate("/");
         }
       });
   }, [account.id, isCancel]);

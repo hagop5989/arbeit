@@ -32,7 +32,7 @@ export function LoginProvider({ children }) {
   // boss 이면 지원 list 데이터 받아오기
   useEffect(() => {
     if (isBoss()) {
-      axios.get("/api/jobs/managements-count").then((res) => {
+      axios.get("/api/application-manage/count").then((res) => {
         setAlarmNum(res.data);
       });
     }

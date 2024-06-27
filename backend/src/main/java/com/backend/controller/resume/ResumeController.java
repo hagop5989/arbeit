@@ -1,6 +1,6 @@
 package com.backend.controller.resume;
 
-import com.backend.controller.application.AuthId;
+import com.backend.config.AuthId;
 import com.backend.domain.resume.Resume;
 import com.backend.domain.resume.ResumeForm;
 import com.backend.service.resume.ResumeService;

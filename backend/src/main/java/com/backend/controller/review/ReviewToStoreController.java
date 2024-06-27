@@ -1,9 +1,8 @@
 package com.backend.controller.review;
 
-import com.backend.controller.application.AuthId;
-import com.backend.domain.contract.Contract;
+import com.backend.config.AuthId;
 import com.backend.domain.review.ReviewToAlba;
-import com.backend.domain.reviw.ReviewToStore;
+import com.backend.domain.review.ReviewToStore;
 import com.backend.service.contract.ContractService;
 import com.backend.service.review.ReviewToStoreService;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +35,10 @@ public class ReviewToStoreController {
     public Map<String, Object> list(Authentication authentication) {
         Integer memberId = Integer.valueOf(authentication.getName());
         HashMap<String, Object> map = new HashMap<>();
-        List<Contract> contractList = contractService.list(memberId, authentication);
+//        List<Contract> contractList = contractService.list(memberId, authentication);
 
-        map.put("contractList", contractList);
-        map.put("reviewList", service.listForAlba(memberId));
+//        map.put("contractList", contractList);
+//        map.put("reviewList", service.listForAlba(memberId));
 
         return map;
     }

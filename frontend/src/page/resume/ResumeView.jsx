@@ -110,129 +110,135 @@ export function ResumeView() {
   }
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
-      <Box>
-        <Box
-          h={"70px"}
-          mb={"70px"}
-          bg={"#FF7F3E"}
-          color={"white"}
-          borderRadius={"10px"}
-        >
-          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
-            이력서 정보
-          </Heading>
-        </Box>
-        <Flex gap={"20px"} flexDirection={"column"}>
-          <Center>
-            <Box w={"240px"} h={"240px"}>
-              <Image
-                w={"100%"}
-                h={"100%"}
-                border={"1px solid gray"}
-                borderRadius={"50%"}
-                src={
-                  profileSrc === "" ? "/public/base_profile.png" : profileSrc
-                }
-                objectFit={"contain"}
-              />
+    <>
+      {account.isLoggedIn() && (
+        <Box w="full" maxW="70%" mx="auto" p={5}>
+          <Box>
+            <Box
+              h={"70px"}
+              mb={"70px"}
+              bg={"#FF7F3E"}
+              color={"white"}
+              borderRadius={"10px"}
+            >
+              <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+                이력서 정보
+              </Heading>
             </Box>
-            <Box w={"50%"} ml={"50px"} lineHeight={"30px"}>
-              <Box display={"flex"} mb={"15px"}>
-                <Box {...styles.title}>이름</Box>
-                <Box>{account.name}</Box>
-              </Box>
-
-              <Box display={"flex"} mb={"15px"}>
-                <Box {...styles.title}>생년월일</Box>
-                <Box>
-                  {resume.birthDate} (만 {nowAge}세)
+            <Flex gap={"20px"} flexDirection={"column"}>
+              <Center>
+                <Box w={"240px"} h={"240px"}>
+                  <Image
+                    w={"100%"}
+                    h={"100%"}
+                    border={"1px solid gray"}
+                    borderRadius={"50%"}
+                    src={
+                      profileSrc === ""
+                        ? "/public/base_profile.png"
+                        : profileSrc
+                    }
+                    objectFit={"contain"}
+                  />
                 </Box>
+                <Box w={"50%"} ml={"50px"} lineHeight={"30px"}>
+                  <Box display={"flex"} mb={"15px"}>
+                    <Box {...styles.title}>이름</Box>
+                    <Box>{account.name}</Box>
+                  </Box>
+
+                  <Box display={"flex"} mb={"15px"}>
+                    <Box {...styles.title}>생년월일</Box>
+                    <Box>
+                      {resume.birthDate} (만 {nowAge}세)
+                    </Box>
+                  </Box>
+
+                  <Box display={"flex"} mb={"15px"}>
+                    <Box {...styles.title}>성별</Box>
+                    <Box>{resume.gender}</Box>
+                  </Box>
+
+                  <Box display={"flex"} mb={"15px"}>
+                    <Box {...styles.title}>연락처</Box>
+                    <Box>{formatPhoneNumber(resume.phone)}</Box>
+                  </Box>
+
+                  <Box display={"flex"}>
+                    <Box {...styles.title}>이메일</Box>
+                    <Box>{resume.email}</Box>
+                  </Box>
+                </Box>
+              </Center>
+
+              <FormControl my={4}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  제목
+                </FormLabel>
+                <Input defaultValue={resume.title} readOnly />
+              </FormControl>
+
+              <FormControl mb={4}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  자기소개
+                </FormLabel>
+                <Textarea defaultValue={resume.content} h={"150px"} readOnly />
+              </FormControl>
+
+              <Box mb={4}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  경력여부
+                </FormLabel>
+                <Tabs variant="solid-rounded" index={initialIndex}>
+                  <TabList>
+                    <Tab
+                      w={"160px"}
+                      h={"50px"}
+                      border={"1px solid lightgray"}
+                      onClick={(e) => e.preventDefault()} // 클릭 이벤트 무효화
+                    >
+                      신입
+                    </Tab>
+                    <Tab
+                      w={"160px"}
+                      h={"50px"}
+                      border={"1px solid lightgray"}
+                      onClick={(e) => e.preventDefault()} // 클릭 이벤트 무효화
+                    >
+                      경력
+                    </Tab>
+                  </TabList>
+                </Tabs>
               </Box>
 
-              <Box display={"flex"} mb={"15px"}>
-                <Box {...styles.title}>성별</Box>
-                <Box>{resume.gender}</Box>
-              </Box>
-
-              <Box display={"flex"} mb={"15px"}>
-                <Box {...styles.title}>연락처</Box>
-                <Box>{formatPhoneNumber(resume.phone)}</Box>
-              </Box>
-
-              <Box display={"flex"}>
-                <Box {...styles.title}>이메일</Box>
-                <Box>{resume.email}</Box>
-              </Box>
-            </Box>
-          </Center>
-
-          <FormControl my={4}>
-            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-              제목
-            </FormLabel>
-            <Input defaultValue={resume.title} readOnly />
-          </FormControl>
-
-          <FormControl mb={4}>
-            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-              자기소개
-            </FormLabel>
-            <Textarea defaultValue={resume.content} h={"150px"} readOnly />
-          </FormControl>
-
-          <Box mb={4}>
-            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-              경력여부
-            </FormLabel>
-            <Tabs variant="solid-rounded" index={initialIndex}>
-              <TabList>
-                <Tab
-                  w={"160px"}
-                  h={"50px"}
-                  border={"1px solid lightgray"}
-                  onClick={(e) => e.preventDefault()} // 클릭 이벤트 무효화
+              <FormControl mb={4}>
+                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                  등록일
+                </FormLabel>
+                <Text>{resume.inserted}</Text>
+              </FormControl>
+              <Flex gap={"10px"}>
+                <Button
+                  w={"50%"}
+                  bgColor={"gray.500"}
+                  color={"white"}
+                  onClick={handlePrevClick}
                 >
-                  신입
-                </Tab>
-                <Tab
-                  w={"160px"}
-                  h={"50px"}
-                  border={"1px solid lightgray"}
-                  onClick={(e) => e.preventDefault()} // 클릭 이벤트 무효화
+                  이전
+                </Button>
+                <Button
+                  w={"50%"}
+                  bgColor={"#FF7F3E"}
+                  color={"white"}
+                  onClick={() => navigate(`/resume/${resume.id}/edit`)}
                 >
-                  경력
-                </Tab>
-              </TabList>
-            </Tabs>
+                  수정
+                </Button>
+              </Flex>
+            </Flex>
           </Box>
-
-          <FormControl mb={4}>
-            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-              등록일
-            </FormLabel>
-            <Text>{resume.inserted}</Text>
-          </FormControl>
-          <Flex gap={"10px"}>
-            <Button
-              w={"50%"}
-              bgColor={"gray.500"}
-              color={"white"}
-              onClick={handlePrevClick}
-            >
-              이전
-            </Button>
-            <Button
-              w={"50%"}
-              bgColor={"#FF7F3E"}
-              color={"white"}
-              onClick={() => navigate(`/resume/${resume.id}/edit`)}
-            >
-              수정
-            </Button>
-          </Flex>
-        </Flex>
-      </Box>
-    </Box>
+        </Box>
+      )}
+    </>
   );
 }

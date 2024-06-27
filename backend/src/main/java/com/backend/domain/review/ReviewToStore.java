@@ -1,4 +1,4 @@
-package com.backend.domain.reviw;
+package com.backend.domain.review;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.backend.mapper.review;
 
 import com.backend.domain.review.ReviewToAlba;
-import com.backend.domain.reviw.ReviewToStore;
+import com.backend.domain.review.ReviewToStore;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
