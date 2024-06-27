@@ -67,6 +67,7 @@ export function JobsRegister() {
   const [checkLength, setCheckLength] = useState({});
 
   const toast = useToast();
+
   function myToast(text, status) {
     toast({
       description: <Box whiteSpace="pre-line">{text}</Box>,
@@ -75,6 +76,7 @@ export function JobsRegister() {
       duration: "700",
     });
   }
+
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const handleButtonClick = () => {
@@ -543,7 +545,7 @@ export function JobsRegister() {
           </Box>
           <Button
             onClick={handleSubmitCreateJobs}
-            bgColor={"#FFA500"}
+            bgColor={"#FFA74F"}
             color={"white"}
             w="full"
             h={"50px"}

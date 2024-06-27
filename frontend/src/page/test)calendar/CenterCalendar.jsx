@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Flex,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -274,13 +273,23 @@ const CenterCalendarComponent = ({
       <Flex>
         <Box flex="1">
           <Flex justifyContent="center" alignItems="center">
-            <Button w={"80px"} colorScheme={"blue"} onClick={handleTodayClick}>
+            <Button
+              fontSize={"sm"}
+              w={"80px"}
+              colorScheme={"blue"}
+              onClick={handleTodayClick}
+            >
               오늘
             </Button>
-            <Button onClick={() => setMonth(month === 0 ? 11 : month - 1)}>
+            <Button
+              fontSize={"sm"}
+              onClick={() => setMonth(month === 0 ? 11 : month - 1)}
+            >
               {"<"}
             </Button>
             <Select
+              w={"50px"}
+              fontSize={"sm"}
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value))}
             >
@@ -291,6 +300,7 @@ const CenterCalendarComponent = ({
               ))}
             </Select>
             <Select
+              fontSize={"sm"}
               value={month}
               onChange={(e) => setMonth(parseInt(e.target.value))}
             >
@@ -300,7 +310,10 @@ const CenterCalendarComponent = ({
                 </option>
               ))}
             </Select>
-            <Button onClick={() => setMonth(month === 11 ? 0 : month + 1)}>
+            <Button
+              fontSize={"sm"}
+              onClick={() => setMonth(month === 11 ? 0 : month + 1)}
+            >
               {">"}
             </Button>
           </Flex>
@@ -318,7 +331,7 @@ const CenterCalendarComponent = ({
             {renderDays()}
           </SimpleGrid>
         </Box>
-        <Box
+        {/* <Box
           width="300px"
           p={4}
           bg="gray.100"
@@ -370,7 +383,7 @@ const CenterCalendarComponent = ({
               </Box>
             ))}
           </VStack>
-        </Box>
+        </Box>*/}
       </Flex>
 
       <Modal isOpen={isOpen} onClose={onClose}>

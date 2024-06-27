@@ -14,6 +14,7 @@ import ScrapHistory from "../component/ScrapHistory.jsx";
 import AlbaReviewList from "../page/review/AlbaReviewList.jsx";
 import BossReviewList from "../page/review/BossReviewList.jsx";
 import { ApplicationManageView } from "../page/application/manage/ApplicationManageView.jsx";
+import Statistics from "../page/review/Statistics.jsx"; // list : jobs , view : detail
 
 // list : jobs , view : detail
 const bossRoutes = [
@@ -36,6 +37,7 @@ const bossRoutes = [
   { path: "scrap-history", element: <ScrapHistory /> },
   { path: "alba-review", element: <AlbaReviewList /> },
   { path: "boss-review", element: <BossReviewList /> },
+  { path: "test1", element: <Statistics /> },
 ];
 
 export default bossRoutes;
