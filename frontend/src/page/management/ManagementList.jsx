@@ -218,7 +218,7 @@ export function ManagementList() {
                 <Td w={"150px"} {...styles.th}>
                   지원 일자
                 </Td>
-                <Td w={"80px"} {...styles.th}>
+                <Td w={"90px"} {...styles.th}>
                   상태
                 </Td>
                 <Td w={"100px"} {...styles.th}>
@@ -304,7 +304,6 @@ export function ManagementList() {
           </Table>
         </Box>
       )}
-      <Box my={6}>{Paging()}</Box>
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -412,6 +411,7 @@ export function ManagementList() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Box my={6}>{Paging()}</Box>
     </Box>
   );
 

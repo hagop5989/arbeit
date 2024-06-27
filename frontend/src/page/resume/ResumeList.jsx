@@ -95,6 +95,7 @@ export function ResumeList() {
               <Table>
                 <Thead>
                   <Tr borderTop={"1px solid gray"}>
+                    <Th {...styles.th}>#</Th>
                     <Th {...styles.th}>선택</Th>
                     <Th {...styles.th}>제목</Th>
                     <Th {...styles.th}>작성일</Th>
@@ -102,8 +103,9 @@ export function ResumeList() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {resumeList.map((resume) => (
+                  {resumeList.map((resume, index) => (
                     <Tr key={resume.id} _hover={{ bg: "gray.100" }}>
+                      <Td>{index + 1}</Td>
                       <Td borderBottom={"1px solid #E0E0E0"} w={"130px"}>
                         <Checkbox
                           value={resume.id}

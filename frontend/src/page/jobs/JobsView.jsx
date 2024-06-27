@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { JobsViewDetails } from "./jobsview_component/JobsViewDetail.jsx";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { JobConditions } from "./jobsview_component/JobConditions.jsx";
 import { JobDetail } from "./jobsview_component/JobDetail.jsx";
@@ -26,6 +26,7 @@ import { ApplicationWriteModal } from "../application/ApplicationWriteModal.jsx"
 export function JobsView() {
   const account = useContext(LoginContext);
   const { id } = useParams();
+  const location = useLocation();
   const [jobs, setJobs] = useState(null);
   const [jobsCond, setJobsCond] = useState(null);
   const [storeMap, setStoreMap] = useState({});
@@ -60,11 +61,16 @@ export function JobsView() {
       })
       .catch((err) => {
         if (err.response && err.response.status === 404) {
-          myToast("해당 게시물이 존재하지 않습니다", "error");
+          myToast("마감 되었거나, 존재하지 않는 게시물 입니다", "error");
           navigate("/jobs/list");
         }
       });
-  }, [id]);
+    const params = new URLSearchParams(location.search);
+    console.log(params.get("modal"));
+    if (params.get("modal") === "open") {
+      onOpen();
+    }
+  }, [id, location.search]);
 
   useEffect(() => {
     if (storeMap && Array.isArray(storeMap.images)) {

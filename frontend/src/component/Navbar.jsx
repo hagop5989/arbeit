@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import {
+  Badge,
   Box,
   Button,
   Center,
@@ -43,6 +44,18 @@ const SmallLink = ({ href, children }) => (
 const Navbar = () => {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
+
+  // 권한 별 접근
+  const checkAuth = (albaValue, bossValue, adminValue) => {
+    switch (true) {
+      case account.isAlba():
+        return albaValue;
+      case account.isBoss():
+        return bossValue;
+      case account.isAdmin():
+        return adminValue;
+    }
+  };
 
   return (
     <Box bg="white" borderBottom="3px solid #eaeaea" height="110px" mb={"70px"}>
@@ -90,6 +103,13 @@ const Navbar = () => {
                   cursor={"pointer"}
                   onClick={() => navigate(`/member/${account.id}`)}
                 >
+                  <Badge
+                    colorScheme={checkAuth("orange", "red", "blue")}
+                    px={2}
+                    mr={2}
+                  >
+                    {checkAuth("알바", "기업", "어드민")}
+                  </Badge>
                   {account.name} 님
                 </Box>
               )}

@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 export function LeftNavbar() {
   const account = useContext(LoginContext);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const albaMenu = [
     { name: "공고리스트", url: "/jobs/list" },
@@ -42,12 +42,17 @@ export function LeftNavbar() {
   const [isLargerThanX] = useMediaQuery("(min-width: 1800px)");
   // 자연스럽게 메뉴 보이기
   useEffect(() => {
-    if (isLargerThanX) {
-      setIsVisible(true);
-    } else {
+    if (account.isLoggedIn()) {
+      if (isLargerThanX) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    }
+    if (!account.isLoggedIn()) {
       setIsVisible(false);
     }
-  }, [isLargerThanX]);
+  }, [isLargerThanX, account]);
 
   return (
     <Flex

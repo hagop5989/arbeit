@@ -59,17 +59,15 @@ public class JobsController {
 
     @GetMapping("/{id}")
     public ResponseEntity view(@PathVariable Integer id) {
-        Map<String, Object> result = service.findById(id);
-        if (result == null) {
-            return ResponseEntity.notFound().build();
-        }
+        Object result = service.findById(id).getBody();
         try {
             objectMapper.writeValueAsString(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("JSON 직렬화 오류");
         }
 
-        return ResponseEntity.ok().body(result);
+        return service.findById(id);
+
     }
 
     @GetMapping("/list")
@@ -79,8 +77,6 @@ public class JobsController {
                                     @RequestParam(value = "filterType", defaultValue = "") String filterType,
                                     @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
     ) {
-
-
         return service.findAll(currentPage, searchType, keyword, filterType, filterDetail);
     }
 

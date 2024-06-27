@@ -10,6 +10,7 @@ export function JobConditions({ job, jobsCond }) {
       p={10}
       borderRadius="lg"
       border={"1px solid lightgray"}
+      bgColor={"white"}
     >
       <Text fontWeight="bold" fontSize="2xl" my={2}>
         근무조건
