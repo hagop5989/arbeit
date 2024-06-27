@@ -294,11 +294,11 @@ export function JobsList() {
       </Flex>
       <Center>
         {(searchParams || filterType) && jobsList.length == 0 && (
-          <Center w={"1050px"} h={"55vh"} mt={"3px"}>
+          <Center w={"1050px"} h={"55vh"} mt={"0px"}>
             <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
           </Center>
         )}
-        <Box border={"1px solid red"} h={"50vh"}>
+        <Box h={"50vh"}>
           {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
 
           {/* 그리드로 공고 카드 보여주기 */}
