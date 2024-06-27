@@ -1,12 +1,15 @@
 import { Box, Center, Flex, Image } from "@chakra-ui/react";
 import {
+  faAddressBook,
   faBeerMugEmpty,
   faDesktop,
   faFaceLaughBeam,
   faFileCircleCheck,
   faFileCirclePlus,
   faFilm,
+  faFlag,
   faIndustry,
+  faList,
   faMotorcycle,
   faMugSaucer,
   faPaperclip,
@@ -277,7 +280,7 @@ export function MainPage() {
                 cursor={"pointer"}
                 onClick={() => navigate("/resume/list")}
               >
-                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <FontAwesomeIcon icon={faList} />
                 <Box color={"#ff5a3d"} mx={3}>
                   나의 공고 목록
                 </Box>
@@ -318,7 +321,7 @@ export function MainPage() {
                 cursor={"pointer"}
                 onClick={() => navigate("/jobs/management/list")}
               >
-                <FontAwesomeIcon icon={faFileCirclePlus} />
+                <FontAwesomeIcon icon={faAddressBook} />
                 <Box color={"#ff5a3d"} mx={3}>
                   지원 내역
                 </Box>
@@ -357,7 +360,7 @@ export function MainPage() {
                 cursor={"pointer"}
                 onClick={() => navigate("/store/list")}
               >
-                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <FontAwesomeIcon icon={faFlag} />
                 <Box color={"#ff5a3d"} mx={3}>
                   나의 사업장 목록
                 </Box>
