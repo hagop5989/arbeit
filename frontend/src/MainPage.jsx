@@ -9,6 +9,7 @@ import {
   faFilm,
   faFlag,
   faIndustry,
+  faKey,
   faList,
   faMotorcycle,
   faMugSaucer,
@@ -17,6 +18,7 @@ import {
   faScissors,
   faShop,
   faTruck,
+  faUserPlus,
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -380,6 +382,68 @@ export function MainPage() {
                   height={"128px"}
                   mt={"50px"}
                   ml={"80px"}
+                />
+              </Box>
+            </Box>
+          </Flex>
+        </>
+      )}
+      {!account.isLoggedIn() && (
+        <>
+          <Flex mt={"20px"}>
+            <Box
+              ml={"30%"}
+              w={"40%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/login")}
+              >
+                <FontAwesomeIcon icon={faKey} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  로그인
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/signup")}
+              >
+                <FontAwesomeIcon icon={faUserPlus} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  회원가입
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box1"
+                      ? "/lock-export.gif"
+                      : "/lock-export.png"
+                  }
+                  height={"128px"}
+                  mt={"10px"}
+                  ml={"140px"}
                 />
               </Box>
             </Box>
