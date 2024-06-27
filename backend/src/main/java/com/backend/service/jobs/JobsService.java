@@ -17,6 +17,7 @@ import com.backend.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +71,7 @@ public class JobsService {
                 form.getSalary(),
                 form.getDeadline(),
                 form.getRecruitmentNumber(),
-                null, null, null, null
+                null, null, null, null, null
 
         );
         jobsMapper.insert(jobs);
@@ -99,18 +101,23 @@ public class JobsService {
         }
     }
 
-    public Map<String, Object> findById(Integer jobsId) {
+    public ResponseEntity findById(Integer jobsId) {
 
         Map<String, Object> result = new HashMap<>();
 
         Jobs jobs = jobsMapper.selectById(jobsId);
+        LocalDateTime now = LocalDateTime.now();
+        
         if (jobs == null) {
-            return null;
+            return ResponseEntity.status(404).build();
         }
-        Member member = memberService.findById(jobs.getMemberId());
-        if (member.getName().equals("탈퇴한 유저")) {
-            return null;
+        String memberName = memberService.findById(jobs.getMemberId()).getName();
+
+        //  deadline 이 만료됐거나 탈퇴한 유저이면 404
+        if (jobs.getDeadline().isBefore(now) || memberName.equals("탈퇴한 유저")) {
+            return ResponseEntity.status(404).build();
         }
+
         JobsCond condition = conditionMapper.selectByJobsId(jobsId);
 
         Map<String, Object> storeMap = storeService.findStoreById(jobs.getStoreId());
@@ -126,7 +133,8 @@ public class JobsService {
         result.put("storeMap", storeMap);
         result.put("images", images);
         result.put("boss", boss);
-        return result;
+
+        return ResponseEntity.ok().body(result);
     }
 
     public void update(JobsEditForm form) throws IOException {
@@ -142,7 +150,7 @@ public class JobsService {
                 form.getSalary(),
                 form.getDeadline(),
                 form.getRecruitmentNumber(),
-                null, null, null, null
+                null, null, null, null, null
         );
         JobsCond jobsCond = new JobsCond(
                 jobsId,
@@ -199,8 +207,9 @@ public class JobsService {
         Integer offset = paging(currentPage, searchType, keyword, pageInfo, filterType, filterDetail);
         List<Jobs> dbJobsList = jobsMapper.selectAllPaging(offset, searchType, keyword, filterType, filterDetail);
 
-        // 탈퇴한 유저의 공고를 삭제함
-        List<Jobs> jobsList = dbJobsList.stream().filter((jobs) -> !jobs.getMemberName().equals("탈퇴한 유저")).toList();
+        LocalDateTime now = LocalDateTime.now();
+        // 탈퇴한 유저, 오늘날짜 지난 공고 삭제.
+        List<Jobs> jobsList = dbJobsList.stream().filter((jobs) -> !jobs.getMemberName().equals("탈퇴한 유저") && jobs.getDeadline().isAfter(now)).toList();
 
 
         Map<Integer, Map<String, Object>> storeImgMap = new HashMap<>();
@@ -214,7 +223,6 @@ public class JobsService {
                 storeImgMap.put(jobs.getStoreId(), imageInfo);
             }
         }
-
 
         return Map.of("pageInfo", pageInfo,
                 "jobsList", jobsList, "storeImgMap", storeImgMap);
@@ -263,8 +271,10 @@ public class JobsService {
         Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword, filterType, filterDetail);
         Integer itemPerPage = 8; // 페이지당 항목 수 지정
         Integer offset = (currentPage - 1) * itemPerPage;
+        System.out.println("countAll = " + countAll);
 
         Integer lastPageNum = (countAll + itemPerPage - 1) / itemPerPage;
+        System.out.println("lastPageNum = " + lastPageNum);
         Integer leftPageNum = (currentPage - 1) / 10 * 10 + 1;
         Integer rightPageNum = leftPageNum + 9;
         rightPageNum = Math.min(rightPageNum, lastPageNum);

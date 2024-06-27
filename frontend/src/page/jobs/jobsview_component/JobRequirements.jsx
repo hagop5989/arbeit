@@ -133,7 +133,7 @@ export function JobRequirements({ onOpen, job, jobsCond, id }) {
               </Box>
 
               <Box my={2} display={"flex"}>
-                <Text w={"95px"} fontSize={"lg"} fontWeight="bold">
+                <Text minW={"95px"} fontSize={"lg"} fontWeight="bold">
                   우대사항
                 </Text>
                 <Text ml={"0px"}>{jobsCond.preferred}</Text>

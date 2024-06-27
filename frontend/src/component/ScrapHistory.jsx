@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   Heading,
   Table,
   Tbody,
@@ -21,6 +22,10 @@ function ScrapHistory(props) {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   useEffect(() => {
+    fetchScrapList();
+  }, [account, post]);
+
+  const fetchScrapList = () => {
     axios
       .get("/api/only-login")
       .then(() => {
@@ -30,6 +35,7 @@ function ScrapHistory(props) {
             (item) => item.favorite === true,
           );
           setScrapList(filteredScrapList);
+          account.updateScrapNum(filteredScrapList.length);
         });
       })
       .catch((err) => {
@@ -37,7 +43,7 @@ function ScrapHistory(props) {
           navigate("/login");
         }
       });
-  }, [account, post]);
+  };
 
   function handleDelete(id) {
     axios.delete(`/api/scrap/delete/${id}`).then(() => {
@@ -60,8 +66,11 @@ function ScrapHistory(props) {
                 <Th w={"50px"} fontSize={"md"}>
                   #
                 </Th>
-                <Th w={"600px"} fontSize={"md"}>
+                <Th w={"500px"} fontSize={"md"}>
                   제목
+                </Th>
+                <Th minW={"130px"} fontSize={"md"}>
+                  마감일
                 </Th>
                 <Th w={"50px"} fontSize={"md"}>
                   관리
@@ -84,16 +93,32 @@ function ScrapHistory(props) {
                   >
                     {item.jobsTitle}
                   </Td>
+                  <Td fontSize={"sm"}>2024-06-25</Td>
                   <Td>
-                    <Button
-                      colorScheme={"red"}
-                      variant={"outline"}
-                      size={"sm"}
-                      mt={"10px"}
-                      onClick={() => handleDelete(item.id)}
-                    >
-                      삭제
-                    </Button>
+                    <Flex gap={"10px"}>
+                      {account.isAlba() && (
+                        <Button
+                          colorScheme={"blue"}
+                          variant={"outline"}
+                          size={"sm"}
+                          mt={"10px"}
+                          onClick={() =>
+                            navigate(`/jobs/${item.jobsId}?modal=open`)
+                          }
+                        >
+                          지원
+                        </Button>
+                      )}
+                      <Button
+                        colorScheme={"red"}
+                        variant={"outline"}
+                        size={"sm"}
+                        mt={"10px"}
+                        onClick={() => handleDelete(item.id)}
+                      >
+                        삭제
+                      </Button>
+                    </Flex>
                   </Td>
                 </Tr>
               ))}

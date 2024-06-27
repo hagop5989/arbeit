@@ -6,6 +6,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -63,6 +64,7 @@ export function JobsRegister() {
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
   const [checked, setChecked] = useState(false);
+  const [checkLength, setCheckLength] = useState({});
 
   const toast = useToast();
   function myToast(text, status) {
@@ -153,6 +155,7 @@ export function JobsRegister() {
 
   const handleInputChange = (prop) => (e) => {
     setJobs({ ...jobs, [prop]: e.target.value });
+    setCheckLength({ ...checkLength, [prop]: e.target.value.length });
   };
 
   function handleSelectChange(storeId) {
@@ -208,9 +211,14 @@ export function JobsRegister() {
                 placeholder="제목을 입력해주세요."
                 onChange={handleInputChange("title")}
               />
-              {errors.title && (
-                <FormErrorMessage>{errors.title}</FormErrorMessage>
-              )}
+              <Flex gap={"10px"}>
+                {errors.title && (
+                  <FormErrorMessage>{errors.title}</FormErrorMessage>
+                )}
+                <FormHelperText color={"gray"}>
+                  {checkLength.title}/30
+                </FormHelperText>
+              </Flex>
             </FormControl>
 
             <FormControl
@@ -407,9 +415,12 @@ export function JobsRegister() {
                     placeholder="우대사항을 입력해주세요."
                     onChange={handleInputChange("preferred")}
                   />
-                  {errors.preferred && (
-                    <FormErrorMessage>{errors.preferred}</FormErrorMessage>
-                  )}
+                  <Flex gap={"10px"}>
+                    {errors.preferred && (
+                      <FormErrorMessage>{errors.preferred}</FormErrorMessage>
+                    )}
+                    <FormHelperText>{checkLength.preferred}/200</FormHelperText>
+                  </Flex>
                 </FormControl>
 
                 <Flex mb={"30px"}>
@@ -518,9 +529,14 @@ export function JobsRegister() {
                     defaultValue={jobs.content}
                     onChange={handleInputChange("content")}
                   ></Textarea>
-                  {errors.content && (
-                    <FormErrorMessage>{errors.content}</FormErrorMessage>
-                  )}
+                  <Flex gap={"10px"}>
+                    {errors.content && (
+                      <FormErrorMessage>{errors.content}</FormErrorMessage>
+                    )}
+                    <FormHelperText color={"gray"}>
+                      {checkLength.content}/3,000
+                    </FormHelperText>
+                  </Flex>
                 </FormControl>
               </Box>
             </>

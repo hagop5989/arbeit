@@ -1,12 +1,16 @@
 import { Box, Center, Flex, Image } from "@chakra-ui/react";
 import {
+  faAddressBook,
   faBeerMugEmpty,
   faDesktop,
   faFaceLaughBeam,
   faFileCircleCheck,
   faFileCirclePlus,
   faFilm,
+  faFlag,
   faIndustry,
+  faKey,
+  faList,
   faMotorcycle,
   faMugSaucer,
   faPaperclip,
@@ -14,6 +18,7 @@ import {
   faScissors,
   faShop,
   faTruck,
+  faUserPlus,
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -118,8 +123,8 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box1"
-                      ? "/public/write-export.gif"
-                      : "/public/write-export.png"
+                      ? "/write-export.gif"
+                      : "/write-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
@@ -157,8 +162,8 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box2"
-                      ? "/public/scan-export.gif"
-                      : "/public/scan-export.png"
+                      ? "/scan-export.gif"
+                      : "/scan-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
@@ -236,7 +241,7 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/resume/register")}
+                onClick={() => navigate("/jobs/register")}
               >
                 <FontAwesomeIcon icon={faFileCirclePlus} />
                 <Box color={"#ff5a3d"} mx={3}>
@@ -252,12 +257,12 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box1"
-                      ? "/public/write-export.gif"
-                      : "/public/write-export.png"
+                      ? "/new-export.gif"
+                      : "/new-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
@@ -277,7 +282,7 @@ export function MainPage() {
                 cursor={"pointer"}
                 onClick={() => navigate("/resume/list")}
               >
-                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <FontAwesomeIcon icon={faList} />
                 <Box color={"#ff5a3d"} mx={3}>
                   나의 공고 목록
                 </Box>
@@ -291,12 +296,12 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box2"
-                      ? "/public/scan-export.gif"
-                      : "/public/scan-export.png"
+                      ? "/com-export.gif"
+                      : "/com-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
@@ -308,7 +313,7 @@ export function MainPage() {
               border={"2px solid #CCD4E0"}
               height={"50%"}
               borderRadius={"20px"}
-              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseEnter={() => handleMouseEnter("box3")}
               onMouseLeave={handleMouseLeave}
             >
               <Center
@@ -316,9 +321,9 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/resume/register")}
+                onClick={() => navigate("/jobs/management/list")}
               >
-                <FontAwesomeIcon icon={faFileCirclePlus} />
+                <FontAwesomeIcon icon={faAddressBook} />
                 <Box color={"#ff5a3d"} mx={3}>
                   지원 내역
                 </Box>
@@ -331,13 +336,13 @@ export function MainPage() {
               <Box>
                 <Image
                   src={
-                    hoveredBox === "box1"
-                      ? "/public/write-export.gif"
-                      : "/public/write-export.png"
+                    hoveredBox === "box3"
+                      ? "/papers-export.gif"
+                      : "/papers-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
@@ -347,7 +352,7 @@ export function MainPage() {
               border={"2px solid #CCD4E0"}
               height={"50%"}
               borderRadius={"20px"}
-              onMouseEnter={() => handleMouseEnter("box2")}
+              onMouseEnter={() => handleMouseEnter("box4")}
               onMouseLeave={handleMouseLeave}
             >
               <Center
@@ -355,9 +360,9 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/resume/list")}
+                onClick={() => navigate("/store/list")}
               >
-                <FontAwesomeIcon icon={faFileCircleCheck} />
+                <FontAwesomeIcon icon={faFlag} />
                 <Box color={"#ff5a3d"} mx={3}>
                   나의 사업장 목록
                 </Box>
@@ -370,13 +375,75 @@ export function MainPage() {
               <Box>
                 <Image
                   src={
-                    hoveredBox === "box2"
-                      ? "/public/scan-export.gif"
-                      : "/public/scan-export.png"
+                    hoveredBox === "box4"
+                      ? "/store-export.gif"
+                      : "/store-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
+                />
+              </Box>
+            </Box>
+          </Flex>
+        </>
+      )}
+      {!account.isLoggedIn() && (
+        <>
+          <Flex mt={"20px"}>
+            <Box
+              ml={"30%"}
+              w={"40%"}
+              border={"2px solid #CCD4E0"}
+              height={"50%"}
+              borderRadius={"20px"}
+              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/login")}
+              >
+                <FontAwesomeIcon icon={faKey} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  로그인
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Center
+                margin={"auto"}
+                {...needStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() => navigate("/signup")}
+              >
+                <FontAwesomeIcon icon={faUserPlus} />
+                <Box color={"#ff5a3d"} mx={3}>
+                  회원가입
+                </Box>
+                <FontAwesomeIcon
+                  icon={faRightToBracket}
+                  fontSize={"20px"}
+                  color={"gray"}
+                />
+              </Center>
+              <Box>
+                <Image
+                  src={
+                    hoveredBox === "box1"
+                      ? "/lock-export.gif"
+                      : "/lock-export.png"
+                  }
+                  height={"128px"}
+                  mt={"10px"}
+                  ml={"140px"}
                 />
               </Box>
             </Box>

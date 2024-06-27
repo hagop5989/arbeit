@@ -2,8 +2,10 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Image,
@@ -36,6 +38,7 @@ export function ResumeRegister() {
   const [nowAge, setNowAge] = useState("");
   const [isRookie, setIsRookie] = useState(0);
   const [profileSrc, setProfileSrc] = useState("");
+  const [checkLength, setCheckLength] = useState({});
   const account = useContext(LoginContext);
   const navigate = useNavigate();
   const toast = useToast();
@@ -92,6 +95,7 @@ export function ResumeRegister() {
 
   const handleInputChange = (prop) => (e) => {
     setResume({ ...resume, [prop]: e.target.value });
+    setCheckLength({ ...checkLength, [prop]: e.target.value.length });
   };
 
   function handleWriteBtn() {
@@ -208,7 +212,12 @@ export function ResumeRegister() {
             onChange={handleInputChange("title")}
             h={"50px"}
           />
-          {errors && <FormErrorMessage>{errors.title}</FormErrorMessage>}
+          <Flex gap={"10px"}>
+            {errors && <FormErrorMessage>{errors.title}</FormErrorMessage>}
+            <FormHelperText color={"gray"}>
+              {checkLength.title}/50
+            </FormHelperText>
+          </Flex>
         </FormControl>
         <FormControl mb={4}>
           <FormLabel fontSize={"xl"} fontWeight={"bold"}>
@@ -244,11 +253,16 @@ export function ResumeRegister() {
             onChange={handleInputChange("content")}
             h={"150px"}
           />
-          {errors && (
-            <FormErrorMessage color="red.500">
-              {errors.content}
-            </FormErrorMessage>
-          )}
+          <Flex gap={"10px"}>
+            {errors && (
+              <FormErrorMessage color="red.500">
+                {errors.content}
+              </FormErrorMessage>
+            )}
+            <FormHelperText color={"gray"}>
+              {checkLength.content}/3,000
+            </FormHelperText>
+          </Flex>
         </FormControl>
         <Button
           onClick={handleWriteBtn}
