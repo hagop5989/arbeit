@@ -61,7 +61,7 @@ export function JobsView() {
       })
       .catch((err) => {
         if (err.response && err.response.status === 404) {
-          myToast("해당 게시물이 존재하지 않습니다", "error");
+          myToast("마감 되었거나, 존재하지 않는 게시물 입니다", "error");
           navigate("/jobs/list");
         }
       });

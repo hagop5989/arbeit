@@ -64,7 +64,7 @@ export function JobsViewDetails({ onOpen, job, jobsCond, images, storeMap }) {
                 <FontAwesomeIcon icon={faThumbtack} mr={"10px"} />{" "}
                 {storeMap.store.name}
               </Text>
-              <Text fontWeight={"700"} fontSize={"25px"} mt={"20px"}>
+              <Text fontWeight={"700"} fontSize={"19px"} mt={"20px"}>
                 {job.title}
               </Text>
             </Box>

@@ -8,6 +8,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Image,
@@ -56,6 +57,7 @@ export function StoreEdit() {
   const [addImage, setAddImage] = useState([]);
   const [removeImage, setRemoveImage] = useState([]);
   const account = useContext(LoginContext);
+  const [checkLength, setCheckLength] = useState({});
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -125,6 +127,7 @@ export function StoreEdit() {
 
   const handleInputChange = (prop) => (e) => {
     setStore({ ...store, [prop]: e.target.value });
+    setCheckLength({ ...checkLength, [prop]: e.target.value.length });
   };
 
   const onCompletePost = (data) => {
@@ -174,7 +177,12 @@ export function StoreEdit() {
                   placeholder="사업장명을 입력해주세요."
                   mb={1}
                 />
-                <FormErrorMessage>{errors.name}</FormErrorMessage>
+                <Flex gap={"10px"}>
+                  <FormErrorMessage>{errors.content}</FormErrorMessage>
+                  <FormHelperText color={"gray"}>
+                    {checkLength.name}/45
+                  </FormHelperText>
+                </Flex>
               </Center>
             </FormControl>
             <FormControl
@@ -189,7 +197,12 @@ export function StoreEdit() {
                   onChange={handleInputChange("content")}
                   placeholder="가게 설명을 입력하세요."
                 />
-                <FormErrorMessage>{errors.content}</FormErrorMessage>
+                <Flex gap={"10px"}>
+                  <FormErrorMessage>{errors.content}</FormErrorMessage>
+                  <FormHelperText color={"gray"}>
+                    {checkLength.content}/1,000
+                  </FormHelperText>
+                </Flex>
               </Center>
             </FormControl>
             <FormControl

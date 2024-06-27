@@ -29,11 +29,14 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
+  faArrowUpRightFromSquare,
   faFilter,
   faMagnifyingGlass,
   faStar as fullStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
+import { differenceInHours, format, isToday } from "date-fns";
+import { ko } from "date-fns/locale";
 
 export function JobsList() {
   const account = useContext(LoginContext);
@@ -50,6 +53,7 @@ export function JobsList() {
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchParams] = useSearchParams();
+  const [expandedJobId, setExpandedJobId] = useState(null);
   const navigate = useNavigate();
 
   // Read
@@ -169,7 +173,7 @@ export function JobsList() {
   };
 
   return (
-    <Box>
+    <Box w={"1050px"} minHeight={"50vh"} h={"full"} pb={10}>
       <Flex justifyContent={"space-between"} mb={"30px"} mt={"-20px"}>
         <Box display={"flex"}>
           <Center mr={"5px"}>
@@ -293,31 +297,43 @@ export function JobsList() {
         </Box>
       </Flex>
       <Center>
-        {(searchParams || filterType) && jobsList.length == 0 && (
-          <Center w={"1050px"} h={"55vh"} mt={"0px"}>
+        {(searchParams || filterType) && jobsList.length === 0 && (
+          <Center w={"1050px"} h={"40vh"} mt={"0px"}>
             <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
           </Center>
         )}
-        <Box h={"50vh"}>
-          {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
+        <Flex
+          flexDirection={"column"}
+          h={"full"}
+          // minHeight="100vh"
+          mb={"-100px"}
+        >
+          <Box
+            flex="1"
+            // border={"1px solid red"}
+          >
+            {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
 
-          {/* 그리드로 공고 카드 보여주기 */}
-          <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
-            {jobsList.map((job) => (
-              <GridItem key={job.id}>
-                <JobCard
-                  job={job}
-                  storeImages={storeImages}
-                  favoriteList={favoriteList}
-                />
-              </GridItem>
-            ))}
-          </Grid>
+            {/* 그리드로 공고 카드 보여주기 */}
+            <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
+              {jobsList.map((job) => (
+                <GridItem key={job.id}>
+                  <JobCard
+                    job={job}
+                    storeImages={storeImages}
+                    favoriteList={favoriteList}
+                  />
+                </GridItem>
+              ))}
+            </Grid>
 
-          {/* 페이징 */}
-        </Box>
+            {/* 페이징 */}
+          </Box>
+          {jobsList.length != null && jobsList.length > 0 && (
+            <Box mt={10}>{Paging()}</Box>
+          )}
+        </Flex>
       </Center>
-      {jobsList.length != null && jobsList.length > 0 && <Box>{Paging()}</Box>}
     </Box>
   );
 
@@ -404,15 +420,43 @@ export function JobsList() {
       return "/public/alba_connector_store_logo.png";
     };
 
+    // 날짜를 MM-DD 형식과 요일로 변환하거나 남은 시간을 추출하는 함수
+    const formatDateOrTimeLeft = (date) => {
+      const now = new Date();
+      const targetDate = new Date(date);
+
+      if (isToday(targetDate)) {
+        const hoursLeft = differenceInHours(targetDate, now);
+        return `${hoursLeft}시간 후 마감`;
+      } else {
+        const formattedDate = format(targetDate, "MM-dd");
+        const dayOfWeek = format(targetDate, "EEEE", { locale: ko }).slice(
+          0,
+          1,
+        );
+        return `${formattedDate} (${dayOfWeek})`;
+      }
+    };
+
+    function handleSubInfo(jobId) {
+      setExpandedJobId((prevJobId) => (prevJobId === jobId ? null : jobId));
+    }
+
+    function handleNewWindow(e, job) {
+      e.stopPropagation();
+      if (job.id) window.open(`/jobs/${job.id}`, "_blank");
+    }
+
     return (
       <Card
         w={"1050px"}
-        h={"140px"}
-        px={"10px"}
+        // h={"140px"}
+
+        borderRadius={"0px"}
         borderY={"1px solid lightgray"}
         overflow="hidden"
       >
-        <Center h={"100%"}>
+        <Center h={"100%"} p={"5px"} px={"15px"}>
           <Box w={"150px"} h={"60px"}>
             <Image
               w={"100%"}
@@ -427,48 +471,73 @@ export function JobsList() {
 
           <Box w={"60%"} ml={"30px"}>
             <CardBody>
-              <Text
-                w={"500px"}
-                fontSize="xl"
-                fontWeight={"bold"}
-                letterSpacing={"1px"}
-                whiteSpace="nowrap" // 줄 바꿈을 막음
-                overflow="hidden" // 넘친 내용을 숨김
-                textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
-                onClick={() => {
-                  navigate(`/jobs/${job.id}`);
-                  addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
-                }}
-                _hover={{ textDecoration: "underline" }}
-                cursor={"pointer"}
-              >
-                {job.title}
-              </Text>
-              <Text
-                w={"500px"}
-                fontWeight={"bold"}
-                my={"5px"}
-                fontSize="17px"
-                color={"gray.500"}
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-              >
-                {job.storeName}
-              </Text>
+              <Flex>
+                <Box>
+                  <Text
+                    w={"500px"}
+                    fontSize="xl"
+                    fontWeight={"bold"}
+                    letterSpacing={"1px"}
+                    whiteSpace="nowrap" // 줄 바꿈을 막음
+                    overflow="hidden" // 넘친 내용을 숨김
+                    textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
+                    onClick={() => {
+                      navigate(`/jobs/${job.id}`);
+                      addRecentJob(`/jobs/${job.id}`, job.title); // 최근 본 공고 URL 추가
+                    }}
+                    _hover={{ textDecoration: "underline" }}
+                    cursor={"pointer"}
+                  >
+                    {job.title}
+                  </Text>
+                  <Text
+                    w={"500px"}
+                    fontWeight={"bold"}
+                    my={"5px"}
+                    fontSize="17px"
+                    color={"gray.500"}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {job.storeName}
+                  </Text>
+                </Box>
+                <Flex
+                  fontSize={"18px"}
+                  gap={"10px"}
+                  alignItems="center"
+                  mr={6}
+                  color={"gray"}
+                  opacity={"0.6"}
+                >
+                  <FontAwesomeIcon
+                    icon={faMagnifyingGlass}
+                    onClick={() => handleSubInfo(job.id)}
+                    cursor={"pointer"}
+                  />
+                  <FontAwesomeIcon
+                    icon={faArrowUpRightFromSquare}
+                    onClick={(e) => handleNewWindow(e, job)}
+                    cursor={"pointer"}
+                  />
+                </Flex>
+              </Flex>
             </CardBody>
           </Box>
 
           <Box w={"20%"}>
-            <Text color="gray.600">{trimmedAddress}</Text>
-            <Text fontSize="sm" color={"red.400"}>
+            <Text color="gray.600" fontWeight={"bold"}>
+              {trimmedAddress}
+            </Text>
+            <Text fontSize="sm" color={"red.400"} fontWeight={"bold"}>
               {job.categoryName}
             </Text>
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
           </Box>
 
           <Box w={"10%"}>
-            <Box textIndent={"60px"}>
+            <Box textIndent={"62px"}>
               <FontAwesomeIcon
                 cursor={"pointer"}
                 onClick={(e) => handleScraping(e, job)}
@@ -477,8 +546,73 @@ export function JobsList() {
                 fontSize={"20px"}
               />
             </Box>
+            <Text
+              mt={"5px"}
+              textAlign={"center"}
+              // textIndent={"11px"}
+              fontSize={"sm"}
+              color={"red.300"}
+              fontWeight={"bold"}
+            >
+              ~{formatDateOrTimeLeft(job.deadline)}
+            </Text>
           </Box>
         </Center>
+        {expandedJobId === job.id && (
+          <Box
+            bgColor={"rgba(244,244,244,0.99)"}
+            borderTop={"1px solid lightgray"}
+            textIndent={"10px"}
+            opacity={"0.6"}
+            fontSize={"15px"}
+          >
+            <Box
+              h={"100px"}
+              my={3}
+              mx={"40px"}
+              display={"flex"}
+              flexDirection={"column"}
+              lineHeight={"30px"}
+            >
+              <Flex justifyContent={"space-between"}>
+                <Box gap={"20px"} display={"flex"}>
+                  <Text w={"80px"} fontWeight={"bold"}>
+                    업직종
+                  </Text>
+                  <Text>{job.categoryName}</Text>
+                </Box>
+                <Box gap={"20px"} display={"flex"} mr={"200px"}>
+                  <Text w={"60px"} fontWeight={"bold"}>
+                    근무지
+                  </Text>
+                  <Text w={"280px"}>{job.address}</Text>
+                </Box>
+              </Flex>
+              <Flex justifyContent={"space-between"}>
+                <Box gap={"20px"} display={"flex"}>
+                  <Text w={"80px"} fontWeight={"bold"}>
+                    기간/요일
+                  </Text>
+                  <Text>{job.workPeriod}</Text>
+                </Box>
+                <Box gap={"20px"} display={"flex"} mr={"200px"}>
+                  <Text w={"60px"} fontWeight={"bold"}>
+                    마감일
+                  </Text>
+                  <Text w={"280px"}>
+                    ~ {formatDateOrTimeLeft(job.deadline)}
+                  </Text>
+                </Box>
+              </Flex>
+              <Box gap={"20px"} display={"flex"}>
+                <Text w={"80px"} fontWeight={"bold"}>
+                  접수방법
+                </Text>
+                <Text>온라인지원, 문자지원, 전화지원</Text>
+              </Box>
+            </Box>
+          </Box>
+        )}
       </Card>
     );
   }
@@ -486,7 +620,7 @@ export function JobsList() {
   /* 페이징 */
   function Paging() {
     return (
-      <Center gap={3} mt={2}>
+      <Center gap={3}>
         <Flex gap={2}>
           {pageInfo.prevPage && (
             <>

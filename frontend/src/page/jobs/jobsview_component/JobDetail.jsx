@@ -32,7 +32,7 @@ export function JobDetail({ jobs, jobsCond, src }) {
             </Text>
 
             <Box
-              fontSize="3xl"
+              fontSize="2xl"
               fontWeight="bold"
               letterSpacing={"1px"}
               w={"450px"}

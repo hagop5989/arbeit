@@ -26,4 +26,5 @@ public class Jobs {
     private String storeName;
     private String address;
     private String categoryName;
+    private String workPeriod;
 }

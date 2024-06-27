@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -36,6 +37,7 @@ export function ResumeEdit() {
   const [nowAge, setNowAge] = useState("");
   const [profileSrc, setProfileSrc] = useState("");
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
+  const [checkLength, setCheckLength] = useState({});
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -101,6 +103,7 @@ export function ResumeEdit() {
 
   const handleInputChange = (prop) => (e) => {
     setResume({ ...resume, [prop]: e.target.value });
+    setCheckLength({ ...checkLength, [prop]: e.target.value.length });
   };
 
   //  핸드폰 번호 - 붙여서 보여주기 (실제론 아님)
@@ -228,7 +231,14 @@ export function ResumeEdit() {
                   onChange={handleInputChange("title")}
                   h={"50px"}
                 />
-                {errors && <FormErrorMessage>{errors.title}</FormErrorMessage>}
+                <Flex gap={"10px"}>
+                  {errors && (
+                    <FormErrorMessage>{errors.title}</FormErrorMessage>
+                  )}
+                  <FormHelperText color={"gray"}>
+                    {checkLength.title}/50
+                  </FormHelperText>
+                </Flex>
               </FormControl>
               <Box mb={4}>
                 <FormLabel fontSize={"xl"} fontWeight={"bold"}>
@@ -265,11 +275,16 @@ export function ResumeEdit() {
                   onChange={handleInputChange("content")}
                   h={"150px"}
                 />
-                {errors && (
-                  <FormHelperText color="red.500">
-                    {errors.content}
+                <Flex gap={"10px"}>
+                  {errors && (
+                    <FormHelperText color="red.500">
+                      {errors.content}
+                    </FormHelperText>
+                  )}
+                  <FormHelperText color={"gray"}>
+                    {checkLength.content}/3,000
                   </FormHelperText>
-                )}
+                </Flex>
               </FormControl>
               <Button
                 onClick={handleSaveBtn}

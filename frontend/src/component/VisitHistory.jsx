@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Divider,
   Heading,
   Table,
@@ -47,8 +48,9 @@ function VisitHistory(props) {
                 #
               </Th>
               <Th w={"600px"} fontSize={"md"}>
-                공고 제목
+                제목
               </Th>
+              {account.isAlba() && <Th minW={"100px"}>관리</Th>}
             </Tr>
           </Thead>
           <Tbody>
@@ -66,6 +68,21 @@ function VisitHistory(props) {
                   fontWeight={"700"}
                 >
                   {item.title}
+                </Td>
+                <Td>
+                  {account.isAlba() && (
+                    <Button
+                      colorScheme={"blue"}
+                      variant={"outline"}
+                      size={"sm"}
+                      mt={"10px"}
+                      onClick={() =>
+                        navigate(`/jobs/${item.jobsId}?modal=open`)
+                      }
+                    >
+                      지원
+                    </Button>
+                  )}
                 </Td>
               </Tr>
             ))}

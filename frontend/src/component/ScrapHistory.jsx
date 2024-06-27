@@ -22,6 +22,10 @@ function ScrapHistory(props) {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   useEffect(() => {
+    fetchScrapList();
+  }, [account, post]);
+
+  const fetchScrapList = () => {
     axios
       .get("/api/only-login")
       .then(() => {
@@ -31,6 +35,7 @@ function ScrapHistory(props) {
             (item) => item.favorite === true,
           );
           setScrapList(filteredScrapList);
+          account.updateScrapNum(filteredScrapList.length);
         });
       })
       .catch((err) => {
@@ -38,7 +43,7 @@ function ScrapHistory(props) {
           navigate("/login");
         }
       });
-  }, [account, post]);
+  };
 
   function handleDelete(id) {
     axios.delete(`/api/scrap/delete/${id}`).then(() => {
@@ -91,17 +96,19 @@ function ScrapHistory(props) {
                   <Td fontSize={"sm"}>2024-06-25</Td>
                   <Td>
                     <Flex gap={"10px"}>
-                      <Button
-                        colorScheme={"blue"}
-                        variant={"outline"}
-                        size={"sm"}
-                        mt={"10px"}
-                        onClick={() =>
-                          navigate(`/jobs/${item.jobsId}?modal=open`)
-                        }
-                      >
-                        지원
-                      </Button>
+                      {account.isAlba() && (
+                        <Button
+                          colorScheme={"blue"}
+                          variant={"outline"}
+                          size={"sm"}
+                          mt={"10px"}
+                          onClick={() =>
+                            navigate(`/jobs/${item.jobsId}?modal=open`)
+                          }
+                        >
+                          지원
+                        </Button>
+                      )}
                       <Button
                         colorScheme={"red"}
                         variant={"outline"}

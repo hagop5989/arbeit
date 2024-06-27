@@ -37,7 +37,7 @@ public interface JobsMapper {
             FROM jobs j
                 JOIN store s ON s.id = j.store_id
                 JOIN member m ON m.id = j.member_id
-                JOIN category c ON c.id = j.category_id
+                JOIN category c ON c.id = s.category_id
             WHERE j.id = #{id}
             """)
     Jobs selectById(Integer id);
@@ -60,6 +60,7 @@ public interface JobsMapper {
             JOIN jobs_condition jc ON jc.jobs_id = j.id
             <where>
                 m.name != '탈퇴한 유저'
+                AND j.deadline >= CURRENT_DATE() 
                 <if test="searchType != null">
                     <bind name="pattern" value="'%' + keyword + '%'" />
                     <choose>
@@ -105,7 +106,7 @@ public interface JobsMapper {
             FROM jobs j 
             JOIN member m ON j.member_id = m.id 
             JOIN store s ON s.id = j.store_id
-            JOIN category c ON c.id = j.category_id
+            JOIN category c ON c.id = s.category_id
             JOIN jobs_condition jc ON jc.jobs_id = j.id
                <trim prefix="WHERE" prefixOverrides="OR">
                    <if test="searchType != null">
@@ -151,37 +152,6 @@ public interface JobsMapper {
                 """)
     List<Jobs> selectAllPaging(int offset, String searchType, String keyword, String filterType, String filterDetail);
 
-
-//    @Select("""
-//            <script>
-//            SELECT j.*,jc.*,
-//                   s.address,
-//                   s.name AS storeName,
-//                   m.name AS memberName,
-//                   c.name AS categoryName
-//            FROM jobs j
-//            JOIN member m ON j.member_id = m.id
-//            JOIN store s ON s.id = j.store_id
-//            JOIN category c ON c.id = j.category_id
-//            JOIN jobs_condition jc ON jc.jobs_id = j.id
-//               <trim prefix="WHERE" prefixOverrides="OR">
-//                   <if test="searchType != null">
-//                       <bind name="pattern" value="'%' + keyword + '%'" />
-//                       <if test="searchType == 'all' || searchType == 'text'">
-//                           OR j.title LIKE #{pattern}
-//                           OR j.content LIKE #{pattern}
-//                       </if>
-//                       <if test="searchType == 'all' || searchType == 'nickName'">
-//                           OR m.name LIKE #{pattern}
-//                       </if>
-//                   </if>
-//               </trim>
-//            GROUP BY j.id
-//            ORDER BY j.id DESC
-//            LIMIT #{offset},8
-//            </script>
-//                """)
-//    List<Jobs> selectAllPaging(int offset, String searchType, String keyword, String filterType, String filterDetail);
 
     // Update
     @Update("""
