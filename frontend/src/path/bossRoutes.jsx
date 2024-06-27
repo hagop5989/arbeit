@@ -6,14 +6,14 @@ import { ResumeEdit } from "../page/resume/ResumeEdit.jsx";
 import { JobsEdit } from "../page/jobs/JobsEdit.jsx";
 import { ResumeView } from "../page/resume/ResumeView.jsx";
 import { ApplicationList } from "../page/application/ApplicationList.jsx";
-import { ManagementList } from "../page/management/ManagementList.jsx";
-import { ManagementView } from "../page/management/ManagementView.jsx";
+import { ApplicationMangeList } from "../page/application/manage/ApplicationMangeList.jsx";
 import Test1 from "../page/test)calendar/Test1.jsx";
 import VisitHistory from "../component/VisitHistory.jsx";
 import JobsView from "../page/jobs/JobsView.jsx";
 import ScrapHistory from "../component/ScrapHistory.jsx";
 import AlbaReviewList from "../page/review/AlbaReviewList.jsx";
-import BossReviewList from "../page/review/BossReviewList.jsx"; // list : jobs , view : detail
+import BossReviewList from "../page/review/BossReviewList.jsx";
+import { ApplicationManageView } from "../page/application/manage/ApplicationManageView.jsx";
 
 // list : jobs , view : detail
 const bossRoutes = [
@@ -21,9 +21,12 @@ const bossRoutes = [
   { path: "jobs/list", element: <JobsList /> },
   { path: "jobs/:id", element: <JobsView /> },
   { path: "jobs/:id/edit", element: <JobsEdit /> },
-  { path: "jobs/:id/application-view", element: <ManagementView /> },
-  { path: "jobs/management/list", element: <ManagementList /> },
-  { path: "apply/list", element: <ApplicationList /> },
+  { path: "application-manage/list", element: <ApplicationMangeList /> },
+  {
+    path: "/jobs/:jobsId/application-manage/detail/:albaId",
+    element: <ApplicationManageView />,
+  },
+  { path: "application/list", element: <ApplicationList /> },
   { path: "resume/register", element: <ResumeRegister /> },
   { path: "resume/list", element: <ResumeList /> },
   { path: "resume/:id", element: <ResumeView /> },

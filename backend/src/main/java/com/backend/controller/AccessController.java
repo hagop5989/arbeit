@@ -1,6 +1,6 @@
 package com.backend.controller;
 
-import com.backend.controller.application.AuthId;
+import com.backend.config.AuthId;
 import com.backend.service.application.ApplicationService;
 import com.backend.service.jobs.JobsService;
 import com.backend.service.resume.ResumeService;

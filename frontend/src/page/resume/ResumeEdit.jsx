@@ -123,7 +123,11 @@ export function ResumeEdit() {
     const confirm = window.confirm("수정하시겠습니까?");
     if (confirm) {
       axios
-        .put(`/api/resume/${id}`, resume)
+        .put(`/api/resume/${id}`, {
+          title: resume.title,
+          content: resume.content,
+          isRookie: resume.isRookie,
+        })
         .then(() => {
           toast({
             status: "success",

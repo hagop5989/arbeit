@@ -1,4 +1,4 @@
-package com.backend.controller.application;
+package com.backend.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

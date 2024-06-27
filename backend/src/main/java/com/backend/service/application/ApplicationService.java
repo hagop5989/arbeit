@@ -44,7 +44,9 @@ public class ApplicationService {
     }
 
     public List<Application> findAllByAuthId(Integer memberId) {
-        return mapper.list(memberId);
+        List<Application> applicationList = mapper.list(memberId);
+        return applicationList.stream()
+                .filter(application -> application.getResumeId() != null).toList();
     }
 
     public Application findByJobsIdAndMemberId(Integer jobsId, Integer memberId) {

@@ -1,6 +1,6 @@
 package com.backend.controller.jobs;
 
-import com.backend.controller.application.AuthId;
+import com.backend.config.AuthId;
 import com.backend.domain.jobs.form.JobsEditForm;
 import com.backend.domain.jobs.form.JobsRegisterForm;
 import com.backend.service.jobs.JobsService;

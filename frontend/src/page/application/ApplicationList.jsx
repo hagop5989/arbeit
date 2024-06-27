@@ -15,7 +15,6 @@ import {
   Table,
   Tbody,
   Td,
-  Th,
   Thead,
   Tr,
   useDisclosure,
@@ -27,8 +26,7 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   th: {
-    borderBottom: "1px solid gray",
-    fontSize: "medium",
+    borderBottom: "2px solid #E0E0E0",
   },
   td: {
     borderBottom: "1px solid #E0E0E0",
@@ -49,15 +47,16 @@ export function ApplicationList() {
   // Read (jobs 리스트 받기)
   useEffect(() => {
     axios
-      .get("/api/only-login")
-      .then(() => {
-        axios.get(`/api/apply/list`).then((res) => {
-          setApplicationList(res.data);
-        });
+      .get(`/api/apply/list`)
+      .then((res) => {
+        setApplicationList(res.data);
       })
       .catch((err) => {
         if (err.response.status === 401) {
           navigate("/login");
+        }
+        if (err.response.status === 403) {
+          navigate("/");
         }
       });
   }, [account.id, isCancel]);
@@ -107,36 +106,36 @@ export function ApplicationList() {
     }
   }
 
-  if (account.id === "") {
+  if (applicationList === null) {
     return <Spinner />;
   }
 
   return (
-    <Box w={"100%"} h={"55vh"}>
+    <Box w={"100%"} minH={"600px"}>
       <Box>
         <Heading mb={"10px"} p={1}>
           나의 지원 내역
         </Heading>
         <Divider mb={"40px"} borderWidth={"2px"} />
         <Box>
-          <Table>
-            <Thead>
-              <Tr borderTop={"1px solid gray"}>
-                <Th {...styles.th} w={"150px"}>
-                  지원 일자
-                </Th>
-                <Th {...styles.th} w={"32%"}>
+          <Table borderRadius="lg" w="1050px">
+            <Thead bg="gray.100" p={2} fontWeight="bold">
+              <Tr>
+                <Td w={"100px"} {...styles.th}>
+                  지원일자
+                </Td>
+                <Td w={"350px"} {...styles.th}>
                   지원 공고
-                </Th>
-                <Th {...styles.th} w={"32%"}>
+                </Td>
+                <Td w={"100px"} {...styles.th}>
                   지원서
-                </Th>
-                <Th {...styles.th} w={"40px"}>
+                </Td>
+                <Td w={"50px"} {...styles.th}>
                   상태
-                </Th>
-                <Th {...styles.th} w={"120px"}>
+                </Td>
+                <Td w={"100px"} {...styles.th}>
                   지원 취소
-                </Th>
+                </Td>
               </Tr>
             </Thead>
             <Tbody>
@@ -148,6 +147,11 @@ export function ApplicationList() {
                       <Link
                         href={`/jobs/${application.jobsId}`}
                         fontWeight={"800"}
+                        w={"350px"}
+                        isTruncated
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                        whiteSpace="nowrap"
                       >
                         {application.jobsTitle}
                       </Link>
@@ -167,20 +171,29 @@ export function ApplicationList() {
                       {isPassedToString(application.isPassed)}
                     </Td>
                     <Td {...styles.td}>
-                      <Button
-                        colorScheme="red"
-                        variant="outline"
-                        _hover={{ bg: "#E74133", color: "white" }}
-                        size={"sm"}
-                        onClick={() => handleCancelBtn(application.jobsId)}
-                      >
-                        취소
-                      </Button>
+                      {application.isPassed === null ? (
+                        <Button
+                          colorScheme="red"
+                          variant="outline"
+                          _hover={{ bg: "#E74133", color: "white" }}
+                          size={"sm"}
+                          onClick={() => handleCancelBtn(application.jobsId)}
+                        >
+                          취소
+                        </Button>
+                      ) : (
+                        <Box>처리 완료</Box>
+                      )}
                     </Td>
                   </Tr>
                 ))}
             </Tbody>
           </Table>
+          {applicationList.length < 1 && (
+            <Box m={"30px"}>
+              <Heading size={"md"}>지원 내역이 없습니다.</Heading>
+            </Box>
+          )}
         </Box>
       </Box>
 
@@ -204,8 +217,17 @@ export function ApplicationList() {
               <>
                 <Box fontWeight={"600"} mb={"10px"}>
                   <Flex>
-                    <Box mr={"20px"}>지원 공고</Box>
-                    <Link href={`/jobs/${selectedApplication.jobsId}`}>
+                    <Box mr={"10px"} w="100px">
+                      지원 공고:
+                    </Box>
+                    <Link
+                      href={`/jobs/${selectedApplication.jobsId}`}
+                      isTruncated
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      whiteSpace="nowrap"
+                      w={"280px"}
+                    >
                       {selectedApplication.jobsTitle}
                     </Link>
                   </Flex>

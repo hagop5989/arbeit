@@ -1,7 +1,7 @@
 package com.backend.service.review;
 
 import com.backend.domain.review.ReviewToAlba;
-import com.backend.domain.reviw.ReviewToStore;
+import com.backend.domain.review.ReviewToStore;
 import com.backend.mapper.review.ReviewToStoreMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

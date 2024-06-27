@@ -53,7 +53,7 @@ export function Profile() {
         <Link href={`/member/${account.id}`}>내 정보</Link>
       </Center>
       <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
-        <Link href={isBoss ? "/jobs/management/list" : "/apply/list"}>
+        <Link href={isBoss ? "/application-manage/list" : "/application/list"}>
           지원내역
         </Link>
 
