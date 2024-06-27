@@ -118,8 +118,8 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box1"
-                      ? "/public/write-export.gif"
-                      : "/public/write-export.png"
+                      ? "/write-export.gif"
+                      : "/write-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
@@ -157,8 +157,8 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box2"
-                      ? "/public/scan-export.gif"
-                      : "/public/scan-export.png"
+                      ? "/scan-export.gif"
+                      : "/scan-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
@@ -236,7 +236,7 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/resume/register")}
+                onClick={() => navigate("/jobs/register")}
               >
                 <FontAwesomeIcon icon={faFileCirclePlus} />
                 <Box color={"#ff5a3d"} mx={3}>
@@ -252,12 +252,12 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box1"
-                      ? "/public/write-export.gif"
-                      : "/public/write-export.png"
+                      ? "/new-export.gif"
+                      : "/new-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
@@ -291,12 +291,12 @@ export function MainPage() {
                 <Image
                   src={
                     hoveredBox === "box2"
-                      ? "/public/scan-export.gif"
-                      : "/public/scan-export.png"
+                      ? "/com-export.gif"
+                      : "/com-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
@@ -308,7 +308,7 @@ export function MainPage() {
               border={"2px solid #CCD4E0"}
               height={"50%"}
               borderRadius={"20px"}
-              onMouseEnter={() => handleMouseEnter("box1")}
+              onMouseEnter={() => handleMouseEnter("box3")}
               onMouseLeave={handleMouseLeave}
             >
               <Center
@@ -316,7 +316,7 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/resume/register")}
+                onClick={() => navigate("/jobs/management/list")}
               >
                 <FontAwesomeIcon icon={faFileCirclePlus} />
                 <Box color={"#ff5a3d"} mx={3}>
@@ -331,13 +331,13 @@ export function MainPage() {
               <Box>
                 <Image
                   src={
-                    hoveredBox === "box1"
-                      ? "/public/write-export.gif"
-                      : "/public/write-export.png"
+                    hoveredBox === "box3"
+                      ? "/papers-export.gif"
+                      : "/papers-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
@@ -347,7 +347,7 @@ export function MainPage() {
               border={"2px solid #CCD4E0"}
               height={"50%"}
               borderRadius={"20px"}
-              onMouseEnter={() => handleMouseEnter("box2")}
+              onMouseEnter={() => handleMouseEnter("box4")}
               onMouseLeave={handleMouseLeave}
             >
               <Center
@@ -355,7 +355,7 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/resume/list")}
+                onClick={() => navigate("/store/list")}
               >
                 <FontAwesomeIcon icon={faFileCircleCheck} />
                 <Box color={"#ff5a3d"} mx={3}>
@@ -370,13 +370,13 @@ export function MainPage() {
               <Box>
                 <Image
                   src={
-                    hoveredBox === "box2"
-                      ? "/public/scan-export.gif"
-                      : "/public/scan-export.png"
+                    hoveredBox === "box4"
+                      ? "/store-export.gif"
+                      : "/store-export.png"
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"80px"}
                 />
               </Box>
             </Box>
