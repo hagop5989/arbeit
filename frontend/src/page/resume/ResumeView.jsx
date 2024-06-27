@@ -182,7 +182,12 @@ export function ResumeView() {
                 <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                   자기소개
                 </FormLabel>
-                <Textarea defaultValue={resume.content} h={"150px"} readOnly />
+                <Textarea
+                  defaultValue={resume.content}
+                  h={"150px"}
+                  whiteSpace="pre-wrap"
+                  readOnly
+                />
               </FormControl>
 
               <Box mb={4}>

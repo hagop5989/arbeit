@@ -18,6 +18,7 @@ public interface ApplicationManageMapper {
                 a.jobs_id jobsId,
                 a.member_id albaId,
                 m.name albaName,
+                a.resume_id resumeId,
                 a.inserted,
                 a.is_passed isPassed
             FROM application a

@@ -31,3 +31,10 @@ FROM resume r
          JOIN jobs j ON a.jobs_id = j.id
 WHERE resume_id = 36;
 
+ALTER TABLE application
+    ADD CONSTRAINT application_ibfk_3
+        FOREIGN KEY (resume_id) REFERENCES resume (id)
+            ON DELETE SET NULL;
+
+ALTER TABLE application
+    DROP FOREIGN KEY application_ibfk_3;

@@ -165,6 +165,11 @@ export function ApplicationMangeList() {
                 ))}
               </Tbody>
             </Table>
+            {applicationList.length < 1 && (
+              <Box m={"30px"}>
+                <Heading size={"md"}>아직 지원자가 없습니다.</Heading>
+              </Box>
+            )}
           </Box>
           <ContractModal
             isOpen={isOpen}

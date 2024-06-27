@@ -25,6 +25,7 @@ public class ApplicationManageService {
         List<Map<String, Object>> applications = mapper.selectApplicationsByAuthId(authId);
 
         return applications.stream()
+                .filter(application -> application.get("resumeId") != null)
                 .peek(ApplicationManageService::getFormatInserted)
                 .toList();
     }
