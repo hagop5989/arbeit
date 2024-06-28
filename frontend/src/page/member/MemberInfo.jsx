@@ -81,12 +81,7 @@ export function MemberInfo() {
         }
       })
       .catch(() => {
-        toast({
-          status: "warning",
-          description: "접근 권한이 없습니다.",
-          position: "top",
-        });
-        navigate("/");
+        navigate("/login");
       });
     getProfilePicture();
   }, [id, toast, navigate]);

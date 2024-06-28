@@ -24,21 +24,19 @@ export function Home() {
         >
           <Outlet />
         </Center>
-        {account.isLoggedIn() && (
-          <Center
-            bg={"white"}
-            border={"2px solid #E9E9E9"}
-            position={"fixed"}
-            top={"220px"}
-            right={"50px"}
-            w={"300px"}
-            h={"150px"}
-            borderRadius={"10px"}
-            display={{ base: "none", "2xl": "flex" }}
-          >
-            <Profile />
-          </Center>
-        )}
+        <Center
+          bg={"white"}
+          border={"2px solid #E9E9E9"}
+          position={"fixed"}
+          top={"180px"}
+          right={{ base: "0px", "2xl": "200px" }}
+          w={"150px"}
+          h={"300px"}
+          borderRadius={"10px"}
+          display={{ base: "none", xl: "flex" }}
+        >
+          <Profile />
+        </Center>
       </Flex>
       <Footer />
     </Box>

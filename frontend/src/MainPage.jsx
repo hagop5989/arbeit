@@ -21,10 +21,12 @@ import {
   faUserPlus,
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./provider/LoginProvider.jsx"; // 중복 스타일을 객체로 정의
+import "/index.css";
 
 // 중복 스타일을 객체로 정의
 const buttonStyle = {
@@ -82,20 +84,22 @@ export function MainPage() {
       {account.isAlba() && (
         <>
           <Center
-            height={"40px"}
+            height={"60px"}
             bg={"#CCD4E0"}
-            color={"black"}
-            fontSize={"1.5rem"}
+            fontSize={"2rem"}
             fontWeight={"700"}
             mt={"25px"}
-            mb={"5px"}
+            mb={"25px"}
             borderRadius={"10px"}
+            fontFamily={"ONE-Mobile-POP"}
+            color={"black"}
           >
             알바 채용을 위한 첫 걸음
           </Center>
           <Flex>
             <Box
-              w={"30%"}
+              ml={"5%"}
+              w={"40%"}
               border={"2px solid #CCD4E0"}
               height={"50%"}
               borderRadius={"20px"}
@@ -128,13 +132,13 @@ export function MainPage() {
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"150px"}
                 />
               </Box>
             </Box>
             <Box
-              ml={"5%"}
-              w={"30%"}
+              ml={"10%"}
+              w={"40%"}
               border={"2px solid #CCD4E0"}
               height={"50%"}
               borderRadius={"20px"}
@@ -167,47 +171,10 @@ export function MainPage() {
                   }
                   height={"128px"}
                   mt={"50px"}
-                  ml={"100px"}
+                  ml={"150px"}
                 />
               </Box>
             </Box>
-            {/*<Box*/}
-            {/*  ml={"5%"}*/}
-            {/*  w={"30%"}*/}
-            {/*  border={"2px solid #CCD4E0"}*/}
-            {/*  height={"50%"}*/}
-            {/*  borderRadius={"20px"}*/}
-            {/*  onMouseEnter={() => handleMouseEnter("box3")}*/}
-            {/*  onMouseLeave={handleMouseLeave}*/}
-            {/*>*/}
-            {/*  <Center*/}
-            {/*    margin={"auto"}*/}
-            {/*    {...needStyle}*/}
-            {/*    as="div"*/}
-            {/*    cursor={"pointer"}*/}
-            {/*    onClick={() => navigate("/jobs/list")}*/}
-            {/*  >*/}
-            {/*    <FontAwesomeIcon icon={faThumbtack} />*/}
-            {/*    <Box mx={3}>공고 확인하기</Box>*/}
-            {/*    <FontAwesomeIcon*/}
-            {/*      icon={faRightToBracket}*/}
-            {/*      fontSize={"20px"}*/}
-            {/*      color={"gray"}*/}
-            {/*    />*/}
-            {/*  </Center>*/}
-            {/*  <Box>*/}
-            {/*    <Image*/}
-            {/*      src={*/}
-            {/*        hoveredBox === "box3"*/}
-            {/*          ? "/public/job-export.gif"*/}
-            {/*          : "/public/job-export.png"*/}
-            {/*      }*/}
-            {/*      height={"128px"}*/}
-            {/*      mt={"50px"}*/}
-            {/*      ml={"100px"}*/}
-            {/*    />*/}
-            {/*  </Box>*/}
-            {/*</Box>*/}
           </Flex>
         </>
       )}
@@ -215,15 +182,21 @@ export function MainPage() {
       {account.isBoss() && (
         <>
           <Center
-            height={"40px"}
+            height={"60px"}
             bg={"#CCD4E0"}
-            color={"black"}
-            fontSize={"1.5rem"}
+            fontSize={"2rem"}
             fontWeight={"700"}
             mt={"25px"}
-            mb={"5px"}
+            mb={"25px"}
             borderRadius={"10px"}
+            fontFamily={"ONE-Mobile-POP"}
+            color={"#ff6044"}
           >
+            <Image
+              src="/boss-menu-export.png"
+              borderRadius={"10px"}
+              h={"64px"}
+            />
             사장 메뉴
           </Center>
           <Flex>
@@ -321,7 +294,7 @@ export function MainPage() {
                 {...needStyle}
                 as="div"
                 cursor={"pointer"}
-                onClick={() => navigate("/jobs/management/list")}
+                onClick={() => navigate("/application-manage/list")}
               >
                 <FontAwesomeIcon icon={faAddressBook} />
                 <Box color={"#ff5a3d"} mx={3}>
@@ -493,7 +466,16 @@ export function MainPage() {
                   color={"gray"}
                 />
               </Center>
-              <Center {...buttonStyle} as="div">
+              <Center
+                {...buttonStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() =>
+                  navigate(
+                    "/jobs/list?type=all&keyword=&page=1&filterType=직종&filterDetail=카페",
+                  )
+                }
+              >
                 <FontAwesomeIcon icon={faMugSaucer} />
                 <Box mx={3}>카페</Box>
                 <FontAwesomeIcon
@@ -558,7 +540,16 @@ export function MainPage() {
                   color={"gray"}
                 />
               </Center>
-              <Center {...buttonStyle} as="div">
+              <Center
+                {...buttonStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() =>
+                  navigate(
+                    "/jobs/list?type=all&keyword=&page=1&filterType=직종&filterDetail=유통",
+                  )
+                }
+              >
                 <FontAwesomeIcon icon={faTruck} />
                 <Box mx={3}>유통</Box>
                 <FontAwesomeIcon

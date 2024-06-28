@@ -24,9 +24,12 @@ const NavLink = ({ href, children }) => (
 const NavbarButton = ({ children, onClick }) => (
   <Button
     variant="outline"
+    bg={"#FFD863"}
     ml={2}
-    fontSize="13px"
-    border="1px solid #CCD4E0"
+    fontSize="12px"
+    w={"90px"}
+    _hover={{ bg: "#FEF18B" }}
+    fontFamily={"SBAggroB"}
     onClick={onClick}
   >
     {children}
@@ -35,7 +38,7 @@ const NavbarButton = ({ children, onClick }) => (
 
 // 작은 링크 컴포넌트
 const SmallLink = ({ href, children }) => (
-  <Link href={href} fontSize="md" color="black" ml={4}>
+  <Link href={href} fontSize="sm" color="black">
     {children}
   </Link>
 );
@@ -59,19 +62,12 @@ const Navbar = () => {
 
   return (
     <Box bg="white" borderBottom="3px solid #eaeaea" height="110px" mb={"70px"}>
-      <Box bg={"orange"} h={"3px"} mb={"30px"} />
+      <Box bg={"orange"} h={"3px"} mb={"40px"} />
       <Center minWidth={"1000px"} mx={{ base: "0px", xl: "200px" }}>
-        <HStack w={"1300px"} spacing={8}>
-          <Box
-            display="flex"
-            width="200px"
-            height="55px"
-            mr={"-10px"}
-            ml={"20px"}
-          >
+        <HStack w={"1100px"} spacing={7}>
+          <Box width="135px" height="42px" mr={"10px"} mt={"5px"}>
             <Image
               src="/public/alba_connector_logo.png"
-              height={"55px"}
               cursor={"pointer"}
               transition="transform 0.3s ease-in-out"
               _hover={{
@@ -80,14 +76,14 @@ const Navbar = () => {
               onClick={() => navigate("/")}
             />
           </Box>
-          <Flex w={"80%"} pt={"10px"}>
+          <Flex w={"100%"}>
             <HStack spacing={10} fontWeight={"600"}>
-              <NavLink href="/jobs/list">알바 공고</NavLink>
+              <NavLink href="/jobs/list">알바 채용공고</NavLink>
               <NavLink href="/board/list">질문 게시판</NavLink>
               <NavLink href="/faq">자주 묻는 질문(FAQ)</NavLink>
             </HStack>
             <Spacer />
-            <Center>
+            <Center gap={5}>
               {account.isLoggedIn() || (
                 <SmallLink href="/login">로그인</SmallLink>
               )}
@@ -98,14 +94,12 @@ const Navbar = () => {
                 <Box
                   fontSize="15px"
                   color="black"
-                  mr={"20px"}
                   fontWeight={"600"}
                   cursor={"pointer"}
                   onClick={() => navigate(`/member/${account.id}`)}
                 >
                   <Badge
                     colorScheme={checkAuth("orange", "red", "blue")}
-                    px={2}
                     mr={2}
                   >
                     {checkAuth("알바", "기업", "어드민")}
@@ -117,7 +111,6 @@ const Navbar = () => {
                 <Box
                   fontSize="sm"
                   color="black"
-                  mr={"40px"}
                   cursor={"pointer"}
                   _hover={{
                     textDecoration: "underline",
@@ -130,26 +123,36 @@ const Navbar = () => {
                   로그아웃
                 </Box>
               )}
-              {account.isAlba() && (
-                <NavbarButton
-                  onClick={() => {
-                    navigate("/resume/list");
-                  }}
-                >
-                  이력서 관리
-                </NavbarButton>
-              )}
-
-              {account.isBoss() && (
-                <NavbarButton onClick={() => navigate("/jobs/register")}>
-                  공고 등록
-                </NavbarButton>
-              )}
-              {account.isBoss() && (
-                <NavbarButton onClick={() => navigate("/store/register")}>
-                  사업장 등록
-                </NavbarButton>
-              )}
+              <Flex>
+                {account.isAlba() && (
+                  <NavbarButton
+                    onClick={() => {
+                      navigate("/resume/list");
+                    }}
+                  >
+                    이력서 관리
+                  </NavbarButton>
+                )}
+                {account.isAlba() && (
+                  <NavbarButton
+                    onClick={() => {
+                      navigate("/resume/register");
+                    }}
+                  >
+                    이력서 등록
+                  </NavbarButton>
+                )}
+                {account.isBoss() && (
+                  <NavbarButton onClick={() => navigate("/jobs/register")}>
+                    공고 등록
+                  </NavbarButton>
+                )}
+                {account.isBoss() && (
+                  <NavbarButton onClick={() => navigate("/store/register")}>
+                    사업장 등록
+                  </NavbarButton>
+                )}
+              </Flex>
             </Center>
           </Flex>
         </HStack>

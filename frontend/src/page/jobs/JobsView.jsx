@@ -19,7 +19,6 @@ import { JobDetail } from "./jobsview_component/JobDetail.jsx";
 import { JobLocation } from "./jobsview_component/JobLocation.jsx";
 import { JobContact } from "./jobsview_component/JobContact.jsx";
 import { CompanyInfo } from "./jobsview_component/CompanyInfo.jsx";
-import { JobReview } from "./jobsview_component/JobReview.jsx";
 import { JobRequirements } from "./jobsview_component/JobRequirements.jsx";
 import { ApplicationWriteModal } from "../application/ApplicationWriteModal.jsx";
 
@@ -137,8 +136,6 @@ export function JobsView() {
           boss={boss}
           src={src}
         />
-        <Divider />
-        <JobReview />
       </Stack>
       {account.isAlba() && (
         <>
