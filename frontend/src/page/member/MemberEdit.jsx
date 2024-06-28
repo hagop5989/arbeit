@@ -170,11 +170,7 @@ export function MemberEdit() {
               </Modal>
               <Flex mb={2}>
                 <Box w={"70%"} mr={2}>
-                  <Input
-                    defaultValue={member.address}
-                    onChange={handleInputChange("address")}
-                    readOnly
-                  />
+                  <Input value={member.address} readOnly />
                   {errors && (
                     <FormErrorMessage>{errors.address}</FormErrorMessage>
                   )}

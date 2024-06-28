@@ -22,9 +22,9 @@ public interface ApplicationManageMapper {
                 a.inserted,
                 a.is_passed isPassed
             FROM application a
-              JOIN jobs j ON a.jobs_id = j.id
-              JOIN member m ON j.member_id = m.id
-            WHERE m.id=#{authId}
+            JOIN jobs j ON a.jobs_id = j.id
+            JOIN member m ON a.member_id = m.id
+            WHERE j.member_id= #{authId} AND m.name != '탈퇴한 유저';
             """)
     List<Map<String, Object>> selectApplicationsByAuthId(Integer authId);
 
@@ -63,4 +63,6 @@ public interface ApplicationManageMapper {
             VALUES (#{bossId}, #{albaId}, #{jobsId}, #{startDate}, #{endDate})
             """)
     void insertContract(Contract contract);
+
+
 }

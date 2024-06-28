@@ -33,6 +33,7 @@ const styles = {
 export function ResumeView() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
+  const [userName, setUserName] = useState("");
   const [profileSrc, setProfileSrc] = useState("");
   const [nowAge, setNowAge] = useState("");
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
@@ -56,7 +57,8 @@ export function ResumeView() {
     axios
       .get(`/api/resume/${id}`)
       .then((res) => {
-        setResume(res.data);
+        setResume(res.data.resume);
+        setUserName(res.data.userName);
       })
       .catch((err) => {
         if (err.response.status === 404) {
@@ -144,7 +146,7 @@ export function ResumeView() {
                 <Box w={"50%"} ml={"50px"} lineHeight={"30px"}>
                   <Box display={"flex"} mb={"15px"}>
                     <Box {...styles.title}>이름</Box>
-                    <Box>{account.name}</Box>
+                    <Box>{userName}</Box>
                   </Box>
 
                   <Box display={"flex"} mb={"15px"}>
