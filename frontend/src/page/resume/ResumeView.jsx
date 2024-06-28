@@ -7,12 +7,10 @@ import {
   FormLabel,
   Heading,
   Image,
-  Input,
   Tab,
   TabList,
   Tabs,
   Text,
-  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -158,7 +156,7 @@ export function ResumeView() {
 
                   <Box display={"flex"} mb={"15px"}>
                     <Box {...styles.title}>성별</Box>
-                    <Box>{resume.gender}</Box>
+                    <Box>{resume.gender == "MALE" ? "남성" : "여성"}</Box>
                   </Box>
 
                   <Box display={"flex"} mb={"15px"}>
@@ -177,19 +175,14 @@ export function ResumeView() {
                 <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                   제목
                 </FormLabel>
-                <Input defaultValue={resume.title} readOnly />
+                <Box textIndent={"10px"}>{resume.title}</Box>
               </FormControl>
 
               <FormControl mb={4}>
                 <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                   자기소개
                 </FormLabel>
-                <Textarea
-                  defaultValue={resume.content}
-                  h={"150px"}
-                  whiteSpace="pre-wrap"
-                  readOnly
-                />
+                <Box textIndent={"10px"}>{resume.content}</Box>
               </FormControl>
 
               <Box mb={4}>

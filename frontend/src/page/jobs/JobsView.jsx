@@ -88,6 +88,13 @@ export function JobsView() {
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   // 스피너
   if (jobs === null && jobsCond === null) {
     return (
@@ -139,11 +146,11 @@ export function JobsView() {
             <Button
               onClick={() => navigate("/jobs/list")}
               w={"50%"}
-              colorScheme={"green"}
+              {...btnStyles("teal")}
             >
               목록
             </Button>
-            <Button onClick={onOpen} w={"50%"} colorScheme={"blue"}>
+            <Button onClick={onOpen} w={"50%"} {...btnStyles("royalblue")}>
               지원하기
             </Button>
           </Flex>
@@ -162,16 +169,14 @@ export function JobsView() {
           <Button
             onClick={() => navigate(`/jobs/${id}/edit`)}
             w={"50%"}
-            colorScheme={"blue"}
-            variant={"outline"}
+            {...btnStyles("orange")}
           >
             수정
           </Button>
           <Button
             onClick={handleRemoveBtn}
             w={"50%"}
-            colorScheme={"red"}
-            variant={"outline"}
+            {...btnStyles("orangered")}
           >
             삭제
           </Button>

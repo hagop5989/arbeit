@@ -59,6 +59,13 @@ export function ApplicationManageView() {
       });
   }, [jobsId]);
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <>
       {account.isBoss() && (
@@ -83,7 +90,7 @@ export function ApplicationManageView() {
             borderRadius={"10px"}
           >
             <Flex {...styles.text}>
-              <Box mr={"20px"} color={"#505050"}>
+              <Box mr={"10px"} color={"#505050"} fontSize={"medium"}>
                 지원 공고
               </Box>
               <Link href={`/jobs/${jobsId}`}>{application.jobsTitle}</Link>
@@ -98,8 +105,8 @@ export function ApplicationManageView() {
                 <Spacer />
                 <Button
                   size={"sm"}
-                  colorScheme={"orange"}
-                  variant={"outline"}
+                  opacity={"0.7"}
+                  {...btnStyles("orangered")}
                   onClick={() =>
                     window.open(`/resume/${application.resumeId}`, "_blank")
                   }
@@ -138,18 +145,18 @@ export function ApplicationManageView() {
             </Flex>
             <Flex gap={1}>
               <Button
-                colorScheme={"blue"}
-                variant={"outline"}
+                {...btnStyles("gray")}
+                color={"gray.500"}
                 size={"sm"}
                 onClick={() => navigate("/application-manage/list")}
               >
                 목록으로
               </Button>
               <Spacer />
-              <Button onClick={onOpen} colorScheme={"blue"} size={"sm"}>
+              <Button onClick={onOpen} {...btnStyles("royalblue")} size={"sm"}>
                 합격
               </Button>
-              <Button colorScheme={"red"} size={"sm"}>
+              <Button {...btnStyles("orangered")} size={"sm"}>
                 불합격
               </Button>
             </Flex>

@@ -195,6 +195,7 @@ export function StoreRegister() {
               <Center {...styles.center}>
                 <Input
                   maxLength={"11"}
+                  w={"40%"}
                   value={store.phone || ""}
                   onChange={handleInputChange("phone")}
                   placeholder="연락처를 입력하세요. ('-'는 빼고 작성해주세요.)"
@@ -207,8 +208,9 @@ export function StoreRegister() {
               <FormLabel {...styles.formLabel}>사업장 로고</FormLabel>
               <Center>
                 <Button
-                  colorScheme={"orange"}
-                  w={"100px"}
+                  bgColor={"rgba(255,145,83,0.93)"}
+                  color={"white"}
+                  w={"150px"}
                   h={"40px"}
                   onClick={onFileModalOpen}
                 >
@@ -330,16 +332,19 @@ export function StoreRegister() {
                 </Modal>
                 <Flex mb={2}>
                   <Input
-                    w={"70%"}
+                    w={"50%"}
                     defaultValue={store.address}
                     readOnly
                     mr={2}
                   />
-                  <Button onClick={onOpen}>우편번호 검색</Button>
+                  <Button onClick={onOpen} colorScheme={"teal"}>
+                    우편번호 검색
+                  </Button>
                 </Flex>
                 <FormErrorMessage mb={1}>{errors.address}</FormErrorMessage>
 
                 <Input
+                  w={"50%"}
                   onChange={handleInputChange("detailAddress")}
                   placeholder={"상세 주소를 입력해주세요."}
                 />
@@ -353,8 +358,10 @@ export function StoreRegister() {
             </FormControl>
             <Center>
               <Button
-                w={"150px"}
-                colorScheme={"orange"}
+                w={"100%"}
+                h={"50px"}
+                bgColor={"#FFA74F"}
+                color={"white"}
                 isDisabled={disableSaveButton}
                 onClick={handleSaveClick}
               >

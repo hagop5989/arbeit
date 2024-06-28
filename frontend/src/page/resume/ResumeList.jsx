@@ -73,6 +73,13 @@ export function ResumeList() {
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <>
       {account.isAlba() && (
@@ -84,8 +91,8 @@ export function ResumeList() {
             <Divider mb={"40px"} borderWidth={"2px"} />
             <Button
               onClick={() => navigate("/resume/register")}
-              colorScheme={"green"}
-              variant={"outline"}
+              {...btnStyles("black")}
+              opacity={"0.7"}
               w={120}
               my={3}
             >
@@ -125,6 +132,8 @@ export function ResumeList() {
                       </Td>
                       <Td borderBottom={"1px solid #E0E0E0"}>
                         <Button
+                          {...btnStyles("orange")}
+                          opacity={"0.9"}
                           onClick={() => navigate(`/resume/${resume.id}/edit`)}
                         >
                           수정
@@ -135,8 +144,7 @@ export function ResumeList() {
                 </Tbody>
               </Table>
               <Button
-                colorScheme={"red"}
-                variant={"outline"}
+                {...btnStyles("orangered")}
                 onClick={handleRemoveBtn}
                 mt={3}
               >

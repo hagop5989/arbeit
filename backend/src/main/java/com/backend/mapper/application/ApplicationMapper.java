@@ -32,6 +32,7 @@ public interface ApplicationMapper {
             SELECT a.*,j.title AS jobsTitle
             FROM application a
             JOIN jobs j ON a.jobs_id = j.id
+            JOIN store s ON s.id = j.store_id
             WHERE a.member_id = #{memberId}
             """)
     List<Application> list(Integer memberId);
