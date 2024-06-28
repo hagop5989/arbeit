@@ -10,6 +10,8 @@ import {
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   Text,
   Tooltip,
@@ -314,15 +316,22 @@ export function JobsList() {
             <option value="text">글</option>
             <option value="nickName">작성자</option>
           </Select>
-          <Input
-            value={inputKeyword}
-            onChange={(e) => setInputKeyword(e.target.value)}
-            placeholder="검색어"
-            mr={"5px"}
-          />
-          <Button onClick={handleSearchClick}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </Button>
+          <InputGroup>
+            <Input
+              value={inputKeyword}
+              onChange={(e) => setInputKeyword(e.target.value)}
+              placeholder="검색어"
+            />
+            <InputRightElement width="2.5rem">
+              <Button
+                onClick={handleSearchClick}
+                colorScheme={"gray"}
+                variant={"outline"}
+              >
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </Button>
+            </InputRightElement>
+          </InputGroup>
         </Box>
       </Flex>
       <Center>
@@ -488,7 +497,7 @@ export function JobsList() {
                 <Box>
                   <Text
                     w={"500px"}
-                    fontSize="lg"
+                    fontSize="md"
                     fontWeight={"600"}
                     letterSpacing={"1px"}
                     whiteSpace="nowrap" // 줄 바꿈을 막음
@@ -504,7 +513,7 @@ export function JobsList() {
                     {job.title}
                   </Text>
                   <Flex
-                    my={"5px"}
+                    my={"2px"}
                     fontSize="14px"
                     fontWeight={"600"}
                     color={"gray.500"}
