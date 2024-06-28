@@ -105,8 +105,6 @@ public interface BoardMapper {
                         </if>
                          </if>
                          </trim>
-                         GROUP BY b.id
-            ORDER BY b.id DESC
              <choose>
                     <when test="filterType == '작성일순'">
                         ORDER BY b.inserted DESC
