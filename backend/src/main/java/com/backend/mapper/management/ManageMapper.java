@@ -24,6 +24,7 @@ public interface ManageMapper {
                 a.is_passed isPassed
             FROM application a
             JOIN jobs j ON a.jobs_id = j.id
+            JOIN store s ON s.id = j.store_id
             JOIN member m ON a.member_id = m.id
             WHERE j.member_id= #{authId} AND m.name != '탈퇴한 유저';
             """)

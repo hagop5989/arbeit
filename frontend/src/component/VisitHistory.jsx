@@ -32,6 +32,13 @@ function VisitHistory(props) {
       });
   }, [account.recentJobPages]);
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <Box w="full" maxW="70%" mx="auto" p={5} minHeight={"600px"} h={"100%"}>
       <Heading mb={"10px"} p={1}>
@@ -81,12 +88,9 @@ function VisitHistory(props) {
                 <Td h={"10px"}>
                   {account.isAlba() && (
                     <Button
-                      colorScheme={"blue"}
-                      variant={"outline"}
+                      {...btnStyles("royalblue")}
                       size={"sm"}
-                      onClick={() =>
-                        navigate(`/jobs/${item.jobsId}?modal=open`)
-                      }
+                      onClick={() => navigate(`${item.url}?modal=open`)}
                     >
                       지원
                     </Button>

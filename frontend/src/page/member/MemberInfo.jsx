@@ -73,41 +73,28 @@ export function MemberInfo() {
 
   useEffect(() => {
     axios
-      .get("/api/only-login")
-      .then(() => {
-        axios
-          .get(`/api/member/${id}`)
-          .then((res) => {
-            setMember(res.data);
-            if (member != null) {
-              setNowAge(res.data);
-            }
-          })
-          .catch(() => {
-            toast({
-              status: "warning",
-              description: "접근 권한이 없습니다.",
-              position: "top",
-            });
-            navigate("/");
-          });
-        getProfilePicture();
+      .get(`/api/member/${id}`)
+      .then((res) => {
+        setMember(res.data);
+        if (res.data && member != null) {
+          countNowAge(res.data.birthDate);
+        }
       })
       .catch(() => {
         navigate("/login");
       });
-  }, []);
+    getProfilePicture();
+  }, [id, toast, navigate]);
 
   useEffect(() => {
     if (member) {
-      countNowAge();
+      if (member && account !== "" && account.isAlba()) {
+        axios.get(`/api/member/${id}/alba-score`).then((res) => {
+          setScore(res.data);
+        });
+      }
     }
-    if (account !== "" && account.isAlba()) {
-      axios.get(`/api/member/${id}/alba-score`).then((res) => {
-        setScore(res.data);
-      });
-    }
-  }, [member]);
+  }, [member, account, id]);
 
   function handleRemoveBtn() {
     const confirm = window.confirm("정말 탈퇴하시겠습니까?");
@@ -171,14 +158,16 @@ export function MemberInfo() {
   };
 
   // 나이 계산
-  const countNowAge = () => {
-    const currentTime = Date.now();
-    const birthTime = new Date(member.birthDate).getTime();
-    const ageInMilliseconds = currentTime - birthTime;
-    const ageInYears = Math.floor(
-      ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25),
-    ); // 윤년을 고려하여 365.25로 나눔
-    setNowAge(ageInYears);
+  const countNowAge = (birthDate) => {
+    if (birthDate != null) {
+      const currentTime = Date.now();
+      const birthTime = new Date(birthDate).getTime();
+      const ageInMilliseconds = currentTime - birthTime;
+      const ageInYears = Math.floor(
+        ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25),
+      ); // 윤년을 고려하여 365.25로 나눔
+      setNowAge(ageInYears);
+    }
   };
 
   return (
@@ -200,10 +189,12 @@ export function MemberInfo() {
             {/* 프로필 사진 */}
             <FormControl mb={"50px"}>
               <Flex>
-                <Box w={"240px"} h={"240px"}>
+                <Box w={"240px"} h={"230px"}>
                   <Image
-                    w={"100%"}
-                    h={"100%"}
+                    mt={"20px"}
+                    ml={"50px"}
+                    w={"180px"}
+                    h={"180px"}
                     border={"1px solid gray"}
                     borderRadius={"50%"}
                     src={
@@ -214,12 +205,11 @@ export function MemberInfo() {
                     objectFit={"contain"}
                   />
                   {account.hasAccess(id) && (
-                    <Box w={"50px"} h={"50px"}>
+                    <Box w={"50px"} h={"50px"} mt={"-30px"} ml={"22px"}>
                       <Center
                         boxSize={"50px"}
                         bgColor="gray.100"
                         borderRadius={100}
-                        mt={"-30px"}
                         cursor="pointer"
                         onClick={handleProfilePictureBtn}
                       >
@@ -256,14 +246,16 @@ export function MemberInfo() {
                       생년월일
                     </Box>
                     <Box>{member.birthDate}</Box>
-                    <Box ml={"5px"}> (만 {nowAge}세)</Box>
+                    <Box ml={"5px"}>
+                      (만 {nowAge ? nowAge : countNowAge(member.birthDate)}세)
+                    </Box>
                   </Box>
 
                   <Box display={"flex"}>
                     <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       성별
                     </Box>
-                    <Box>{member.gender}</Box>
+                    <Box>{member.gender === "MALE" ? "남성" : "여성"}</Box>
                   </Box>
 
                   <Box display={"flex"}>
@@ -287,14 +279,18 @@ export function MemberInfo() {
             </FormControl>
             {/* 회원 정보 */}
             <FormControl>
-              <Box w={"100%"} my={5}>
-                <FormLabel fontSize={"xl"}>이메일</FormLabel>
-                <Input defaultValue={member.email} readOnly />
-              </Box>
-              <Box w={"100%"} mb={4}>
-                <FormLabel fontSize={"xl"}>주소</FormLabel>
-                <Input defaultValue={member.address} readOnly />
-              </Box>
+              <Flex w={"100%"} my={5} gap={"20px"}>
+                <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
+                  이메일
+                </FormLabel>
+                <Box>{member.email}</Box>
+              </Flex>
+              <Flex w={"100%"} mb={4} gap={"20px"}>
+                <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
+                  주소
+                </FormLabel>
+                <Box>{member.address}</Box>
+              </Flex>
 
               <Box my={10}>
                 {account.hasAccess(id) && (

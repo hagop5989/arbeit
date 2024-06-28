@@ -106,6 +106,13 @@ export function ApplicationList() {
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   if (applicationList === null) {
     return <Spinner />;
   }
@@ -170,7 +177,7 @@ export function ApplicationList() {
                         cursor={"pointer"}
                         _hover={{ textDecoration: "underline" }}
                       >
-                        지원서 보기
+                        확인하기
                       </Box>
                     </Td>
                     <Td
@@ -190,9 +197,7 @@ export function ApplicationList() {
                     <Td {...styles.td}>
                       {application.isPassed === null ? (
                         <Button
-                          colorScheme="red"
-                          variant="outline"
-                          _hover={{ bg: "#E74133", color: "white" }}
+                          {...btnStyles("orangered")}
                           size={"sm"}
                           onClick={() => handleCancelBtn(application.jobsId)}
                         >
@@ -272,7 +277,12 @@ export function ApplicationList() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={onClose}>
+            <Button
+              {...btnStyles("black")}
+              opacity={"0.6"}
+              mr={3}
+              onClick={onClose}
+            >
               닫기
             </Button>
           </ModalFooter>

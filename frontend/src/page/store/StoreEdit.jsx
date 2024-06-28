@@ -212,6 +212,7 @@ export function StoreEdit() {
               <FormLabel {...styles.formLabel}>연락처</FormLabel>
               <Center {...styles.center}>
                 <Input
+                  w={"40%"}
                   maxLength={"11"}
                   defaultValue={store.phone}
                   onChange={handleInputChange("phone")}
@@ -225,8 +226,9 @@ export function StoreEdit() {
               <FormLabel {...styles.formLabel}>사업장 로고</FormLabel>
               <Center>
                 <Button
-                  colorScheme={"orange"}
-                  w={"100px"}
+                  bgColor={"rgba(255,145,83,0.93)"}
+                  color={"white"}
+                  w={"150px"}
                   h={"40px"}
                   onClick={onFileModalOpen}
                 >
@@ -351,15 +353,18 @@ export function StoreEdit() {
                 </Modal>
                 <Flex mb={2}>
                   <Input
-                    w={"70%"}
+                    w={"50%"}
                     value={store.address || ""}
                     readOnly
                     mr={2}
                   />
-                  <Button onClick={onOpen}>우편번호 검색</Button>
+                  <Button onClick={onOpen} colorScheme={"teal"}>
+                    우편번호 검색
+                  </Button>
                 </Flex>
                 <FormErrorMessage mb={1}>{errors.address}</FormErrorMessage>
                 <Input
+                  w={"50%"}
                   value={store.detailAddress || ""}
                   onChange={handleInputChange("detailAddress")}
                   placeholder={"상세 주소를 입력해주세요."}
@@ -374,8 +379,10 @@ export function StoreEdit() {
             </FormControl>
             <Center>
               <Button
-                w={"150px"}
-                colorScheme={"orange"}
+                w={"100%"}
+                h={"50px"}
+                bgColor={"#FFA74F"}
+                color={"white"}
                 onClick={handleSaveClick}
               >
                 가게 수정

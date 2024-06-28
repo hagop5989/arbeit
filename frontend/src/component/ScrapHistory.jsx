@@ -51,6 +51,13 @@ function ScrapHistory(props) {
     });
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <Box w="full" maxW="70%" mx="auto" p={5} minHeight={"600px"} h={"100%"}>
       <Heading mb={"10px"} p={1}>
@@ -91,7 +98,6 @@ function ScrapHistory(props) {
                     onClick={() => {
                       navigate(`/jobs/${item.jobsId}`);
                     }}
-                    fontWeight={"700"}
                     whiteSpace="nowrap" // 줄 바꿈을 막음
                     overflow="hidden" // 넘친 내용을 숨김
                     textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
@@ -105,8 +111,7 @@ function ScrapHistory(props) {
                     <Flex gap={"10px"} h={"15px"} alignItems={"center"}>
                       {account.isAlba() && (
                         <Button
-                          colorScheme={"blue"}
-                          variant={"outline"}
+                          {...btnStyles("royalblue")}
                           size={"sm"}
                           onClick={() =>
                             navigate(`/jobs/${item.jobsId}?modal=open`)
@@ -116,8 +121,7 @@ function ScrapHistory(props) {
                         </Button>
                       )}
                       <Button
-                        colorScheme={"red"}
-                        variant={"outline"}
+                        {...btnStyles("orangered")}
                         size={"sm"}
                         onClick={() => handleDelete(item.id)}
                       >

@@ -81,13 +81,13 @@ export function MemberEdit() {
             <Box mb={4}>
               <FormControl isInvalid={isError(errors.password)}>
                 <Flex>
-                  <FormLabel fontSize={"xl"}>패스워드</FormLabel>
+                  <FormLabel fontSize={"xl"}>비밀번호</FormLabel>
                   <Center fontSize={"14px"} pb={"5px"}>
                     숫자, 문자, 특수문자 무조건 1개 이상, 비밀번호 최소 8자에서
                     최대 16자까지 허용합니다.
                   </Center>
                 </Flex>
-                <InputGroup>
+                <InputGroup w={"49%"}>
                   <Input
                     type={show ? "text" : "password"}
                     onChange={handleInputChange("password")}
@@ -109,8 +109,8 @@ export function MemberEdit() {
             </Box>
             <FormControl isInvalid={isError(errors.passwordCheck)}>
               <Box mb={4}>
-                <FormLabel fontSize={"xl"}>패스워드 확인</FormLabel>
-                <InputGroup>
+                <FormLabel fontSize={"xl"}>비밀번호 확인</FormLabel>
+                <InputGroup w={"49%"}>
                   <Input
                     type={pwdCheck ? "text" : "password"}
                     onChange={handleInputChange("passwordCheck")}
@@ -135,7 +135,7 @@ export function MemberEdit() {
 
             <Flex gap={"10px"} mb={4}>
               <FormControl isInvalid={isError(errors.name)}>
-                <Box w={"50%"}>
+                <Box>
                   <FormLabel fontSize={"xl"}>이름</FormLabel>
                   <Input
                     defaultValue={member.name}
@@ -145,7 +145,7 @@ export function MemberEdit() {
                 </Box>
               </FormControl>
               <FormControl isInvalid={isError(errors.phone)}>
-                <Box w={"50%"}>
+                <Box>
                   <FormLabel fontSize={"xl"}>전화번호</FormLabel>
                   <Input
                     defaultValue={member.phone}
@@ -159,7 +159,7 @@ export function MemberEdit() {
             </Flex>
 
             <FormControl isInvalid={isError(errors.address)} mb={8}>
-              <FormLabel> 주소</FormLabel>
+              <FormLabel fontSize={"xl"}> 주소</FormLabel>
               <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
@@ -167,7 +167,7 @@ export function MemberEdit() {
                 </ModalContent>
               </Modal>
               <Flex mb={2}>
-                <Box w={"70%"} mr={2}>
+                <Box w={"100%"} mr={2}>
                   <Input
                     value={member.address}
                     onChange={handleInputChange("address")}
@@ -177,7 +177,9 @@ export function MemberEdit() {
                     <FormErrorMessage>{errors.address}</FormErrorMessage>
                   )}
                 </Box>
-                <Button onClick={onOpen}>우편번호 검색</Button>
+                <Button onClick={onOpen} colorScheme={"teal"}>
+                  우편번호 검색
+                </Button>
               </Flex>
             </FormControl>
             <Flex gap={"10px"} my={"20px"}>
@@ -194,7 +196,7 @@ export function MemberEdit() {
                   navigate(`/member/${id}`);
                 }}
                 w={"50%"}
-                bgColor={"gray.500"}
+                bgColor={"gray.400"}
                 color={"white"}
               >
                 취소

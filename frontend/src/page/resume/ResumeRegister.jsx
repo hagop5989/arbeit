@@ -193,7 +193,7 @@ export function ResumeRegister() {
 
           <Box display={"flex"}>
             <Box {...styles.title}>성별</Box>
-            <Box>{member.gender}</Box>
+            <Box>{member.gender == "MALE" ? "남성" : "여성"}</Box>
           </Box>
 
           <Box display={"flex"}>
