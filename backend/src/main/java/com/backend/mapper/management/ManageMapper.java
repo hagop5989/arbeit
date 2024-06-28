@@ -1,6 +1,7 @@
-package com.backend.mapper.application;
+package com.backend.mapper.management;
 
 import com.backend.domain.application.Contract;
+import com.backend.domain.management.AlbaScore;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface ApplicationManageMapper {
+public interface ManageMapper {
 
     @Select("""
             SELECT
@@ -63,4 +64,27 @@ public interface ApplicationManageMapper {
             VALUES (#{bossId}, #{albaId}, #{jobsId}, #{startDate}, #{endDate})
             """)
     void insertContract(Contract contract);
+
+    // jobsId 찾아서 jobsId의 application 에서 memberId찾아서 memberId로 member의 이름 찾기
+    // 직원 이름, 일하는 지점
+    @Select("""
+            SELECT DISTINCT m.id   albaId,
+                            m.name albaName,
+                            m.phone albaPhone,
+                            s.name storeName,
+                            ra.alba_id albaReview
+            FROM jobs j
+                     JOIN application a ON j.id = a.jobs_id
+                     JOIN member m ON a.member_id = m.id
+                     JOIN store s ON j.store_id = s.id
+                     LEFT JOIN review_to_alba ra ON ra.alba_id = m.id
+            WHERE j.member_id = #{authId};
+            """)
+    List<Map<String, Object>> selectAlbaList(Integer authId);
+
+    @Insert("""
+            INSERT INTO review_to_alba (alba_id, boss_id, rating)
+            VALUES (#{albaId}, #{bossId}, #{albaScore})
+            """)
+    void insertReviewToAlba(AlbaScore score);
 }

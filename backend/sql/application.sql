@@ -38,3 +38,17 @@ ALTER TABLE application
 
 ALTER TABLE application
     DROP FOREIGN KEY application_ibfk_3;
+
+SELECT DISTINCT m.id   albaId,
+                m.name albaName,
+                s.name
+FROM jobs j
+         JOIN application a ON j.id = a.jobs_id
+         JOIN member m ON a.member_id = m.id
+         JOIN store s ON j.store_id = s.id
+WHERE j.member_id = 68;
+
+SELECT *
+FROM review_to_alba
+WHERE boss_id = 68
+  AND alba_id = 69;

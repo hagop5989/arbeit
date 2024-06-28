@@ -17,7 +17,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { LoginContext } from "../../../provider/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { ContractModal } from "./ContractModal.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -135,11 +135,9 @@ export function ApplicationMangeList() {
                     </Td>
                     <Td {...styles.td}>{application.inserted}</Td>
                     <Td fontWeight={"700"} {...styles.td}>
-                      {application.isPass !== null
-                        ? application.isPassed
-                          ? "합격"
-                          : "불합격"
-                        : "미정"}
+                      {application.isPassed === undefined && "미정"}
+                      {application.isPassed !== undefined &&
+                        (application.isPassed == 1 ? "합격" : "불합격")}
                     </Td>
                     <Td {...styles.td}>
                       <Flex gap={1}>

@@ -11,7 +11,7 @@ import { ContractModal } from "./ContractModal.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { LoginContext } from "../../../provider/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   text: {
@@ -131,12 +131,9 @@ export function ApplicationManageView() {
               <Spacer />
               <Box color={"#505050"}>처리상태</Box>
               <Box ml={"20px"}>
-                {" "}
-                {application.isPassed !== null
-                  ? application.isPassed
-                    ? "합격"
-                    : "불합격"
-                  : "미정"}
+                {application.isPassed === undefined && "미정"}
+                {application.isPassed !== undefined &&
+                  (application.isPassed === 1 ? "합격" : "불합격")}
               </Box>
             </Flex>
             <Flex gap={1}>

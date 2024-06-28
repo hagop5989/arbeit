@@ -1,7 +1,8 @@
-package com.backend.service.application;
+package com.backend.service.management;
 
 import com.backend.domain.application.Contract;
-import com.backend.mapper.application.ApplicationManageMapper;
+import com.backend.domain.management.AlbaScore;
+import com.backend.mapper.management.ManageMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class ApplicationManageService {
+public class ManageService {
 
-    private final ApplicationManageMapper mapper;
+    private final ManageMapper mapper;
 
     public List<Map<String, Object>> findApplications(Integer authId) {
 
@@ -26,7 +27,7 @@ public class ApplicationManageService {
 
         return applications.stream()
                 .filter(application -> application.get("resumeId") != null)
-                .peek(ApplicationManageService::getFormatInserted)
+                .peek(ManageService::getFormatInserted)
                 .toList();
     }
 
@@ -61,5 +62,19 @@ public class ApplicationManageService {
             mapper.insertContract(contract);
             return null;
         }
+    }
+
+    public List<Map<String, Object>> findAlbaList(Integer authId) {
+        List<Map<String, Object>> albaList = mapper.selectAlbaList(authId);
+        return albaList.stream()
+                .filter(alba -> alba.get("albaName") != "탈퇴한 유저")
+                .filter(alba -> alba.get("albaReview") == null)
+                .toList();
+
+    }
+
+    public void reviewToAlba(AlbaScore score, Integer authId) {
+        score.setBossId(authId);
+        mapper.insertReviewToAlba(score);
     }
 }
