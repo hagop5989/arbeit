@@ -56,7 +56,6 @@ export function MemberEdit() {
 
   const handleInputChange = (prop) => (e) => {
     setMember({ ...member, [prop]: e.target.value });
-    console.log(member.address);
   };
 
   const onCompletePost = (data) => {

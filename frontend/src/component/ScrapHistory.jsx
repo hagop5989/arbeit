@@ -80,28 +80,34 @@ function ScrapHistory(props) {
             <Tbody>
               {scrapList.map((item, index) => (
                 <Tr
+                  h={"10px"}
                   key={index}
                   cursor={"pointer"}
                   _hover={{ bgColor: "gray.200" }}
                 >
-                  <Td>{index + 1}</Td>
+                  <Td h={"10px"}>{index + 1}</Td>
                   <Td
+                    h={"10px"}
                     onClick={() => {
                       navigate(`/jobs/${item.jobsId}`);
                     }}
                     fontWeight={"700"}
+                    whiteSpace="nowrap" // 줄 바꿈을 막음
+                    overflow="hidden" // 넘친 내용을 숨김
+                    textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
                   >
                     {item.jobsTitle}
                   </Td>
-                  <Td fontSize={"sm"}>2024-06-25</Td>
-                  <Td>
-                    <Flex gap={"10px"}>
+                  <Td h={"10px"} fontSize={"sm"}>
+                    2024-06-25
+                  </Td>
+                  <Td h={"10px"}>
+                    <Flex gap={"10px"} h={"15px"} alignItems={"center"}>
                       {account.isAlba() && (
                         <Button
                           colorScheme={"blue"}
                           variant={"outline"}
                           size={"sm"}
-                          mt={"10px"}
                           onClick={() =>
                             navigate(`/jobs/${item.jobsId}?modal=open`)
                           }
@@ -113,7 +119,6 @@ function ScrapHistory(props) {
                         colorScheme={"red"}
                         variant={"outline"}
                         size={"sm"}
-                        mt={"10px"}
                         onClick={() => handleDelete(item.id)}
                       >
                         삭제

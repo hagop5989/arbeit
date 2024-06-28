@@ -84,7 +84,7 @@ const Navbar = () => {
             <HStack spacing={10} fontWeight={"600"}>
               <NavLink href="/jobs/list">알바 공고</NavLink>
               <NavLink href="/board/list">질문 게시판</NavLink>
-              <NavLink href="/">고객 센터(구현 X)</NavLink>
+              <NavLink href="/faq">자주 묻는 질문(FAQ)</NavLink>
             </HStack>
             <Spacer />
             <Center>

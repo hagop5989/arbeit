@@ -134,10 +134,22 @@ export function ApplicationMangeList() {
                       </Link>
                     </Td>
                     <Td {...styles.td}>{application.inserted}</Td>
-                    <Td fontWeight={"700"} {...styles.td}>
-                      {application.isPassed === undefined && "미정"}
-                      {application.isPassed !== undefined &&
-                        (application.isPassed == 1 ? "합격" : "불합격")}
+                    <Td
+                      fontWeight={"700"}
+                      {...styles.td}
+                      color={
+                        application.isPassed !== undefined
+                          ? application.isPassed
+                            ? "blue.600"
+                            : "red.500"
+                          : "gray.600"
+                      }
+                    >
+                      {application.isPassed !== undefined
+                        ? application.isPassed
+                          ? "합격"
+                          : "불합격"
+                        : "미정"}
                     </Td>
                     <Td {...styles.td}>
                       <Flex gap={1}>

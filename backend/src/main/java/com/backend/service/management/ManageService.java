@@ -22,13 +22,13 @@ public class ManageService {
     private final ManageMapper mapper;
 
     public List<Map<String, Object>> findApplications(Integer authId) {
-
+        // 이름이 탈퇴한 유저 제외 하고 받아옴.
         List<Map<String, Object>> applications = mapper.selectApplicationsByAuthId(authId);
-
-        return applications.stream()
+        List<Map<String, Object>> mapList = applications.stream()
                 .filter(application -> application.get("resumeId") != null)
                 .peek(ManageService::getFormatInserted)
                 .toList();
+        return mapList;
     }
 
     private static void getFormatInserted(Map<String, Object> application) {
