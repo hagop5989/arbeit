@@ -118,6 +118,12 @@ export function ResumeRegister() {
             position: "top",
           });
           navigate("/resume/list");
+        } else {
+          toast({
+            status: "error",
+            description: "입력 값을 다시 확인해주세요.",
+            position: "top",
+          });
         }
       });
   }
@@ -187,7 +193,7 @@ export function ResumeRegister() {
 
           <Box display={"flex"}>
             <Box {...styles.title}>성별</Box>
-            <Box>{member.gender}</Box>
+            <Box>{member.gender == "MALE" ? "남성" : "여성"}</Box>
           </Box>
 
           <Box display={"flex"}>

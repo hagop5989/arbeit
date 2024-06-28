@@ -1,7 +1,6 @@
 package com.backend.controller.board;
 
 
-import com.backend.domain.board.Board;
 import com.backend.domain.board.form.BoardEditForm;
 import com.backend.domain.board.form.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
@@ -118,10 +117,14 @@ public class BoardController {
 
     }
 
-   /* @PutMapping("/view")
-    public void viewBoard(@RequestBody Map<String, Object> req, Authentication authentication) {
-        boardService.view(req, authentication);
-    }*/
+    @PutMapping("/view")
+    @PreAuthorize("isAuthenticated()")
+    public Map<String, Object> ViewCount(@RequestBody Map<String, Object> req, Authentication authentication) throws IOException {
+
+        return boardService.view(req, authentication);
+        
+    }
 }
+
 
 

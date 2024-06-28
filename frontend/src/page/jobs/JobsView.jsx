@@ -19,7 +19,6 @@ import { JobDetail } from "./jobsview_component/JobDetail.jsx";
 import { JobLocation } from "./jobsview_component/JobLocation.jsx";
 import { JobContact } from "./jobsview_component/JobContact.jsx";
 import { CompanyInfo } from "./jobsview_component/CompanyInfo.jsx";
-import { JobReview } from "./jobsview_component/JobReview.jsx";
 import { JobRequirements } from "./jobsview_component/JobRequirements.jsx";
 import { ApplicationWriteModal } from "../application/ApplicationWriteModal.jsx";
 
@@ -88,6 +87,13 @@ export function JobsView() {
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   // 스피너
   if (jobs === null && jobsCond === null) {
     return (
@@ -130,8 +136,6 @@ export function JobsView() {
           boss={boss}
           src={src}
         />
-        <Divider />
-        <JobReview />
       </Stack>
       {account.isAlba() && (
         <>
@@ -139,11 +143,11 @@ export function JobsView() {
             <Button
               onClick={() => navigate("/jobs/list")}
               w={"50%"}
-              colorScheme={"green"}
+              {...btnStyles("teal")}
             >
               목록
             </Button>
-            <Button onClick={onOpen} w={"50%"} colorScheme={"blue"}>
+            <Button onClick={onOpen} w={"50%"} {...btnStyles("royalblue")}>
               지원하기
             </Button>
           </Flex>
@@ -162,16 +166,14 @@ export function JobsView() {
           <Button
             onClick={() => navigate(`/jobs/${id}/edit`)}
             w={"50%"}
-            colorScheme={"blue"}
-            variant={"outline"}
+            {...btnStyles("orange")}
           >
             수정
           </Button>
           <Button
             onClick={handleRemoveBtn}
             w={"50%"}
-            colorScheme={"red"}
-            variant={"outline"}
+            {...btnStyles("orangered")}
           >
             삭제
           </Button>

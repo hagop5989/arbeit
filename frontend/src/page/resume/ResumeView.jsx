@@ -7,12 +7,10 @@ import {
   FormLabel,
   Heading,
   Image,
-  Input,
   Tab,
   TabList,
   Tabs,
   Text,
-  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -33,6 +31,7 @@ const styles = {
 export function ResumeView() {
   const { id } = useParams();
   const [resume, setResume] = useState({});
+  const [userName, setUserName] = useState("");
   const [profileSrc, setProfileSrc] = useState("");
   const [nowAge, setNowAge] = useState("");
   const initialIndex = resume.isRookie === 1 ? 0 : 1;
@@ -56,7 +55,8 @@ export function ResumeView() {
     axios
       .get(`/api/resume/${id}`)
       .then((res) => {
-        setResume(res.data);
+        setResume(res.data.resume);
+        setUserName(res.data.userName);
       })
       .catch((err) => {
         if (err.response.status === 404) {
@@ -144,7 +144,7 @@ export function ResumeView() {
                 <Box w={"50%"} ml={"50px"} lineHeight={"30px"}>
                   <Box display={"flex"} mb={"15px"}>
                     <Box {...styles.title}>이름</Box>
-                    <Box>{account.name}</Box>
+                    <Box>{userName}</Box>
                   </Box>
 
                   <Box display={"flex"} mb={"15px"}>
@@ -156,7 +156,7 @@ export function ResumeView() {
 
                   <Box display={"flex"} mb={"15px"}>
                     <Box {...styles.title}>성별</Box>
-                    <Box>{resume.gender}</Box>
+                    <Box>{resume.gender == "MALE" ? "남성" : "여성"}</Box>
                   </Box>
 
                   <Box display={"flex"} mb={"15px"}>
@@ -175,19 +175,14 @@ export function ResumeView() {
                 <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                   제목
                 </FormLabel>
-                <Input defaultValue={resume.title} readOnly />
+                <Box textIndent={"10px"}>{resume.title}</Box>
               </FormControl>
 
               <FormControl mb={4}>
                 <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                   자기소개
                 </FormLabel>
-                <Textarea
-                  defaultValue={resume.content}
-                  h={"150px"}
-                  whiteSpace="pre-wrap"
-                  readOnly
-                />
+                <Box textIndent={"10px"}>{resume.content}</Box>
               </FormControl>
 
               <Box mb={4}>

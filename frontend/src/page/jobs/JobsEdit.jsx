@@ -7,6 +7,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -66,6 +67,7 @@ export function JobsEdit() {
   const [isAgeLimitChecked, setIsAgeLimitChecked] = useState(false);
   const [errors, setErrors] = useState({});
   const [checked, setChecked] = useState(false);
+  const [checkLength, setCheckLength] = useState({});
   const toast = useToast();
   function myToast(text, status) {
     toast({
@@ -183,6 +185,7 @@ export function JobsEdit() {
 
   const handleInputChange = (prop) => (e) => {
     setJobs({ ...jobs, [prop]: e.target.value });
+    setCheckLength({ ...checkLength, [prop]: e.target.value.length });
   };
   const handleCondInputChange = (prop) => (e) => {
     setJobsCondition({ ...jobsCondition, [prop]: e.target.value });
@@ -262,6 +265,7 @@ export function JobsEdit() {
             onChange={handleInputChange("title")}
           />
           {errors.title && <FormErrorMessage>{errors.title}</FormErrorMessage>}
+          <FormHelperText color={"gray"}>{checkLength.title}/30</FormHelperText>
         </FormControl>
         <Box>
           <Box {...styles.mainFormLabel}>개인 폼 사용여부</Box>
@@ -441,6 +445,7 @@ export function JobsEdit() {
             {errors.preferred && (
               <FormErrorMessage>{errors.preferred}</FormErrorMessage>
             )}
+            <FormHelperText>{checkLength.preferred}/200</FormHelperText>
           </FormControl>
 
           <Flex mb={"30px"}>
@@ -547,6 +552,9 @@ export function JobsEdit() {
             {errors.content && (
               <FormErrorMessage>{errors.content}</FormErrorMessage>
             )}
+            <FormHelperText color={"gray"}>
+              {checkLength.content}/3,000
+            </FormHelperText>
           </FormControl>
         </Box>
         <Button

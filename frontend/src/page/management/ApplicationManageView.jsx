@@ -11,7 +11,7 @@ import { ContractModal } from "./ContractModal.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { LoginContext } from "../../../provider/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   text: {
@@ -59,6 +59,13 @@ export function ApplicationManageView() {
       });
   }, [jobsId]);
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <>
       {account.isBoss() && (
@@ -83,7 +90,7 @@ export function ApplicationManageView() {
             borderRadius={"10px"}
           >
             <Flex {...styles.text}>
-              <Box mr={"20px"} color={"#505050"}>
+              <Box mr={"10px"} color={"#505050"} fontSize={"medium"}>
                 지원 공고
               </Box>
               <Link href={`/jobs/${jobsId}`}>{application.jobsTitle}</Link>
@@ -98,8 +105,8 @@ export function ApplicationManageView() {
                 <Spacer />
                 <Button
                   size={"sm"}
-                  colorScheme={"orange"}
-                  variant={"outline"}
+                  opacity={"0.7"}
+                  {...btnStyles("orangered")}
                   onClick={() =>
                     window.open(`/resume/${application.resumeId}`, "_blank")
                   }
@@ -131,28 +138,25 @@ export function ApplicationManageView() {
               <Spacer />
               <Box color={"#505050"}>처리상태</Box>
               <Box ml={"20px"}>
-                {" "}
-                {application.isPassed !== null
-                  ? application.isPassed
-                    ? "합격"
-                    : "불합격"
-                  : "미정"}
+                {application.isPassed === undefined && "미정"}
+                {application.isPassed !== undefined &&
+                  (application.isPassed === 1 ? "합격" : "불합격")}
               </Box>
             </Flex>
             <Flex gap={1}>
               <Button
-                colorScheme={"blue"}
-                variant={"outline"}
+                {...btnStyles("gray")}
+                color={"gray.500"}
                 size={"sm"}
                 onClick={() => navigate("/application-manage/list")}
               >
                 목록으로
               </Button>
               <Spacer />
-              <Button onClick={onOpen} colorScheme={"blue"} size={"sm"}>
+              <Button onClick={onOpen} {...btnStyles("royalblue")} size={"sm"}>
                 합격
               </Button>
-              <Button colorScheme={"red"} size={"sm"}>
+              <Button {...btnStyles("orangered")} size={"sm"}>
                 불합격
               </Button>
             </Flex>

@@ -93,6 +93,13 @@ export function ContractModal({
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <>
       {application && (
@@ -154,14 +161,15 @@ export function ContractModal({
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="gray" mr={3} onClick={onClose}>
+              <Button
+                {...btnStyles("black")}
+                opacity={"0.6"}
+                mr={3}
+                onClick={onClose}
+              >
                 취소
               </Button>
-              <Button
-                colorScheme={"blue"}
-                variant="outline"
-                onClick={handlePassBtn}
-              >
+              <Button {...btnStyles("royalblue")} onClick={handlePassBtn}>
                 합격
               </Button>
             </ModalFooter>

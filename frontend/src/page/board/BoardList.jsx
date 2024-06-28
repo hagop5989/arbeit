@@ -13,8 +13,9 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,12 +25,14 @@ import {
   faAnglesLeft,
   faAnglesRight,
   faComments,
+  faEye,
   faHeart as fullHeart,
   faMagnifyingGlass,
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
 import { ViewIcon } from "@chakra-ui/icons";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -37,25 +40,12 @@ export function BoardList() {
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [inputKeyword, setInputKeyword] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterType, setFilterType] = useState("");
   const [selectedFilterDetail, setSelectedFilterDetail] = useState([]);
-
-  const filterBoardList = (board, filterType) => {
-    let filterBoard = [...board];
-
-    if (filterType === "작성일순") {
-      filterBoard.sort((a, b) => new Date(a.deadline) - new Date(a.deadline));
-    }
-    if (filterType === "조회수순") {
-      filterBoard.sort((a, b) => new Date(a.deadline) - new Date(a.deadline));
-    }
-    if (filterType === "좋아요순") {
-      filterBoard.sort((a, b) => new Date(a.deadline) - new Date(a.deadline));
-    }
-
-    return filterBoard;
-  };
+  const toast = useToast();
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     const typeParam = searchParams.get("type") || "all";
@@ -70,23 +60,19 @@ export function BoardList() {
       filterDetail: selectedFilterDetail,
     };
 
-    if (typeParam) {
-      setSearchType(typeParam);
-    }
-
     axios
-      .get(
-        `/api/board/list?type=${typeParam}&keyword=${keywordParam}&page=${pageParam}`,
-        { params },
-      )
+      .get(`/api/board/list`, { params })
       .then((res) => {
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
+      })
+      .catch((error) => {
+        console.error("Error fetching board list:", error);
       });
 
     setSearchType(typeParam);
     setSearchKeyword(keywordParam);
-  }, [searchParams, filterType, selectedFilterDetail]);
+  }, [account.id, searchParams, filterType, selectedFilterDetail]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -95,7 +81,7 @@ export function BoardList() {
 
   function handleSearchClick() {
     const typeParam = searchType;
-    const keywordParam = searchKeyword;
+    const keywordParam = inputKeyword;
 
     const params = new URLSearchParams({
       type: typeParam,
@@ -107,30 +93,41 @@ export function BoardList() {
   }
 
   function handlePageButtonClick(pageNumber) {
-    searchParams.set("page", pageNumber);
-    setSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber);
+    setSearchParams(params);
   }
 
   function handleFilterChange(e) {
-    setFilterType(e.target.value);
+    const value = e.target.value;
+    setFilterType(value);
     setSelectedFilterDetail([]);
 
-    const params = new URLSearchParams({
-      type: searchType,
-      keyword: searchKeyword,
-      filterType: e.target.value,
-      filterDetail: [],
-    });
+    const params = new URLSearchParams(searchParams);
+    params.set("filterType", value);
+    params.set("filterDetail", []);
     navigate(`./?${params.toString()}`);
+  }
+
+  function handleWriteButtonClick() {
+    if (!account || !account.id) {
+      toast({
+        status: "error",
+        description: "로그인하세요",
+        position: "top",
+      });
+    } else {
+      navigate("/board/write");
+    }
   }
 
   return (
     <Box p={4}>
       <Heading as="h2" size="lg" mb={4}>
-        자유게시판
+        질문 게시판
       </Heading>
-
-      <Flex justifyContent={"center"} mb={"30px"} mt={"-20px"}>
+      {/* Search and Filter Section */}
+      <Flex justifyContent="center" mb={4}>
         <Select
           w="150px"
           value={filterType}
@@ -140,23 +137,27 @@ export function BoardList() {
           <option value="작성일순">작성일순</option>
           <option value="조회수순">조회수순</option>
           <option value="좋아요순">좋아요순</option>
+          <option value="댓글순">댓글순</option>
         </Select>
 
-        <Input
-          w="300px"
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          placeholder="제목+작성자 검색"
-          mr={2}
-        />
-        <Button colorScheme="blue" onClick={handleSearchClick}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
-        </Button>
+        <Box w={"500px"} display={"flex"}>
+          <Input
+            w="300px"
+            value={inputKeyword}
+            onChange={(e) => setInputKeyword(e.target.value)}
+            placeholder="제목+작성자 검색"
+            mr={2}
+          />
+          <Button colorScheme="blue" onClick={handleSearchClick}>
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </Button>
+        </Box>
       </Flex>
 
-      <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
+      {/* Board List Table */}
+      <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
         {boardList.length === 0 ? (
-          <Center>조회 결과가 없습니다.</Center>
+          <Center p={4}>조회 결과가 없습니다.</Center>
         ) : (
           <Table variant="simple">
             <Thead>
@@ -177,17 +178,16 @@ export function BoardList() {
                   <FontAwesomeIcon icon={fullHeart} />
                 </Th>
                 <Th>
-                  <FontAwesomeIcon icon={ViewIcon} />
+                  <FontAwesomeIcon icon={faEye} />
                 </Th>
               </Tr>
             </Thead>
             <Tbody>
               {boardList.map((board) => (
                 <Tr
-                  _hover={{ bg: "gray.100" }}
-                  cursor="pointer"
-                  onClick={() => navigate(`/board/${board.id}`)}
                   key={board.id}
+                  _hover={{ bg: "gray.100", cursor: "pointer" }}
+                  onClick={() => navigate(`/board/${board.id}`)}
                 >
                   <Td>{board.id}</Td>
                   <Td>{board.title}</Td>
@@ -195,7 +195,7 @@ export function BoardList() {
                   <Td>{board.inserted}</Td>
                   <Td>
                     {board.numberOfComments > 0 && (
-                      <Badge ml={2} colorScheme="green">
+                      <Badge colorScheme="green" ml={2}>
                         <Flex alignItems="center">
                           <FontAwesomeIcon icon={faComments} />
                           <Box ml={1}>{board.numberOfComments}</Box>
@@ -205,7 +205,7 @@ export function BoardList() {
                   </Td>
                   <Td>
                     {board.numberOfImages > 0 && (
-                      <Badge ml={2} colorScheme="blue">
+                      <Badge colorScheme="blue" ml={2}>
                         <Flex alignItems="center">
                           <FontAwesomeIcon icon={faImages} />
                           <Box ml={1}>{board.numberOfImages}</Box>
@@ -215,7 +215,7 @@ export function BoardList() {
                   </Td>
                   <Td>
                     {board.numberOfLike > 0 && (
-                      <Badge ml={2} colorScheme="red">
+                      <Badge colorScheme="red" ml={2}>
                         <Flex alignItems="center">
                           <FontAwesomeIcon icon={fullHeart} />
                           <Box ml={1}>{board.numberOfLike}</Box>
@@ -223,16 +223,16 @@ export function BoardList() {
                       </Badge>
                     )}
                   </Td>
-                  {/*<Td>
+                  <Td>
                     {board.numberOfView > 0 && (
-                      <Badge ml={2} colorScheme="red">
+                      <Badge colorScheme="red" ml={2}>
                         <Flex alignItems="center">
                           <FontAwesomeIcon icon={ViewIcon} />
                           <Box ml={1}>{board.numberOfView}</Box>
                         </Flex>
                       </Badge>
                     )}
-                  </Td>*/}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
@@ -240,17 +240,18 @@ export function BoardList() {
         )}
       </Box>
 
+      {/* Pagination Section */}
       <Center mt={4}>
         <Flex gap={2}>
           {pageInfo.prevPageNumber && (
             <>
               <Button
-                onClick={() => handlePageButtonClick(1)}
                 leftIcon={<FontAwesomeIcon icon={faAnglesLeft} />}
+                onClick={() => handlePageButtonClick(1)}
               />
               <Button
-                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
                 leftIcon={<FontAwesomeIcon icon={faAngleLeft} />}
+                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
               />
             </>
           )}
@@ -268,17 +269,23 @@ export function BoardList() {
           {pageInfo.nextPageNumber && (
             <>
               <Button
-                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
                 rightIcon={<FontAwesomeIcon icon={faAngleRight} />}
+                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
               />
               <Button
-                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
                 rightIcon={<FontAwesomeIcon icon={faAnglesRight} />}
+                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
               />
             </>
           )}
         </Flex>
       </Center>
+
+      <Box mt={5}>
+        <Button colorScheme="blue" onClick={handleWriteButtonClick}>
+          글쓰기
+        </Button>
+      </Box>
     </Box>
   );
 }

@@ -10,8 +10,11 @@ import {
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -30,9 +33,12 @@ import {
   faAnglesLeft,
   faAnglesRight,
   faArrowUpRightFromSquare,
+  faCircleInfo,
   faFilter,
+  faLocationDot,
   faMagnifyingGlass,
   faStar as fullStar,
+  faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import { differenceInHours, format, isToday } from "date-fns";
@@ -173,12 +179,37 @@ export function JobsList() {
   };
 
   return (
-    <Box w={"1050px"} minHeight={"50vh"} h={"full"} pb={10}>
-      <Flex justifyContent={"space-between"} mb={"30px"} mt={"-20px"}>
-        <Box display={"flex"}>
-          <Center mr={"5px"}>
+    <Box w={"1050px"} pb={10}>
+      <Box
+        w={"100%"}
+        h={"120px"}
+        bg={"orange"}
+        pt={"30px"}
+        pl={"40px"}
+        fontFamily={"SBAggroB"}
+        backgroundImage="url('/public/title.jpg')"
+        backgroundSize="cover"
+      >
+        <Text fontSize={"30px"} fontWeight={"800"}>
+          알바커넥터의 알바 채용정보
+        </Text>
+        <Flex fontSize={"15px"} gap={2} color={"#343942"}>
+          <Box>
+            <FontAwesomeIcon icon={faCircleInfo} />
+          </Box>
+          <Text>이력서를 등록하면 지원을 할 수 있어요!</Text>
+        </Flex>
+      </Box>
+      <Flex
+        justifyContent={"space-between"}
+        h={"80px"}
+        border={"1px solid #E0E0E0"}
+        p={"20px"}
+      >
+        <Flex gap={1}>
+          <Box mt={"5px"}>
             <FontAwesomeIcon icon={faFilter} />
-          </Center>
+          </Box>
           {/* 첫번째 필터 요소 */}
           <Select w={150} value={filterType} onChange={handleFilterChange}>
             <option value="최신등록">최신등록</option>
@@ -271,7 +302,7 @@ export function JobsList() {
               ))}
             </Select>
           )}
-        </Box>
+        </Flex>
 
         {/* 검색 하는 곳*/}
         <Box w={"500px"} display={"flex"}>
@@ -285,37 +316,35 @@ export function JobsList() {
             <option value="text">글</option>
             <option value="nickName">작성자</option>
           </Select>
-          <Input
-            value={inputKeyword}
-            onChange={(e) => setInputKeyword(e.target.value)}
-            placeholder="검색어"
-            mr={"5px"}
-          />
-          <Button onClick={handleSearchClick}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </Button>
+          <InputGroup>
+            <Input
+              value={inputKeyword}
+              onChange={(e) => setInputKeyword(e.target.value)}
+              placeholder="검색어"
+            />
+            <InputRightElement width="2.5rem">
+              <Button
+                onClick={handleSearchClick}
+                colorScheme={"gray"}
+                variant={"outline"}
+              >
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </Button>
+            </InputRightElement>
+          </InputGroup>
         </Box>
       </Flex>
       <Center>
         {(searchParams || filterType) && jobsList.length === 0 && (
-          <Center w={"1050px"} h={"40vh"} mt={"0px"}>
+          <Center w={"1050px"} h={"40vh"}>
             <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
           </Center>
         )}
-        <Flex
-          flexDirection={"column"}
-          h={"full"}
-          // minHeight="100vh"
-          mb={"-100px"}
-        >
-          <Box
-            flex="1"
-            // border={"1px solid red"}
-          >
+        <Flex flexDirection={"column"} h={"full"}>
+          <Box flex="1">
             {/* 검색 파라미터 존재하거나 필터가 존재 하는데 jobList 가 0인 경우 */}
-
             {/* 그리드로 공고 카드 보여주기 */}
-            <Grid templateColumns="repeat(1,1fr)" borderTop={"1px solid gray"}>
+            <Grid templateColumns="repeat(1,1fr)">
               {jobsList.map((job) => (
                 <GridItem key={job.id}>
                   <JobCard
@@ -448,14 +477,7 @@ export function JobsList() {
     }
 
     return (
-      <Card
-        w={"1050px"}
-        // h={"140px"}
-
-        borderRadius={"0px"}
-        borderY={"1px solid lightgray"}
-        overflow="hidden"
-      >
+      <Card w={"1050px"} borderY={"1px solid #E5E5E5"} overflow="hidden">
         <Center h={"100%"} p={"5px"} px={"15px"}>
           <Box w={"150px"} h={"60px"}>
             <Image
@@ -475,8 +497,8 @@ export function JobsList() {
                 <Box>
                   <Text
                     w={"500px"}
-                    fontSize="xl"
-                    fontWeight={"bold"}
+                    fontSize="md"
+                    fontWeight={"600"}
                     letterSpacing={"1px"}
                     whiteSpace="nowrap" // 줄 바꿈을 막음
                     overflow="hidden" // 넘친 내용을 숨김
@@ -490,71 +512,89 @@ export function JobsList() {
                   >
                     {job.title}
                   </Text>
-                  <Text
-                    w={"500px"}
-                    fontWeight={"bold"}
-                    my={"5px"}
-                    fontSize="17px"
+                  <Flex
+                    my={"2px"}
+                    fontSize="14px"
+                    fontWeight={"600"}
                     color={"gray.500"}
                     whiteSpace="nowrap"
                     overflow="hidden"
                     textOverflow="ellipsis"
+                    gap={4}
                   >
-                    {job.storeName}
-                  </Text>
+                    <Flex>
+                      <Box mr={"2px"}>
+                        <FontAwesomeIcon icon={faStore} />
+                      </Box>
+                      {job.storeName}
+                    </Flex>
+                    <Text fontSize="sm" fontWeight={"bold"}>
+                      # {job.categoryName}
+                    </Text>
+                  </Flex>
                 </Box>
                 <Flex
-                  fontSize={"18px"}
+                  fontSize={"15px"}
                   gap={"10px"}
                   alignItems="center"
                   mr={6}
                   color={"gray"}
                   opacity={"0.6"}
                 >
-                  <FontAwesomeIcon
-                    icon={faMagnifyingGlass}
-                    onClick={() => handleSubInfo(job.id)}
-                    cursor={"pointer"}
-                  />
-                  <FontAwesomeIcon
-                    icon={faArrowUpRightFromSquare}
-                    onClick={(e) => handleNewWindow(e, job)}
-                    cursor={"pointer"}
-                  />
+                  <Tooltip
+                    label="상세정보"
+                    placement="top"
+                    aria-label="A tooltip"
+                  >
+                    <FontAwesomeIcon
+                      icon={faMagnifyingGlass}
+                      onClick={() => handleSubInfo(job.id)}
+                      cursor={"pointer"}
+                    />
+                  </Tooltip>
+                  <Tooltip
+                    label="새 창에서 보기"
+                    placement="top"
+                    aria-label="A tooltip"
+                  >
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      onClick={(e) => handleNewWindow(e, job)}
+                      cursor={"pointer"}
+                    />
+                  </Tooltip>
                 </Flex>
               </Flex>
             </CardBody>
           </Box>
 
-          <Box w={"20%"}>
+          <Box w={"20%"} fontSize={"14px"}>
             <Text color="gray.600" fontWeight={"bold"}>
-              {trimmedAddress}
-            </Text>
-            <Text fontSize="sm" color={"red.400"} fontWeight={"bold"}>
-              {job.categoryName}
+              <FontAwesomeIcon icon={faLocationDot} /> {trimmedAddress}
             </Text>
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
           </Box>
 
           <Box w={"10%"}>
-            <Box textIndent={"62px"}>
-              <FontAwesomeIcon
-                cursor={"pointer"}
-                onClick={(e) => handleScraping(e, job)}
-                color={"orange"}
-                icon={favorite ? fullStar : emptyStar}
-                fontSize={"20px"}
-              />
+            <Box textIndent={"70px"}>
+              <Tooltip label="스크랩" placement="top" aria-label="A tooltip">
+                <FontAwesomeIcon
+                  cursor={"pointer"}
+                  onClick={(e) => handleScraping(e, job)}
+                  color={"orange"}
+                  icon={favorite ? fullStar : emptyStar}
+                  fontSize={"15px"}
+                />
+              </Tooltip>
             </Box>
             <Text
               mt={"5px"}
               textAlign={"center"}
-              // textIndent={"11px"}
-              fontSize={"sm"}
+              fontSize={"12px"}
               color={"red.300"}
               fontWeight={"bold"}
             >
-              ~{formatDateOrTimeLeft(job.deadline)}
+              ~{formatDateOrTimeLeft(job.deadline)} 마감
             </Text>
           </Box>
         </Center>

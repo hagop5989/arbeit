@@ -40,6 +40,8 @@ export function BoardEdit() {
   const [board, setBoard] = useState({});
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState([]);
+  const [title, setTitle] = useState([]);
+  const [content, setContent] = useState([]);
   const [removeImages, setRemoveImages] = useState([]);
   const [addImages, setAddImages] = useState([]);
   const toast = useToast();
@@ -52,6 +54,8 @@ export function BoardEdit() {
       .then((res) => {
         setBoard(res.data.board);
         setImage(res.data.images);
+        setTitle(res.data);
+        setContent(res.data);
       })
       .catch((err) => {
         if (err.response && err.response.status === 404) {
@@ -135,14 +139,14 @@ export function BoardEdit() {
           <FormLabel>제목</FormLabel>
           <Input
             defaultValue={board.title}
-            onChange={handleInputChange("title")}
+            onChange={(e) => setTitle(e.target.value)}
           />
           {errors && <FormHelperText>{errors.title}</FormHelperText>}
 
           <FormLabel>본문</FormLabel>
           <Textarea
             defaultValue={board.content}
-            onChange={handleInputChange("content")}
+            onChange={(e) => setContent(e.target.value)}
           />
           {errors && <FormHelperText>{errors.content}</FormHelperText>}
 

@@ -7,14 +7,13 @@ import {
 import Home from "./page/Home.jsx";
 import { LoginProvider } from "./provider/LoginProvider.jsx";
 import axios from "axios";
-import { Login } from "./page/member/Login.jsx";
-import memberRoutes from "./path/memberRoutes.jsx";
-import bossRoutes from "./path/bossRoutes.jsx";
-import storeRoutes from "./path/storeRoutes.jsx";
-import boardRoutes from "./path/boardRoutes.jsx";
+import memberRoutes from "./routes/memberRoutes.jsx";
+import bossRoutes from "./routes/bossRoutes.jsx";
+import boardRoutes from "./routes/boardRoutes.jsx";
 import { MainPage } from "./MainPage.jsx";
 import theme from "../index.js";
 import { useEffect } from "react";
+import albaRoutes from "./routes/albaRoutes.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -27,11 +26,9 @@ axios.interceptors.request.use((config) => {
 // url 경로변경(navigate) 마다 최상단으로 이동.
 const ScrollToTopComponent = () => {
   const { pathname } = useLocation();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-
   return null;
 };
 
@@ -48,10 +45,9 @@ function App() {
       children: [
         { index: true, element: <MainPage /> },
         ...memberRoutes,
+        ...albaRoutes,
         ...bossRoutes,
-        ...storeRoutes,
         ...boardRoutes,
-        { path: "login", element: <Login /> },
       ],
     },
   ]);

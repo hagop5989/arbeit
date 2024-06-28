@@ -8,8 +8,8 @@ export function CommentComponent({ boardId }) {
       <Box>
         <Heading fontSize={15} m={3}></Heading>
       </Box>
-      <CommentWrite boardId={boardId} />
       <CommentList boardId={boardId} />
+      <CommentWrite boardId={boardId} />
     </Box>
   );
 }

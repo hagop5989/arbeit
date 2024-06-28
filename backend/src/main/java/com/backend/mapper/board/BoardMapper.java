@@ -79,34 +79,35 @@ public interface BoardMapper {
 
     //페이징
     @Select("""
-              <script>
-             SELECT b.id,
-             b.member_id,
-             b.title,
-             b.inserted,
-                   COUNT(DISTINCT c.id)  AS number_of_comments,
-             COUNT(DISTINCT f.name)  AS number_of_images,
-             COUNT(DISTINCT l.member_id)  AS number_of_like,
-             COUNT(DISTINCT v.member_id)  AS number_of_view
-            FROM board b JOIN member m ON m.id = b.member_id
-             LEFT JOIN board_image f ON b.id = f.board_id
-                         LEFT JOIN board_like l ON b.id = l.board_id
-                         LEFT JOIN comment c ON b.id = c.board_id
-                         LEFT JOIN board_view v ON b.id = v.board_id
-             <trim prefix="WHERE" prefixOverrides="OR">
+            <script>
+                SELECT b.id,
+                       b.member_id,
+                       b.title,
+                       b.inserted,
+                       COUNT(DISTINCT c.id) AS number_of_comments,
+                       COUNT(DISTINCT f.name) AS number_of_images,
+                       COUNT(DISTINCT l.member_id) AS number_of_like,
+                       COUNT(DISTINCT v.member_id) AS number_of_view
+                FROM board b
+                JOIN member m ON m.id = b.member_id
+                LEFT JOIN board_image f ON b.id = f.board_id
+                LEFT JOIN board_like l ON b.id = l.board_id
+                LEFT JOIN comment c ON b.id = c.board_id
+                LEFT JOIN board_view v ON b.id = v.board_id
+                <where>
                     <if test="searchType != null">
                         <bind name="pattern" value="'%' + keyword + '%'" />
-                        <if test="searchType == 'all' || searchType == 'title'">
-                            OR b.title LIKE #{pattern}
+                        <if test="searchType == 'all' || searchType == 'text'">
+                            b.title LIKE #{pattern}
                             OR b.member_id LIKE #{pattern}
                         </if>
-                            <if test="searchType == 'all' || searchType == 'name'">
+                        <if test="searchType == 'all' || searchType == 'name'">
                             OR m.id LIKE #{pattern}
                         </if>
-                         </if>
-                         </trim>
-                
-             <choose>
+                    </if>
+                </where>
+                GROUP BY b.id
+                <choose>
                     <when test="filterType == '작성일순'">
                         ORDER BY b.inserted DESC
                     </when>
@@ -116,13 +117,16 @@ public interface BoardMapper {
                     <when test="filterType == '좋아요순'">
                         ORDER BY number_of_like DESC
                     </when>
+                    <when test="filterType == '댓글순'">
+                        ORDER BY number_of_comments DESC
+                    </when>
                     <otherwise>
                         ORDER BY b.id DESC
                     </otherwise>
                 </choose>
                 LIMIT #{offset}, 10
-                </script>
-             """)
+            </script>
+            """)
     List<Board> selectAllPaging(Integer offset, String searchType, String keyword, String filterType, String filterDetail);
 
 
@@ -154,6 +158,13 @@ public interface BoardMapper {
             """)
     int deleteLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
+    @Delete("""
+                DELETE FROM board_view
+                            WHERE board_id = #{boardId}
+                            AND member_id = #{memberId};
+            """)
+    int deleteViewByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
 
     @Insert("""
                    INSERT INTO board_like (board_id, member_id)
@@ -161,12 +172,28 @@ public interface BoardMapper {
             """)
     int insertLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
+
+    @Insert("""
+                   INSERT INTO board_view (board_id, member_id)
+                   VALUES (#{boardId}, #{memberId})
+            """)
+    int insertViewByBoardIdAndMemberId(Integer boardId);
+
+
     @Select("""
                 SELECT  COUNT(*)
                 FROM board_like
-                WHERE board_id = #{boardId}
+                WHERE board_id = #{Id}
             """)
     int selectCountLike(Integer boardId);
+
+
+    @Select("""
+                SELECT  COUNT(*)
+                FROM board_view
+                WHERE board_id = #{Id}
+            """)
+    int selectCountView(Integer boardId);
 
 
     @Select("""
@@ -176,27 +203,14 @@ public interface BoardMapper {
             """)
     int selectLikeByBoardIdAndMemberId(Integer boardId, String memberId);
 
-/*
+
     @Select("""
-            SELECT COUNT(*)
-            FROM board_view
+            SELECT COUNT(*) FROM board_view
             WHERE board_id=#{boardId}
               AND member_id=#{memberId}
             """)
-    int selectViewByBoardIdAndMemberId(@Param("boardId") Integer boardId, @Param("memberId") Integer memberId);
+    int selectViewByBoardIdAndMemberId(Integer boardId, String memberId);
 
-    @Select("""
-            SELECT COUNT(*)
-            FROM board_view
-            WHERE board_id = #{boardId}
-            """)
-    int selectCountView(Integer boardId);
-
-    @Insert("""
-            INSERT INTO board_view (board_id, member_id)
-            VALUES (#{boardId}, #{memberId})
-            """)
-    void insertViewByBoardIdAndMemberId(Integer boardId, Integer memberId);*/
 
 }
 

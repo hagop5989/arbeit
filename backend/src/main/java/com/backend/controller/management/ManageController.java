@@ -1,8 +1,9 @@
-package com.backend.controller.application;
+package com.backend.controller.management;
 
 import com.backend.config.AuthId;
 import com.backend.domain.application.Contract;
-import com.backend.service.application.ApplicationManageService;
+import com.backend.domain.management.AlbaScore;
+import com.backend.service.management.ManageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,9 @@ import java.util.Map;
 @PreAuthorize("hasAuthority('SCOPE_BOSS')")
 @RestController
 @RequestMapping("/api")
-public class ApplicationManageController {
+public class ManageController {
 
-    private final ApplicationManageService service;
+    private final ManageService service;
 
     @GetMapping("/application-manage/list")
     public List<Map<String, Object>> list(@AuthId Integer authId) {
@@ -54,6 +55,19 @@ public class ApplicationManageController {
             return ResponseEntity.badRequest().body(canPassed);
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/alba-list")
+    public List<Map<String, Object>> albaList(@AuthId Integer authId) {
+        List<Map<String, Object>> albaList = service.findAlbaList(authId);
+        log.info("albaList={}", albaList);
+        return albaList;
+    }
+
+    @PostMapping("/review/alba")
+    public ResponseEntity reviewAlba(@RequestBody AlbaScore score, @AuthId Integer authId) {
+        service.reviewToAlba(score, authId);
+        return null;
     }
 
     @GetMapping("/application-manage/count")

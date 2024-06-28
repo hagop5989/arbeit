@@ -54,8 +54,10 @@ export function StoreList() {
             </Box>
             <Box mb={"20px"}>
               <Button
-                colorScheme="orange"
-                variant={"outline"}
+                bgColor={"white"}
+                color={"orange"}
+                border={"2px solid orange"}
+                _hover={{ bgColor: "orange", color: "white" }}
                 onClick={() => navigate("/store/register")}
               >
                 가게 등록

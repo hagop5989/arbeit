@@ -106,6 +106,13 @@ export function ApplicationList() {
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   if (applicationList === null) {
     return <Spinner />;
   }
@@ -121,7 +128,10 @@ export function ApplicationList() {
           <Table borderRadius="lg" w="1050px">
             <Thead bg="gray.100" p={2} fontWeight="bold">
               <Tr>
-                <Td w={"100px"} {...styles.th}>
+                <Td w={"20px"} {...styles.th}>
+                  #
+                </Td>
+                <Td w={"120px"} {...styles.th}>
                   지원일자
                 </Td>
                 <Td w={"350px"} {...styles.th}>
@@ -142,7 +152,10 @@ export function ApplicationList() {
               {applicationList &&
                 applicationList.map((application, index) => (
                   <Tr key={index}>
-                    <Td {...styles.td}>{application.inserted}</Td>
+                    <Td>{index + 1}</Td>
+                    <Td fontSize={"sm"} {...styles.td}>
+                      {application.inserted}
+                    </Td>
                     <Td {...styles.td}>
                       <Link
                         href={`/jobs/${application.jobsId}`}
@@ -164,25 +177,34 @@ export function ApplicationList() {
                         cursor={"pointer"}
                         _hover={{ textDecoration: "underline" }}
                       >
-                        지원서 보기
+                        확인하기
                       </Box>
                     </Td>
-                    <Td {...styles.td} minW={"90px"} fontWeight={"bold"}>
+                    <Td
+                      {...styles.td}
+                      minW={"90px"}
+                      fontWeight={"bold"}
+                      color={
+                        application.isPassed !== null
+                          ? application.isPassed
+                            ? "blue.600"
+                            : "red.500"
+                          : "gray.600"
+                      }
+                    >
                       {isPassedToString(application.isPassed)}
                     </Td>
                     <Td {...styles.td}>
                       {application.isPassed === null ? (
                         <Button
-                          colorScheme="red"
-                          variant="outline"
-                          _hover={{ bg: "#E74133", color: "white" }}
+                          {...btnStyles("orangered")}
                           size={"sm"}
                           onClick={() => handleCancelBtn(application.jobsId)}
                         >
                           취소
                         </Button>
                       ) : (
-                        <Box>처리 완료</Box>
+                        <Box fontWeight={"bold"}>처리 완료</Box>
                       )}
                     </Td>
                   </Tr>
@@ -255,7 +277,12 @@ export function ApplicationList() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={onClose}>
+            <Button
+              {...btnStyles("black")}
+              opacity={"0.6"}
+              mr={3}
+              onClick={onClose}
+            >
               닫기
             </Button>
           </ModalFooter>

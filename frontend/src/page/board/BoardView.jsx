@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
 import { CommentComponent } from "../comment/CommentComponent.jsx";
 
@@ -34,38 +34,36 @@ export function BoardView() {
   const [images, setImages] = useState([]);
   const [like, setLike] = useState(null);
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
-  /*const [view, setView] = useState(null);
-  const [isViewingProcessing, setIsViewingProcessing] = useState(false);*/
+  const [viewCount, setViewCount] = useState(0);
+  const [isViewingProcessing, setIsViewingProcessing] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const account = useContext(LoginContext);
-
   useEffect(() => {
+    if (!id) return;
     axios
       .get(`/api/board/${id}`)
       .then((res) => {
         setBoard(res.data.board);
         setImages(res.data.images);
         setLike(res.data.like);
-        setView(res.data.view);
 
-        /*axios;
-        isViewingProcessing(true)
+        axios
           .put(`/api/board/view`, { boardId: res.data.board.id })
-          .then((res) => {
-            setView(res.data);
+          .then((response) => {
+            setViewCount(response.data.count);
           })
           .catch((err) => {
             console.log("Failed to update view count:", err);
           })
           .finally(() => {
             setIsViewingProcessing(false);
-          });*/
+          });
       })
       .catch((err) => {
         console.log(err);
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "error",
             description: "게시물이 존재하지 않습니다",
@@ -74,7 +72,7 @@ export function BoardView() {
           navigate("/");
         }
       });
-  }, [account.id, id]);
+  }, [id]);
 
   if (!board) {
     return <Spinner />;
@@ -102,6 +100,10 @@ export function BoardView() {
 
   // 좋아요 처리 함수
   function handleClickLike() {
+    if (!account.id) {
+      return; // 비로그인 상태에서는 처리 중단
+    }
+
     setIsLikeProcessing(true);
     axios
       .put(`/api/board/like`, { boardId: board.id })
@@ -117,15 +119,16 @@ export function BoardView() {
   return (
     <Box p={4} bg="white" borderRadius="md" boxShadow="sm">
       <Flex mb={4} alignItems="center">
-        <Heading size="lg" fontWeight="bold">
-          {board.name}번 게시물
+        <Heading as="h2" size="lg" mb={4}>
+          {board.name}의 게시물
         </Heading>
         <Spacer />
+
         {!isLikeProcessing && (
-          <Flex alignItems="center">
+          <Flex alignItems="center" ml={4}>
             <Box
               onClick={handleClickLike}
-              cursor="pointer"
+              cursor={account.id ? "pointer" : "not-allowed"}
               fontSize="2xl"
               color="red.500"
               mr={2}
@@ -141,40 +144,17 @@ export function BoardView() {
             </Box>
           </Flex>
         )}
-
-        {/* {!isViewingProcessing && (
-          <Flex>
-            <Box cursor="pointer" fontSize="3xl">
-              {view && view.view ? (
-                <FontAwesomeIcon icon={ViewIcon} />
-              ) : (
-                <FontAwesomeIcon icon={ViewOffIcon} />
-              )}
-            </Box>
-            <Box fontSize="3xl">{view ? view.count : 0} </Box>
-          </Flex>
-        )}*/}
+        <Flex alignItems="center" ml={4} justifyContent="space-between">
+          <FontAwesomeIcon icon={faEye} color="gray.400" />
+          <Box ml={3} color="gray.600">
+            {viewCount}
+          </Box>
+        </Flex>
       </Flex>
-      <Box mb={4}>
+      <Box borderWidth="3px" borderRadius="lg" overflow="hidden">
         <FormControl>
           <FormLabel>제목</FormLabel>
           <Input value={board.title} readOnly bg="gray.100" borderRadius="md" />
-          <Box position="relative">
-            {account.hasAccess(board.memberId) && (
-              <Box position="absolute" top={-10} right={-40}>
-                <Button
-                  colorScheme="blue"
-                  onClick={() => navigate(`/board/${board.id}/edit`)}
-                  mr={3}
-                >
-                  수정
-                </Button>
-                <Button colorScheme="red" onClick={onOpen}>
-                  삭제
-                </Button>
-              </Box>
-            )}
-          </Box>
           <FormLabel mt={4}>본문</FormLabel>
           <Textarea
             value={board.content}
@@ -196,6 +176,23 @@ export function BoardView() {
           <FormLabel mt={4}>작성자</FormLabel>
           <Input value={board.name} readOnly bg="gray.100" borderRadius="md" />
         </FormControl>
+      </Box>
+
+      <Box position="relative">
+        {account.hasAccess(board.memberId) && (
+          <Box position="absolute" top={-10} right={-40}>
+            <Button
+              colorScheme="blue"
+              onClick={() => navigate(`/board/${board.id}/edit`)}
+              mr={3}
+            >
+              수정
+            </Button>
+            <Button colorScheme="red" onClick={onOpen}>
+              삭제
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Box mt={6}>

@@ -73,6 +73,13 @@ export function ResumeList() {
     }
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `2px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <>
       {account.isAlba() && (
@@ -84,8 +91,8 @@ export function ResumeList() {
             <Divider mb={"40px"} borderWidth={"2px"} />
             <Button
               onClick={() => navigate("/resume/register")}
-              colorScheme={"green"}
-              variant={"outline"}
+              {...btnStyles("black")}
+              opacity={"0.7"}
               w={120}
               my={3}
             >
@@ -97,8 +104,8 @@ export function ResumeList() {
                   <Tr borderTop={"1px solid gray"}>
                     <Th {...styles.th}>#</Th>
                     <Th {...styles.th}>선택</Th>
-                    <Th {...styles.th}>제목</Th>
                     <Th {...styles.th}>작성일</Th>
+                    <Th {...styles.th}>제목</Th>
                     <Th {...styles.th}>관리</Th>
                   </Tr>
                 </Thead>
@@ -106,11 +113,14 @@ export function ResumeList() {
                   {resumeList.map((resume, index) => (
                     <Tr key={resume.id} _hover={{ bg: "gray.100" }}>
                       <Td>{index + 1}</Td>
-                      <Td borderBottom={"1px solid #E0E0E0"} w={"130px"}>
+                      <Td borderBottom={"1px solid #E0E0E0"} w={"80px"}>
                         <Checkbox
                           value={resume.id}
                           onChange={handleCheckBoxChange}
                         />
+                      </Td>
+                      <Td borderBottom={"1px solid #E0E0E0"}>
+                        {resume.inserted}
                       </Td>
                       <Td
                         w={"600px"}
@@ -121,10 +131,9 @@ export function ResumeList() {
                         {resume.title}
                       </Td>
                       <Td borderBottom={"1px solid #E0E0E0"}>
-                        {resume.inserted}
-                      </Td>
-                      <Td borderBottom={"1px solid #E0E0E0"}>
                         <Button
+                          {...btnStyles("orange")}
+                          opacity={"0.9"}
                           onClick={() => navigate(`/resume/${resume.id}/edit`)}
                         >
                           수정
@@ -135,8 +144,7 @@ export function ResumeList() {
                 </Tbody>
               </Table>
               <Button
-                colorScheme={"red"}
-                variant={"outline"}
+                {...btnStyles("orangered")}
                 onClick={handleRemoveBtn}
                 mt={3}
               >

@@ -7,7 +7,8 @@ import {
   AccordionPanel,
   Box,
   Button,
-  Heading,
+  Center,
+  Flex,
   Tab,
   TabList,
   Tabs,
@@ -16,6 +17,8 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 export function FAQ() {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -49,24 +52,28 @@ export function FAQ() {
       <Box>
         <Tabs variant="enclosed" mt={2} onChange={handleTabChange}>
           <TabList>
-            <Tab w={"200px"} h={"50px"}>
+            <Tab w={"200px"} h={"50px"} fontWeight={"600"}>
               알바
             </Tab>
-            <Tab w={"200px"} h={"50px"}>
+            <Tab w={"200px"} h={"50px"} fontWeight={"600"}>
               사장
             </Tab>
           </TabList>
         </Tabs>
       </Box>
-      <Heading
-        as="h2"
-        size="lg"
-        margin="5"
-        textAlign="center"
-        color={"#df7d4a"}
-      >
-        FAQ
-      </Heading>
+      <Center w={"100%"} h={"120px"} color={"#FF8708"}>
+        <Box>
+          <Center fontSize={"25px"} fontWeight={"600"}>
+            F A Q
+          </Center>
+          <Flex fontSize={"15px"} gap={2}>
+            <Box>
+              <FontAwesomeIcon icon={faCircleInfo} />
+            </Box>
+            <Text>궁금한 점을 찾아보세요</Text>
+          </Flex>
+        </Box>
+      </Center>
       <Accordion
         allowToggle
         index={expandedIndex}

@@ -6,6 +6,7 @@ import com.backend.domain.member.form.MemberEditForm;
 import com.backend.domain.member.form.MemberLoginForm;
 import com.backend.domain.member.form.MemberSignupForm;
 import com.backend.mapper.member.MemberMapper;
+import com.backend.mapper.review.ReviewToAlbaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,7 @@ public class MemberService {
     private final MemberMapper mapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtEncoder encoder;
+    private final ReviewToAlbaMapper reviewToAlbaMapper;
 
     public void signup(MemberSignupForm form) {
         Member member = new Member(
@@ -184,5 +186,20 @@ public class MemberService {
     public boolean canDelete(String password, Integer id) {
         Member dbMember = mapper.selectById(id);
         return passwordEncoder.matches(password, dbMember.getPassword());
+    }
+
+    public Integer getAlbaScore(Integer albaId) {
+        List<Integer> scores = reviewToAlbaMapper.selectScoreByAlbaId(albaId);
+        Integer result = 100;
+        if (scores != null) {
+            Integer sum = scores.stream()
+                    .mapToInt(Integer::intValue)
+                    .sum();
+
+            result += sum * 10;
+            return result;
+        }
+
+        return result;
     }
 }

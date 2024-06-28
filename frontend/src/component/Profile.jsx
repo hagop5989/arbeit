@@ -1,26 +1,34 @@
-import { Box, Center, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Link, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../provider/LoginProvider.jsx";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUp, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+
+const styles = {
+  menu: {
+    w: "100%",
+    p: "5px",
+    borderBottom: "1px solid #E0E0E0",
+  },
+  btn: {
+    w: "100%",
+    bg: "#3396FE",
+    fontFamily: "SBAggroB",
+    color: "white",
+  },
+};
 
 export function Profile() {
-  const [src, setSrc] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const navigate = useNavigate();
 
   const account = useContext(LoginContext);
   const isBoss = account.isBoss();
 
   useEffect(() => {
-    if (account.id !== "") {
-      axios.get(`/api/profile/${account.id}`).then((res) => setSrc(res.data));
-    }
-  }, [account.id]);
-
-  useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 700); // 높이 700넘으면 보임
+      setShowScrollTop(window.scrollY > 250); // 높이 700넘으면 보임
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -38,59 +46,82 @@ export function Profile() {
   };
 
   return (
-    <Box width={"80%"}>
-      <Center w={"100%"} height={"140px"} mb={"10px"}>
-        <Image
-          borderRadius={150}
-          border={"2px solid gray"}
-          w={"90%"}
-          h={"100%"}
-          src={src === "" ? "/public/base_profile.png" : src}
-          objectFit={"contain"}
-        />
-      </Center>
-      <Center h={"20px"} mb={"15px"}>
-        <Link href={`/member/${account.id}`}>내 정보</Link>
-      </Center>
-      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
-        <Link href={isBoss ? "/application-manage/list" : "/application/list"}>
-          지원내역
-        </Link>
-
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.alarmNum}
-        </Center>
-      </Flex>
-      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
-        <Link href={"/scrap-history"}>스크랩 알바</Link>
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.scrapNum}
-        </Center>
-      </Flex>
-      <Flex w={"100%"} h={"20px"} ml={"20px"}>
-        <Link href={"/visit-history"}>최근 본 알바</Link>
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.recentJobPages.length}
-        </Center>
-      </Flex>
+    <Box w={"100%"}>
+      <Box {...styles.menu}>
+        {account.isLoggedIn() || (
+          <Button onClick={() => navigate("/signup")} {...styles.btn}>
+            회원가입
+          </Button>
+        )}
+        {account.isAlba() && (
+          <Button
+            onClick={() => navigate("/resume/register")}
+            {...styles.btn}
+            fontSize={"15px"}
+          >
+            이력서 등록하기
+          </Button>
+        )}
+        {account.isBoss() && (
+          <Button
+            onClick={() => navigate("/jobs/register")}
+            {...styles.btn}
+            fontSize={"15px"}
+          >
+            공고 등록하기
+          </Button>
+        )}
+      </Box>
+      <Box w={"100%"} px={"10px"} mt={"5px"}>
+        {account.isLoggedIn() && (
+          <Box {...styles.menu}>
+            <Link href={`/member/${account.id}`}>마이페이지</Link>
+          </Box>
+        )}
+        {account.isLoggedIn() || (
+          <Box {...styles.menu}>
+            <Link href={`/login`}>마이페이지</Link>
+          </Box>
+        )}
+        <Box {...styles.menu}>
+          <Link
+            href={isBoss ? "/application-manage/list" : "/application/list"}
+          >
+            지원내역
+            <Box fontSize={"13px"}>
+              {account.alarmNum}건 <FontAwesomeIcon icon={faChevronRight} />
+            </Box>
+          </Link>
+        </Box>
+        <Box {...styles.menu}>
+          <Link href={"/scrap-history"}>
+            스크랩 알바
+            <Box fontSize={"13px"}>
+              {account.scrapNum}건 <FontAwesomeIcon icon={faChevronRight} />
+            </Box>
+          </Link>
+        </Box>
+        <Box {...styles.menu}>
+          <Link href={"/visit-history"}>
+            최근 본 알바
+            <Box fontSize={"13px"}>
+              {account.recentJobPages.length}건{" "}
+              <FontAwesomeIcon icon={faChevronRight} />
+            </Box>
+          </Link>
+        </Box>
+        <Flex {...styles.menu}>
+          {account.isLoggedIn() || (
+            <Link href={"/jobs/list"}>채용공고 보러가기</Link>
+          )}
+          {account.isAlba() && (
+            <Link href={"/jobs/list"}>채용공고 보러가기</Link>
+          )}
+          {account.isBoss() && (
+            <Link href={"/alba-list"}>내 지점 직원 목록</Link>
+          )}
+        </Flex>
+      </Box>
       <Center>
         {showScrollTop && (
           <Box
@@ -100,8 +131,8 @@ export function Profile() {
             position={"fixed"}
             w="60px"
             h={"60px"}
-            bottom={"50px"}
-            right={"152px"}
+            bottom={"250px"}
+            right={"50px"}
             border={"1px solid lightgray"}
             borderRadius={"50%"}
           >

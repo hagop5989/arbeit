@@ -18,22 +18,17 @@ export function LeftNavbar() {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const albaMenu = [
-    { name: "공고리스트", url: "/jobs/list" },
-    { name: "이력서등록", url: "/resume/register" },
-    { name: "이력서관리", url: "/resume/list" },
-    { name: "지원내역", url: "/application/list" },
-    { name: "캘린더테스트", url: "/test1" },
-    { name: "리뷰관리", url: "/alba-review" },
+    { name: "이력서 등록", url: "/resume/register" },
+    { name: "이력서 관리", url: "/resume/list" },
+    { name: "나의 지원내역", url: "/application/list" },
   ];
 
   const bossMenu = [
-    { name: "공고생성", url: "/jobs/register" },
-    { name: "공고리스트", url: "/jobs/list" },
+    { name: "공고 등록", url: "/jobs/register" },
     { name: "지원내역", url: "/application-manage/list" },
-    { name: "가게등록", url: "/store/register" },
-    { name: "가게목록", url: "/store/list" },
-    { name: "캘린더테스트", url: "/test1" },
-    { name: "리뷰관리", url: "/boss-review" },
+    { name: "사업장 리스트", url: "/store/register" },
+    { name: "나의 사업장 리스트", url: "/store/list" },
+    { name: "직원 리스트", url: "/alba-list" },
   ];
 
   const menuItems = account.isBoss() ? bossMenu : albaMenu;
@@ -59,7 +54,7 @@ export function LeftNavbar() {
       display={isLargerThanX ? "block" : "none"}
       zIndex={"3"}
       position={"fixed"}
-      left={"50px"}
+      left={"150px"}
       top={"230px"}
       h={"300px"}
     >
@@ -69,14 +64,14 @@ export function LeftNavbar() {
         opacity={isVisible ? 1 : 0}
         border={"1px solid lightgray"}
         borderRadius={"10px"}
-        w={"300px"}
+        w={"200px"}
         bgColor={"white"}
         boxShadow={"lg"}
       >
         <Table>
           <Thead>
             <Tr>
-              <Th bgColor={"gray.100"}>submenu</Th>
+              <Th bgColor={"gray.100"}>메뉴</Th>
             </Tr>
           </Thead>
           <Tbody>

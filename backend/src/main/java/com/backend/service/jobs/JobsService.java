@@ -107,7 +107,7 @@ public class JobsService {
 
         Jobs jobs = jobsMapper.selectById(jobsId);
         LocalDateTime now = LocalDateTime.now();
-        
+
         if (jobs == null) {
             return ResponseEntity.status(404).build();
         }
@@ -271,10 +271,8 @@ public class JobsService {
         Integer countAll = jobsMapper.countAllWithSearch(searchType, keyword, filterType, filterDetail);
         Integer itemPerPage = 8; // 페이지당 항목 수 지정
         Integer offset = (currentPage - 1) * itemPerPage;
-        System.out.println("countAll = " + countAll);
 
         Integer lastPageNum = (countAll + itemPerPage - 1) / itemPerPage;
-        System.out.println("lastPageNum = " + lastPageNum);
         Integer leftPageNum = (currentPage - 1) / 10 * 10 + 1;
         Integer rightPageNum = leftPageNum + 9;
         rightPageNum = Math.min(rightPageNum, lastPageNum);

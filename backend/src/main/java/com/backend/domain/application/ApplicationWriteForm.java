@@ -15,7 +15,7 @@ public class ApplicationWriteForm {
     @NotNull(message = "이력서 선택을 필수입니다.")
     private Integer resumeId;
 
-    @Pattern(regexp = "^[a-zA-Z가-힣0-9\\s]{10,}$", message = "최소 10자 이상 작성해주세요.")
+    @Pattern(regexp = "^[a-zA-Z가-힣0-9\\s\\[\\]\\(\\)\\-\\.,!?]{2,30}$", message = "최소 10자 이상 작성해주세요.")
     @NotBlank
     private String comment;
     @NotBlank
