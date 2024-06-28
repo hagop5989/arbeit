@@ -1,7 +1,6 @@
 package com.backend.controller.board;
 
 
-import com.backend.domain.board.Board;
 import com.backend.domain.board.form.BoardEditForm;
 import com.backend.domain.board.form.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
@@ -62,6 +61,7 @@ public class BoardController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
     public Map<String, Object> list(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(value = "type", required = false) String searchType,
@@ -95,8 +95,10 @@ public class BoardController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@PathVariable Integer id) {
         boardService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
@@ -110,18 +112,21 @@ public class BoardController {
 
     @PutMapping("like")
     @PreAuthorize("isAuthenticated()")
-    public Map<String, Object> like(@RequestBody Map<String, Object> req,
-                                    Authentication authentication) throws IOException {
+    public ResponseEntity<Map<String, Object>> like(@RequestBody Map<String, Object> req,
+                                                    Authentication authentication) throws IOException {
 
-        return boardService.like(req, authentication);
-
-
+        Map<String, Object> result = boardService.like(req, authentication);
+        return ResponseEntity.ok().body(result);
     }
 
-   /* @PutMapping("/view")
-    public void viewBoard(@RequestBody Map<String, Object> req, Authentication authentication) {
-        boardService.view(req, authentication);
-    }*/
+    @PutMapping("view")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> view(@RequestBody Map<String, Object> req, Authentication authentication) {
+        Map<String, Object> result = boardService.view(req, authentication);
+        return ResponseEntity.ok(result);
+    }
+
 }
+
 
 
