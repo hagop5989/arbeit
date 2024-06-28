@@ -102,8 +102,8 @@ export function ApplicationMangeList() {
                   <Td w={"20px"} {...styles.th}>
                     #
                   </Td>
-                  <Td {...styles.th}>지원 공고</Td>
-                  <Td w={"200px"} {...styles.th}>
+                  <Td {...styles.th}>지원 공고</Td>{" "}
+                  <Td w={"150px"} {...styles.th}>
                     지원서
                   </Td>
                   <Td w={"150px"} {...styles.th}>
@@ -121,6 +121,7 @@ export function ApplicationMangeList() {
                 {applicationList.map((application, index) => (
                   <Tr key={index}>
                     <Td {...styles.td}>{index + 1}</Td>
+
                     <Td fontWeight={"800"} cursor="pointer" {...styles.td}>
                       <Link href={`/jobs/${application.jobsId}`}>
                         {application.jobsTitle}
@@ -134,8 +135,18 @@ export function ApplicationMangeList() {
                       </Link>
                     </Td>
                     <Td {...styles.td}>{application.inserted}</Td>
-                    <Td fontWeight={"700"} {...styles.td}>
-                      {application.isPass !== null
+                    <Td
+                      fontWeight={"700"}
+                      {...styles.td}
+                      color={
+                        application.isPassed !== undefined
+                          ? application.isPassed
+                            ? "blue.600"
+                            : "red.500"
+                          : "gray.600"
+                      }
+                    >
+                      {application.isPassed !== undefined
                         ? application.isPassed
                           ? "합격"
                           : "불합격"

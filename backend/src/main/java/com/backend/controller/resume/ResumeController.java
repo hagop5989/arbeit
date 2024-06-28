@@ -3,6 +3,7 @@ package com.backend.controller.resume;
 import com.backend.config.AuthId;
 import com.backend.domain.resume.Resume;
 import com.backend.domain.resume.ResumeForm;
+import com.backend.service.member.MemberService;
 import com.backend.service.resume.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/api")
 public class ResumeController {
     private final ResumeService resumeService;
+    private final MemberService memberService;
 
     @PostMapping("/resume/register")
     @PreAuthorize("hasAuthority('SCOPE_ALBA')")
@@ -53,8 +55,9 @@ public class ResumeController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity view(@PathVariable("id") Integer id, @AuthId Integer authId) {
         Resume resume = resumeService.findById(id);
+        String userName = memberService.findById(resume.getMemberId()).getName();
 
-        if (resume == null) {
+        if (resume == null || userName.equals("탈퇴한 유저")) {
             return ResponseEntity.notFound().build();
         }
 
@@ -62,7 +65,7 @@ public class ResumeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        return ResponseEntity.ok().body(resume);
+        return ResponseEntity.ok().body(Map.of("resume", resume, "userName", userName));
     }
 
     @PutMapping("/resume/{id}")

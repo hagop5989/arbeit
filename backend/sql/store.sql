@@ -38,3 +38,4 @@ SELECT *
 FROM category;
 
 DESC category;
+

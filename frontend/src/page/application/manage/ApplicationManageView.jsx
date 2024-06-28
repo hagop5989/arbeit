@@ -132,7 +132,7 @@ export function ApplicationManageView() {
               <Box color={"#505050"}>처리상태</Box>
               <Box ml={"20px"}>
                 {" "}
-                {application.isPassed !== null
+                {application.isPassed !== undefined
                   ? application.isPassed
                     ? "합격"
                     : "불합격"

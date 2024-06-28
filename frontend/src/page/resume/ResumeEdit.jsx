@@ -53,7 +53,7 @@ export function ResumeEdit() {
         axios
           .get(`/api/resume/${id}`)
           .then((res) => {
-            setResume(res.data);
+            setResume(res.data.resume);
           })
           .catch((err) => {
             if (err.response.status === 404 || err.response.status === 403) {
