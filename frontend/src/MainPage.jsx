@@ -466,7 +466,16 @@ export function MainPage() {
                   color={"gray"}
                 />
               </Center>
-              <Center {...buttonStyle} as="div">
+              <Center
+                {...buttonStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() =>
+                  navigate(
+                    "/jobs/list?type=all&keyword=&page=1&filterType=직종&filterDetail=카페",
+                  )
+                }
+              >
                 <FontAwesomeIcon icon={faMugSaucer} />
                 <Box mx={3}>카페</Box>
                 <FontAwesomeIcon
@@ -531,7 +540,16 @@ export function MainPage() {
                   color={"gray"}
                 />
               </Center>
-              <Center {...buttonStyle} as="div">
+              <Center
+                {...buttonStyle}
+                as="div"
+                cursor={"pointer"}
+                onClick={() =>
+                  navigate(
+                    "/jobs/list?type=all&keyword=&page=1&filterType=직종&filterDetail=유통",
+                  )
+                }
+              >
                 <FontAwesomeIcon icon={faTruck} />
                 <Box mx={3}>유통</Box>
                 <FontAwesomeIcon
