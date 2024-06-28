@@ -4,8 +4,8 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Input,
   Text,
-  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
@@ -76,11 +76,27 @@ export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
     setComment({ ...comment, [prop]: e.target.value });
   };
 
+  function handleCommentWrite() {
+    if (!account || !account.id) {
+      toast({
+        status: "error",
+        description: "로그인하세요",
+        position: "top",
+      });
+    }
+  }
+
   return (
     <Box>
       <FormControl>
         <FormLabel>댓글작성</FormLabel>
-        <Textarea onChange={handleTextareaChange("comment")} />
+        <Box onClick={handleCommentWrite}>
+          <Input
+            w="300px"
+            placeholder="댓글을 입력해주세요"
+            onChange={handleTextareaChange("comment")}
+          />
+        </Box>
         {errors && <FormHelperText>{errors.comment}</FormHelperText>}
         <Text>
           {comment.comment?.length} / {maxCommentLength}
@@ -89,7 +105,6 @@ export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
           <Button colorScheme={"green"} onClick={handleCommentSubmitClick}>
             등록
           </Button>
-          <Button onClick={handlecancel}>취소</Button>
         </Box>
       </FormControl>
     </Box>
