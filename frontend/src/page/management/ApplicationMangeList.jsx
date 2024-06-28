@@ -17,7 +17,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { LoginContext } from "../../../provider/LoginProvider.jsx";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { ContractModal } from "./ContractModal.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -102,8 +102,8 @@ export function ApplicationMangeList() {
                   <Td w={"20px"} {...styles.th}>
                     #
                   </Td>
-                  <Td {...styles.th}>지원 공고</Td>{" "}
-                  <Td w={"150px"} {...styles.th}>
+                  <Td {...styles.th}>지원 공고</Td>
+                  <Td w={"200px"} {...styles.th}>
                     지원서
                   </Td>
                   <Td w={"150px"} {...styles.th}>
@@ -121,7 +121,6 @@ export function ApplicationMangeList() {
                 {applicationList.map((application, index) => (
                   <Tr key={index}>
                     <Td {...styles.td}>{index + 1}</Td>
-
                     <Td fontWeight={"800"} cursor="pointer" {...styles.td}>
                       <Link href={`/jobs/${application.jobsId}`}>
                         {application.jobsTitle}

@@ -89,7 +89,6 @@ export function MemberEdit() {
                 </Flex>
                 <InputGroup>
                   <Input
-                    defaultValue={""}
                     type={show ? "text" : "password"}
                     onChange={handleInputChange("password")}
                   />
@@ -113,7 +112,6 @@ export function MemberEdit() {
                 <FormLabel fontSize={"xl"}>패스워드 확인</FormLabel>
                 <InputGroup>
                   <Input
-                    defaultValue={""}
                     type={pwdCheck ? "text" : "password"}
                     onChange={handleInputChange("passwordCheck")}
                   />
@@ -170,7 +168,11 @@ export function MemberEdit() {
               </Modal>
               <Flex mb={2}>
                 <Box w={"70%"} mr={2}>
-                  <Input value={member.address} readOnly />
+                  <Input
+                    value={member.address}
+                    onChange={handleInputChange("address")}
+                    readOnly
+                  />
                   {errors && (
                     <FormErrorMessage>{errors.address}</FormErrorMessage>
                   )}

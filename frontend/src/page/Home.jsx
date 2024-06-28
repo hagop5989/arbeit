@@ -29,9 +29,10 @@ export function Home() {
             bg={"white"}
             border={"2px solid #E9E9E9"}
             position={"fixed"}
-            right={"150px"}
-            w={"200px"}
-            h={"330px"}
+            top={"220px"}
+            right={"50px"}
+            w={"300px"}
+            h={"150px"}
             borderRadius={"10px"}
             display={{ base: "none", "2xl": "flex" }}
           >

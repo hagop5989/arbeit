@@ -95,6 +95,11 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{albaId}/alba-score")
+    public Integer getAlbaScore(@PathVariable Integer albaId) {
+        return memberService.getAlbaScore(albaId);
+    }
+
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
         Map<String, String> errors = new ConcurrentHashMap<>();
         for (FieldError error : bindingResult.getFieldErrors()) {

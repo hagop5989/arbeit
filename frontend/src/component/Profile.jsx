@@ -20,7 +20,7 @@ export function Profile() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 700); // 높이 700넘으면 보임
+      setShowScrollTop(window.scrollY > 250); // 높이 700넘으면 보임
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -38,59 +38,64 @@ export function Profile() {
   };
 
   return (
-    <Box width={"80%"}>
-      <Center w={"100%"} height={"140px"} mb={"10px"}>
-        <Image
-          borderRadius={150}
-          border={"2px solid gray"}
-          w={"90%"}
-          h={"100%"}
-          src={src === "" ? "/public/base_profile.png" : src}
-          objectFit={"contain"}
-        />
-      </Center>
-      <Center h={"20px"} mb={"15px"}>
-        <Link href={`/member/${account.id}`}>내 정보</Link>
-      </Center>
-      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
-        <Link href={isBoss ? "/application-manage/list" : "/application/list"}>
-          지원내역
-        </Link>
-
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.alarmNum}
+    <Flex>
+      <Box w={"85px"} pt={"15px"}>
+        <Center w={"85px"} height={"80px"} mb={"10px"}>
+          <Image
+            borderRadius={300}
+            border={"1px solid gray"}
+            src={src === "" ? "/public/base_profile.png" : src}
+          />
         </Center>
-      </Flex>
-      <Flex w={"100%"} h={"20px"} mb={"5px"} ml={"20px"}>
-        <Link href={"/scrap-history"}>스크랩 알바</Link>
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.scrapNum}
+        <Center h={"20px"} mb={"15px"}>
+          <Link href={`/member/${account.id}`}>내 정보</Link>
         </Center>
-      </Flex>
-      <Flex w={"100%"} h={"20px"} ml={"20px"}>
-        <Link href={"/visit-history"}>최근 본 알바</Link>
-        <Center
-          w={"20px"}
-          h={"20px"}
-          bg={"yellow"}
-          borderRadius={150}
-          ml={"5px"}
-        >
-          {account.recentJobPages.length}
-        </Center>
-      </Flex>
+      </Box>
+      <Box w={"170px"} px={"20px"} margin={"auto"}>
+        <Flex w={"100%"}>
+          <Link
+            href={isBoss ? "/application-manage/list" : "/application/list"}
+          >
+            지원내역
+          </Link>
+          <Center
+            w={"20px"}
+            h={"20px"}
+            bg={"yellow"}
+            borderRadius={150}
+            ml={"5px"}
+          >
+            {account.alarmNum}
+          </Center>
+        </Flex>
+        <Flex w={"100%"}>
+          <Link href={"/scrap-history"}>스크랩 알바</Link>
+          <Center
+            w={"20px"}
+            h={"20px"}
+            bg={"yellow"}
+            borderRadius={150}
+            ml={"5px"}
+          >
+            {account.scrapNum}
+          </Center>
+        </Flex>
+        <Flex w={"100%"}>
+          <Link href={"/visit-history"}>최근 본 알바</Link>
+          <Center
+            w={"20px"}
+            h={"20px"}
+            bg={"yellow"}
+            borderRadius={150}
+            ml={"5px"}
+          >
+            {account.recentJobPages.length}
+          </Center>
+        </Flex>
+        <Flex w={"100%"}>
+          <Link href={"/alba-list"}>직원 목록</Link>
+        </Flex>
+      </Box>
       <Center>
         {showScrollTop && (
           <Box
@@ -100,8 +105,8 @@ export function Profile() {
             position={"fixed"}
             w="60px"
             h={"60px"}
-            bottom={"50px"}
-            right={"152px"}
+            bottom={"250px"}
+            right={"50px"}
             border={"1px solid lightgray"}
             borderRadius={"50%"}
           >
@@ -114,6 +119,6 @@ export function Profile() {
           </Box>
         )}
       </Center>
-    </Box>
+    </Flex>
   );
 }

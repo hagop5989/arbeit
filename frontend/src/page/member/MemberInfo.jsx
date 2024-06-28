@@ -33,6 +33,7 @@ import {
   faEye,
   faEyeSlash,
   faKey,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberInfo() {
@@ -43,6 +44,7 @@ export function MemberInfo() {
   const [show, setShow] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
+  const [score, setScore] = useState("");
 
   const fileInputRef = useRef({});
   const navigate = useNavigate();
@@ -92,6 +94,11 @@ export function MemberInfo() {
   useEffect(() => {
     if (member) {
       countNowAge();
+    }
+    if (account !== "" && account.isAlba()) {
+      axios.get(`/api/member/${id}/alba-score`).then((res) => {
+        setScore(res.data);
+      });
     }
   }, [member]);
 
@@ -226,37 +233,48 @@ export function MemberInfo() {
                   ml={"50px"}
                   display={"flex"}
                   flexDirection={"column"}
-                  gap={"25px"}
+                  gap={"10px"}
                   lineHeight={"30px"}
+                  p={"20px"}
                 >
                   <Box display={"flex"}>
-                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       이름
-                    </FormLabel>
+                    </Box>
                     <Box>{member.name}</Box>
                   </Box>
 
                   <Box display={"flex"}>
-                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       생년월일
-                    </FormLabel>
+                    </Box>
                     <Box>{member.birthDate}</Box>
                     <Box ml={"5px"}> (만 {nowAge}세)</Box>
                   </Box>
 
                   <Box display={"flex"}>
-                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       성별
-                    </FormLabel>
+                    </Box>
                     <Box>{member.gender}</Box>
                   </Box>
 
                   <Box display={"flex"}>
-                    <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       전화번호
-                    </FormLabel>
+                    </Box>
                     <Box>{formatPhoneNumber(member.phone)}</Box>
                   </Box>
+
+                  {account.isAlba() && (
+                    <Box display={"flex"} fontSize={"xl"} fontWeight={"bold"}>
+                      <Box w={"100px"}>알바점수</Box>
+                      <Box>
+                        <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
+                        {score}
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
               </Flex>
             </FormControl>
