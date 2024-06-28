@@ -50,32 +50,40 @@ function VisitHistory(props) {
               <Th w={"600px"} fontSize={"md"}>
                 제목
               </Th>
-              {account.isAlba() && <Th minW={"100px"}>관리</Th>}
+              {account.isAlba() && (
+                <Th minW={"100px"} fontSize={"md"}>
+                  관리
+                </Th>
+              )}
             </Tr>
           </Thead>
           <Tbody>
             {visitList.map((item, index) => (
               <Tr
+                h={"10px"}
                 key={index}
                 cursor={"pointer"}
                 _hover={{ bgColor: "gray.300" }}
               >
-                <Td>{index + 1}</Td>
+                <Td h={"10px"}>{index + 1}</Td>
                 <Td
+                  h={"10px"}
                   onClick={() => {
                     navigate(item.url);
                   }}
                   fontWeight={"700"}
+                  whiteSpace="nowrap" // 줄 바꿈을 막음
+                  overflow="hidden" // 넘친 내용을 숨김
+                  textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
                 >
                   {item.title}
                 </Td>
-                <Td>
+                <Td h={"10px"}>
                   {account.isAlba() && (
                     <Button
                       colorScheme={"blue"}
                       variant={"outline"}
                       size={"sm"}
-                      mt={"10px"}
                       onClick={() =>
                         navigate(`/jobs/${item.jobsId}?modal=open`)
                       }

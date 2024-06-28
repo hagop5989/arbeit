@@ -139,6 +139,7 @@ public interface JobsMapper {
                         AND jc.work_time = #{filterDetail}
                     </if>
                 </if>
+                AND m.name != '탈퇴한 유저'
             </trim>
             ORDER BY
             <if test="filterType == '마감임박'">

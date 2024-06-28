@@ -97,8 +97,8 @@ export function ResumeList() {
                   <Tr borderTop={"1px solid gray"}>
                     <Th {...styles.th}>#</Th>
                     <Th {...styles.th}>선택</Th>
-                    <Th {...styles.th}>제목</Th>
                     <Th {...styles.th}>작성일</Th>
+                    <Th {...styles.th}>제목</Th>
                     <Th {...styles.th}>관리</Th>
                   </Tr>
                 </Thead>
@@ -106,11 +106,14 @@ export function ResumeList() {
                   {resumeList.map((resume, index) => (
                     <Tr key={resume.id} _hover={{ bg: "gray.100" }}>
                       <Td>{index + 1}</Td>
-                      <Td borderBottom={"1px solid #E0E0E0"} w={"130px"}>
+                      <Td borderBottom={"1px solid #E0E0E0"} w={"80px"}>
                         <Checkbox
                           value={resume.id}
                           onChange={handleCheckBoxChange}
                         />
+                      </Td>
+                      <Td borderBottom={"1px solid #E0E0E0"}>
+                        {resume.inserted}
                       </Td>
                       <Td
                         w={"600px"}
@@ -119,9 +122,6 @@ export function ResumeList() {
                         onClick={() => navigate(`/resume/${resume.id}`)}
                       >
                         {resume.title}
-                      </Td>
-                      <Td borderBottom={"1px solid #E0E0E0"}>
-                        {resume.inserted}
                       </Td>
                       <Td borderBottom={"1px solid #E0E0E0"}>
                         <Button

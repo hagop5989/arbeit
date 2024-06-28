@@ -121,7 +121,10 @@ export function ApplicationList() {
           <Table borderRadius="lg" w="1050px">
             <Thead bg="gray.100" p={2} fontWeight="bold">
               <Tr>
-                <Td w={"100px"} {...styles.th}>
+                <Td w={"20px"} {...styles.th}>
+                  #
+                </Td>
+                <Td w={"120px"} {...styles.th}>
                   지원일자
                 </Td>
                 <Td w={"350px"} {...styles.th}>
@@ -142,7 +145,10 @@ export function ApplicationList() {
               {applicationList &&
                 applicationList.map((application, index) => (
                   <Tr key={index}>
-                    <Td {...styles.td}>{application.inserted}</Td>
+                    <Td>{index + 1}</Td>
+                    <Td fontSize={"sm"} {...styles.td}>
+                      {application.inserted}
+                    </Td>
                     <Td {...styles.td}>
                       <Link
                         href={`/jobs/${application.jobsId}`}
@@ -167,7 +173,18 @@ export function ApplicationList() {
                         지원서 보기
                       </Box>
                     </Td>
-                    <Td {...styles.td} minW={"90px"} fontWeight={"bold"}>
+                    <Td
+                      {...styles.td}
+                      minW={"90px"}
+                      fontWeight={"bold"}
+                      color={
+                        application.isPassed !== null
+                          ? application.isPassed
+                            ? "blue.600"
+                            : "red.500"
+                          : "gray.600"
+                      }
+                    >
                       {isPassedToString(application.isPassed)}
                     </Td>
                     <Td {...styles.td}>
@@ -182,7 +199,7 @@ export function ApplicationList() {
                           취소
                         </Button>
                       ) : (
-                        <Box>처리 완료</Box>
+                        <Box fontWeight={"bold"}>처리 완료</Box>
                       )}
                     </Td>
                   </Tr>

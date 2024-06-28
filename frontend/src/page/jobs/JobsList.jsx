@@ -12,6 +12,7 @@ import {
   Input,
   Select,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -511,16 +512,28 @@ export function JobsList() {
                   color={"gray"}
                   opacity={"0.6"}
                 >
-                  <FontAwesomeIcon
-                    icon={faMagnifyingGlass}
-                    onClick={() => handleSubInfo(job.id)}
-                    cursor={"pointer"}
-                  />
-                  <FontAwesomeIcon
-                    icon={faArrowUpRightFromSquare}
-                    onClick={(e) => handleNewWindow(e, job)}
-                    cursor={"pointer"}
-                  />
+                  <Tooltip
+                    label="상세정보"
+                    placement="top"
+                    aria-label="A tooltip"
+                  >
+                    <FontAwesomeIcon
+                      icon={faMagnifyingGlass}
+                      onClick={() => handleSubInfo(job.id)}
+                      cursor={"pointer"}
+                    />
+                  </Tooltip>
+                  <Tooltip
+                    label="새 창에서 보기"
+                    placement="top"
+                    aria-label="A tooltip"
+                  >
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      onClick={(e) => handleNewWindow(e, job)}
+                      cursor={"pointer"}
+                    />
+                  </Tooltip>
                 </Flex>
               </Flex>
             </CardBody>
@@ -530,7 +543,7 @@ export function JobsList() {
             <Text color="gray.600" fontWeight={"bold"}>
               {trimmedAddress}
             </Text>
-            <Text fontSize="sm" color={"red.400"} fontWeight={"bold"}>
+            <Text fontSize="sm" color={"red.300"} fontWeight={"bold"}>
               {job.categoryName}
             </Text>
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
@@ -538,13 +551,15 @@ export function JobsList() {
 
           <Box w={"10%"}>
             <Box textIndent={"62px"}>
-              <FontAwesomeIcon
-                cursor={"pointer"}
-                onClick={(e) => handleScraping(e, job)}
-                color={"orange"}
-                icon={favorite ? fullStar : emptyStar}
-                fontSize={"20px"}
-              />
+              <Tooltip label="스크랩" placement="top" aria-label="A tooltip">
+                <FontAwesomeIcon
+                  cursor={"pointer"}
+                  onClick={(e) => handleScraping(e, job)}
+                  color={"orange"}
+                  icon={favorite ? fullStar : emptyStar}
+                  fontSize={"20px"}
+                />
+              </Tooltip>
             </Box>
             <Text
               mt={"5px"}
