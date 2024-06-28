@@ -73,22 +73,29 @@ export function MemberInfo() {
 
   useEffect(() => {
     axios
-      .get(`/api/member/${id}`)
-      .then((res) => {
-        setMember(res.data);
-        if (member != null) {
-          setNowAge(res.data);
-        }
+      .get("/api/only-login")
+      .then(() => {
+        axios
+          .get(`/api/member/${id}`)
+          .then((res) => {
+            setMember(res.data);
+            if (member != null) {
+              setNowAge(res.data);
+            }
+          })
+          .catch(() => {
+            toast({
+              status: "warning",
+              description: "접근 권한이 없습니다.",
+              position: "top",
+            });
+            navigate("/");
+          });
+        getProfilePicture();
       })
       .catch(() => {
-        toast({
-          status: "warning",
-          description: "접근 권한이 없습니다.",
-          position: "top",
-        });
-        navigate("/");
+        navigate("/login");
       });
-    getProfilePicture();
   }, []);
 
   useEffect(() => {

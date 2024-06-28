@@ -1,22 +1,30 @@
-import { Box, Center, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Link, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../provider/LoginProvider.jsx";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUp, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+
+const styles = {
+  menu: {
+    w: "100%",
+    p: "5px",
+    borderBottom: "1px solid #E0E0E0",
+  },
+  btn: {
+    w: "100%",
+    bg: "#3396FE",
+    fontFamily: "SBAggroB",
+    color: "white",
+  },
+};
 
 export function Profile() {
-  const [src, setSrc] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const navigate = useNavigate();
 
   const account = useContext(LoginContext);
   const isBoss = account.isBoss();
-
-  useEffect(() => {
-    if (account.id !== "") {
-      axios.get(`/api/profile/${account.id}`).then((res) => setSrc(res.data));
-    }
-  }, [account.id]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,62 +46,80 @@ export function Profile() {
   };
 
   return (
-    <Flex>
-      <Box w={"85px"} pt={"15px"}>
-        <Center w={"85px"} height={"80px"} mb={"10px"}>
-          <Image
-            borderRadius={300}
-            border={"1px solid gray"}
-            src={src === "" ? "/public/base_profile.png" : src}
-          />
-        </Center>
-        <Center h={"20px"} mb={"15px"}>
-          <Link href={`/member/${account.id}`}>내 정보</Link>
-        </Center>
+    <Box w={"100%"}>
+      <Box {...styles.menu}>
+        {account.isLoggedIn() || (
+          <Button onClick={() => navigate("/signup")} {...styles.btn}>
+            회원가입
+          </Button>
+        )}
+        {account.isAlba() && (
+          <Button
+            onClick={() => navigate("/resume/register")}
+            {...styles.btn}
+            fontSize={"15px"}
+          >
+            이력서 등록하기
+          </Button>
+        )}
+        {account.isBoss() && (
+          <Button
+            onClick={() => navigate("/jobs/register")}
+            {...styles.btn}
+            fontSize={"15px"}
+          >
+            공고 등록하기
+          </Button>
+        )}
       </Box>
-      <Box w={"170px"} px={"20px"} margin={"auto"}>
-        <Flex w={"100%"}>
+      <Box w={"100%"} px={"10px"} mt={"5px"}>
+        {account.isLoggedIn() && (
+          <Box {...styles.menu}>
+            <Link href={`/member/${account.id}`}>마이페이지</Link>
+          </Box>
+        )}
+        {account.isLoggedIn() || (
+          <Box {...styles.menu}>
+            <Link href={`/login`}>마이페이지</Link>
+          </Box>
+        )}
+        <Box {...styles.menu}>
           <Link
             href={isBoss ? "/application-manage/list" : "/application/list"}
           >
             지원내역
+            <Box fontSize={"13px"}>
+              {account.alarmNum}건 <FontAwesomeIcon icon={faChevronRight} />
+            </Box>
           </Link>
-          <Center
-            w={"20px"}
-            h={"20px"}
-            bg={"yellow"}
-            borderRadius={150}
-            ml={"5px"}
-          >
-            {account.alarmNum}
-          </Center>
-        </Flex>
-        <Flex w={"100%"}>
-          <Link href={"/scrap-history"}>스크랩 알바</Link>
-          <Center
-            w={"20px"}
-            h={"20px"}
-            bg={"yellow"}
-            borderRadius={150}
-            ml={"5px"}
-          >
-            {account.scrapNum}
-          </Center>
-        </Flex>
-        <Flex w={"100%"}>
-          <Link href={"/visit-history"}>최근 본 알바</Link>
-          <Center
-            w={"20px"}
-            h={"20px"}
-            bg={"yellow"}
-            borderRadius={150}
-            ml={"5px"}
-          >
-            {account.recentJobPages.length}
-          </Center>
-        </Flex>
-        <Flex w={"100%"}>
-          <Link href={"/alba-list"}>직원 목록</Link>
+        </Box>
+        <Box {...styles.menu}>
+          <Link href={"/scrap-history"}>
+            스크랩 알바
+            <Box fontSize={"13px"}>
+              {account.scrapNum}건 <FontAwesomeIcon icon={faChevronRight} />
+            </Box>
+          </Link>
+        </Box>
+        <Box {...styles.menu}>
+          <Link href={"/visit-history"}>
+            최근 본 알바
+            <Box fontSize={"13px"}>
+              {account.recentJobPages.length}건{" "}
+              <FontAwesomeIcon icon={faChevronRight} />
+            </Box>
+          </Link>
+        </Box>
+        <Flex {...styles.menu}>
+          {account.isLoggedIn() || (
+            <Link href={"/jobs/list"}>채용공고 보러가기</Link>
+          )}
+          {account.isAlba() && (
+            <Link href={"/jobs/list"}>채용공고 보러가기</Link>
+          )}
+          {account.isBoss() && (
+            <Link href={"/alba-list"}>내 지점 직원 목록</Link>
+          )}
         </Flex>
       </Box>
       <Center>
@@ -119,6 +145,6 @@ export function Profile() {
           </Box>
         )}
       </Center>
-    </Flex>
+    </Box>
   );
 }
