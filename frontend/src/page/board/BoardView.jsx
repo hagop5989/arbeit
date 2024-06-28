@@ -40,21 +40,19 @@ export function BoardView() {
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const account = useContext(LoginContext);
-
   useEffect(() => {
+    if (!id) return;
     axios
       .get(`/api/board/${id}`)
       .then((res) => {
         setBoard(res.data.board);
         setImages(res.data.images);
         setLike(res.data.like);
-        setViewCount(res.data.count);
 
-        setIsViewingProcessing(true);
         axios
           .put(`/api/board/view`, { boardId: res.data.board.id })
-          .then((res) => {
-            setViewCount(res.data.count);
+          .then((response) => {
+            setViewCount(response.data.count);
           })
           .catch((err) => {
             console.log("Failed to update view count:", err);
@@ -65,7 +63,7 @@ export function BoardView() {
       })
       .catch((err) => {
         console.log(err);
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "error",
             description: "게시물이 존재하지 않습니다",
@@ -74,7 +72,7 @@ export function BoardView() {
           navigate("/");
         }
       });
-  }, [account.id, id]);
+  }, [id]);
 
   if (!board) {
     return <Spinner />;

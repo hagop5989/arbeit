@@ -13,6 +13,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -43,6 +44,7 @@ export function BoardList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterType, setFilterType] = useState("");
   const [selectedFilterDetail, setSelectedFilterDetail] = useState([]);
+  const toast = useToast();
   const account = useContext(LoginContext);
 
   useEffect(() => {
@@ -105,6 +107,18 @@ export function BoardList() {
     params.set("filterType", value);
     params.set("filterDetail", []);
     navigate(`./?${params.toString()}`);
+  }
+
+  function handleWriteButtonClick() {
+    if (!account || !account.id) {
+      toast({
+        status: "error",
+        description: "로그인하세요",
+        position: "top",
+      });
+    } else {
+      navigate("/board/write");
+    }
   }
 
   return (
@@ -267,13 +281,11 @@ export function BoardList() {
         </Flex>
       </Center>
 
-      {account.isLoggedIn && (
-        <Box colorScheme="blue" mr={3} mt={5}>
-          <Button colorScheme="blue" onClick={() => navigate("/board/write")}>
-            글쓰기
-          </Button>
-        </Box>
-      )}
+      <Box mt={5}>
+        <Button colorScheme="blue" onClick={handleWriteButtonClick}>
+          글쓰기
+        </Button>
+      </Box>
     </Box>
   );
 }

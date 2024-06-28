@@ -83,13 +83,11 @@ public class BoardService {
             like.put("like", c == 1);
         }
         like.put("count", mapper.selectCountLike(boardId));
-        result.put("board", board);
-        result.put("like", like);
 
 
-        Map<String, Object> viewInfo = new HashMap<>();
-        viewInfo.put("count", mapper.selectCountView(boardId));
-        result.put("view", viewInfo);
+        Map<String, Object> view = new HashMap<>();
+
+        view.put("count", mapper.selectCountView(boardId));
 
 
         List<String> imagesNames = mapper.selectImageNameById(boardId);
@@ -100,6 +98,7 @@ public class BoardService {
         result.put("board", board);
         result.put("images", images);
         result.put("like", like);
+        result.put("view", view);
 
 
         return result;
@@ -182,12 +181,16 @@ public class BoardService {
 
 
     public void delete(Integer boardId) {
-        //파일명
+        // 이미지 파일명 조회
         List<String> fileNames = mapper.selectImageNameById(boardId);
+
+        // 이미지 파일 S3에서 삭제
         removeBoardImageToS3(boardId, fileNames);
-        //사진
+
+        // 보드에 연결된 이미지 데이터 삭제
         mapper.deleteByboardId(boardId);
-        //글
+
+        // 보드 데이터 삭제
         mapper.deleteById(boardId);
     }
 
@@ -262,13 +265,25 @@ public class BoardService {
         return result;
     }
 
-
     public Map<String, Object> view(Map<String, Object> req, Authentication authentication) {
-        Integer boardId = (Integer) req.get("boardId");
-        Integer memberId = Integer.valueOf(authentication.getName());
-        mapper.insertViewByBoardIdAndMemberId(boardId, memberId);
-        return req;
+        Map<String, Object> result = new HashMap<>();
+        result.put("view", false); // 기본적으로 "조회" 상태를 false로 설정
+
+        Integer boardId = (Integer) req.get("boardId"); // 요청에서 게시글 ID를 추출
+        Integer memberId = Integer.valueOf(authentication.getName()); // 현재 인증된 사용자의 ID를 추출
+
+        // 사용자가 이미 해당 게시글을 조회했는지 확인
+        int viewCount = mapper.deleteViewByBoardIdAndMemberId(boardId, memberId);
+
+        // 사용자가 아직 조회하지 않은 경우에만 조회 기록을 추가
+        mapper.insertViewByBoardIdAndMemberId(boardId); // "조회" 추가
+        result.put("view", true); // "조회" 상태를 true로 설정
+
+
+        // 현재 게시글의 총 "조회" 수를 조회하여 결과에 추가
+        result.put("count", mapper.selectCountView(boardId));
+
+        return result;
     }
 }
-
 

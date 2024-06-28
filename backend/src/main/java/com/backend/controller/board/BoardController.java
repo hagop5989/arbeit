@@ -61,7 +61,6 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    @PreAuthorize("isAuthenticated()")
     public Map<String, Object> list(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(value = "type", required = false) String searchType,
@@ -95,10 +94,8 @@ public class BoardController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) {
         boardService.delete(id);
-        return ResponseEntity.ok().build();
     }
 
     private static Map<String, String> getErrorMessages(BindingResult bindingResult) {
@@ -112,20 +109,21 @@ public class BoardController {
 
     @PutMapping("like")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> like(@RequestBody Map<String, Object> req,
-                                                    Authentication authentication) throws IOException {
+    public Map<String, Object> like(@RequestBody Map<String, Object> req,
+                                    Authentication authentication) throws IOException {
 
-        Map<String, Object> result = boardService.like(req, authentication);
-        return ResponseEntity.ok().body(result);
+        return boardService.like(req, authentication);
+
+
     }
 
-    @PutMapping("view")
+    @PutMapping("/view")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> view(@RequestBody Map<String, Object> req, Authentication authentication) {
-        Map<String, Object> result = boardService.view(req, authentication);
-        return ResponseEntity.ok(result);
-    }
+    public Map<String, Object> ViewCount(@RequestBody Map<String, Object> req, Authentication authentication) throws IOException {
 
+        return boardService.view(req, authentication);
+        
+    }
 }
 
 

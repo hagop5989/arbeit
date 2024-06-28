@@ -158,6 +158,13 @@ public interface BoardMapper {
             """)
     int deleteLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
+    @Delete("""
+                DELETE FROM board_view
+                            WHERE board_id = #{boardId}
+                            AND member_id = #{memberId};
+            """)
+    int deleteViewByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
 
     @Insert("""
                    INSERT INTO board_like (board_id, member_id)
@@ -165,12 +172,28 @@ public interface BoardMapper {
             """)
     int insertLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
+
+    @Insert("""
+                   INSERT INTO board_view (board_id, member_id)
+                   VALUES (#{boardId}, #{memberId})
+            """)
+    int insertViewByBoardIdAndMemberId(Integer boardId);
+
+
     @Select("""
                 SELECT  COUNT(*)
                 FROM board_like
-                WHERE board_id = #{boardId}
+                WHERE board_id = #{Id}
             """)
     int selectCountLike(Integer boardId);
+
+
+    @Select("""
+                SELECT  COUNT(*)
+                FROM board_view
+                WHERE board_id = #{Id}
+            """)
+    int selectCountView(Integer boardId);
 
 
     @Select("""
@@ -181,28 +204,14 @@ public interface BoardMapper {
     int selectLikeByBoardIdAndMemberId(Integer boardId, String memberId);
 
 
-    // 조회수
     @Select("""
-            SELECT COUNT(*)
-            FROM board_view
-            WHERE board_id = #{boardId}
+            SELECT COUNT(*) FROM board_view
+            WHERE board_id=#{boardId}
+              AND member_id=#{memberId}
             """)
-    int selectCountView(Integer boardId);
+    int selectViewByBoardIdAndMemberId(Integer boardId, String memberId);
 
-    @Insert("""
-            INSERT INTO board_view (board_id, member_id)
-            VALUES (#{boardId}, #{memberId})
-            """)
-    void insertViewByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
-    @Select("""
-                        SELECT COUNT(*)
-                        FROM board_view
-                        WHERE board_id=#{boardId} AND member_id=#{memberId}
-
-            """)
-    int checkViewByBoardAndMemberId(Integer boardId, Integer memberId);
 }
-
 
 
