@@ -3,13 +3,9 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../component/Navbar.jsx";
 import { Footer } from "../component/Footer.jsx";
 import { Profile } from "../component/Profile.jsx";
-import { useContext } from "react";
-import { LoginContext } from "../provider/LoginProvider.jsx";
 import { LeftNavbar } from "../component/LeftNavbar.jsx";
 
 export function Home() {
-  const account = useContext(LoginContext);
-
   return (
     <Box>
       <Navbar />

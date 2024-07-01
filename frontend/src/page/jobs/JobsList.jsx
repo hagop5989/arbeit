@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -52,37 +52,42 @@ export function JobsList() {
   const [jobsList, setJobsList] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
   const [storeImages, setStoreImages] = useState({});
+  const [reload, setReload] = useState(false);
 
   const pageNums = [];
   const [pageInfo, setPageInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchParams] = useSearchParams();
   const [expandedJobId, setExpandedJobId] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Read
   useEffect(() => {
-    const typeParam = searchParams.get("type");
-    const keywordParam = searchParams.get("keyword");
-    const params = {
+    const params = new URLSearchParams(location.search);
+    const typeParam = params.get("type") || "all";
+    const keywordParam = params.get("keyword") || "";
+    const filterTypeParam = params.get("filterType") || "최신등록";
+    const filterDetailParam = params.get("filterDetail") || [];
+
+    const queryParams = {
       page: currentPage,
       type: typeParam,
       keyword: keywordParam,
-      filterType,
-      filterDetail: selectedFilterDetail,
+      filterType: filterTypeParam,
+      filterDetail: filterDetailParam,
     };
 
-    if (typeParam) {
-      setSearchType(typeParam);
-    }
-    axios.get("/api/jobs/list", { params }).then((res) => {
+    setSearchType(typeParam);
+    setSearchKeyword(keywordParam);
+    setFilterType(filterTypeParam);
+    setSelectedFilterDetail(filterDetailParam);
+
+    axios.get("/api/jobs/list", { params: queryParams }).then((res) => {
       setStoreImages(res.data.storeImgMap);
       setJobsList(res.data.jobsList);
 
       if (categoryNames.length === 0) {
-        // categoryName 추출해서 배열에 담기 (중복값 제거)
         const newCategoryNames = Array.from(
           new Set(res.data.jobsList.map((job) => job.categoryName)),
         );
@@ -90,7 +95,7 @@ export function JobsList() {
       }
       setPageInfo(res.data.pageInfo);
     });
-  }, [currentPage, searchParams, account, filterType, selectedFilterDetail]);
+  }, [currentPage, account]);
 
   // favorite 리스트 받기
   const [favoriteList, setFavoriteList] = useState({});
@@ -156,6 +161,7 @@ export function JobsList() {
 
   // 상세 필터가 변경될 때마다 백엔드로 새로운 데이터를 요청
   function handleDetailFilterChange(e) {
+    setReload(!reload);
     setSelectedFilterDetail(e.target.value);
     const params = new URLSearchParams({
       type: searchType,
@@ -335,7 +341,7 @@ export function JobsList() {
         </Box>
       </Flex>
       <Center>
-        {(searchParams || filterType) && jobsList.length === 0 && (
+        {filterType && jobsList.length === 0 && (
           <Center w={"1050px"} h={"40vh"}>
             <Heading>검색하신 결과가 존재하지 않습니다.</Heading>
           </Center>

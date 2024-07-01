@@ -28,6 +28,7 @@ const NavbarButton = ({ children, onClick }) => (
     ml={2}
     fontSize="12px"
     w={"90px"}
+    lineHeight={"40px"}
     _hover={{ bg: "#FEF18B" }}
     fontFamily={"SBAggroB"}
     onClick={onClick}
@@ -62,10 +63,10 @@ const Navbar = () => {
 
   return (
     <Box bg="white" borderBottom="3px solid #eaeaea" height="110px" mb={"70px"}>
-      <Box bg={"orange"} h={"3px"} mb={"40px"} />
-      <Center minWidth={"1000px"} mx={{ base: "0px", xl: "200px" }}>
+      <Box bg={"white"} h={"3px"} mb={"40px"} />
+      <Center minWidth={"1000px"} mx={{ base: "0px", xl: "200px" }} mt={"40px"}>
         <HStack w={"1100px"} spacing={7}>
-          <Box width="135px" height="42px" mr={"10px"} mt={"5px"}>
+          <Box width="150px" height="50px" mr={"25px"} mt={"5px"}>
             <Image
               src="/public/alba_connector_logo.png"
               cursor={"pointer"}
