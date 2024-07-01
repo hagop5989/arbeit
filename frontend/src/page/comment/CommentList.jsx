@@ -23,6 +23,7 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { CommentEdit } from "./CommentEdit.jsx";
 
 export function CommentList({ boardId }) {
+  const [errors, setErrors] = useState(null);
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [commentList, setCommentList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);

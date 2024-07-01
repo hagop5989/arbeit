@@ -1,6 +1,6 @@
 package com.backend.domain.board.form;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ public class CommentEditForm {
     private int id;
     private int boardid;
 
-    @NotNull
+    @NotBlank
     private String comment;
 
 }
