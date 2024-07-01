@@ -31,6 +31,7 @@ export function ContractModal({
   application,
   reload,
   setReload,
+  onOpen,
 }) {
   const [contract, setContract] = useState({});
   const [startDate, setStartDate] = useState();
@@ -103,7 +104,7 @@ export function ContractModal({
   return (
     <>
       {application && (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={onClose} onOpen={onOpen}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>

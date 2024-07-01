@@ -66,10 +66,13 @@ public class ManageService {
 
     public List<Map<String, Object>> findAlbaList(Integer authId) {
         List<Map<String, Object>> albaList = mapper.selectAlbaList(authId);
-        return albaList.stream()
-                .filter(alba -> alba.get("albaName") != "탈퇴한 유저")
-                .filter(alba -> alba.get("albaReview") == null)
+        System.out.println("albaList = " + albaList);
+
+        List<Map<String, Object>> mapList = albaList.stream()
+                .filter(alba -> !alba.get("albaName").equals("탈퇴한 유저")) // "탈퇴한 유저" 와 일치하지 않는 것만 추출
+                .filter(alba -> alba.get("albaReview") == null) // 알바 리뷰가 null 인 것만 추출
                 .toList();
+        return mapList;
 
     }
 

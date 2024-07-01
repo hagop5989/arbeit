@@ -34,6 +34,7 @@ const styles = {
 export function ApplicationManageView() {
   const { jobsId, albaId } = useParams();
   const [application, setApplication] = useState({});
+  const [post, setPost] = useState(false);
 
   const navigate = useNavigate();
   const account = useContext(LoginContext);
@@ -57,7 +58,19 @@ export function ApplicationManageView() {
           navigate("/");
         }
       });
-  }, [jobsId]);
+  }, [jobsId, post]);
+
+  // 합격 여부 문자열 변환 함수
+  const isPassedToString = (decision) => {
+    switch (decision) {
+      case true:
+        return "합격";
+      case false:
+        return "불합격";
+      default:
+        return "미정";
+    }
+  };
 
   const btnStyles = (color) => ({
     bgColor: "white",
@@ -65,6 +78,25 @@ export function ApplicationManageView() {
     border: `2px solid ${color}`,
     _hover: { bgColor: color, color: "white" },
   });
+
+  function handleAccept() {
+    onOpen(); // 계약 모달 열기
+  }
+  function handleRejectBtn() {
+    const confirm = window.confirm("불합격 시키시겠습니까?");
+    if (confirm) {
+      axios
+        .put(`/api/jobsId/${jobsId}/application-manage/reject/${albaId}`)
+        .then(() => {
+          alert("불합격 처리되었습니다.");
+          setPost(!post);
+        })
+        .catch((err) => {
+          alert(err.response.data);
+        })
+        .finally(() => {});
+    }
+  }
 
   return (
     <>
@@ -137,10 +169,17 @@ export function ApplicationManageView() {
             <Flex my={"20px"} fontWeight={"700"}>
               <Spacer />
               <Box color={"#505050"}>처리상태</Box>
-              <Box ml={"20px"}>
-                {application.isPassed === undefined && "미정"}
-                {application.isPassed !== undefined &&
-                  (application.isPassed === 1 ? "합격" : "불합격")}
+              <Box
+                ml={"20px"}
+                color={
+                  application.isPassed !== undefined
+                    ? application.isPassed
+                      ? "blue.600"
+                      : "red.500"
+                    : "gray.600"
+                }
+              >
+                {isPassedToString(application.isPassed)}
               </Box>
             </Flex>
             <Flex gap={1}>
@@ -153,15 +192,30 @@ export function ApplicationManageView() {
                 목록으로
               </Button>
               <Spacer />
-              <Button onClick={onOpen} {...btnStyles("royalblue")} size={"sm"}>
+              <Button
+                onClick={handleAccept}
+                // onClick={onOpen}
+
+                {...btnStyles("royalblue")}
+                size={"sm"}
+              >
                 합격
               </Button>
-              <Button {...btnStyles("orangered")} size={"sm"}>
+              <Button
+                onClick={handleRejectBtn}
+                {...btnStyles("orangered")}
+                size={"sm"}
+              >
                 불합격
               </Button>
             </Flex>
           </Box>
-          <ContractModal isOpen={isOpen} onClose={onClose} />
+          <ContractModal
+            onOpen={onOpen}
+            isOpen={isOpen}
+            onClose={onClose}
+            application={application}
+          />
         </Box>
       )}
     </>

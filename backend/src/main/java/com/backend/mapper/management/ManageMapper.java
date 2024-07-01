@@ -78,7 +78,7 @@ public interface ManageMapper {
                      JOIN application a ON j.id = a.jobs_id
                      JOIN member m ON a.member_id = m.id
                      JOIN store s ON j.store_id = s.id
-                     LEFT JOIN review_to_alba ra ON ra.alba_id = m.id
+                     LEFT JOIN review_to_alba ra ON ra.alba_id = m.id AND ra.boss_id = #{authId}
             WHERE j.member_id = #{authId};
             """)
     List<Map<String, Object>> selectAlbaList(Integer authId);
