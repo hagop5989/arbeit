@@ -1,7 +1,6 @@
 package com.backend.controller.application;
 
 import com.backend.config.AuthId;
-import com.backend.domain.application.Application;
 import com.backend.domain.application.ApplicationWriteForm;
 import com.backend.service.application.ApplicationService;
 import com.backend.service.resume.ResumeService;
@@ -14,7 +13,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,8 +58,8 @@ public class ApplicationController {
     }
 
     @GetMapping("/apply/list")
-    public List<Application> list(@AuthId Integer authId) {
-        return service.findAllByAuthId(authId);
+    public Map<String, Object> list(@AuthId Integer authId, Integer currentPage) {
+        return service.findAllByAuthId(currentPage, authId);
     }
 
     @PostMapping("/resume/application-view")

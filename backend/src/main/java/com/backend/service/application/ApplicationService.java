@@ -43,13 +43,22 @@ public class ApplicationService {
         mapper.insert(application);
     }
 
-    public List<Application> findAllByAuthId(Integer memberId) {
-        List<Application> applicationList = mapper.list(memberId);
-        return applicationList.stream()
+    public Map<String, Object> findAllByAuthId(Integer currentPage, Integer memberId) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> pageInfo = new HashMap<>();
+        Integer offset = paging(currentPage, pageInfo, memberId);
+        List<Application> applicationList = mapper.list(memberId, offset);
+
+        List<Application> list = applicationList.stream()
                 .filter(application -> application.getResumeId() != null)
                 .filter(application -> application.getJobsId() != null)
                 .filter(application -> application.getMemberId() != null)
                 .toList();
+
+        result.put("applicationList", list);
+        result.put("pageInfo", pageInfo);
+
+        return result;
     }
 
     public Application findByJobsIdAndMemberId(Integer jobsId, Integer memberId) {
@@ -90,5 +99,36 @@ public class ApplicationService {
         return count;
     }
 
+    // 페이징
+    private Integer paging(Integer currentPage, Map<String, Object> pageInfo, Integer memberId) {
+        Integer countAll = mapper.countAll(memberId);
+        System.out.println("countAll = " + countAll);
+        Integer itemPerPage = 8; // 페이지당 항목 수 지정
+        Integer offset = (currentPage - 1) * itemPerPage;
 
+        Integer lastPageNum = (int) Math.ceil((double) countAll / itemPerPage);
+        Integer leftPageNum = (currentPage - 1) / 10 * 10 + 1;
+        Integer rightPageNum = leftPageNum + 9;
+        rightPageNum = Math.min(rightPageNum, lastPageNum);
+        leftPageNum = rightPageNum - 9;
+        leftPageNum = Math.max(leftPageNum, 1);
+        Integer prevPageNum = leftPageNum - 1;
+        Integer nextPageNum = rightPageNum + 1;
+
+        //  이전,처음,다음,맨끝 버튼 만들기
+        if (prevPageNum > 0) {
+            pageInfo.put("prevPage", prevPageNum);
+        }
+        if (nextPageNum <= lastPageNum) {
+            pageInfo.put("nextPage", nextPageNum);
+        }
+
+        pageInfo.put("currentPage", currentPage);
+        pageInfo.put("lastPage", lastPageNum);
+        pageInfo.put("leftPage", leftPageNum);
+        pageInfo.put("rightPage", rightPageNum);
+
+        return offset;
+
+    }
 }
