@@ -29,7 +29,7 @@ public interface BoardMapper {
                 FROM board b JOIN member m ON m.id = b.member_id
                 WHERE b.id= #{id}
             """)
-    Board selectById(Integer boardId);
+    Board selectById(Integer id);
 
 
     @Delete("""
@@ -200,9 +200,8 @@ public interface BoardMapper {
     @Select("""
             SELECT COUNT(*) FROM board_like
             WHERE board_id=#{boardId}
-              AND member_id=#{memberId}
             """)
-    int selectLikeByBoardIdAndMemberId(Integer boardId, String memberId);
+    int selectLikeByBoardIdAndMemberId(Integer boardId);
 
 
     @Select("""

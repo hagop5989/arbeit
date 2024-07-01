@@ -1,21 +1,30 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
+  FormErrorMessage,
+  InputGroup,
+  InputRightElement,
   Text,
+  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleDown,
+  faChevronRight,
+  faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
-export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
+export function CommentWrite({ boardId, setIsProcessing }) {
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState({});
+  const [isAnswered, setIsAnswered] = useState(false);
   const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
@@ -38,38 +47,20 @@ export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
         boardId: boardId,
         memberId: account.id,
       })
-      .then((res) => {
+      .then(() => {
         setComment("");
         toast({
           status: "success",
           description: "댓글 등록 하였습니다 ",
           position: "top",
         });
-        navigate("/board/view");
       })
       .catch((err) => {
         setErrors(err.response.data);
-        const code = err.response.status;
-        if (code === 400) {
-          toast({
-            status: "warning",
-            description: "댓글등록중 오류발생하였습니다",
-            position: "top",
-          });
-        }
       })
       .finally(() => {
         setIsProcessing(false);
       });
-  }
-
-  function handlecancel() {
-    toast({
-      status: "info",
-      description: "취소되었습니다",
-      position: "top",
-    });
-    navigate("/");
   }
 
   const handleTextareaChange = (prop) => (e) => {
@@ -86,28 +77,58 @@ export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
     }
   }
 
+  function handleAnswerBtn() {
+    setIsAnswered(!isAnswered);
+  }
+
   return (
-    <Box w={"100%"}>
-      <FormControl>
-        <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
-          댓글작성
-        </FormLabel>
-        <Box onClick={handleCommentWrite}>
-          <Input
-            w="500px"
-            placeholder="댓글을 입력해주세요"
-            onChange={handleTextareaChange("comment")}
-          />
-        </Box>
-        {errors && <FormHelperText>{errors.comment}</FormHelperText>}
-        <Text>
-          {comment.comment?.length} / {maxCommentLength}
-        </Text>
-        <Box>
-          <Button colorScheme={"green"} onClick={handleCommentSubmitClick}>
-            등록
-          </Button>
-        </Box>
+    <Box w={"100%"} mb={"30px"}>
+      <FormControl isInvalid={errors.comment !== undefined}>
+        <Flex
+          w={"100px"}
+          fontSize={"xl"}
+          fontWeight={"bold"}
+          h={"30px"}
+          cursor={"pointer"}
+          onClick={handleAnswerBtn}
+        >
+          <Box mr={"5px"} ml={"5px"}>
+            답변하기
+          </Box>
+          <Box fontSize={"md"} lineHeight={"30px"}>
+            {!isAnswered ? (
+              <FontAwesomeIcon icon={faChevronRight} />
+            ) : (
+              <FontAwesomeIcon icon={faAngleDown} />
+            )}
+          </Box>
+        </Flex>
+        {isAnswered && (
+          <Box onClick={handleCommentWrite} mt={"5px"}>
+            <InputGroup>
+              <Textarea
+                h={"70px"}
+                placeholder="댓글을 입력해주세요"
+                onChange={handleTextareaChange("comment")}
+              />
+              <InputRightElement>
+                <Button
+                  mt={"40px"}
+                  mr={"10px"}
+                  h={"70px"}
+                  colorScheme={"green"}
+                  onClick={handleCommentSubmitClick}
+                >
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            {errors && <FormErrorMessage>{errors.comment}</FormErrorMessage>}
+            <Text>
+              {comment.comment?.length} / {maxCommentLength}
+            </Text>
+          </Box>
+        )}
       </FormControl>
     </Box>
   );

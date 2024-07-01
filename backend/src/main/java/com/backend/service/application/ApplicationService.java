@@ -61,7 +61,6 @@ public class ApplicationService {
     }
 
 
-    // TODO : 반환 타입 고쳐야함
     public ResponseEntity cancel(Integer jobsId, Integer authId) {
         Application application = mapper.selectByJobsIdAndMemberId(jobsId, authId);
         Integer isPassed = application.getIsPassed();

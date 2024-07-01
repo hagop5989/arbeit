@@ -78,10 +78,9 @@ public class BoardService {
         }
 
         Map<String, Object> like = new HashMap<>();
-        int c = mapper.selectLikeByBoardIdAndMemberId(boardId, authentication.getName());
+        int c = mapper.selectLikeByBoardIdAndMemberId(boardId);
         like.put("like", c == 1);
         like.put("count", mapper.selectCountLike(boardId));
-
 
         Map<String, Object> view = new HashMap<>();
 

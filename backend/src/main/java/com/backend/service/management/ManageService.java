@@ -74,7 +74,6 @@ public class ManageService {
 
     public List<Map<String, Object>> findAlbaList(Integer authId) {
         List<Map<String, Object>> albaList = mapper.selectAlbaList(authId);
-        System.out.println("albaList = " + albaList);
 
         List<Map<String, Object>> mapList = albaList.stream()
                 .filter(alba -> !alba.get("albaName").equals("탈퇴한 유저")) // "탈퇴한 유저" 와 일치하지 않는 것만 추출

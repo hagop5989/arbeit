@@ -60,7 +60,6 @@ public class ManageController {
     @GetMapping("/alba-list")
     public List<Map<String, Object>> albaList(@AuthId Integer authId) {
         List<Map<String, Object>> albaList = service.findAlbaList(authId);
-        log.info("albaList={}", albaList);
         return albaList;
     }
 
