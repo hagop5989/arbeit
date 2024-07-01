@@ -2,11 +2,9 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Heading,
   Image,
   Input,
@@ -194,97 +192,82 @@ export function MemberInfo() {
           <Box>
             <Box>
               {/* 프로필 사진 */}
-              <FormControl mb={"50px"}>
+              <Box mb={"80px"}>
                 <Flex>
-                  <Box w={"240px"} h={"230px"}>
-                    <Image
-                      mt={"20px"}
-                      ml={"70px"}
-                      w={"150px"}
-                      h={"150px"}
-                      border={"1px solid gray"}
-                      borderRadius={"50%"}
-                      src={
-                        profileSrc === ""
-                          ? "/public/base_profile.png"
-                          : profileSrc
-                      }
-                      objectFit={"contain"}
-                    />
-
-                    {account.hasAccess(id) && (
-                      <Box w={"50px"} h={"50px"} mt={"-30px"} ml={"42px"}>
-                        <Center
-                          boxSize={"50px"}
-                          bgColor="gray.100"
-                          borderRadius={100}
-                          cursor="pointer"
-                          onClick={handleProfilePictureBtn}
-                        >
-                          <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
-                        </Center>
-                        <Input
-                          w={"50px"}
-                          type={"file"}
-                          ref={fileInputRef}
-                          style={{ display: "none" }}
-                          onChange={handleFileChange}
-                        />
-                      </Box>
-                    )}
-                    <Box
+                  <Box w={"300px"} h={"290px"}>
+                    <Box pl={"40px"} mt={"30px"}>
+                      <Image
+                        w={"150px"}
+                        h={"150px"}
+                        borderRadius={"50%"}
+                        border={"2px solid gray"}
+                        src={
+                          profileSrc === ""
+                            ? "/public/base_profile.png"
+                            : profileSrc
+                        }
+                        objectFit={"contain"}
+                      />
+                      {account.hasAccess(id) && (
+                        <Box w={"30px"} h={"30px"} mt={"-20px"}>
+                          <Center
+                            boxSize={"30px"}
+                            bgColor="gray.100"
+                            borderRadius={100}
+                            cursor="pointer"
+                            onClick={handleProfilePictureBtn}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCamera}
+                              fontSize={"20px"}
+                            />
+                          </Center>
+                          <Input
+                            w={"50px"}
+                            type={"file"}
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                    <Center
                       w={"100%"}
-                      display={"flex"}
-                      ml={"30px"}
-                      mt={"10px"}
                       fontSize={"xl"}
                       fontWeight={"bold"}
-                      justifyContent={"center"}
+                      mt={"10px"}
                     >
                       {member.name}
-                    </Box>
+                    </Center>
                     {account.isAlba() && (
-                      <Box
-                        display={"flex"}
-                        ml={"50px"}
-                        p={"10px"}
-                        fontSize={"xl"}
-                        fontWeight={"bold"}
-                        justifyContent={"center"}
-                      >
-                        <Box w={"100px"}>알바점수</Box>
-                        <Box>
-                          <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
-                          {score}
-                        </Box>
-                      </Box>
+                      <Center mt={"10px"} fontSize={"xl"} fontWeight={"bold"}>
+                        <Box w={"80px"}>알바점수</Box>
+                        <Flex>
+                          <Box mr={"5px"}>
+                            <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
+                          </Box>
+                          <Box>{score}</Box>
+                        </Flex>
+                      </Center>
                     )}
                   </Box>
                   <Box
-                    borderRadius={"15px"}
-                    w={"60%"}
-                    ml={"50px"}
+                    w={"80%"}
+                    pt={"20px"}
                     display={"flex"}
                     flexDirection={"column"}
-                    gap={"10px"}
                     lineHeight={"30px"}
                   >
-                    <Box mb={"20px"}></Box>
                     <Box display={"flex"} p={"6px"} ml={"20px"}>
-                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      <Box w={"100px"} fontSize={"lg"} fontWeight={"bold"}>
                         이름
                       </Box>
                       <Box>{member.name}</Box>
                     </Box>
-                    <Divider
-                      ml={"5%"}
-                      w={"90%"}
-                      borderColor={"#eaeaea"}
-                      borderWidth={"1px"}
-                    />
 
                     <Box display={"flex"} p={"6px"} ml={"20px"}>
-                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      <Box w={"100px"} fontSize={"lg"} fontWeight={"bold"}>
                         생년월일
                       </Box>
                       <Box>{member.birthDate}</Box>
@@ -294,36 +277,35 @@ export function MemberInfo() {
                     </Box>
 
                     <Box display={"flex"} p={"6px"} ml={"20px"}>
-                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                      <Box w={"100px"} fontSize={"lg"} fontWeight={"bold"}>
                         성별
                       </Box>
                       <Box>{member.gender === "MALE" ? "남성" : "여성"}</Box>
                     </Box>
 
-                    <Box display={"flex"} p={"6px"} ml={"20px"} mb={"10px"}>
-                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                    <Box display={"flex"} p={"6px"} ml={"20px"}>
+                      <Box w={"100px"} fontSize={"lg"} fontWeight={"bold"}>
                         전화번호
                       </Box>
                       <Box>{formatPhoneNumber(member.phone)}</Box>
                     </Box>
+                    <Box display={"flex"} p={"6px"} ml={"20px"}>
+                      <Box w={"100px"} fontSize={"lg"} fontWeight={"bold"}>
+                        이메일
+                      </Box>
+                      <Box>{member.email}</Box>
+                    </Box>
+                    <Box display={"flex"} p={"6px"} ml={"20px"}>
+                      <Box w={"100px"} fontSize={"lg"} fontWeight={"bold"}>
+                        주소
+                      </Box>
+                      <Box>{member.address}</Box>
+                    </Box>
                   </Box>
                 </Flex>
-              </FormControl>
+              </Box>
               {/* 회원 정보 */}
-              <FormControl>
-                <Flex w={"100%"} my={5} gap={"20px"} ml={"10px"}>
-                  <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
-                    이메일
-                  </FormLabel>
-                  <Box>{member.email}</Box>
-                </Flex>
-                <Flex w={"100%"} mb={4} gap={"20px"} ml={"10px"}>
-                  <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
-                    주소
-                  </FormLabel>
-                  <Box>{member.address}</Box>
-                </Flex>
-
+              <Box>
                 <Box my={10}>
                   {account.hasAccess(id) && (
                     <Flex gap={"10px"} my={"20px"}>
@@ -346,7 +328,7 @@ export function MemberInfo() {
                     </Flex>
                   )}
                 </Box>
-              </FormControl>
+              </Box>
             </Box>
           </Box>
         </Box>
