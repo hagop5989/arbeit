@@ -84,6 +84,7 @@ public interface BoardMapper {
                        b.member_id,
                        b.title,
                        b.inserted,
+                       m.name ,
                        COUNT(DISTINCT c.id) AS number_of_comments,
                        COUNT(DISTINCT f.name) AS number_of_images,
                        COUNT(DISTINCT l.member_id) AS number_of_like,
@@ -211,6 +212,18 @@ public interface BoardMapper {
             """)
     int selectViewByBoardIdAndMemberId(Integer boardId, String memberId);
 
+
+    @Delete("""
+            DELETE FROM board_like
+            WHERE board_id = #{boardId}
+            """)
+    void deleteLikeByBoardId(Integer boardId);
+
+    @Delete("""
+            DELETE FROM board_view
+            WHERE board_id = #{boardId}
+            """)
+    void deleteBoardView(Integer boardId);
 
 }
 

@@ -29,6 +29,7 @@ export function CommentList({ boardId }) {
   const account = useContext(LoginContext);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [post, setPost] = useState(false);
 
   useEffect(() => {
     if (!boardId) return;
@@ -76,7 +77,9 @@ export function CommentList({ boardId }) {
   return (
     <Box>
       <FormControl>
-        <FormLabel>댓글목록</FormLabel>
+        <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+          댓글목록
+        </FormLabel>
         <Box>
           <Table>
             <Tbody>

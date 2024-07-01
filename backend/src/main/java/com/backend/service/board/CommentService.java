@@ -43,6 +43,7 @@ public class CommentService {
 
     }
 
+
     public void edit(CommentEditForm form, Integer Id) {
         Comment comment = new Comment(
                 Id,
@@ -66,5 +67,9 @@ public class CommentService {
 
     public Comment findById(Integer id) {
         return mapper.selectById(id);
+    }
+
+    public void deleteByBoardId(Integer boardId) {
+        mapper.deleteByBoardId(boardId);
     }
 }
