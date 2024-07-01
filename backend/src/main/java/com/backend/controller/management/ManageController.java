@@ -25,8 +25,8 @@ public class ManageController {
     private final ManageService service;
 
     @GetMapping("/application-manage/list")
-    public List<Map<String, Object>> list(@AuthId Integer authId) {
-        return service.findApplications(authId);
+    public List<Map<String, Object>> list(@AuthId Integer authId, Integer currentPage) {
+        return service.findApplications(authId, currentPage);
     }
 
     @GetMapping("/jobsId/{jobsId}/application-manage/detail/{albaId}")
@@ -71,8 +71,9 @@ public class ManageController {
     }
 
     @GetMapping("/application-manage/count")
-    public void count() {
+    public Integer count(@AuthId Integer memberId) {
         log.info("count.call");
+        return service.count(memberId);
     }
 
 }

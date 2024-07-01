@@ -15,8 +15,9 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 function formatDate(date) {
   const year = date.getFullYear();
@@ -37,6 +38,7 @@ export function ContractModal({
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [checked, setChecked] = useState(false);
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     const now = new Date();
@@ -84,7 +86,10 @@ export function ContractModal({
             `/api/jobsId/${application.jobsId}/application-manage/pass`,
             contract,
           )
-          .then(() => alert("합격 처리되었습니다."))
+          .then(() => {
+            alert("합격 처리되었습니다.");
+            account.setPostCheck(!account.postCheck);
+          })
           .catch((err) => {
             alert(err.response.data);
           })

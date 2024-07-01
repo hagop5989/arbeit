@@ -16,6 +16,7 @@ export function LoginProvider({ children }) {
   const [recentJobPages, setRecentJobPages] = useState(
     JSON.parse(localStorage.getItem("recentJobPages")) || [],
   ); // 최근 본 공고 페이지 URL을 저장하는 상태
+  const [postCheck, setPostCheck] = useState(false);
 
   useEffect(() => {
     const storedScrapNum = localStorage.getItem("scrapNum");
@@ -41,7 +42,7 @@ export function LoginProvider({ children }) {
         setAlarmNum(res.data);
       });
     }
-  }, [authority]);
+  }, [authority, postCheck]);
 
   // 최근 본 공고 페이지 URL을 추가하는 함수
   function addRecentJob(url, title) {
@@ -123,6 +124,8 @@ export function LoginProvider({ children }) {
         scrapNum,
         setScrapNum,
         updateScrapNum,
+        setPostCheck,
+        postCheck,
       }}
     >
       {children}
