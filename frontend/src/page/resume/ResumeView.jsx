@@ -226,7 +226,7 @@ export function ResumeView() {
                 >
                   이전
                 </Button>
-                {account.isLoggedIn === resume.memberId && (
+                {account.hasAccess(resume.memberId) && (
                   <Button
                     w={"50%"}
                     bgColor={"#FF7F3E"}
