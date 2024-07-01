@@ -18,6 +18,10 @@ SELECT *
 FROM board;
 
 
+SELECT *
+FROM member
+WHERE id = ?;
+
 /*파일*/
 CREATE TABLE board_image
 (

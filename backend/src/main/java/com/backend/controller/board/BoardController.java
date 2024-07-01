@@ -117,13 +117,13 @@ public class BoardController {
 
     }
 
-    @PutMapping("/view")
-    @PreAuthorize("isAuthenticated()")
-    public Map<String, Object> ViewCount(@RequestBody Map<String, Object> req, Authentication authentication) throws IOException {
-
-        return boardService.view(req, authentication);
-        
-    }
+//    @PutMapping("/view")
+//    @PreAuthorize("isAuthenticated()")
+//    public Map<String, Object> ViewCount(@RequestBody Map<String, Object> req, Authentication authentication) throws IOException {
+//
+//        return boardService.view(req, authentication);
+//
+//    }
 }
 
 
