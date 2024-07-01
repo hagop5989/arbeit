@@ -34,6 +34,7 @@ public interface ApplicationMapper {
             JOIN jobs j ON a.jobs_id = j.id
             JOIN store s ON s.id = j.store_id
             WHERE a.member_id = #{memberId}
+            ORDER BY a.inserted DESC
             """)
     List<Application> list(Integer memberId);
 

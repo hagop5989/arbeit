@@ -46,7 +46,10 @@ public class ApplicationService {
     public List<Application> findAllByAuthId(Integer memberId) {
         List<Application> applicationList = mapper.list(memberId);
         return applicationList.stream()
-                .filter(application -> application.getResumeId() != null).toList();
+                .filter(application -> application.getResumeId() != null)
+                .filter(application -> application.getJobsId() != null)
+                .filter(application -> application.getMemberId() != null)
+                .toList();
     }
 
     public Application findByJobsIdAndMemberId(Integer jobsId, Integer memberId) {

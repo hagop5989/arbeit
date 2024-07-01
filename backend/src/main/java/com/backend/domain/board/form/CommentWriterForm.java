@@ -17,6 +17,4 @@ public class CommentWriterForm {
     private Integer memberId;
     @NotBlank
     private String comment;
-
-
 }
