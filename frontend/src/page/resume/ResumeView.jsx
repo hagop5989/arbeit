@@ -226,14 +226,16 @@ export function ResumeView() {
                 >
                   이전
                 </Button>
-                <Button
-                  w={"50%"}
-                  bgColor={"#FF7F3E"}
-                  color={"white"}
-                  onClick={() => navigate(`/resume/${resume.id}/edit`)}
-                >
-                  수정
-                </Button>
+                {account.hasAccess(resume.memberId) && (
+                  <Button
+                    w={"50%"}
+                    bgColor={"#FF7F3E"}
+                    color={"white"}
+                    onClick={() => navigate(`/resume/${resume.id}/edit`)}
+                  >
+                    수정
+                  </Button>
+                )}
               </Flex>
             </Flex>
           </Box>

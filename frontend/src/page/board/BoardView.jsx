@@ -49,6 +49,7 @@ export function BoardView() {
         setImages(res.data.images);
         setLike(res.data.like);
 
+        /* if (setIsViewingProcessing(true)) {
         axios
           .put(`/api/board/view`, { boardId: res.data.board.id })
           .then((response) => {
@@ -60,6 +61,7 @@ export function BoardView() {
           .finally(() => {
             setIsViewingProcessing(false);
           });
+        }*/
       })
       .catch((err) => {
         console.log(err);

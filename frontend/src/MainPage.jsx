@@ -194,7 +194,7 @@ function MainPage() {
               onClick={() => navigate("/store/list")}
             >
               <Center {...needStyle} as="div">
-                <Box mr={"5px"}>나의 사업</Box>
+                <Box mr={"5px"}>나의 사업장</Box>
                 <FontAwesomeIcon icon={faRightToBracket} color={"gray"} />
               </Center>
               <Box>
