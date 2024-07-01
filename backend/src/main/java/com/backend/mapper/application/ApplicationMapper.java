@@ -32,11 +32,11 @@ public interface ApplicationMapper {
             SELECT a.*,j.title AS jobsTitle
             FROM application a
             JOIN jobs j ON a.jobs_id = j.id
-            JOIN store s ON s.id = j.store_id
             WHERE a.member_id = #{memberId}
             ORDER BY a.inserted DESC
+            LIMIT #{offset},8;
             """)
-    List<Application> list(Integer memberId);
+    List<Application> list(Integer memberId, Integer offset);
 
     @Select("""
             SELECT a.*,j.title AS jobsTitle
@@ -80,4 +80,13 @@ public interface ApplicationMapper {
             """)
     Integer selectCountByMemberId(Integer memberId);
 
+    @Select("""
+            SELECT COUNT(*)
+            FROM application a
+                JOIN member m ON m.id = a.member_id
+                JOIN resume r ON r.id = a.resume_id
+                JOIN jobs j ON j.id = a.jobs_id
+            WHERE m.name != '탈퇴한 유저' AND a.member_id = #{memberId}
+            """)
+    Integer countAll(Integer memberId);
 }

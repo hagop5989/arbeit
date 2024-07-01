@@ -59,10 +59,11 @@ export function ApplicationMangeList() {
         setApplicationList(res.data);
         const updatedApplicationList = [...res.data]; // 배열을 복사하여 불변성 유지
         updatedApplicationList.splice(updatedApplicationList.length - 1, 1); // 마지막 요소 제거
+
         setApplicationList(updatedApplicationList);
 
         // 마지막 요소의 pageInfo 설정
-        setPageInfo(res.data[res.data.length - 1].pageInfo);
+        setPageInfo(res.data[res.data.length - 1]);
       })
       .catch((err) => {
         if (err.response.status === 401) {
@@ -140,9 +141,6 @@ export function ApplicationMangeList() {
             <Table borderRadius="lg" w="1050px">
               <Thead bg="gray.100" p={2} fontWeight="bold">
                 <Tr>
-                  <Td w={"20px"} {...styles.th}>
-                    #
-                  </Td>
                   <Td w={"120px"} {...styles.th}>
                     지원 일자
                   </Td>
@@ -161,7 +159,6 @@ export function ApplicationMangeList() {
               <Tbody>
                 {applicationList.map((application, index) => (
                   <Tr key={index}>
-                    <Td {...styles.td}>{index + 1}</Td>
                     <Td {...styles.td}>{application.inserted}</Td>
                     <Td fontWeight={"800"} cursor="pointer" {...styles.td}>
                       <Link href={`/jobs/${application.jobsId}`}>
@@ -222,6 +219,7 @@ export function ApplicationMangeList() {
                 <Heading size={"md"}>아직 지원자가 없습니다.</Heading>
               </Box>
             )}
+            <Box my={6}>{Paging()}</Box>
           </Box>
           <ContractModal
             isOpen={isOpen}
@@ -230,7 +228,6 @@ export function ApplicationMangeList() {
             reload={reload}
             setReload={setReload}
           />
-          <Box my={6}>{Paging()}</Box>
         </Box>
       )}
     </>

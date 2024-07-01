@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Heading,
@@ -23,6 +24,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faAnglesLeft,
+  faAnglesRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = {
   th: {
@@ -44,12 +52,17 @@ export function ApplicationList() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const pageNums = [];
+  const [pageInfo, setPageInfo] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
   // Read (jobs 리스트 받기)
   useEffect(() => {
     axios
-      .get(`/api/apply/list`)
+      .get(`/api/apply/list`, { params: { currentPage: currentPage } })
       .then((res) => {
-        setApplicationList(res.data);
+        setApplicationList(res.data.applicationList);
+        setPageInfo(res.data.pageInfo);
       })
       .catch((err) => {
         if (err.response.status === 401) {
@@ -59,7 +72,7 @@ export function ApplicationList() {
           navigate("/");
         }
       });
-  }, [account.id, isCancel]);
+  }, [account.id, isCancel, currentPage]);
 
   // 합격 여부 문자열 변환 함수
   const isPassedToString = (decision) => {
@@ -106,6 +119,18 @@ export function ApplicationList() {
     }
   }
 
+  // 페이징, 검색 관련
+  if (pageInfo) {
+    for (let i = pageInfo.leftPage; i <= pageInfo.rightPage; i++) {
+      pageNums.push(i);
+    }
+  }
+
+  function handlePageButtonClick(currentPage) {
+    setCurrentPage(currentPage);
+    console.log(currentPage);
+  }
+
   const btnStyles = (color) => ({
     bgColor: "white",
     color: color,
@@ -128,9 +153,6 @@ export function ApplicationList() {
           <Table borderRadius="lg" w="1050px">
             <Thead bg="gray.100" p={2} fontWeight="bold">
               <Tr>
-                <Td w={"20px"} {...styles.th}>
-                  #
-                </Td>
                 <Td w={"120px"} {...styles.th}>
                   지원일자
                 </Td>
@@ -152,10 +174,7 @@ export function ApplicationList() {
               {applicationList &&
                 applicationList.map((application, index) => (
                   <Tr key={index}>
-                    <Td>{index + 1}</Td>
-                    <Td fontSize={"sm"} {...styles.td}>
-                      {application.inserted}
-                    </Td>
+                    <Td {...styles.td}>{application.inserted}</Td>
                     <Td {...styles.td}>
                       <Link
                         href={`/jobs/${application.jobsId}`}
@@ -217,6 +236,7 @@ export function ApplicationList() {
             </Box>
           )}
         </Box>
+        <Box my={6}>{Paging()}</Box>
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -290,4 +310,44 @@ export function ApplicationList() {
       </Modal>
     </Box>
   );
+
+  /* 페이징 */
+  function Paging() {
+    return (
+      <Center gap={3} mt={2}>
+        <Flex gap={2}>
+          {pageInfo.prevPage && (
+            <>
+              <Button onClick={() => handlePageButtonClick(1)}>
+                <FontAwesomeIcon icon={faAnglesLeft} />
+              </Button>
+              <Button onClick={() => handlePageButtonClick(pageInfo.prevPage)}>
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </Button>
+            </>
+          )}
+
+          {pageNums.map((pageNum) => (
+            <Button
+              onClick={() => handlePageButtonClick(pageNum)}
+              key={pageNum}
+              colorScheme={pageNum === pageInfo.currentPage ? "blue" : "gray"}
+            >
+              {pageNum}
+            </Button>
+          ))}
+          {pageInfo.nextPage && (
+            <>
+              <Button onClick={() => handlePageButtonClick(pageInfo.nextPage)}>
+                <FontAwesomeIcon icon={faAngleRight} />
+              </Button>
+              <Button onClick={() => handlePageButtonClick(pageInfo.lastPage)}>
+                <FontAwesomeIcon icon={faAnglesRight} />
+              </Button>
+            </>
+          )}
+        </Flex>
+      </Center>
+    );
+  }
 }

@@ -25,8 +25,6 @@ public class ManageService {
     public List<Map<String, Object>> findApplications(Integer authId, Integer currentPage) {
         Map<String, Object> pageInfo = new HashMap<>();
         Integer offset = paging(currentPage, pageInfo, authId);
-        System.out.println("pageInfo = " + pageInfo);
-        System.out.println("offset = " + offset);
 
         // 이름이 탈퇴한 유저 제외 하고 받아옴.
         List<Map<String, Object>> applications = mapper.selectApplicationsByAuthId(authId, offset);
@@ -95,13 +93,11 @@ public class ManageService {
 
     // 페이징
     private Integer paging(Integer currentPage, Map<String, Object> pageInfo, Integer authId) {
-        System.out.println("currentPage = " + currentPage);
         Integer countAll = mapper.countAll(authId);
-        System.out.println("countAll = " + countAll);
         Integer itemPerPage = 8; // 페이지당 항목 수 지정
         Integer offset = (currentPage - 1) * itemPerPage;
 
-        Integer lastPageNum = (countAll + itemPerPage - 1) / itemPerPage;
+        Integer lastPageNum = (int) Math.ceil((double) countAll / itemPerPage);
         Integer leftPageNum = (currentPage - 1) / 10 * 10 + 1;
         Integer rightPageNum = leftPageNum + 9;
         rightPageNum = Math.min(rightPageNum, lastPageNum);
