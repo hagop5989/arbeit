@@ -53,28 +53,24 @@ public class MemberController {
         return memberService.findAll();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{memberId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated @RequestBody MemberEditForm form, BindingResult bindingResult,
-                               @PathVariable("id") Integer id,
+                               @PathVariable Integer memberId,
                                Authentication authentication) {
 
         Map<String, String> passwordMatch = memberService.passwordMatch(form);
-        if (bindingResult.hasErrors() && passwordMatch != null) {
+        if (bindingResult.hasErrors() || passwordMatch != null) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             errors.put("passwordCheck", passwordMatch.get("passwordCheck"));
             return ResponseEntity.badRequest().body(errors);
-        } else if (bindingResult.hasErrors()) {
-            Map<String, String> errors = getErrorMessages(bindingResult);
-            return ResponseEntity.badRequest().body(errors);
         }
 
-
-        if (!memberService.hasAccess(id, authentication)) {
+        if (!memberService.hasAccess(memberId, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        memberService.edit(form, authentication);
+        memberService.edit(form);
         return ResponseEntity.ok().build();
     }
 

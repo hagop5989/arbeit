@@ -44,7 +44,14 @@ export function MemberEdit() {
 
   function handleSaveBtn() {
     axios
-      .put(`/api/member/${id}`, member)
+      .put(`/api/member/${id}`, {
+        id: member.id,
+        password: member.password,
+        passwordCheck: member.passwordCheck,
+        name: member.name,
+        phone: member.phone,
+        address: member.address,
+      })
       .then(() => {
         navigate(`/member/${member.id}`);
       })

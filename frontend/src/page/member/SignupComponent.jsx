@@ -108,20 +108,24 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
   const isPwdMatch = member.password === member.passwordCheck;
 
   function handleSignupBtn() {
-    axios
-      .post("/api/signup", member)
-      .then(() => {
-        toast({
-          status: "success",
-          description: "회원가입 성공",
-          position: "top",
+    if (isMatch) {
+      axios
+        .post("/api/signup", member)
+        .then(() => {
+          toast({
+            status: "success",
+            description: "회원가입 성공",
+            position: "top",
+          });
+          navigate("/login");
+        })
+        .catch((err) => {
+          setErrors(null);
+          setErrors(err.response.data);
         });
-        navigate("/login");
-      })
-      .catch((err) => {
-        setErrors(null);
-        setErrors(err.response.data);
-      });
+    } else {
+      alert("인증 번호를 다시 확인해주세요.");
+    }
   }
 
   function handleSendMailBtn() {
@@ -342,7 +346,8 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
           <FormLabel {...styles.formLabel}>전화번호</FormLabel>
           <Box>
             <Input
-              type={"number"}
+              maxLength={11}
+              type={"tel"}
               w={"200px"}
               onChange={handleInputChange("phone")}
               placeholder={"예) 01012345678"}
@@ -369,7 +374,12 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
         </Flex>
       </FormControl>
       <Center mt={"30px"}>
-        <Button w={"150px"} onClick={handleSignupBtn} colorScheme={"orange"}>
+        <Button
+          w={"150px"}
+          onClick={handleSignupBtn}
+          colorScheme={"orange"}
+          isDisabled={!isMatch}
+        >
           회원가입
         </Button>
       </Center>

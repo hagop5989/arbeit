@@ -179,4 +179,11 @@ public interface JobsMapper {
             WHERE id=#{id}
             """)
     Integer selectMemberIdById(Integer id);
+
+    @Select("""
+            SELECT name
+            FROM category
+            """)
+    List<String> selectCategories();
+
 }

@@ -64,6 +64,12 @@ export function JobsList() {
   const location = useLocation();
 
   useEffect(() => {
+    axios.get("/api/jobs/categories").then((res) => {
+      setCategoryNames(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const typeParam = params.get("type") || "all";
     const keywordParam = params.get("keyword") || "";
@@ -86,16 +92,9 @@ export function JobsList() {
     axios.get("/api/jobs/list", { params: queryParams }).then((res) => {
       setStoreImages(res.data.storeImgMap);
       setJobsList(res.data.jobsList);
-
-      if (categoryNames.length === 0) {
-        const newCategoryNames = Array.from(
-          new Set(res.data.jobsList.map((job) => job.categoryName)),
-        );
-        setCategoryNames(newCategoryNames);
-      }
       setPageInfo(res.data.pageInfo);
     });
-  }, [currentPage, account]);
+  }, [currentPage, account, reload]);
 
   // favorite 리스트 받기
   const [favoriteList, setFavoriteList] = useState({});
@@ -130,6 +129,7 @@ export function JobsList() {
   }
 
   function handleSearchClick() {
+    setReload(!reload);
     setSearchKeyword(inputKeyword);
     const typeParam = searchType;
     const keywordParam = inputKeyword;
@@ -145,6 +145,7 @@ export function JobsList() {
 
   // 필터 타입이 변경될 때마다 백엔드로 새로운 데이터를 요청
   function handleFilterChange(e) {
+    setReload(!reload);
     setFilterType(e.target.value);
     setSelectedFilterDetail([]);
 
@@ -233,10 +234,8 @@ export function JobsList() {
               w={150}
               value={selectedFilterDetail}
               onChange={handleDetailFilterChange}
+              placeholder={"선택"}
             >
-              <option value="" disabled>
-                선택
-              </option>
               {addressList.map((address, index) => (
                 <option key={index} value={address}>
                   {address}
@@ -249,10 +248,8 @@ export function JobsList() {
               w={150}
               value={selectedFilterDetail}
               onChange={handleDetailFilterChange}
+              placeholder={"선택"}
             >
-              <option value="" disabled>
-                선택
-              </option>
               {categoryNames.map((category, index) => (
                 <option key={index} value={category}>
                   {category}
@@ -265,10 +262,8 @@ export function JobsList() {
               w={150}
               value={selectedFilterDetail}
               onChange={handleDetailFilterChange}
+              placeholder={"선택"}
             >
-              <option value="" disabled>
-                선택
-              </option>
               {workPeriodList.map((period, index) => (
                 <option key={index} value={period}>
                   {period}
@@ -281,10 +276,8 @@ export function JobsList() {
               w={150}
               value={selectedFilterDetail}
               onChange={handleDetailFilterChange}
+              placeholder={"선택"}
             >
-              <option value="" disabled>
-                선택
-              </option>
               {workWeekList.map((week, index) => (
                 <option key={index} value={week}>
                   {week}
@@ -297,10 +290,8 @@ export function JobsList() {
               w={250}
               value={selectedFilterDetail}
               onChange={handleDetailFilterChange}
+              placeholder={"선택"}
             >
-              <option value="" disabled>
-                선택
-              </option>
               {workTimeList.map((time, index) => (
                 <option key={index} value={time}>
                   {time}

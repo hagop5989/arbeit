@@ -306,5 +306,9 @@ public class JobsService {
     public Integer findMemberIdById(Integer id) {
         return jobsMapper.selectMemberIdById(id);
     }
+
+    public List<String> findCategories() {
+        return jobsMapper.selectCategories();
+    }
 }
 

@@ -37,6 +37,11 @@ public class JobsController {
     }
 
 
+    @GetMapping("/categories")
+    public List<String> findCategories() {
+        return service.findCategories();
+    }
+
     @GetMapping("/store-names")
     @PreAuthorize("isAuthenticated()")
     public List<Map<String, Object>> findStoreNames(Authentication authentication) {
@@ -77,11 +82,6 @@ public class JobsController {
                                     @RequestParam(value = "filterType", defaultValue = "") String filterType,
                                     @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
     ) {
-        log.info("currentPage={}", currentPage);
-        log.info("searchType={}", searchType);
-        log.info("keyword={}", keyword);
-        log.info("filterType={}", filterType);
-        log.info("filterDetail={}", filterDetail);
         return service.findAll(currentPage, searchType, keyword, filterType, filterDetail);
     }
 
