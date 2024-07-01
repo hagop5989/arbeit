@@ -20,7 +20,6 @@ public class Board {
 
     private LocalDateTime inserted;
 
-
     private Integer numberOfComments;
     private Integer numberOfImages;
     private Integer numberOfLike;

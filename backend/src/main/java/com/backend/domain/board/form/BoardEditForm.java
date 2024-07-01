@@ -15,7 +15,6 @@ public class BoardEditForm {
     private Integer id;
     private Integer memberId;
 
-
     @NotBlank
     private String title;
     @NotBlank

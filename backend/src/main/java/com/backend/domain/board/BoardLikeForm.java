@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BoardLikeForm {
 
-
     private Integer boardId;
     private Integer memberId;
-
 }
