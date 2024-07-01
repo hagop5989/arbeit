@@ -1,29 +1,21 @@
-package com.backend.domain.board;
+package com.backend.domain.board.form;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class Comment {
+@AllArgsConstructor
+public class CommentListForm {
 
     private Integer id;
-    private Integer boardId;
-    private Integer memberId;
+    private String memberName;
     private String comment;
     private LocalDateTime inserted;
-
-    public Comment(Integer id, Integer boardId, Integer memberId, String comment) {
-        this.id = id;
-        this.boardId = boardId;
-        this.memberId = memberId;
-        this.comment = comment;
-    }
 
     public String getInserted() {
         LocalDateTime now = LocalDateTime.now();

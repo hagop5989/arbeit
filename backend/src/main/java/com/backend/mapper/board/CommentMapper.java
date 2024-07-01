@@ -1,6 +1,7 @@
 package com.backend.mapper.board;
 
 import com.backend.domain.board.Comment;
+import com.backend.domain.board.form.CommentListForm;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -15,13 +16,17 @@ public interface CommentMapper {
     int insert(Comment comment);
 
     @Select("""
-               SELECT c.id,c.member_id, c.comment, c.inserted
-                           FROM comment c
-                           JOIN member m ON m.id = c.member_id
-                           WHERE board_Id = #{boardId}
-                           ORDER BY c.id
+            SELECT
+                c.id,
+                m.name memberName,
+                c.comment,
+                c.inserted
+            FROM comment c
+            JOIN member m ON m.id = c.member_id
+            WHERE board_Id = #{boardId}
+            ORDER BY c.id
             """)
-    List<Comment> selectAll(Integer boardId);
+    List<CommentListForm> selectAll(Integer boardId);
 
 
     @Select("""

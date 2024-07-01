@@ -1,7 +1,7 @@
 package com.backend.controller.board;
 
-import com.backend.domain.board.Comment;
 import com.backend.domain.board.form.CommentEditForm;
+import com.backend.domain.board.form.CommentListForm;
 import com.backend.domain.board.form.CommentWriterForm;
 import com.backend.service.board.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping("/api/comment")
 @RequiredArgsConstructor
-public class
-CommentController {
+public class CommentController {
 
     final CommentService service;
 
-    @PostMapping("add")
+    @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity add(@Validated @RequestBody CommentWriterForm form, BindingResult bindingResult,
                               Authentication authentication) {
@@ -41,8 +40,8 @@ CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("list/{boardId}")
-    public List<Comment> list(@PathVariable Integer boardId) {
+    @GetMapping("/{boardId}/list")
+    public List<CommentListForm> list(@PathVariable Integer boardId) {
         return service.list(boardId);
     }
 

@@ -8,6 +8,7 @@ import {
   InputGroup,
   InputRightElement,
   Select,
+  Spacer,
   Table,
   Tbody,
   Td,
@@ -29,9 +30,9 @@ import {
   faCircleInfo,
   faComments,
   faEye,
+  faFilter,
   faHeart as fullHeart,
   faMagnifyingGlass,
-  faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
@@ -41,7 +42,6 @@ export function BoardList() {
   const navigate = useNavigate();
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
-  const [searchKeyword, setSearchKeyword] = useState("");
   const [inputKeyword, setInputKeyword] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterType, setFilterType] = useState("");
@@ -73,7 +73,6 @@ export function BoardList() {
       });
 
     setSearchType(typeParam);
-    setSearchKeyword(keywordParam);
   }, [account.id, searchParams, filterType, selectedFilterDetail]);
 
   const pageNumbers = [];
@@ -149,33 +148,26 @@ export function BoardList() {
       {/* Search and Filter Section */}
       <Flex
         h={"80px"}
-        my={5}
         p={3}
         alignItems={"center"}
-        justifyContent={"space-between"}
+        borderY={"2px solid #E0E0E0"}
       >
-        <Button
-          w={"80px"}
-          letterSpacing={1}
-          colorScheme={"orange"}
-          onClick={handleWriteButtonClick}
+        <Box mt={"5px"}>
+          <FontAwesomeIcon icon={faFilter} />
+        </Box>
+        <Select
+          w="115px"
+          value={filterType}
+          onChange={handleFilterChange}
+          mx={2}
         >
-          글쓰기
-        </Button>
-
+          <option value="작성일순">작성일순</option>
+          <option value="조회수순">조회수순</option>
+          <option value="좋아요순">좋아요순</option>
+          <option value="댓글순">댓글순</option>
+        </Select>
+        <Spacer />
         <Flex>
-          <Select
-            w="115px"
-            value={filterType}
-            onChange={handleFilterChange}
-            mx={2}
-          >
-            <option value="작성일순">작성일순</option>
-            <option value="조회수순">조회수순</option>
-            <option value="좋아요순">좋아요순</option>
-            <option value="댓글순">댓글순</option>
-          </Select>
-
           <Box display={"flex"}>
             <InputGroup>
               <Input
@@ -214,13 +206,11 @@ export function BoardList() {
               <Tr borderBottom={"2px solid lightgray"}>
                 <Th w={"50px"}>#</Th>
                 <Th w={"350px"}>제목</Th>
-                <Th w={"100px"}>
-                  <FontAwesomeIcon icon={faUserPen} />
-                </Th>
+                <Th w={"100px"}>작성자</Th>
                 <Th w={"50px"}>
                   <FontAwesomeIcon icon={faEye} />
                 </Th>
-                <Th w={"150px"}>작성일시</Th>
+                <Th w={"100px"}>작성일시</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -258,17 +248,13 @@ export function BoardList() {
                           </Flex>
                         </Badge>
                       )}
-                      {board.numberOfView > 0 && (
-                        <Badge mr={1} bgColor={"transparent"}>
-                          <Flex alignItems="center">
-                            <FontAwesomeIcon icon={faEye} />
-                            <Box ml={1}>{board.numberOfView}</Box>
-                          </Flex>
-                        </Badge>
-                      )}
                     </Flex>
                   </Td>
-                  <Td>{board.name}</Td>
+                  <Td
+                    color={board.name === "탈퇴한 유저" ? "gray.400" : "black"}
+                  >
+                    {board.name}
+                  </Td>
                   <Td>{board.numberOfView}</Td>
                   <Td>{board.inserted}</Td>
                 </Tr>
@@ -276,6 +262,11 @@ export function BoardList() {
             </Tbody>
           </Table>
         )}
+      </Box>
+      <Box mt={"10px"} align={"right"}>
+        <Button colorScheme={"orange"} onClick={handleWriteButtonClick}>
+          글쓰기
+        </Button>
       </Box>
 
       {/* Pagination Section */}

@@ -3,24 +3,19 @@ import {
   Box,
   Button,
   Flex,
-  FormControl,
-  FormLabel,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Table,
-  Tbody,
-  Td,
-  Tr,
+  Spacer,
   useDisclosure,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
-import { CommentEdit } from "./CommentEdit.jsx";
 
 export function CommentList({ boardId }) {
   const [errors, setErrors] = useState(null);
@@ -30,17 +25,13 @@ export function CommentList({ boardId }) {
   const account = useContext(LoginContext);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [post, setPost] = useState(false);
 
   useEffect(() => {
-    if (!boardId) return;
-
-    axios
-      .get(`/api/comment/list/${boardId}`)
-      .then((res) => {
+    if (boardId !== undefined) {
+      axios.get(`/api/comment/${boardId}/list`).then((res) => {
         setCommentList(res.data);
-      })
-      .catch((err) => console.log(err));
+      });
+    }
   }, [boardId]);
 
   function handleRemove() {
@@ -75,63 +66,38 @@ export function CommentList({ boardId }) {
       });
   }
 
+  function Comment({ comment }) {
+    return (
+      <Box p={5} shadow="md" borderWidth="1px" w={"100%"}>
+        <Flex fontSize={"17px"}>
+          <Box mr={"10px"} color={"#F5C903"}>
+            A.
+          </Box>
+          <Box w={"100%"} minH="40px">
+            {comment.comment}
+          </Box>
+        </Flex>
+        <Flex>
+          <Box mr={"5px"}>작성자:</Box>
+          <Box
+            color={comment.memberName === "탈퇴한 유저" ? "gray.400" : "black"}
+          >
+            {comment.memberName}
+          </Box>
+          <Spacer />
+          <Box fontSize={"15px"}>{comment.inserted}</Box>
+        </Flex>
+      </Box>
+    );
+  }
+
   return (
     <Box>
-      <FormControl>
-        <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
-          댓글목록
-        </FormLabel>
-        <Box>
-          <Table>
-            <Tbody>
-              {commentList.map((comment) => (
-                <Tr key={comment.id}>
-                  <Td>{comment.id}</Td>
-                  <Td>
-                    {isEditing === comment.id ? (
-                      <CommentEdit
-                        comment={comment}
-                        setIsEditing={setIsEditing}
-                      />
-                    ) : (
-                      <Flex>
-                        <Box>{comment.comment}</Box>
-                      </Flex>
-                    )}
-                  </Td>
-                  <Td>{comment.memberId}</Td>
-                  <Td>{comment.inserted}</Td>
-                  <Td>
-                    {account.hasAccess(comment.memberId) && (
-                      <Button
-                        colorScheme={"blue"}
-                        onClick={() => {
-                          setIsEditing(comment.id);
-                        }}
-                      >
-                        수정
-                      </Button>
-                    )}
-                  </Td>
-                  <Td>
-                    {account.hasAccess(comment.memberId) && (
-                      <Button
-                        colorScheme={"red"}
-                        onClick={() => {
-                          setSelectedCommentId(comment.id);
-                          onOpen();
-                        }}
-                      >
-                        삭제
-                      </Button>
-                    )}
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-      </FormControl>
+      <VStack spacing={8}>
+        {commentList.map((comment) => (
+          <Comment comment={comment} key={comment.id} />
+        ))}
+      </VStack>
       <Box>
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />

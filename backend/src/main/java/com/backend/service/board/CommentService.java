@@ -2,6 +2,7 @@ package com.backend.service.board;
 
 import com.backend.domain.board.Comment;
 import com.backend.domain.board.form.CommentEditForm;
+import com.backend.domain.board.form.CommentListForm;
 import com.backend.domain.board.form.CommentWriterForm;
 import com.backend.mapper.board.CommentMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,10 @@ public class CommentService {
 
     }
 
-    public List<Comment> list(Integer boardId) {
-        return mapper.selectAll(boardId);
+    public List<CommentListForm> list(Integer boardId) {
 
+        List<CommentListForm> commentList = mapper.selectAll(boardId);
+        return commentList;
     }
 
     public void delete(Integer id) {
