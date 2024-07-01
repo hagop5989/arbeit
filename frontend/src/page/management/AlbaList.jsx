@@ -85,6 +85,18 @@ export function AlbaList() {
     setSelectedAlba({ ...selectedAlba, albaId: alba.albaId });
   }
 
+  //  핸드폰 번호 - 붙여서 보여주기 (실제론 아님)
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength < 4) return phoneNumber;
+    if (phoneNumberLength < 8) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  };
+
   return (
     <Box minH={"500px"} mb={"150px"}>
       <Box>
@@ -121,7 +133,7 @@ export function AlbaList() {
                 {alba.albaName}
               </Td>
               <Td fontWeight={"800"} {...styles.td}>
-                {alba.albaPhone}
+                {formatPhoneNumber(alba.albaPhone)}
               </Td>
               <Td {...styles.td}>{alba.storeName}</Td>
               <Td {...styles.td} w={"100px"}>

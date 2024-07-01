@@ -109,11 +109,11 @@ export function ApplicationMangeList() {
                   <Td w={"20px"} {...styles.th}>
                     #
                   </Td>
-                  <Td w={"150px"} {...styles.th}>
+                  <Td w={"120px"} {...styles.th}>
                     지원 일자
                   </Td>
                   <Td {...styles.th}>지원 공고</Td>
-                  <Td w={"200px"} {...styles.th}>
+                  <Td w={"150px"} {...styles.th}>
                     지원서
                   </Td>
                   <Td w={"100px"} {...styles.th}>
