@@ -38,6 +38,8 @@ public class BoardService {
 
     private final BoardMapper mapper;
 
+    private final CommentService commentService;
+
     public void write(BoardWriteForm form, Authentication authentication
     ) throws IOException {
         Board board = new Board(
@@ -181,6 +183,12 @@ public class BoardService {
 
 
     public void delete(Integer boardId) {
+        // 보드 게시물 관련 like 삭제
+        mapper.deleteLikeByBoardId(boardId);
+
+        // 보드 게시물 관련 댓글 삭제
+        commentService.deleteByBoardId(boardId);
+
         // 이미지 파일명 조회
         List<String> fileNames = mapper.selectImageNameById(boardId);
 
@@ -189,6 +197,9 @@ public class BoardService {
 
         // 보드에 연결된 이미지 데이터 삭제
         mapper.deleteByboardId(boardId);
+
+        // 보드 뷰 삭제
+        mapper.deleteBoardView(boardId);
 
         // 보드 데이터 삭제
         mapper.deleteById(boardId);

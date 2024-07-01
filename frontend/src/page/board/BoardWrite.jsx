@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -79,25 +80,38 @@ export function BoardWrite({ setIsWriteing }) {
   };
 
   return (
-    <Box>
+    <Box w={"735px"}>
       <Box>
         <Heading>게시판 작성</Heading>
       </Box>
       <Box>
         <Box>
           <FormControl>
-            <FormLabel>제목</FormLabel>
-            <Input onChange={handleInputChange("title")}></Input>
+            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"} mt={8}>
+              제목
+            </FormLabel>
+            <Input
+              onChange={handleInputChange("title")}
+              placeholder={"제목을 입력해주세요."}
+            />
             {errors && <FormHelperText>{errors.title}</FormHelperText>}
-            <FormLabel>내용</FormLabel>
-            <Textarea onChange={handleInputChange("content")}></Textarea>
+            <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+              내용
+            </FormLabel>
+            <Textarea
+              onChange={handleInputChange("content")}
+              h={"150px"}
+              placeholder={"내용을 입력해주세요."}
+            ></Textarea>
             <Text>
               {board.content?.length} / {maxContentLength}
             </Text>
             {errors && <FormHelperText>{errors.content}</FormHelperText>}
           </FormControl>
-          <Box>
-            <Text fontSize={"2xl"}>파일첨부</Text>
+          <Box lineHeight={"30px"}>
+            <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+              파일첨부
+            </FormLabel>
             <Input
               multiple
               type="file"
@@ -114,12 +128,12 @@ export function BoardWrite({ setIsWriteing }) {
             )}
           </Box>
         </Box>
-        <Box mt={3}>
+        <Flex mt={10} gap={"10px"}>
           <Button onClick={handleWritecancel}>취소</Button>
           <Button colorScheme={"blue"} onClick={handleWriteBtn}>
             등록
           </Button>
-        </Box>
+        </Flex>
       </Box>
     </Box>
   );

@@ -4,12 +4,14 @@ import {
   Button,
   Center,
   Flex,
-  Heading,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -24,6 +26,7 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
+  faCircleInfo,
   faComments,
   faEye,
   faHeart as fullHeart,
@@ -31,7 +34,6 @@ import {
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
-import { ViewIcon } from "@chakra-ui/icons";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function BoardList() {
@@ -122,117 +124,145 @@ export function BoardList() {
   }
 
   return (
-    <Box p={4}>
-      <Heading as="h2" size="lg" mb={4}>
-        질문 게시판
-      </Heading>
-      {/* Search and Filter Section */}
-      <Flex justifyContent="center" mb={4}>
-        <Select
-          w="150px"
-          value={filterType}
-          onChange={handleFilterChange}
-          mr={2}
-        >
-          <option value="작성일순">작성일순</option>
-          <option value="조회수순">조회수순</option>
-          <option value="좋아요순">좋아요순</option>
-          <option value="댓글순">댓글순</option>
-        </Select>
+    <Box p={4} w={"1050px"}>
+      <Box
+        w={"100%"}
+        h={"120px"}
+        bg={"orange"}
+        pt={"30px"}
+        pl={"40px"}
+        fontFamily={"SBAggroB"}
+        backgroundImage="url('/public/title.jpg')"
+        backgroundSize="cover"
+      >
+        <Text fontSize={"30px"} fontWeight={"800"}>
+          알바커넥터의 질문 게시판
+        </Text>
+        <Flex fontSize={"15px"} gap={2} color={"#343942"}>
+          <Box>
+            <FontAwesomeIcon icon={faCircleInfo} />
+          </Box>
+          <Text>궁금하신 내용을 물어보실 수 있어요!</Text>
+        </Flex>
+      </Box>
 
-        <Box w={"500px"} display={"flex"}>
-          <Input
-            w="300px"
-            value={inputKeyword}
-            onChange={(e) => setInputKeyword(e.target.value)}
-            placeholder="제목+작성자 검색"
-            mr={2}
-          />
-          <Button colorScheme="blue" onClick={handleSearchClick}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </Button>
-        </Box>
+      {/* Search and Filter Section */}
+      <Flex
+        h={"80px"}
+        my={5}
+        p={3}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+      >
+        <Button
+          w={"80px"}
+          letterSpacing={1}
+          colorScheme={"orange"}
+          onClick={handleWriteButtonClick}
+        >
+          글쓰기
+        </Button>
+
+        <Flex>
+          <Select
+            w="115px"
+            value={filterType}
+            onChange={handleFilterChange}
+            mx={2}
+          >
+            <option value="작성일순">작성일순</option>
+            <option value="조회수순">조회수순</option>
+            <option value="좋아요순">좋아요순</option>
+            <option value="댓글순">댓글순</option>
+          </Select>
+
+          <Box display={"flex"}>
+            <InputGroup>
+              <Input
+                w="380px"
+                value={inputKeyword}
+                onChange={(e) => setInputKeyword(e.target.value)}
+                placeholder="제목+작성자 검색"
+              />
+              <InputRightElement width="2.5rem">
+                <Button
+                  width="2.5rem"
+                  colorScheme={"gray"}
+                  variant={"outline"}
+                  onClick={handleSearchClick}
+                >
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </Box>
+        </Flex>
       </Flex>
 
       {/* Board List Table */}
-      <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
+      <Box
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        border={"none"}
+      >
         {boardList.length === 0 ? (
           <Center p={4}>조회 결과가 없습니다.</Center>
         ) : (
           <Table variant="simple">
             <Thead>
-              <Tr>
-                <Th>#</Th>
-                <Th>제목</Th>
-                <Th>
+              <Tr borderBottom={"2px solid lightgray"}>
+                <Th w={"50px"}>#</Th>
+                <Th w={"350px"}>제목</Th>
+                <Th w={"100px"}>
                   <FontAwesomeIcon icon={faUserPen} />
                 </Th>
-                <Th>작성일시</Th>
-                <Th>
-                  <FontAwesomeIcon icon={faComments} />
-                </Th>
-                <Th>
-                  <FontAwesomeIcon icon={faImages} />
-                </Th>
-                <Th>
-                  <FontAwesomeIcon icon={fullHeart} />
-                </Th>
-                <Th>
+                <Th w={"50px"}>
                   <FontAwesomeIcon icon={faEye} />
                 </Th>
+                <Th w={"150px"}>작성일시</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {boardList.map((board) => (
+              {boardList.map((board, index) => (
                 <Tr
                   key={board.id}
                   _hover={{ bg: "gray.100", cursor: "pointer" }}
                   onClick={() => navigate(`/board/${board.id}`)}
                 >
-                  <Td>{board.id}</Td>
-                  <Td>{board.title}</Td>
-                  <Td>{board.memberId}</Td>
+                  <Td>{index + 1}</Td>
+                  <Td>
+                    <Flex alignItems="center" gap={"5px"}>
+                      <Text mr={2}>{board.title}</Text>
+                      {board.numberOfComments > 0 && (
+                        <Badge bgColor={"transparent"} mr={1}>
+                          <Flex alignItems="center">
+                            <FontAwesomeIcon icon={faComments} />
+                            <Box ml={1}>{board.numberOfComments}</Box>
+                          </Flex>
+                        </Badge>
+                      )}
+                      {board.numberOfImages > 0 && (
+                        <Badge bgColor={"transparent"} mr={1}>
+                          <Flex alignItems="center">
+                            <FontAwesomeIcon icon={faImages} />
+                            <Box ml={1}>{board.numberOfImages}</Box>
+                          </Flex>
+                        </Badge>
+                      )}
+                      {board.numberOfLike > 0 && (
+                        <Badge mr={1} bgColor={"transparent"}>
+                          <Flex alignItems="center">
+                            <FontAwesomeIcon icon={fullHeart} />
+                            <Box ml={1}>{board.numberOfLike}</Box>
+                          </Flex>
+                        </Badge>
+                      )}
+                    </Flex>
+                  </Td>
+                  <Td>{board.name}</Td>
+                  <Td>{board.numberOfView}</Td>
                   <Td>{board.inserted}</Td>
-                  <Td>
-                    {board.numberOfComments > 0 && (
-                      <Badge colorScheme="green" ml={2}>
-                        <Flex alignItems="center">
-                          <FontAwesomeIcon icon={faComments} />
-                          <Box ml={1}>{board.numberOfComments}</Box>
-                        </Flex>
-                      </Badge>
-                    )}
-                  </Td>
-                  <Td>
-                    {board.numberOfImages > 0 && (
-                      <Badge colorScheme="blue" ml={2}>
-                        <Flex alignItems="center">
-                          <FontAwesomeIcon icon={faImages} />
-                          <Box ml={1}>{board.numberOfImages}</Box>
-                        </Flex>
-                      </Badge>
-                    )}
-                  </Td>
-                  <Td>
-                    {board.numberOfLike > 0 && (
-                      <Badge colorScheme="red" ml={2}>
-                        <Flex alignItems="center">
-                          <FontAwesomeIcon icon={fullHeart} />
-                          <Box ml={1}>{board.numberOfLike}</Box>
-                        </Flex>
-                      </Badge>
-                    )}
-                  </Td>
-                  <Td>
-                    {board.numberOfView > 0 && (
-                      <Badge colorScheme="red" ml={2}>
-                        <Flex alignItems="center">
-                          <FontAwesomeIcon icon={ViewIcon} />
-                          <Box ml={1}>{board.numberOfView}</Box>
-                        </Flex>
-                      </Badge>
-                    )}
-                  </Td>
                 </Tr>
               ))}
             </Tbody>
@@ -241,7 +271,7 @@ export function BoardList() {
       </Box>
 
       {/* Pagination Section */}
-      <Center mt={4}>
+      <Center mt={8}>
         <Flex gap={2}>
           {pageInfo.prevPageNumber && (
             <>
@@ -280,12 +310,6 @@ export function BoardList() {
           )}
         </Flex>
       </Center>
-
-      <Box mt={5}>
-        <Button colorScheme="blue" onClick={handleWriteButtonClick}>
-          글쓰기
-        </Button>
-      </Box>
     </Box>
   );
 }
