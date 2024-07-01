@@ -117,7 +117,7 @@ export function BoardView() {
   }
 
   return (
-    <Box p={4} bg="white" borderRadius="md" boxShadow="sm">
+    <Box w={"735px"} p={4}>
       <Flex mb={4} alignItems="center">
         <Heading as="h2" size="lg" mb={4}>
           {board.name}의 게시물
@@ -151,18 +151,24 @@ export function BoardView() {
           </Box>
         </Flex>
       </Flex>
-      <Box borderWidth="3px" borderRadius="lg" overflow="hidden">
+      <Box overflow="hidden">
         <FormControl>
-          <FormLabel>제목</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            제목
+          </FormLabel>
           <Input value={board.title} readOnly bg="gray.100" borderRadius="md" />
-          <FormLabel mt={4}>본문</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            본문
+          </FormLabel>
           <Textarea
             value={board.content}
             readOnly
             bg="gray.100"
             borderRadius="md"
           />
-          <FormLabel mt={4}>첨부사진</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            첨부사진
+          </FormLabel>
           <Box>
             {images.map((image) => (
               <Image
@@ -173,7 +179,9 @@ export function BoardView() {
               />
             ))}
           </Box>
-          <FormLabel mt={4}>작성자</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            작성자
+          </FormLabel>
           <Input value={board.name} readOnly bg="gray.100" borderRadius="md" />
         </FormControl>
       </Box>

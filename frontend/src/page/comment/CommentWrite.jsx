@@ -87,12 +87,14 @@ export function CommentWrite({ boardId, isProcessing, setIsProcessing }) {
   }
 
   return (
-    <Box>
+    <Box w={"100%"}>
       <FormControl>
-        <FormLabel>댓글작성</FormLabel>
+        <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+          댓글작성
+        </FormLabel>
         <Box onClick={handleCommentWrite}>
           <Input
-            w="300px"
+            w="500px"
             placeholder="댓글을 입력해주세요"
             onChange={handleTextareaChange("comment")}
           />

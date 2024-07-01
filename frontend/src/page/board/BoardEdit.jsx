@@ -130,27 +130,33 @@ export function BoardEdit() {
   }
 
   return (
-    <Box>
+    <Box w={"735px"}>
       <Box>
         <Heading>게시물 수정</Heading>
       </Box>
       <Box>
         <FormControl>
-          <FormLabel>제목</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            제목
+          </FormLabel>
           <Input
             defaultValue={board.title}
             onChange={(e) => setTitle(e.target.value)}
           />
           {errors && <FormHelperText>{errors.title}</FormHelperText>}
 
-          <FormLabel>본문</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            본문
+          </FormLabel>
           <Textarea
             defaultValue={board.content}
             onChange={(e) => setContent(e.target.value)}
           />
           {errors && <FormHelperText>{errors.content}</FormHelperText>}
 
-          <FormLabel>사진</FormLabel>
+          <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+            사진
+          </FormLabel>
           <Box>
             <FormControl>
               <Box border="1px solid bule" display="flex">
@@ -170,8 +176,11 @@ export function BoardEdit() {
                   </Box>
                 ))}
               </Box>
-              <FormLabel>사진 등록</FormLabel>
+              <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
+                사진 등록
+              </FormLabel>
               <Input
+                lineHeight={"30px"}
                 multiple
                 type="file"
                 accept="image/*"
