@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -20,6 +21,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -181,7 +183,7 @@ export function MemberInfo() {
           borderRadius={"10px"}
         >
           <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
-            회원 정보
+            마이 페이지
           </Heading>
         </Box>
         <Box>
@@ -192,9 +194,9 @@ export function MemberInfo() {
                 <Box w={"240px"} h={"230px"}>
                   <Image
                     mt={"20px"}
-                    ml={"50px"}
-                    w={"180px"}
-                    h={"180px"}
+                    ml={"70px"}
+                    w={"150px"}
+                    h={"150px"}
                     border={"1px solid gray"}
                     borderRadius={"50%"}
                     src={
@@ -204,8 +206,9 @@ export function MemberInfo() {
                     }
                     objectFit={"contain"}
                   />
+
                   {account.hasAccess(id) && (
-                    <Box w={"50px"} h={"50px"} mt={"-30px"} ml={"22px"}>
+                    <Box w={"50px"} h={"50px"} mt={"-30px"} ml={"42px"}>
                       <Center
                         boxSize={"50px"}
                         bgColor="gray.100"
@@ -224,24 +227,71 @@ export function MemberInfo() {
                       />
                     </Box>
                   )}
+                  <Box
+                    w={"100%"}
+                    display={"flex"}
+                    ml={"25px"}
+                    mt={"10px"}
+                    fontSize={"xl"}
+                    fontWeight={"bold"}
+                    justifyContent={"center"}
+                  >
+                    {member.name}
+                  </Box>
+                  {account.isAlba() && (
+                    <Box
+                      display={"flex"}
+                      ml={"50px"}
+                      p={"10px"}
+                      fontSize={"xl"}
+                      fontWeight={"bold"}
+                      justifyContent={"center"}
+                    >
+                      <Box w={"100px"}>알바점수</Box>
+                      <Box>
+                        <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
+                        {score}
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
                 <Box
-                  w={"50%"}
+                  borderRadius={"15px"}
+                  w={"60%"}
                   ml={"50px"}
                   display={"flex"}
                   flexDirection={"column"}
                   gap={"10px"}
                   lineHeight={"30px"}
-                  p={"20px"}
                 >
-                  <Box display={"flex"}>
+                  <Box
+                    borderTopRadius={"15px"}
+                    bgGradient="linear(to-r, orange.500, orange.300)"
+                    p={4}
+                  >
+                    <Text
+                      fontSize="xl"
+                      color="white"
+                      fontWeight="bold"
+                      ml={"10px"}
+                    >
+                      회원 정보
+                    </Text>
+                  </Box>
+                  <Box display={"flex"} p={"6px"} ml={"20px"}>
                     <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       이름
                     </Box>
                     <Box>{member.name}</Box>
                   </Box>
+                  <Divider
+                    ml={"5%"}
+                    w={"90%"}
+                    borderColor={"#eaeaea"}
+                    borderWidth={"1px"}
+                  />
 
-                  <Box display={"flex"}>
+                  <Box display={"flex"} p={"6px"} ml={"20px"}>
                     <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       생년월일
                     </Box>
@@ -251,29 +301,19 @@ export function MemberInfo() {
                     </Box>
                   </Box>
 
-                  <Box display={"flex"}>
+                  <Box display={"flex"} p={"6px"} ml={"20px"}>
                     <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       성별
                     </Box>
                     <Box>{member.gender === "MALE" ? "남성" : "여성"}</Box>
                   </Box>
 
-                  <Box display={"flex"}>
+                  <Box display={"flex"} p={"6px"} ml={"20px"} mb={"10px"}>
                     <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
                       전화번호
                     </Box>
                     <Box>{formatPhoneNumber(member.phone)}</Box>
                   </Box>
-
-                  {account.isAlba() && (
-                    <Box display={"flex"} fontSize={"xl"} fontWeight={"bold"}>
-                      <Box w={"100px"}>알바점수</Box>
-                      <Box>
-                        <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
-                        {score}
-                      </Box>
-                    </Box>
-                  )}
                 </Box>
               </Flex>
             </FormControl>
