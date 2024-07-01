@@ -12,14 +12,12 @@ import java.util.List;
 @ToString
 @Setter
 public class BoardWriteForm {
+
     private Integer memberId;
-
-
     @NotBlank
     private String title;
     @NotBlank
     private String content;
-
     private List<MultipartFile> images;
 
 }
