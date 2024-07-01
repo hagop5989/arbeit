@@ -13,6 +13,10 @@ CREATE TABLE board_view
 ALTER TABLE board_view
     ADD COLUMN view_count INT DEFAULT 0;
 
+ALTER TABLE board_view
+    DROP FOREIGN KEY board_view_ibfk_2;
+
+
 SELECT *
 FROM board_view;
 

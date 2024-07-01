@@ -41,27 +41,17 @@ export function BoardView() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const account = useContext(LoginContext);
   useEffect(() => {
-    if (!id) return;
     axios
       .get(`/api/board/${id}`)
       .then((res) => {
-        setBoard(res.data.board);
-        setImages(res.data.images);
-        setLike(res.data.like);
-
-        /* if (setIsViewingProcessing(true)) {
         axios
           .put(`/api/board/view`, { boardId: res.data.board.id })
           .then((response) => {
             setViewCount(response.data.count);
-          })
-          .catch((err) => {
-            console.log("Failed to update view count:", err);
-          })
-          .finally(() => {
-            setIsViewingProcessing(false);
+            setBoard(res.data.board);
+            setImages(res.data.images);
+            setLike(res.data.like);
           });
-        }*/
       })
       .catch((err) => {
         console.log(err);

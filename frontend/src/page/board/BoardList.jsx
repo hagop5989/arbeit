@@ -258,6 +258,14 @@ export function BoardList() {
                           </Flex>
                         </Badge>
                       )}
+                      {board.numberOfView > 0 && (
+                        <Badge mr={1} bgColor={"transparent"}>
+                          <Flex alignItems="center">
+                            <FontAwesomeIcon icon={faEye} />
+                            <Box ml={1}>{board.numberOfView}</Box>
+                          </Flex>
+                        </Badge>
+                      )}
                     </Flex>
                   </Td>
                   <Td>{board.name}</Td>
