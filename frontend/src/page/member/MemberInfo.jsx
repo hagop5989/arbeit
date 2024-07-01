@@ -21,7 +21,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -173,188 +172,182 @@ export function MemberInfo() {
   };
 
   return (
-    <Box w="full" maxW="70%" mx="auto" p={5}>
-      <Box>
-        <Box
-          h={"70px"}
-          mb={"70px"}
-          bg={"#FF7F3E"}
-          color={"white"}
-          borderRadius={"10px"}
-        >
-          <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
-            마이 페이지
-          </Heading>
-        </Box>
+    <Box w="full" maxW="65%" mx="auto" p={3} bgColor={"#f9fbfc"}>
+      <Box bg={"#ffffff"} borderRadius={"10px"} p={2}>
         <Box>
+          <Box
+            h={"70px"}
+            mb={"40px"}
+            bgGradient="linear(to-r, orange.500, orange.300)"
+            color={"white"}
+            borderTopRadius={"10px"}
+          >
+            <Heading
+              size={"lg"}
+              textAlign={"center"}
+              lineHeight={"70px"}
+              fontFamily={"SBAggroB"}
+            >
+              마이 페이지
+            </Heading>
+          </Box>
           <Box>
-            {/* 프로필 사진 */}
-            <FormControl mb={"50px"}>
-              <Flex>
-                <Box w={"240px"} h={"230px"}>
-                  <Image
-                    mt={"20px"}
-                    ml={"70px"}
-                    w={"150px"}
-                    h={"150px"}
-                    border={"1px solid gray"}
-                    borderRadius={"50%"}
-                    src={
-                      profileSrc === ""
-                        ? "/public/base_profile.png"
-                        : profileSrc
-                    }
-                    objectFit={"contain"}
-                  />
+            <Box>
+              {/* 프로필 사진 */}
+              <FormControl mb={"50px"}>
+                <Flex>
+                  <Box w={"240px"} h={"230px"}>
+                    <Image
+                      mt={"20px"}
+                      ml={"70px"}
+                      w={"150px"}
+                      h={"150px"}
+                      border={"1px solid gray"}
+                      borderRadius={"50%"}
+                      src={
+                        profileSrc === ""
+                          ? "/public/base_profile.png"
+                          : profileSrc
+                      }
+                      objectFit={"contain"}
+                    />
 
-                  {account.hasAccess(id) && (
-                    <Box w={"50px"} h={"50px"} mt={"-30px"} ml={"42px"}>
-                      <Center
-                        boxSize={"50px"}
-                        bgColor="gray.100"
-                        borderRadius={100}
-                        cursor="pointer"
-                        onClick={handleProfilePictureBtn}
-                      >
-                        <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
-                      </Center>
-                      <Input
-                        w={"50px"}
-                        type={"file"}
-                        ref={fileInputRef}
-                        style={{ display: "none" }}
-                        onChange={handleFileChange}
-                      />
-                    </Box>
-                  )}
-                  <Box
-                    w={"100%"}
-                    display={"flex"}
-                    ml={"25px"}
-                    mt={"10px"}
-                    fontSize={"xl"}
-                    fontWeight={"bold"}
-                    justifyContent={"center"}
-                  >
-                    {member.name}
-                  </Box>
-                  {account.isAlba() && (
+                    {account.hasAccess(id) && (
+                      <Box w={"50px"} h={"50px"} mt={"-30px"} ml={"42px"}>
+                        <Center
+                          boxSize={"50px"}
+                          bgColor="gray.100"
+                          borderRadius={100}
+                          cursor="pointer"
+                          onClick={handleProfilePictureBtn}
+                        >
+                          <FontAwesomeIcon icon={faCamera} fontSize={"25px"} />
+                        </Center>
+                        <Input
+                          w={"50px"}
+                          type={"file"}
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleFileChange}
+                        />
+                      </Box>
+                    )}
                     <Box
+                      w={"100%"}
                       display={"flex"}
-                      ml={"50px"}
-                      p={"10px"}
+                      ml={"30px"}
+                      mt={"10px"}
                       fontSize={"xl"}
                       fontWeight={"bold"}
                       justifyContent={"center"}
                     >
-                      <Box w={"100px"}>알바점수</Box>
-                      <Box>
-                        <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
-                        {score}
+                      {member.name}
+                    </Box>
+                    {account.isAlba() && (
+                      <Box
+                        display={"flex"}
+                        ml={"50px"}
+                        p={"10px"}
+                        fontSize={"xl"}
+                        fontWeight={"bold"}
+                        justifyContent={"center"}
+                      >
+                        <Box w={"100px"}>알바점수</Box>
+                        <Box>
+                          <FontAwesomeIcon icon={faStar} color={"#F5C903"} />
+                          {score}
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                  <Box
+                    borderRadius={"15px"}
+                    w={"60%"}
+                    ml={"50px"}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    gap={"10px"}
+                    lineHeight={"30px"}
+                  >
+                    <Box mb={"20px"}></Box>
+                    <Box display={"flex"} p={"6px"} ml={"20px"}>
+                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                        이름
+                      </Box>
+                      <Box>{member.name}</Box>
+                    </Box>
+                    <Divider
+                      ml={"5%"}
+                      w={"90%"}
+                      borderColor={"#eaeaea"}
+                      borderWidth={"1px"}
+                    />
+
+                    <Box display={"flex"} p={"6px"} ml={"20px"}>
+                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                        생년월일
+                      </Box>
+                      <Box>{member.birthDate}</Box>
+                      <Box ml={"5px"}>
+                        (만 {nowAge ? nowAge : countNowAge(member.birthDate)}세)
                       </Box>
                     </Box>
+
+                    <Box display={"flex"} p={"6px"} ml={"20px"}>
+                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                        성별
+                      </Box>
+                      <Box>{member.gender === "MALE" ? "남성" : "여성"}</Box>
+                    </Box>
+
+                    <Box display={"flex"} p={"6px"} ml={"20px"} mb={"10px"}>
+                      <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+                        전화번호
+                      </Box>
+                      <Box>{formatPhoneNumber(member.phone)}</Box>
+                    </Box>
+                  </Box>
+                </Flex>
+              </FormControl>
+              {/* 회원 정보 */}
+              <FormControl>
+                <Flex w={"100%"} my={5} gap={"20px"} ml={"10px"}>
+                  <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
+                    이메일
+                  </FormLabel>
+                  <Box>{member.email}</Box>
+                </Flex>
+                <Flex w={"100%"} mb={4} gap={"20px"} ml={"10px"}>
+                  <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
+                    주소
+                  </FormLabel>
+                  <Box>{member.address}</Box>
+                </Flex>
+
+                <Box my={10}>
+                  {account.hasAccess(id) && (
+                    <Flex gap={"10px"} my={"20px"}>
+                      <Button
+                        w={"50%"}
+                        bgColor={"#FF7F3E"}
+                        color={"white"}
+                        onClick={() => navigate(`/member/${id}/edit`)}
+                      >
+                        회원 수정
+                      </Button>
+                      <Button
+                        w={"50%"}
+                        bgColor={"red.500"}
+                        color={"white"}
+                        onClick={onOpen}
+                      >
+                        회원 탈퇴
+                      </Button>
+                    </Flex>
                   )}
                 </Box>
-                <Box
-                  borderRadius={"15px"}
-                  w={"60%"}
-                  ml={"50px"}
-                  display={"flex"}
-                  flexDirection={"column"}
-                  gap={"10px"}
-                  lineHeight={"30px"}
-                >
-                  <Box
-                    borderTopRadius={"15px"}
-                    bgGradient="linear(to-r, orange.500, orange.300)"
-                    p={4}
-                  >
-                    <Text
-                      fontSize="xl"
-                      color="white"
-                      fontWeight="bold"
-                      ml={"10px"}
-                    >
-                      회원 정보
-                    </Text>
-                  </Box>
-                  <Box display={"flex"} p={"6px"} ml={"20px"}>
-                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                      이름
-                    </Box>
-                    <Box>{member.name}</Box>
-                  </Box>
-                  <Divider
-                    ml={"5%"}
-                    w={"90%"}
-                    borderColor={"#eaeaea"}
-                    borderWidth={"1px"}
-                  />
-
-                  <Box display={"flex"} p={"6px"} ml={"20px"}>
-                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                      생년월일
-                    </Box>
-                    <Box>{member.birthDate}</Box>
-                    <Box ml={"5px"}>
-                      (만 {nowAge ? nowAge : countNowAge(member.birthDate)}세)
-                    </Box>
-                  </Box>
-
-                  <Box display={"flex"} p={"6px"} ml={"20px"}>
-                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                      성별
-                    </Box>
-                    <Box>{member.gender === "MALE" ? "남성" : "여성"}</Box>
-                  </Box>
-
-                  <Box display={"flex"} p={"6px"} ml={"20px"} mb={"10px"}>
-                    <Box w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                      전화번호
-                    </Box>
-                    <Box>{formatPhoneNumber(member.phone)}</Box>
-                  </Box>
-                </Box>
-              </Flex>
-            </FormControl>
-            {/* 회원 정보 */}
-            <FormControl>
-              <Flex w={"100%"} my={5} gap={"20px"}>
-                <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
-                  이메일
-                </FormLabel>
-                <Box>{member.email}</Box>
-              </Flex>
-              <Flex w={"100%"} mb={4} gap={"20px"}>
-                <FormLabel fontSize={"xl"} w={"70px"} fontWeight={"bold"}>
-                  주소
-                </FormLabel>
-                <Box>{member.address}</Box>
-              </Flex>
-
-              <Box my={10}>
-                {account.hasAccess(id) && (
-                  <Flex gap={"10px"} my={"20px"}>
-                    <Button
-                      w={"50%"}
-                      bgColor={"#FF7F3E"}
-                      color={"white"}
-                      onClick={() => navigate(`/member/${id}/edit`)}
-                    >
-                      회원 수정
-                    </Button>
-                    <Button
-                      w={"50%"}
-                      bgColor={"red.500"}
-                      color={"white"}
-                      onClick={onOpen}
-                    >
-                      회원 탈퇴
-                    </Button>
-                  </Flex>
-                )}
-              </Box>
-            </FormControl>
+              </FormControl>
+            </Box>
           </Box>
         </Box>
       </Box>
