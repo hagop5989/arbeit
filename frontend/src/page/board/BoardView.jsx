@@ -61,7 +61,7 @@ export function BoardView() {
             description: "게시물이 존재하지 않습니다",
             position: "top",
           });
-          navigate("/");
+          navigate("/board/list");
         }
       });
   }, [id]);

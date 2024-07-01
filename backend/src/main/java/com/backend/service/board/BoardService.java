@@ -84,8 +84,8 @@ public class BoardService {
 
 
         Map<String, Object> view = new HashMap<>();
-        
-        int v = mapper.selectViewByBoardIdAndMemberId(boardId, authentication.getName());
+
+        int v = mapper.selectViewByBoardIdAndMemberId(boardId, board.getMemberId());
         view.put("view", v == 1);
         view.put("count", mapper.selectCountView(boardId));
 

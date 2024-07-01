@@ -210,7 +210,7 @@ public interface BoardMapper {
             WHERE board_id=#{boardId}
               AND member_id=#{memberId}
             """)
-    int selectViewByBoardIdAndMemberId(Integer boardId, String memberId);
+    int selectViewByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
 
     @Delete("""
