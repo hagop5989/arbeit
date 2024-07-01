@@ -99,8 +99,8 @@ export function BoardEdit() {
     axios
       .putForm(`/api/board/${id}`, {
         id: board.id,
-        title: board.title,
-        content: board.content,
+        title: title,
+        content: content,
         removeImages,
         addImages,
       })

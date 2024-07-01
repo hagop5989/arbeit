@@ -118,7 +118,7 @@ public interface BoardMapper {
                     <when test="filterType == '좋아요순'">
                         ORDER BY number_of_like DESC
                     </when>
-                <when test="filterType == '댓글순'">
+                    <when test="filterType == '댓글순'">
                         ORDER BY number_of_comments DESC
                     </when>
                     <otherwise>
