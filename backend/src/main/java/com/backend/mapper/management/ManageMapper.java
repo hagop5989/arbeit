@@ -26,9 +26,11 @@ public interface ManageMapper {
             JOIN jobs j ON a.jobs_id = j.id
             JOIN store s ON s.id = j.store_id
             JOIN member m ON a.member_id = m.id
-            WHERE j.member_id= #{authId} AND m.name != '탈퇴한 유저';
+            WHERE j.member_id= #{authId} AND m.name != '탈퇴한 유저'
+            ORDER BY a.inserted DESC
+            LIMIT #{offset},8;
             """)
-    List<Map<String, Object>> selectApplicationsByAuthId(Integer authId);
+    List<Map<String, Object>> selectApplicationsByAuthId(Integer authId, Integer offset);
 
     @Select("""
             SELECT
@@ -88,4 +90,25 @@ public interface ManageMapper {
             VALUES (#{albaId}, #{bossId}, #{albaScore})
             """)
     void insertReviewToAlba(AlbaScore score);
+
+    @Select("""
+            SELECT count(*)
+            FROM application a
+            JOIN member m ON m.id = a.member_id
+            JOIN resume r ON r.id = a.resume_id
+            WHERE is_passed IS NULL
+            AND a.jobs_id
+            IN (SELECT j.id FROM jobs j WHERE j.member_id = #{memberId});
+            """)
+    Integer count(Integer memberId);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM application a
+            JOIN member m ON m.id = a.member_id
+            JOIN resume r ON r.id = a.resume_id
+            WHERE m.name != '탈퇴한 유저'
+              AND a.jobs_id IN (SELECT j.id FROM jobs j WHERE j.member_id = #{memberId});
+            """)
+    Integer countAll(Integer authId);
 }

@@ -20,6 +20,13 @@ import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { ContractModal } from "./ContractModal.jsx";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faAnglesLeft,
+  faAnglesRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 const styles = {
   th: {
@@ -39,11 +46,23 @@ export function ApplicationMangeList() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const account = useContext(LoginContext);
 
+  const pageNums = [];
+  const [pageInfo, setPageInfo] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     axios
-      .get("/api/application-manage/list")
+      .get("/api/application-manage/list", {
+        params: { currentPage: currentPage },
+      })
       .then((res) => {
         setApplicationList(res.data);
+        const updatedApplicationList = [...res.data]; // 배열을 복사하여 불변성 유지
+        updatedApplicationList.splice(updatedApplicationList.length - 1, 1); // 마지막 요소 제거
+        setApplicationList(updatedApplicationList);
+
+        // 마지막 요소의 pageInfo 설정
+        setPageInfo(res.data[res.data.length - 1].pageInfo);
       })
       .catch((err) => {
         if (err.response.status === 401) {
@@ -53,7 +72,7 @@ export function ApplicationMangeList() {
           navigate("/");
         }
       });
-  }, [account.id, reload]);
+  }, [account.id, reload, currentPage]);
 
   function handleRejectBtn(application) {
     const confirm = window.confirm("불합격 시키시겠습니까?");
@@ -64,17 +83,32 @@ export function ApplicationMangeList() {
         )
         .then(() => {
           alert("불합격 처리되었습니다.");
+          account.setPostCheck(!account.postCheck);
         })
         .catch((err) => {
           alert(err.response.data);
         })
-        .finally(() => setReload(!reload));
+        .finally(() => {
+          setReload(!reload);
+        });
     }
   }
 
   function handleAcceptBtn(application) {
     setSelectedApplication(application);
     onOpen();
+  }
+
+  // 페이징, 검색 관련
+  if (pageInfo) {
+    for (let i = pageInfo.leftPage; i <= pageInfo.rightPage; i++) {
+      pageNums.push(i);
+    }
+  }
+
+  function handlePageButtonClick(currentPage) {
+    setCurrentPage(currentPage);
+    console.log(currentPage);
   }
 
   const btnStyles = (color) => ({
@@ -196,8 +230,49 @@ export function ApplicationMangeList() {
             reload={reload}
             setReload={setReload}
           />
+          <Box my={6}>{Paging()}</Box>
         </Box>
       )}
     </>
   );
+
+  /* 페이징 */
+  function Paging() {
+    return (
+      <Center gap={3} mt={2}>
+        <Flex gap={2}>
+          {pageInfo.prevPage && (
+            <>
+              <Button onClick={() => handlePageButtonClick(1)}>
+                <FontAwesomeIcon icon={faAnglesLeft} />
+              </Button>
+              <Button onClick={() => handlePageButtonClick(pageInfo.prevPage)}>
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </Button>
+            </>
+          )}
+
+          {pageNums.map((pageNum) => (
+            <Button
+              onClick={() => handlePageButtonClick(pageNum)}
+              key={pageNum}
+              colorScheme={pageNum === pageInfo.currentPage ? "blue" : "gray"}
+            >
+              {pageNum}
+            </Button>
+          ))}
+          {pageInfo.nextPage && (
+            <>
+              <Button onClick={() => handlePageButtonClick(pageInfo.nextPage)}>
+                <FontAwesomeIcon icon={faAngleRight} />
+              </Button>
+              <Button onClick={() => handlePageButtonClick(pageInfo.lastPage)}>
+                <FontAwesomeIcon icon={faAnglesRight} />
+              </Button>
+            </>
+          )}
+        </Flex>
+      </Center>
+    );
+  }
 }
