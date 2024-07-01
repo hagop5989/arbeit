@@ -26,7 +26,7 @@ export function LeftNavbar() {
   const bossMenu = [
     { name: "공고 등록", url: "/jobs/register" },
     { name: "지원내역", url: "/application-manage/list" },
-    { name: "사업장 리스트", url: "/store/register" },
+    { name: "사업장 등록", url: "/store/register" },
     { name: "나의 사업장 리스트", url: "/store/list" },
     { name: "직원 리스트", url: "/alba-list" },
   ];
@@ -71,7 +71,7 @@ export function LeftNavbar() {
         <Table>
           <Thead>
             <Tr>
-              <Th bgColor={"gray.100"}>메뉴</Th>
+              <Th bgColor={"gray.100"}>Menu</Th>
             </Tr>
           </Thead>
           <Tbody>

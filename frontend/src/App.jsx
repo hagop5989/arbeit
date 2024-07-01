@@ -10,10 +10,10 @@ import axios from "axios";
 import memberRoutes from "./routes/memberRoutes.jsx";
 import bossRoutes from "./routes/bossRoutes.jsx";
 import boardRoutes from "./routes/boardRoutes.jsx";
-import { MainPage } from "./MainPage.jsx";
 import theme from "../index.js";
 import { useEffect } from "react";
 import albaRoutes from "./routes/albaRoutes.jsx";
+import MainPage from "./MainPage.jsx";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
