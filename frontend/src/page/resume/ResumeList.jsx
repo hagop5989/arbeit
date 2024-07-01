@@ -31,7 +31,7 @@ export function ResumeList() {
 
   useEffect(() => {
     axios
-      .get("/api/only-boss")
+      .get("/api/only-alba")
       .then(() => {
         if (account.id !== "") {
           axios.get(`/api/${account.id}/resume/list`).then((res) => {

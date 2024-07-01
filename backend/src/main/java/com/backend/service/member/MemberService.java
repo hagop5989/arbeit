@@ -96,9 +96,9 @@ public class MemberService {
         return member;
     }
 
-    public void edit(MemberEditForm form, Authentication authentication) {
+    public void edit(MemberEditForm form) {
 
-        Member dbMember = mapper.selectById(Integer.valueOf(authentication.getName()));
+        Member dbMember = mapper.selectById(form.getId());
         String password = dbMember.getPassword();
         String newPassword = form.getPassword();
 
@@ -109,7 +109,7 @@ public class MemberService {
         }
 
         Member member = new Member(
-                Integer.valueOf(authentication.getName()),
+                form.getId(),
                 null,
                 password,
                 form.getName(),

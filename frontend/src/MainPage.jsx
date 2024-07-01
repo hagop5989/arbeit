@@ -262,7 +262,7 @@ function MainPage() {
             border={"2px solid #CCD4E0"}
             borderRadius={"10px"}
             cursor={"pointer"}
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/jobs/list")}
           >
             <Center {...needStyle} as="div">
               <Box mr={"5px"}>알바공고 보러가기</Box>
