@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -21,30 +20,21 @@ public class CommentService {
 
     final CommentMapper mapper;
 
-    public void add(CommentWriterForm form, Authentication authentication
+    public void write(CommentWriterForm form, Authentication authentication
     ) {
         Comment comment = new Comment(
                 null,
                 form.getBoardId(),
                 Integer.valueOf(authentication.getName()),
                 form.getComment(),
-                LocalDateTime.now()
+                null
         );
         mapper.insert(comment);
-
     }
 
     public List<CommentListForm> list(Integer boardId) {
-
-        List<CommentListForm> commentList = mapper.selectAll(boardId);
-        return commentList;
+        return mapper.selectAll(boardId);
     }
-
-    public void delete(Integer id) {
-        mapper.deleteById(id);
-
-    }
-
 
     public void edit(CommentEditForm form, Integer Id) {
         Comment comment = new Comment(
@@ -56,6 +46,9 @@ public class CommentService {
         mapper.update(comment);
     }
 
+    public void delete(Integer id) {
+        mapper.deleteById(id);
+    }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
         Comment comment = mapper.selectById(id);
@@ -65,10 +58,6 @@ public class CommentService {
         Integer memberId = comment.getMemberId();
         String loginId = authentication.getName();
         return String.valueOf(memberId).equals(loginId);
-    }
-
-    public Comment findById(Integer id) {
-        return mapper.selectById(id);
     }
 
     public void deleteByBoardId(Integer boardId) {

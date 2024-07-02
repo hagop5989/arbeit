@@ -10,8 +10,8 @@ import java.util.List;
 public interface CommentMapper {
     @Insert("""
             INSERT INTO comment
-            (id,board_id,member_id,comment)
-            VALUES (#{id},#{boardId},#{memberId},#{comment})
+            (board_id,member_id,comment)
+            VALUES (#{boardId},#{memberId},#{comment})
             """)
     int insert(Comment comment);
 
@@ -24,7 +24,7 @@ public interface CommentMapper {
             FROM comment c
             JOIN member m ON m.id = c.member_id
             WHERE board_Id = #{boardId}
-            ORDER BY c.id
+            ORDER BY c.id DESC
             """)
     List<CommentListForm> selectAll(Integer boardId);
 

@@ -8,11 +8,9 @@ import {
   InputRightElement,
   Text,
   Textarea,
-  useToast,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,61 +19,34 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 
-export function CommentWrite({ boardId, setIsProcessing }) {
+export function CommentWrite({ boardId, reload, setReload }) {
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState({});
   const [isAnswered, setIsAnswered] = useState(false);
+
   const account = useContext(LoginContext);
-  const toast = useToast();
-  const navigate = useNavigate();
 
   const maxCommentLength = 300;
 
-  function handleCommentSubmitClick() {
-    if (!account || !account.id) {
-      toast({
-        status: "error",
-        description: "로그인해주세요",
-        position: "top",
-      });
-      return;
-    }
-
+  function handleSubmitBtn() {
     axios
-      .post("/api/comment/add", {
+      .post("/api/comment/write", {
         ...comment,
-        boardId: boardId,
+        boardId,
         memberId: account.id,
       })
       .then(() => {
         setComment("");
-        toast({
-          status: "success",
-          description: "댓글 등록 하였습니다 ",
-          position: "top",
-        });
       })
       .catch((err) => {
         setErrors(err.response.data);
       })
-      .finally(() => {
-        setIsProcessing(false);
-      });
+      .finally(() => setReload(!reload));
   }
 
   const handleTextareaChange = (prop) => (e) => {
     setComment({ ...comment, [prop]: e.target.value });
   };
-
-  function handleCommentWrite() {
-    if (!account || !account.id) {
-      toast({
-        status: "error",
-        description: "로그인하세요",
-        position: "top",
-      });
-    }
-  }
 
   function handleAnswerBtn() {
     setIsAnswered(!isAnswered);
@@ -104,7 +75,7 @@ export function CommentWrite({ boardId, setIsProcessing }) {
           </Box>
         </Flex>
         {isAnswered && (
-          <Box onClick={handleCommentWrite} mt={"5px"}>
+          <Box mt={"5px"}>
             <InputGroup>
               <Textarea
                 h={"70px"}
@@ -117,7 +88,7 @@ export function CommentWrite({ boardId, setIsProcessing }) {
                   mr={"10px"}
                   h={"70px"}
                   colorScheme={"green"}
-                  onClick={handleCommentSubmitClick}
+                  onClick={handleSubmitBtn}
                 >
                   <FontAwesomeIcon icon={faPaperPlane} />
                 </Button>

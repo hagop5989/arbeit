@@ -1,21 +1,13 @@
 package com.backend.service.board;
 
 import com.backend.domain.board.Board;
-import com.backend.domain.board.BoardImage;
 import com.backend.domain.board.form.BoardEditForm;
 import com.backend.domain.board.form.BoardWriteForm;
 import com.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,16 +20,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class BoardService {
 
-    @Value("${aws.s3.bucket.name}")
-    String bucketName;
-
-    @Value("${image.src.prefix}")
-    String srcPrefix;
-
-    private final S3Client s3Client;
-
     private final BoardMapper mapper;
-
     private final CommentService commentService;
 
     public void write(BoardWriteForm form, Authentication authentication
@@ -53,18 +36,6 @@ public class BoardService {
                 null, null, null
         );
         mapper.insert(board);
-
-        Integer boardId = board.getId();
-
-        //사진
-        List<MultipartFile> images = form.getImages();
-        if (images != null) {
-            for (MultipartFile image : images) {
-                String imageName = image.getOriginalFilename();
-                mapper.insertImage(boardId, imageName);
-                saveBoardImageToS3(image, boardId, imageName);
-            }
-        }
     }
 
     public Map<String, Object> findById(Integer boardId, Authentication authentication) {
@@ -88,24 +59,15 @@ public class BoardService {
         view.put("view", v == 1);
         view.put("count", mapper.selectCountView(boardId));
 
-
-        List<String> imagesNames = mapper.selectImageNameById(boardId);
-        List<BoardImage> images = imagesNames.stream()
-                .map(imageName -> new BoardImage(imageName, STR."arbeit/board/\{boardId}/\{imageName}"))
-                .toList();
-
         result.put("board", board);
-        result.put("images", images);
         result.put("like", like);
         result.put("view", view);
-
 
         return result;
 
     }
 
-
-    public Map<String, Object> list(
+    public Map<String, Object> findAll(
             Integer page,
             String searchType,
             String keyword,
@@ -144,37 +106,12 @@ public class BoardService {
 
     //update
     public void edit(BoardEditForm form, Authentication authentication) throws IOException {
-
-
-        Integer boardId = form.getId();
         Board board = new Board(
                 form.getId(),
                 form.getTitle(),
                 form.getContent()
         );
         mapper.update(board);
-
-
-        //사진삭제
-        removeBoardImageToS3(boardId, form.getRemoveImages());
-        List<String> removeImages = form.getRemoveImages();
-        if (removeImages != null) {
-            for (String removeImage : removeImages) {
-                mapper.deleteByboardIdAndImageName(boardId, removeImage);
-            }
-        }
-        //사진 추가
-        List<MultipartFile> addImages = form.getAddImages();
-
-        if (addImages != null) {
-            for (MultipartFile addImage : addImages) {
-                String imageName = addImage.getOriginalFilename();
-                mapper.insertImage(boardId, imageName);
-                saveBoardImageToS3(addImage, boardId, addImage.getOriginalFilename());
-            }
-        }
-
-
     }
 
 
@@ -188,9 +125,6 @@ public class BoardService {
         // 이미지 파일명 조회
         List<String> fileNames = mapper.selectImageNameById(boardId);
 
-        // 이미지 파일 S3에서 삭제
-        removeBoardImageToS3(boardId, fileNames);
-
         // 보드에 연결된 이미지 데이터 삭제
         mapper.deleteByboardId(boardId);
 
@@ -200,38 +134,6 @@ public class BoardService {
         // 보드 데이터 삭제
         mapper.deleteById(boardId);
     }
-
-
-    private void saveBoardImageToS3(MultipartFile image, int boardId, String imageName) throws IOException {
-
-        String key = STR."arbeit/board/\{boardId}/\{imageName}";
-        PutObjectRequest objectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .acl(ObjectCannedACL.PUBLIC_READ)
-                .build();
-
-        s3Client.putObject(objectRequest,
-                RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
-    }
-
-    private void removeBoardImageToS3(Integer boardId, List<String> removeImages) {
-        if (removeImages != null && !removeImages.isEmpty()) {
-            for (String imageName : removeImages) {
-
-                String key = STR."arbeit/board/\{boardId}/\{imageName}";
-                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build();
-                s3Client.deleteObject(objectRequest);
-
-                //db.삭제
-                mapper.deleteByboardIdAndImageName(boardId, imageName);
-            }
-        }
-    }
-
 
     public boolean hasAccess(BoardEditForm form, Authentication authentication) {
 

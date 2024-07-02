@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentWriterForm {
 
-    private Integer id;
     private Integer boardId;
     private Integer memberId;
     @NotBlank

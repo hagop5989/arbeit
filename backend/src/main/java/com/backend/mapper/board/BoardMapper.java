@@ -86,12 +86,10 @@ public interface BoardMapper {
                        b.inserted,
                        m.name ,
                        COUNT(DISTINCT c.id) AS number_of_comments,
-                       COUNT(DISTINCT f.name) AS number_of_images,
                        COUNT(DISTINCT l.member_id) AS number_of_like,
                        COUNT(DISTINCT v.member_id) AS number_of_view
                 FROM board b
                 JOIN member m ON m.id = b.member_id
-                LEFT JOIN board_image f ON b.id = f.board_id
                 LEFT JOIN board_like l ON b.id = l.board_id
                 LEFT JOIN comment c ON b.id = c.board_id
                 LEFT JOIN board_view v ON b.id = v.board_id
