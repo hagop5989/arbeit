@@ -94,12 +94,27 @@ public interface ApplicationMapper {
     Integer selectCountByMemberId(Integer memberId);
 
     @Select("""
+            <script>
             SELECT COUNT(*)
             FROM application a
                 JOIN member m ON m.id = a.member_id
                 JOIN resume r ON r.id = a.resume_id
                 JOIN jobs j ON j.id = a.jobs_id
             WHERE m.name != '탈퇴한 유저' AND a.member_id = #{memberId}
+            <if test="selectedType != null">
+              <choose>
+                  <when test="selectedType == '합격'">
+                  AND a.is_passed = 1
+                  </when>
+                  <when test="selectedType == '불합격'">
+                  AND a.is_passed = 0
+                  </when>
+                  <when test="selectedType == '미정'">
+                   AND a.is_passed IS NULL
+              </when>
+              </choose>
+              </if>
+            </script>
             """)
-    Integer countAll(Integer memberId);
+    Integer countAllWithSearch(Integer memberId, String selectedType);
 }

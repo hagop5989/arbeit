@@ -44,10 +44,10 @@ public class ApplicationService {
     }
 
     public Map<String, Object> findAllByAuthId(Integer currentPage, String selectedType, Integer memberId) {
-        
+
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> pageInfo = new HashMap<>();
-        Integer offset = paging(currentPage, pageInfo, memberId);
+        Integer offset = paging(currentPage, pageInfo, memberId, selectedType);
         List<Application> applicationList = mapper.list(memberId, offset, selectedType);
 
         List<Application> list = applicationList.stream()
@@ -100,8 +100,8 @@ public class ApplicationService {
     }
 
     // 페이징
-    private Integer paging(Integer currentPage, Map<String, Object> pageInfo, Integer memberId) {
-        Integer countAll = mapper.countAll(memberId);
+    private Integer paging(Integer currentPage, Map<String, Object> pageInfo, Integer memberId, String selectedType) {
+        Integer countAll = mapper.countAllWithSearch(memberId, selectedType);
         Integer itemPerPage = 8; // 페이지당 항목 수 지정
         Integer offset = (currentPage - 1) * itemPerPage;
 
