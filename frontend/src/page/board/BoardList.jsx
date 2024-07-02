@@ -254,11 +254,13 @@ export function BoardList() {
           </Table>
         )}
       </Box>
-      <Box mt={"10px"} align={"right"}>
-        <Button colorScheme={"orange"} onClick={handleWriteButtonClick}>
-          글쓰기
-        </Button>
-      </Box>
+      {account.isLoggedIn() && (
+        <Box mt={"10px"} align={"right"}>
+          <Button colorScheme={"orange"} onClick={handleWriteButtonClick}>
+            글쓰기
+          </Button>
+        </Box>
+      )}
 
       {/* Pagination Section */}
       <Center mt={8}>
