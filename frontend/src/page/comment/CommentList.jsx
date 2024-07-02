@@ -47,6 +47,12 @@ export function CommentList({ boardId, reload, setReload }) {
         .finally(() => setReload(!reload));
     }
 
+    function handleDelete() {
+      axios.delete(`/api/comment/${comment.id}`).then((res) => {
+        setReload(!reload);
+      });
+    }
+
     return (
       <Box p={5} shadow="md" borderWidth="1px" w={"100%"}>
         <Flex fontSize={"17px"}>
@@ -84,7 +90,9 @@ export function CommentList({ boardId, reload, setReload }) {
               <Box mr={"5px"} {...styles.btn} onClick={handleIsEditing}>
                 수정
               </Box>
-              <Box {...styles.btn}>삭제</Box>
+              <Box {...styles.btn} onClick={handleDelete}>
+                삭제
+              </Box>
             </Flex>
           )}
           {isEditing && (
