@@ -30,8 +30,7 @@ CREATE TABLE board_image
     PRIMARY KEY (board_id, name)
 );
 
-SELECT *
-FROM board_image;
+DROP TABLE board_image;
 
 
 

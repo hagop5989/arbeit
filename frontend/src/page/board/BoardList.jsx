@@ -34,7 +34,6 @@ import {
   faHeart as fullHeart,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import { faImages } from "@fortawesome/free-solid-svg-icons/faImages";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function BoardList() {
@@ -229,14 +228,6 @@ export function BoardList() {
                           <Flex alignItems="center">
                             <FontAwesomeIcon icon={faComments} />
                             <Box ml={1}>{board.numberOfComments}</Box>
-                          </Flex>
-                        </Badge>
-                      )}
-                      {board.numberOfImages > 0 && (
-                        <Badge bgColor={"transparent"} mr={1}>
-                          <Flex alignItems="center">
-                            <FontAwesomeIcon icon={faImages} />
-                            <Box ml={1}>{board.numberOfImages}</Box>
                           </Flex>
                         </Badge>
                       )}

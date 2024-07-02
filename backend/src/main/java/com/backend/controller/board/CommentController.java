@@ -27,16 +27,16 @@ public class CommentController {
 
     final CommentService service;
 
-    @PostMapping("/add")
+    @PostMapping("/write")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity add(@Validated @RequestBody CommentWriterForm form, BindingResult bindingResult,
-                              Authentication authentication) {
+    public ResponseEntity write(@Validated @RequestBody CommentWriterForm form, BindingResult bindingResult,
+                                Authentication authentication) {
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.badRequest().body(errors);
         }
-        service.add(form, authentication);
+        service.write(form, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -60,10 +60,8 @@ public class CommentController {
 
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity edit(@Validated @RequestBody CommentEditForm form,
-                               BindingResult bindingResult,
-                               @PathVariable Integer id,
-                               Authentication authentication) throws Exception {
+    public ResponseEntity edit(@Validated @RequestBody CommentEditForm form, BindingResult bindingResult,
+                               @PathVariable Integer id, Authentication authentication) throws Exception {
 
         log.info("form={}", form);
         log.info("commentId={}", id);

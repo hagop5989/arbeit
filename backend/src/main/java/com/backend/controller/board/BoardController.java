@@ -69,7 +69,7 @@ public class BoardController {
             @RequestParam(value = "filterDetail", defaultValue = "") String filterDetail
     ) {
 
-        return boardService.list(page, searchType, keyword, filterType, filterDetail);
+        return boardService.findAll(page, searchType, keyword, filterType, filterDetail);
     }
 
 

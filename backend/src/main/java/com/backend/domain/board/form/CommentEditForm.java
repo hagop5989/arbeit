@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentEditForm {
-
-    private int id;
-    private int boardid;
-
     @NotBlank
     private String comment;
-
 }
 

@@ -12,9 +12,9 @@ import { CommentList } from "../comment/CommentList.jsx";
 export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState({});
-  const [images, setImages] = useState([]);
   const [like, setLike] = useState(null);
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
+  const [reload, setReload] = useState(false);
   const [view, setView] = useState(0);
   const toast = useToast();
   const navigate = useNavigate();
@@ -26,7 +26,6 @@ export function BoardView() {
       .then((res) => {
         setView(res.data.view);
         setBoard(res.data.board);
-        setImages(res.data.images);
         setLike(res.data.like);
       })
       .catch((err) => {
@@ -142,8 +141,8 @@ export function BoardView() {
       <Box bg="gray.100" h={"400px"} my={"40px"} p={"15px"} fontSize={"20px"}>
         {board.content}
       </Box>
-      <CommentWrite />
-      <CommentList boardId={board.id} />
+      <CommentWrite boardId={board.id} reload={reload} setReload={setReload} />
+      <CommentList boardId={board.id} reload={reload} setReload={setReload} />
     </Box>
   );
 }
