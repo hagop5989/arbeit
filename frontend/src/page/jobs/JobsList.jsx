@@ -46,7 +46,7 @@ import { ko } from "date-fns/locale";
 
 export function JobsList() {
   const account = useContext(LoginContext);
-  const [selectedFilterDetail, setSelectedFilterDetail] = useState([]);
+  const [selectedFilterDetail, setSelectedFilterDetail] = useState("");
   const [inputKeyword, setInputKeyword] = useState("");
   const [filterType, setFilterType] = useState("최신등록");
   const [jobsList, setJobsList] = useState([]);
@@ -128,16 +128,17 @@ export function JobsList() {
     setCurrentPage(currentPage);
   }
 
+  // 검색을 처리하는 함수
   function handleSearchClick() {
     setReload(!reload);
     setSearchKeyword(inputKeyword);
-    const typeParam = searchType;
-    const keywordParam = inputKeyword;
 
     const params = new URLSearchParams({
-      type: typeParam,
-      keyword: keywordParam,
+      type: searchType,
+      keyword: inputKeyword, // 현재 입력된 검색어로 검색
       page: 1,
+      filterType, // 현재 필터 타입 유지
+      filterDetail: selectedFilterDetail, // 현재 선택된 상세 필터 유지
     });
 
     navigate(`/jobs/list?${params.toString()}`);
@@ -147,7 +148,8 @@ export function JobsList() {
   function handleFilterChange(e) {
     setReload(!reload);
     setFilterType(e.target.value);
-    setSelectedFilterDetail([]);
+    setSelectedFilterDetail("");
+    setInputKeyword("");
 
     const params = new URLSearchParams({
       type: searchType,
@@ -164,9 +166,11 @@ export function JobsList() {
   function handleDetailFilterChange(e) {
     setReload(!reload);
     setSelectedFilterDetail(e.target.value);
+    setInputKeyword("");
+
     const params = new URLSearchParams({
       type: searchType,
-      keyword: searchKeyword,
+      keyword: "",
       page: 1,
       filterType,
       filterDetail: e.target.value,
@@ -572,7 +576,7 @@ export function JobsList() {
             <Text fontWeight="bold">시급 {job.salary.toLocaleString()} 원</Text>
           </Box>
 
-          <Box w={"10%"}>
+          <Box w={"11%"}>
             <Box textIndent={"70px"}>
               <Tooltip label="스크랩" placement="top" aria-label="A tooltip">
                 <FontAwesomeIcon

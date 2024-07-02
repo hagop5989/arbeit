@@ -88,8 +88,13 @@ export function Profile() {
             href={isBoss ? "/application-manage/list" : "/application/list"}
           >
             지원내역
-            <Box fontSize={"13px"}>
-              {account.alarmNum}건 <FontAwesomeIcon icon={faChevronRight} />
+            <Box fontSize={"13px"} lineHeight={"15px"}>
+              <Flex>
+                <Text color={"orange"} fontSize={"12px"} h={"15px"} mr={1}>
+                  신규
+                </Text>
+                {account.alarmNum}건 <FontAwesomeIcon icon={faChevronRight} />
+              </Flex>
             </Box>
           </Link>
         </Box>

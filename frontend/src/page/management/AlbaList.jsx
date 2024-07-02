@@ -126,19 +126,25 @@ export function AlbaList() {
           borderBottom={"2px solid #E9E9E9"}
         >
           <Tr>
-            <Th w={"20px"} {...styles.th}>
+            <Th w={"5%"} {...styles.th}>
               #
             </Th>
-            <Th {...styles.th} w={"100px"}>
+            <Th w={"15%"} {...styles.th}>
               직원명
             </Th>
-            <Th w={"150px"} {...styles.th}>
+            <Th w={"20%"} {...styles.th}>
               연락처
             </Th>
-            <Th w={"200px"} {...styles.th}>
+            <Th w={"15%"} {...styles.th}>
               일하는 지점
             </Th>
-            <Th w={"100px"} {...styles.th}>
+            <Th w={"12%"} {...styles.th}>
+              계약시작
+            </Th>
+            <Th w={"12%"} {...styles.th}>
+              계약종료
+            </Th>
+            <Th w={"13%"} {...styles.th}>
               알바점수 주기
             </Th>
           </Tr>
@@ -154,6 +160,12 @@ export function AlbaList() {
                 {formatPhoneNumber(alba.albaPhone)}
               </Td>
               <Td {...styles.td}>{alba.storeName}</Td>
+              <Td fontSize={"sm"} {...styles.td}>
+                {alba.startDate}
+              </Td>
+              <Td fontSize={"sm"} {...styles.td}>
+                {alba.endDate}
+              </Td>
               <Td {...styles.td} w={"100px"}>
                 {alba.albaReview === undefined && (
                   <Button

@@ -188,10 +188,13 @@ public interface BoardMapper {
 
 
     @Select("""
+                      
             SELECT COUNT(*) FROM board_like
-            WHERE board_id=#{boardId}
+            WHERE member_id=#{memberId}
+              AND board_id=#{boardId}
+                    
             """)
-    int selectLikeByBoardIdAndMemberId(Integer boardId);
+    int selectLikeByBoardIdAndMemberId(String memberId, Integer boardId);
 
 
     @Select("""

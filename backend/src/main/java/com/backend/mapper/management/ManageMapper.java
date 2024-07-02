@@ -92,13 +92,16 @@ public interface ManageMapper {
                             m.phone albaPhone,
                             s.name storeName,
                             j.id jobsId,
-                            ra.alba_id albaReview
+                            ra.alba_id albaReview,
+                            c.start_date startDate,
+                            c.end_date endDate
             FROM jobs j
                      JOIN application a ON j.id = a.jobs_id
                      JOIN member m ON a.member_id = m.id
+                     JOIN contract c ON c.boss_id = j.member_id AND c.jobs_id = j.id AND c.alba_id = a.member_id
                      JOIN store s ON j.store_id = s.id
                      LEFT JOIN review_to_alba ra ON ra.alba_id = m.id AND ra.boss_id = #{authId} AND ra.jobs_id = j.id
-            WHERE j.member_id = #{authId};
+            WHERE j.member_id = #{authId} AND a.is_passed = 1;
             """)
     List<Map<String, Object>> selectAlbaList(Integer authId);
 
