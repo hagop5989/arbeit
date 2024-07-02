@@ -123,6 +123,7 @@ public interface ManageMapper {
     Integer count(Integer memberId);
 
     @Select("""
+            <script>
             SELECT COUNT(*)
             FROM application a
             JOIN member m ON m.id = a.member_id
@@ -131,7 +132,21 @@ public interface ManageMapper {
             JOIN store s ON s.id = j.store_id
             WHERE m.name != '탈퇴한 유저'
               AND a.jobs_id
-              IN (SELECT j.id FROM jobs j WHERE j.member_id = #{bossId});
+              IN (SELECT j.id FROM jobs j WHERE j.member_id = #{bossId})
+            <if test="selectedType != null">
+               <choose>
+                   <when test="selectedType == '합격'">
+                   AND a.is_passed = 1
+                   </when>
+                   <when test="selectedType == '불합격'">
+                   AND a.is_passed = 0
+                   </when>
+                   <when test="selectedType == '미정'">
+                    AND a.is_passed IS NULL
+               </when>
+               </choose>
+            </if>
+            </script>
             """)
-    Integer countAll(Integer bossId);
+    Integer countAllWithSearch(Integer bossId, String selectedType);
 }
