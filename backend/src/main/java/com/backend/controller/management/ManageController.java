@@ -71,7 +71,7 @@ public class ManageController {
 
     @GetMapping("/application-manage/count")
     public Integer count(@AuthId Integer memberId) {
-        log.info("count.call");
+//        log.info("count.call");
         return service.count(memberId);
     }
 

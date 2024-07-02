@@ -106,6 +106,7 @@ export function ResumeList() {
                 <Box>* 이력서를 등록하면 알바 채용에 지원할 수 있습니다.</Box>
                 <Box>* 이력서는 최대 5개까지 작성할 수 있습니다.</Box>
               </Box>
+
               <Spacer />
               <Button
                 mt={"25px"}
@@ -117,6 +118,7 @@ export function ResumeList() {
                 이력서 등록
               </Button>
             </Flex>
+
             <Box>
               <Table>
                 <Thead

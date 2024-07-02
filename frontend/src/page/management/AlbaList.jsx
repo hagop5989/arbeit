@@ -174,7 +174,8 @@ export function AlbaList() {
                 {alba.albaReview === undefined && (
                   <Button
                     size={"sm"}
-                    colorScheme={"orange"}
+                    bgColor={"#ffaf5b"}
+                    color={"white"}
                     onClick={() => handleOpenModal(alba)}
                   >
                     점수 주기
