@@ -33,6 +33,7 @@ import {
 } from "./jobsConst.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const styles = {
   formControl: {
@@ -194,6 +195,9 @@ export function JobsRegister() {
     <>
       {account.isBoss() && (
         <Box w="100%" mx="auto" p={5}>
+          <Helmet>
+            <title>채용공고 등록 - 알바커넥터</title>
+          </Helmet>
           <Box
             h={"70px"}
             mb={"70px"}

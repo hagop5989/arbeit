@@ -9,9 +9,10 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 export function MemberList() {
   const [memberList, setMemberList] = useState([]);
@@ -26,6 +27,9 @@ export function MemberList() {
   return (
     <Center>
       <Box>
+        <Helmet>
+          <title>회원목록 - 알바커넥터</title>
+        </Helmet>
         <Box>
           <Heading>회원 목록</Heading>
         </Box>

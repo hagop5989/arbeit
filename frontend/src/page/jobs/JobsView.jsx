@@ -21,6 +21,7 @@ import { JobContact } from "./jobsview_component/JobContact.jsx";
 import { CompanyInfo } from "./jobsview_component/CompanyInfo.jsx";
 import { JobRequirements } from "./jobsview_component/JobRequirements.jsx";
 import { ApplicationWriteModal } from "../application/ApplicationWriteModal.jsx";
+import { Helmet } from "react-helmet";
 
 export function JobsView() {
   const account = useContext(LoginContext);
@@ -105,6 +106,9 @@ export function JobsView() {
 
   return (
     <Center flexDirection="column" p={5} bg="#f7f9fc">
+      <Helmet>
+        <title>채용공고 - 알바커넥터</title>
+      </Helmet>
       <Stack spacing={6}>
         <JobDetail jobs={jobs} jobsCond={jobsCond} src={src} />
         <Divider />

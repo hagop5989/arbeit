@@ -34,6 +34,7 @@ import {
   faKey,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 export function MemberInfo() {
   const { id } = useParams();
@@ -171,6 +172,9 @@ export function MemberInfo() {
 
   return (
     <Box w="full" maxW="65%" mx="auto" p={3} bgColor={"#f9fbfc"}>
+      <Helmet>
+        <title>회원정보 - 알바커넥터</title>
+      </Helmet>
       <Box bg={"#ffffff"} borderRadius={"10px"} p={2}>
         <Box>
           <Box

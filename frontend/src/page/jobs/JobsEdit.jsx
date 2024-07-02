@@ -34,6 +34,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 const styles = {
   formControl: {
@@ -243,6 +244,9 @@ export function JobsEdit() {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Helmet>
+        <title>채용공고 수정 - 알바커넥터</title>
+      </Helmet>
       <Box
         h={"70px"}
         mb={"70px"}

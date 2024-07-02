@@ -30,6 +30,7 @@ import {
   faEyeSlash,
   faKey,
 } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 export function Login() {
   const [authority, setAuthority] = useState("ALBA");
@@ -91,6 +92,9 @@ export function Login() {
 
   return (
     <Box w={"500px"} h={"500px"}>
+      <Helmet>
+        <title>로그인 - 알바커넥터</title>
+      </Helmet>
       <Box
         h={"60px"}
         mb={"30px"}

@@ -35,6 +35,7 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -123,6 +124,9 @@ export function BoardList() {
 
   return (
     <Box p={4} w={"1050px"}>
+      <Helmet>
+        <title>질문 게시판 - 알바커넥터</title>
+      </Helmet>
       <Box
         w={"100%"}
         h={"120px"}

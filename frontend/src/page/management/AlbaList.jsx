@@ -29,6 +29,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const styles = {
   th: {
@@ -103,6 +104,9 @@ export function AlbaList() {
 
   return (
     <Box minH={"500px"} mb={"150px"}>
+      <Helmet>
+        <title>내 직원 목록 - 알바커넥터</title>
+      </Helmet>
       <Box>
         <Heading p={1} fontFamily={"SBAggroB"}>
           직원 관리

@@ -15,6 +15,7 @@ import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const styles = {
   text: {
@@ -109,6 +110,9 @@ export function ApplicationManageView() {
     <>
       {account.isBoss() && (
         <Box w="800px" height={"700px"}>
+          <Helmet>
+            <title>지원서 - 알바커넥터</title>
+          </Helmet>
           <Heading p={1} fontFamily={"SBAggroB"}>
             지원서
           </Heading>

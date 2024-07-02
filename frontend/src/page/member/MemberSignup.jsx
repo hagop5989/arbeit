@@ -11,9 +11,9 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { SignupComponent } from "./SignupComponent.jsx";
+import { Helmet } from "react-helmet";
 
 export function MemberSignup() {
   const [member, setMember] = useState({
@@ -22,7 +22,6 @@ export function MemberSignup() {
   });
   const [isAdmin, setIsAdmin] = useState(false);
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
 
   function handleAuthTab(authority) {
     setMember({ ...member, authority });
@@ -43,6 +42,9 @@ export function MemberSignup() {
 
   return (
     <Box w={"700px"}>
+      <Helmet>
+        <title>회원가입 - 알바커넥터</title>
+      </Helmet>
       <Box
         h={"60px"}
         mb={"30px"}

@@ -29,6 +29,7 @@ import DaumPostcodeEmbed from "react-daum-postcode";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 const styles = {
   formControl: {
@@ -137,6 +138,9 @@ export function StoreRegister() {
     <>
       {account.isBoss() && (
         <Box width={"100%"}>
+          <Helmet>
+            <title>사업장 등록 - 알바커넥터</title>
+          </Helmet>
           <Box
             h={"70px"}
             mb={"70px"}

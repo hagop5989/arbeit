@@ -14,6 +14,7 @@ import axios from "axios";
 import LocationMap from "../../component/LocationMap.jsx";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Helmet } from "react-helmet";
 
 const styles = {
   menu: {
@@ -73,6 +74,9 @@ export function StoreView() {
 
   return (
     <Box w={"70%"}>
+      <Helmet>
+        <title>사업장 정보 - 알바커넥터</title>
+      </Helmet>
       <Box
         h={"70px"}
         mb={"70px"}

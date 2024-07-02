@@ -43,6 +43,7 @@ import {
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import { differenceInHours, format, isToday } from "date-fns";
 import { ko } from "date-fns/locale";
+import { Helmet } from "react-helmet";
 
 export function JobsList() {
   const account = useContext(LoginContext);
@@ -191,6 +192,9 @@ export function JobsList() {
 
   return (
     <Box w={"1050px"} pb={10}>
+      <Helmet>
+        <title>알바 채용공고 - 알바커넥터</title>
+      </Helmet>
       <Box
         w={"100%"}
         h={"120px"}

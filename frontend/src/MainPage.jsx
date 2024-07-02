@@ -6,6 +6,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./provider/LoginProvider.jsx"; // 중복 스타일을 객체로 정의
 import "/index.css";
+import { Helmet } from "react-helmet";
 
 // 중복 스타일을 객체로 정의
 const buttonStyle = {
@@ -48,6 +49,9 @@ function MainPage() {
   };
   return (
     <Box w={"100%"} h={"1200px"}>
+      <Helmet>
+        <title>알바를 구할 땐 알바커넥터</title>
+      </Helmet>
       {account.isAlba() && (
         <Flex w={"100%"}>
           <Box

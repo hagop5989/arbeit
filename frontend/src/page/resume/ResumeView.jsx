@@ -13,6 +13,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 const styles = {
   title: {
@@ -110,6 +111,9 @@ export function ResumeView() {
     <>
       {account.isLoggedIn() && (
         <Box w="full" maxW="70%" mx="auto" p={5}>
+          <Helmet>
+            <title>이력서 - 알바커넥터</title>
+          </Helmet>
           <Box>
             <Heading p={1} fontFamily={"SBAggroB"}>
               이력서

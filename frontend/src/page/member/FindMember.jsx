@@ -10,10 +10,15 @@ import {
 } from "@chakra-ui/react";
 import { FindEmail } from "./FindEmail.jsx";
 import { FindPassword } from "./FindPassword.jsx";
+import { Helmet } from "react-helmet";
+import React from "react";
 
 export function FindMember() {
   return (
     <Box w={"500px"} h={"490px"}>
+      <Helmet>
+        <title>내 정보 찾기 - 알바커넥터</title>
+      </Helmet>
       <Box
         h={"60px"}
         mb={"30px"}
