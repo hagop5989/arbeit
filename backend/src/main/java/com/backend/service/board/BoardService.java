@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -122,11 +121,11 @@ public class BoardService {
         // 보드 게시물 관련 댓글 삭제
         commentService.deleteByBoardId(boardId);
 
-        // 이미지 파일명 조회
+      /*  // 이미지 파일명 조회
         List<String> fileNames = mapper.selectImageNameById(boardId);
 
         // 보드에 연결된 이미지 데이터 삭제
-        mapper.deleteByboardId(boardId);
+        mapper.deleteByboardId(boardId);*/
 
         // 보드 뷰 삭제
         mapper.deleteBoardView(boardId);

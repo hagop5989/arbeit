@@ -10,7 +10,6 @@ import {
   FormHelperText,
   FormLabel,
   Heading,
-  Image,
   Input,
   Modal,
   ModalBody,
@@ -29,8 +28,6 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 export function BoardEdit() {
@@ -54,8 +51,8 @@ export function BoardEdit() {
       .then((res) => {
         setBoard(res.data.board);
         setImage(res.data.images);
-        setTitle(res.data);
-        setContent(res.data);
+        setTitle(res.data.board.title);
+        setContent(res.data.board.content);
       })
       .catch((err) => {
         if (err.response && err.response.status === 404) {
@@ -159,23 +156,23 @@ export function BoardEdit() {
           </FormLabel>
           <Box>
             <FormControl>
-              <Box border="1px solid bule" display="flex">
-                {image.map((image, index) => (
-                  <Box key={index}>
-                    <Box>
-                      <Box
-                        h={"7%"}
-                        position={"absolute"}
-                        color={"yellow"}
-                        onClick={() => handleRemovingImage(image.name)}
-                      >
-                        <FontAwesomeIcon icon={faXmark} />
-                      </Box>
-                      <Image w={"100%"} h={"100%"} src={image.src} />
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
+              {/*<Box border="1px solid bule" display="flex">*/}
+              {/*  {image.map((image, index) => (*/}
+              {/*    <Box key={index}>*/}
+              {/*      <Box>*/}
+              {/*        <Box*/}
+              {/*          h={"7%"}*/}
+              {/*          position={"absolute"}*/}
+              {/*          color={"yellow"}*/}
+              {/*          onClick={() => handleRemovingImage(image.name)}*/}
+              {/*        >*/}
+              {/*          <FontAwesomeIcon icon={faXmark} />*/}
+              {/*        </Box>*/}
+              {/*        <Image w={"100%"} h={"100%"} src={image.src} />*/}
+              {/*      </Box>*/}
+              {/*    </Box>*/}
+              {/*  ))}*/}
+              {/*</Box>*/}
               <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
                 사진 등록
               </FormLabel>
