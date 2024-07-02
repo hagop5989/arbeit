@@ -32,6 +32,7 @@ import {
   faAnglesRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Helmet } from "react-helmet";
 
 const styles = {
   th: {
@@ -153,6 +154,9 @@ export function ApplicationList() {
 
   return (
     <Box w={"100%"} minH={"600px"}>
+      <Helmet>
+        <title>나의 지원 내역 - 알바커넥터</title>
+      </Helmet>
       <Box>
         <Heading p={1} fontFamily={"SBAggroB"}>
           나의 지원 내역

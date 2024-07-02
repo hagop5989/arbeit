@@ -23,6 +23,7 @@ import {
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 export function MemberEdit() {
   const { id } = useParams();
@@ -78,6 +79,9 @@ export function MemberEdit() {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5}>
+      <Helmet>
+        <title>회원정보 수정 - 알바커넥터</title>
+      </Helmet>
       <Box>
         <Heading mb={"10px"} p={1}>
           회원정보 수정

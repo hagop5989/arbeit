@@ -20,6 +20,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const styles = {
   title: {
@@ -157,6 +158,9 @@ export function ResumeEdit() {
     <>
       {account.isAlba() && (
         <Box w="full" maxW="70%" mx="auto" p={5} lineHeight="30px">
+          <Helmet>
+            <title>이력서 수정 - 알바커넥터</title>
+          </Helmet>
           <Box
             h={"70px"}
             mb={"70px"}
@@ -220,7 +224,7 @@ export function ResumeEdit() {
                 </Box>
               </Center>
               <Box h={"3px"} bg={"#E0E0E0"} mt={"40px"} />
-              <FormControl mb={4} isInvalid={isError(errors.title)}>
+              <FormControl mb={10} isInvalid={isError(errors.title)}>
                 <FormLabel
                   w={"100px"}
                   fontSize={"xl"}
@@ -244,31 +248,38 @@ export function ResumeEdit() {
                   </FormHelperText>
                 </Flex>
               </FormControl>
-              <Box mb={4}>
-                <FormLabel fontSize={"xl"} fontWeight={"bold"}>
-                  경력
-                </FormLabel>
-                <Tabs variant="solid-rounded" index={initialIndex}>
-                  <TabList>
-                    <Tab
-                      onClick={() => handleRookieBtn(1)}
-                      w={"160px"}
-                      h={"50px"}
-                      border={"1px solid lightgray"}
-                    >
-                      신입
-                    </Tab>
-                    <Tab
-                      onClick={() => handleRookieBtn(0)}
-                      w={"160px"}
-                      h={"50px"}
-                      border={"1px solid lightgray"}
-                    >
-                      경력
-                    </Tab>
-                  </TabList>
-                </Tabs>
-              </Box>
+              <FormControl mb={4}>
+                <Flex>
+                  <FormLabel
+                    fontSize={"xl"}
+                    fontWeight={"bold"}
+                    h={"40px"}
+                    lineHeight={"40px"}
+                  >
+                    경력
+                  </FormLabel>
+                  <Tabs index={initialIndex}>
+                    <TabList>
+                      <Tab
+                        onClick={() => handleRookieBtn(1)}
+                        w={"70px"}
+                        h={"40px"}
+                        border={"1px solid lightgray"}
+                      >
+                        신입
+                      </Tab>
+                      <Tab
+                        onClick={() => handleRookieBtn(0)}
+                        w={"70px"}
+                        h={"40px"}
+                        border={"1px solid lightgray"}
+                      >
+                        경력
+                      </Tab>
+                    </TabList>
+                  </Tabs>
+                </Flex>
+              </FormControl>
               <FormControl isInvalid={isError(errors.content)} mb={10}>
                 <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
                   자기 소개

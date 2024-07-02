@@ -20,6 +20,7 @@ public interface ResumeMapper {
     @Select("""
             SELECT id, title, inserted FROM resume
             WHERE member_id = #{memberId}
+            ORDER BY id DESC
             """)
     List<Resume> selectAllByMemberId(Integer memberId);
 

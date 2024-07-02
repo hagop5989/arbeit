@@ -16,6 +16,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 const styles = {
   th: {
@@ -81,17 +82,29 @@ export function ResumeList() {
     _hover: { bgColor: color, color: "white" },
   });
 
+  function handleNavBtn() {
+    if (resumeList.length >= 5) {
+      alert("이력서는 최대 5개까지 등록할 수 있습니다.");
+    } else {
+      navigate("/resume/register");
+    }
+  }
+
   return (
     <>
       {account.isAlba() && (
-        <Box w={"100%"} h={"55vh"}>
+        <Box w={"100%"} h={"600px"}>
+          <Helmet>
+            <title>이력서 관리 - 알바커넥터</title>
+          </Helmet>
           <Box>
             <Heading p={1} fontFamily={"SBAggroB"}>
               이력서 관리
             </Heading>
-            <Flex>
-              <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
-                * 이력서를 등록하면 알바 채용에 지원할 수 있습니다.
+            <Flex my={"30px"}>
+              <Box>
+                <Box>* 이력서를 등록하면 알바 채용에 지원할 수 있습니다.</Box>
+                <Box>* 이력서는 최대 5개까지 작성할 수 있습니다.</Box>
               </Box>
               <Spacer />
               <Button
@@ -99,7 +112,7 @@ export function ResumeList() {
                 {...btnStyles("black")}
                 opacity={"0.7"}
                 size={"sm"}
-                onClick={() => navigate("/resume/register")}
+                onClick={handleNavBtn}
               >
                 이력서 등록
               </Button>

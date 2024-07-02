@@ -21,6 +21,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const styles = {
   title: {
@@ -156,6 +157,9 @@ export function ResumeRegister() {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5} lineHeight="30px">
+      <Helmet>
+        <title>이력서 등록 - 알바커넥터</title>
+      </Helmet>
       <Box
         h={"70px"}
         mb={"70px"}
@@ -209,7 +213,7 @@ export function ResumeRegister() {
       </Center>
       <Box h={"3px"} bg={"#E0E0E0"} mt={"40px"} />
       <Box>
-        <FormControl mb={4} isInvalid={isError(errors.title)}>
+        <FormControl mb={10} isInvalid={isError(errors.title)}>
           <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"} mt={8}>
             제목
           </FormLabel>
@@ -226,29 +230,36 @@ export function ResumeRegister() {
           </Flex>
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel fontSize={"xl"} fontWeight={"bold"}>
-            경력
-          </FormLabel>
-          <Tabs variant="solid-rounded">
-            <TabList>
-              <Tab
-                onClick={() => handleRookieBtn(1)}
-                w={"160px"}
-                h={"50px"}
-                border={"1px solid lightgray"}
-              >
-                신입
-              </Tab>
-              <Tab
-                onClick={() => handleRookieBtn(0)}
-                w={"160px"}
-                h={"50px"}
-                border={"1px solid lightgray"}
-              >
-                경력
-              </Tab>
-            </TabList>
-          </Tabs>
+          <Flex>
+            <FormLabel
+              fontSize={"xl"}
+              fontWeight={"bold"}
+              h={"40px"}
+              lineHeight={"40px"}
+            >
+              경력
+            </FormLabel>
+            <Tabs>
+              <TabList>
+                <Tab
+                  onClick={() => handleRookieBtn(1)}
+                  w={"70px"}
+                  h={"40px"}
+                  border={"1px solid lightgray"}
+                >
+                  신입
+                </Tab>
+                <Tab
+                  onClick={() => handleRookieBtn(0)}
+                  w={"70px"}
+                  h={"40px"}
+                  border={"1px solid lightgray"}
+                >
+                  경력
+                </Tab>
+              </TabList>
+            </Tabs>
+          </Flex>
         </FormControl>
         <FormControl mb={10} isInvalid={isError(errors.content)}>
           <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>

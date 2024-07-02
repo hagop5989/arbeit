@@ -13,6 +13,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 export function BoardEdit() {
   const { id } = useParams();
@@ -62,6 +63,9 @@ export function BoardEdit() {
 
   return (
     <Box w={"600px"} h={"600px"}>
+      <Helmet>
+        <title>질문 수정 - 알바커넥터</title>
+      </Helmet>
       <Heading
         align={"center"}
         color={"white"}

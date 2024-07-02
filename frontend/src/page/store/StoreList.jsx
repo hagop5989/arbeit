@@ -16,6 +16,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 export function StoreList() {
   const [storeList, setStoreList] = useState([]);
@@ -46,6 +47,9 @@ export function StoreList() {
     <>
       {account.isBoss() && (
         <Box w={"100%"} minHeight={"500px"}>
+          <Helmet>
+            <title>사업장 관리 - 알바커넥터</title>
+          </Helmet>
           <Box>
             <Heading p={1} fontFamily={"SBAggroB"}>
               나의 사업장

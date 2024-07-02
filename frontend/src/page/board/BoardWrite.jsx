@@ -15,6 +15,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 export function BoardWrite() {
   const [board, setBoard] = useState({});
@@ -48,6 +49,9 @@ export function BoardWrite() {
 
   return (
     <Box w={"600px"} h={"600px"}>
+      <Helmet>
+        <title>이력서 작성 - 알바커넥터</title>
+      </Helmet>
       <Heading
         align={"center"}
         color={"white"}

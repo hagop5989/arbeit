@@ -8,6 +8,7 @@ import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
 import { CommentWrite } from "../comment/CommentWrite.jsx";
 import { CommentList } from "../comment/CommentList.jsx";
+import { Helmet } from "react-helmet";
 
 export function BoardView() {
   const { id } = useParams();
@@ -78,6 +79,9 @@ export function BoardView() {
 
   return (
     <Box w={"735px"} minH={"700px"}>
+      <Helmet>
+        <title>나의 이력서 - 알바커넥터</title>
+      </Helmet>
       <Box>
         <Flex w={"100%"} h={"70px"} fontSize={"30px"} fontWeight={"700"}>
           <Box color={"#3396FE"} mr={"15px"} lineHeight={"70px"}>

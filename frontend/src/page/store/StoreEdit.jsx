@@ -21,13 +21,13 @@ import {
   Text,
   Textarea,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import LocationMap from "../../component/LocationMap.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
+import { Helmet } from "react-helmet";
 
 const styles = {
   formControl: {
@@ -59,7 +59,6 @@ export function StoreEdit() {
   const account = useContext(LoginContext);
   const [checkLength, setCheckLength] = useState({});
 
-  const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const {
@@ -153,6 +152,9 @@ export function StoreEdit() {
     <>
       {account.hasAccess(store.memberId) && (
         <Box width={"100%"}>
+          <Helmet>
+            <title>사업장 정보 수정 - 알바커넥터</title>
+          </Helmet>
           <Box
             h={"70px"}
             mb={"70px"}

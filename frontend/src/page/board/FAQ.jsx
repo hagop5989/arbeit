@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 export function FAQ() {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -49,6 +50,9 @@ export function FAQ() {
 
   return (
     <Box width="100%" mt="5" borderRadius="md">
+      <Helmet>
+        <title>FAQ - 알바커넥터</title>
+      </Helmet>
       <Box>
         <Tabs variant="enclosed" mt={2} onChange={handleTabChange}>
           <TabList>

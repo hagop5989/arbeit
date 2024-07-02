@@ -28,6 +28,7 @@ import {
   faAnglesLeft,
   faAnglesRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const styles = {
   th: {
@@ -137,6 +138,9 @@ export function ApplicationMangeList() {
     <>
       {account.isBoss() && (
         <Box minH={"500px"} mb={"150px"}>
+          <Helmet>
+            <title>지원서 목록 - 알바커넥터</title>
+          </Helmet>
           <Box h={"600px"}>
             <Heading p={1} fontFamily={"SBAggroB"}>
               지원 내역
