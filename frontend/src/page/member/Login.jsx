@@ -83,6 +83,12 @@ export function Login() {
     setAuthority(auth);
   }
 
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      handleLoginBtn();
+    }
+  }
+
   return (
     <Box w={"500px"} h={"500px"}>
       <Box
@@ -116,6 +122,7 @@ export function Login() {
                       type="email"
                       placeholder="이메일"
                       onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={handleKeyPress}
                     />
                   </InputGroup>
                 </FormControl>
@@ -129,6 +136,7 @@ export function Login() {
                       type={show ? "text" : "password"}
                       placeholder="비밀번호"
                       onChange={(e) => setPassword(e.target.value)}
+                      onKeyDown={handleKeyPress}
                     />
                     <InputRightElement width="4.5rem">
                       <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -184,6 +192,7 @@ export function Login() {
                           type="email"
                           placeholder="이메일"
                           onChange={(e) => setEmail(e.target.value)}
+                          onKeyDown={handleKeyPress}
                         />
                       </InputGroup>
                     </FormControl>
@@ -203,6 +212,7 @@ export function Login() {
                           type={show ? "text" : "password"}
                           placeholder="비밀번호"
                           onChange={(e) => setPassword(e.target.value)}
+                          onKeyDown={handleKeyPress}
                         />
                         <InputRightElement width="4.5rem">
                           <Button h="1.75rem" size="sm" onClick={handleClick}>

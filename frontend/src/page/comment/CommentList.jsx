@@ -61,6 +61,12 @@ export function CommentList({ boardId, reload, setReload }) {
       }
     }
 
+    function handleDelete() {
+      axios.delete(`/api/comment/${comment.id}`).then((res) => {
+        setReload(!reload);
+      });
+    }
+
     return (
       <Box p={5} shadow="md" borderWidth="1px" w={"100%"}>
         <Flex fontSize={"17px"}>

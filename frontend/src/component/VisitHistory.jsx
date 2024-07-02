@@ -78,7 +78,6 @@ function VisitHistory(props) {
                   onClick={() => {
                     navigate(item.url);
                   }}
-                  fontWeight={"700"}
                   whiteSpace="nowrap" // 줄 바꿈을 막음
                   overflow="hidden" // 넘친 내용을 숨김
                   textOverflow="ellipsis" // 넘친 내용을 "..."으로 표시
