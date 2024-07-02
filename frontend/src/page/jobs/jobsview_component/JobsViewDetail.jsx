@@ -157,7 +157,8 @@ export function JobsViewDetails({ onOpen, job, jobsCond, images, storeMap }) {
                   학력: {jobsCond.education} ({jobsCond.educationDetail})
                 </ListItem>
                 <ListItem {...styles.list}>
-                  연령: {jobsCond.age == "0" ? "무관" : jobsCond.age}
+                  연령:{" "}
+                  {jobsCond.age == "0" ? "무관" : jobsCond.age + "세 이상"}
                 </ListItem>
               </UnorderedList>
             </Box>

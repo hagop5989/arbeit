@@ -235,6 +235,7 @@ export function ApplicationList() {
                     <Td {...styles.td}>
                       {application.isPassed === null ? (
                         <Button
+                          my={"-6px"}
                           {...btnStyles("orangered")}
                           size={"sm"}
                           onClick={() => handleCancelBtn(application.jobsId)}

@@ -30,9 +30,12 @@ public interface ApplicationMapper {
 
     @Select("""
             <script>
-            SELECT a.*, j.title AS jobsTitle
+            SELECT a.*,
+                    j.title AS jobsTitle,
+                    m.name AS albaName
             FROM application a
              JOIN jobs j ON a.jobs_id = j.id
+             JOIN member m ON a.member_id = m.id
              WHERE a.member_id = #{memberId}
              <if test="selectedType != null">
               <choose>

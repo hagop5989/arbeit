@@ -172,14 +172,19 @@ export function ApplicationMangeList() {
                   <Th w={"120px"} {...styles.th}>
                     지원 일자
                   </Th>
-                  <Th {...styles.th}>지원 공고</Th>
-                  <Th w={"150px"} {...styles.th}>
+                  <Th w={"400px"} {...styles.th}>
+                    지원 공고
+                  </Th>
+                  <Th w={"100px"} {...styles.th}>
+                    지원자
+                  </Th>
+                  <Th w={"100px"} {...styles.th}>
                     지원서
                   </Th>
                   <Th w={"100px"} {...styles.th}>
                     상태
                   </Th>
-                  <Th w={"100px"} {...styles.th}>
+                  <Th w={"170px"} {...styles.th}>
                     처리
                   </Th>
                 </Tr>
@@ -193,6 +198,7 @@ export function ApplicationMangeList() {
                         {application.jobsTitle}
                       </Link>
                     </Td>
+                    <Td>{application.albaName}</Td>
                     <Td fontWeight={"800"} color={"#FF8400"} {...styles.td}>
                       <Link
                         href={`/jobs/${application.jobsId}/application-manage/detail/${application.albaId}`}
@@ -220,7 +226,7 @@ export function ApplicationMangeList() {
                     </Td>
                     <Td {...styles.td}>
                       {application.isPassed === undefined ? (
-                        <Flex gap={1}>
+                        <Flex gap={1} my={"-6px"}>
                           <Button
                             {...btnStyles("royalblue")}
                             onClick={() => handleAcceptBtn(application)} // 변경된 부분

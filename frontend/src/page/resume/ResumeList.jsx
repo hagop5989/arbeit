@@ -93,6 +93,7 @@ export function ResumeList() {
               <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
                 * 이력서를 등록하면 알바 채용에 지원할 수 있습니다.
               </Box>
+
               <Spacer />
               <Button
                 mt={"25px"}
@@ -104,6 +105,7 @@ export function ResumeList() {
                 이력서 등록
               </Button>
             </Flex>
+
             <Box>
               <Table>
                 <Thead
