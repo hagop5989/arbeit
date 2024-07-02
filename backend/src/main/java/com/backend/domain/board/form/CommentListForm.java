@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class CommentListForm {
 
     private Integer id;
+    private Integer memberId;
     private String memberName;
     private String comment;
     private LocalDateTime inserted;

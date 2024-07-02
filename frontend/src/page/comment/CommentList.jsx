@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   btn: {
@@ -23,6 +24,7 @@ const styles = {
 
 export function CommentList({ boardId, reload, setReload }) {
   const [commentList, setCommentList] = useState([]);
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     if (boardId !== undefined) {
@@ -41,20 +43,39 @@ export function CommentList({ boardId, reload, setReload }) {
     }
 
     function handleEditBtn() {
-      axios
-        .put(`/api/comment/${comment.id}`, { comment: updatedComment })
-        .then(() => setIsEditing(false))
-        .finally(() => setReload(!reload));
+      const confirm = window.confirm("수정하시겠습니까?");
+      if (confirm) {
+        axios
+          .put(`/api/comment/${comment.id}`, { comment: updatedComment })
+          .then(() => setIsEditing(false))
+          .finally(() => setReload(!reload));
+      }
+    }
+
+    function handleRemoveBtn() {
+      const confirm = window.confirm("정말 삭제하시겠습니까?");
+      if (confirm) {
+        axios
+          .delete(`/api/comment/${comment.id}`)
+          .then(() => setReload(!reload));
+      }
     }
 
     return (
       <Box p={5} shadow="md" borderWidth="1px" w={"100%"}>
         <Flex fontSize={"17px"}>
-          <Box mr={"10px"} color={"#F5C903"}>
+          <Box mr={"10px"} color={"#F5C903"} pt={2}>
             A.
           </Box>
           {!isEditing && (
-            <Box w="550px" minH="80px" border={"1px solid red"} mb={"5px"}>
+            <Box
+              w="550px"
+              minH="80px"
+              bg={"#EDF2F7"}
+              mb={"10px"}
+              p={2}
+              borderRadius={"10px"}
+            >
               {comment.comment}
             </Box>
           )}
@@ -79,18 +100,24 @@ export function CommentList({ boardId, reload, setReload }) {
             </FormControl>
           )}
           <Spacer />
-          {!isEditing && (
-            <Flex>
-              <Box mr={"5px"} {...styles.btn} onClick={handleIsEditing}>
-                수정
-              </Box>
-              <Box {...styles.btn}>삭제</Box>
-            </Flex>
-          )}
-          {isEditing && (
-            <Box {...styles.btn} onClick={handleIsEditing}>
-              취소
-            </Box>
+          {account.hasAccess(comment.memberId) && (
+            <>
+              {!isEditing && (
+                <Flex>
+                  <Box mr={"5px"} {...styles.btn} onClick={handleIsEditing}>
+                    수정
+                  </Box>
+                  <Box {...styles.btn} onClick={handleRemoveBtn}>
+                    삭제
+                  </Box>
+                </Flex>
+              )}
+              {isEditing && (
+                <Box {...styles.btn} onClick={handleIsEditing}>
+                  취소
+                </Box>
+              )}
+            </>
           )}
         </Flex>
         <Flex>
@@ -109,6 +136,12 @@ export function CommentList({ boardId, reload, setReload }) {
 
   return (
     <Box>
+      <Box mb={"5px"} mr={"5px"}>
+        답변 수 : {commentList.length}
+      </Box>
+      {commentList.length === 0 && (
+        <Box mr={"5px"}>작성된 답변이 없습니다.</Box>
+      )}
       <VStack spacing={8}>
         {commentList.map((comment) => (
           <Comment comment={comment} key={comment.id} />

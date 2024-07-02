@@ -5,9 +5,9 @@ use arbeit;
 
 CREATE TABLE board_view
 (
-    id        int auto_increment primary key,
-    board_id  INT NOT NULL REFERENCES board (id),
-    member_id INT NOT NULL REFERENCES member (id)
+    board_id  INT REFERENCES board (id),
+    member_id INT REFERENCES member (id),
+    PRIMARY KEY (board_id, member_id)
 );
 
 ALTER TABLE board_view

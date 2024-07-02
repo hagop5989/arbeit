@@ -46,36 +46,29 @@ public class CommentController {
     }
 
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity remove(@PathVariable Integer id,
-                                 Authentication authentication) {
-        if (!service.hasAccess(id, authentication)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        service.delete(id);
-        return ResponseEntity.ok().build();
-    }
-
-
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(@Validated @RequestBody CommentEditForm form, BindingResult bindingResult,
                                @PathVariable Integer id, Authentication authentication) throws Exception {
-
-        log.info("form={}", form);
-        log.info("commentId={}", id);
-        log.info("authentication={}", authentication.getName());
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = getErrorMessages(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
         if (!service.hasAccess(id, authentication)) {
-            log.info("edit.hasAccess");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         service.edit(form, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity remove(@PathVariable Integer id, Authentication authentication) {
+        if (!service.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        service.delete(id);
         return ResponseEntity.ok().build();
     }
 
@@ -87,6 +80,4 @@ public class CommentController {
         }
         return errors;
     }
-
-
 }
