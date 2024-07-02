@@ -157,14 +157,6 @@ public interface BoardMapper {
             """)
     int deleteLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
 
-    @Delete("""
-                DELETE FROM board_view
-                            WHERE board_id = #{boardId}
-                            AND member_id = #{memberId};
-            """)
-    int deleteViewByBoardIdAndMemberId(Integer boardId, Integer memberId);
-
-
     @Insert("""
                    INSERT INTO board_like (board_id, member_id)
                    VALUES (#{boardId}, #{memberId})
@@ -173,10 +165,10 @@ public interface BoardMapper {
 
 
     @Insert("""
-                   INSERT INTO board_view (board_id, member_id)
+                   INSERT IGNORE INTO board_view (board_id, member_id)
                    VALUES (#{boardId}, #{memberId})
             """)
-    int insertViewByBoardIdAndMemberId(Integer boardId);
+    int insertViewByBoardIdAndMemberId(Integer boardId, String memberId);
 
 
     @Select("""
@@ -188,9 +180,9 @@ public interface BoardMapper {
 
 
     @Select("""
-                SELECT  COUNT(*)
+                SELECT COUNT(*)
                 FROM board_view
-                WHERE board_id = #{Id}
+                WHERE board_id = #{boardId}
             """)
     int selectCountView(Integer boardId);
 
@@ -221,7 +213,6 @@ public interface BoardMapper {
             WHERE board_id = #{boardId}
             """)
     void deleteBoardView(Integer boardId);
-
 }
 
 

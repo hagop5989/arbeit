@@ -49,12 +49,20 @@ export function CommentWrite({ boardId, reload, setReload }) {
   };
 
   function handleAnswerBtn() {
-    setIsAnswered(!isAnswered);
+    if (account.isLoggedIn()) {
+      setIsAnswered(!isAnswered);
+    } else {
+      alert("로그인 후 이용해주세요.");
+    }
   }
 
   return (
     <Box w={"100%"} mb={"30px"}>
       <FormControl isInvalid={errors.comment !== undefined}>
+        <Box ml={"5px"} fontSize={"13px"}>
+          답변을 작성하려면 '답변하기'를 클릭해주세요.
+        </Box>
+
         <Flex
           w={"100px"}
           fontSize={"xl"}
@@ -62,6 +70,7 @@ export function CommentWrite({ boardId, reload, setReload }) {
           h={"30px"}
           cursor={"pointer"}
           onClick={handleAnswerBtn}
+          color={account.isLoggedIn() ? "black" : "gray.400"}
         >
           <Box mr={"5px"} ml={"5px"}>
             답변하기

@@ -18,6 +18,7 @@ public interface CommentMapper {
     @Select("""
             SELECT
                 c.id,
+                m.id memberId,
                 m.name memberName,
                 c.comment,
                 c.inserted
