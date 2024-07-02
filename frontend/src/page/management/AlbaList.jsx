@@ -82,7 +82,11 @@ export function AlbaList() {
 
   function handleOpenModal(alba) {
     onOpen();
-    setSelectedAlba({ ...selectedAlba, albaId: alba.albaId });
+    setSelectedAlba({
+      ...selectedAlba,
+      albaId: alba.albaId,
+      jobsId: alba.jobsId,
+    });
   }
 
   //  핸드폰 번호 - 붙여서 보여주기 (실제론 아님)

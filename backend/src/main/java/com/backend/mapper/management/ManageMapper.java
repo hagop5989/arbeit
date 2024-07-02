@@ -76,21 +76,22 @@ public interface ManageMapper {
                             m.name albaName,
                             m.phone albaPhone,
                             s.name storeName,
+                            j.id jobsId,
                             ra.alba_id albaReview
             FROM jobs j
                      JOIN application a ON j.id = a.jobs_id
                      JOIN member m ON a.member_id = m.id
                      JOIN store s ON j.store_id = s.id
-                     LEFT JOIN review_to_alba ra ON ra.alba_id = m.id AND ra.boss_id = #{authId}
+                     LEFT JOIN review_to_alba ra ON ra.alba_id = m.id AND ra.boss_id = #{authId} AND ra.jobs_id = j.id
             WHERE j.member_id = #{authId};
             """)
     List<Map<String, Object>> selectAlbaList(Integer authId);
 
     @Insert("""
-            INSERT INTO review_to_alba (alba_id, boss_id, rating)
-            VALUES (#{albaId}, #{bossId}, #{albaScore})
+            INSERT INTO review_to_alba (alba_id, boss_id, jobs_id, rating)
+            VALUES (#{albaId}, #{bossId},#{jobsId}, #{albaScore})
             """)
-    void insertReviewToAlba(AlbaScore score);
+    int insertReviewToAlba(AlbaScore score);
 
     @Select("""
             SELECT count(*)

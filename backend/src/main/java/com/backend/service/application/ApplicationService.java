@@ -101,7 +101,6 @@ public class ApplicationService {
     // 페이징
     private Integer paging(Integer currentPage, Map<String, Object> pageInfo, Integer memberId) {
         Integer countAll = mapper.countAll(memberId);
-        System.out.println("countAll = " + countAll);
         Integer itemPerPage = 8; // 페이지당 항목 수 지정
         Integer offset = (currentPage - 1) * itemPerPage;
 

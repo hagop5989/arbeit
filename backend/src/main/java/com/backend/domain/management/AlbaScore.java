@@ -11,5 +11,6 @@ public class AlbaScore {
 
     private Integer albaId;
     private Integer bossId;
+    private Integer jobsId;
     private Integer albaScore;
 }
