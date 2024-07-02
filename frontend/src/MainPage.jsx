@@ -328,7 +328,7 @@ function MainPage() {
             {...buttonStyle}
             onClick={() =>
               navigate(
-                "/jobs/list?type=all&keyword=&page=1&filterType=직종&filterDetail=생산업",
+                "/jobs/list?type=all&keyword=&page=1&filterType=직종&filterDetail=생산",
               )
             }
           >
