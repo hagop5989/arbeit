@@ -43,11 +43,12 @@ public class ApplicationService {
         mapper.insert(application);
     }
 
-    public Map<String, Object> findAllByAuthId(Integer currentPage, Integer memberId) {
+    public Map<String, Object> findAllByAuthId(Integer currentPage, String selectedType, Integer memberId) {
+        
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> pageInfo = new HashMap<>();
         Integer offset = paging(currentPage, pageInfo, memberId);
-        List<Application> applicationList = mapper.list(memberId, offset);
+        List<Application> applicationList = mapper.list(memberId, offset, selectedType);
 
         List<Application> list = applicationList.stream()
                 .filter(application -> application.getResumeId() != null)

@@ -2,14 +2,15 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   Heading,
   Link,
+  Select,
   Spinner,
   Table,
   Tbody,
   Td,
+  Th,
   Thead,
   Tr,
   useDisclosure,
@@ -30,7 +31,7 @@ import {
 
 const styles = {
   th: {
-    borderBottom: "2px solid #E0E0E0",
+    fontSize: "sm",
   },
   td: {
     borderBottom: "1px solid #E0E0E0",
@@ -41,6 +42,7 @@ export function ApplicationMangeList() {
   const [applicationList, setApplicationList] = useState(null);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [reload, setReload] = useState(false);
+  const [selectedType, setSelectedType] = useState("전체");
 
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -53,7 +55,7 @@ export function ApplicationMangeList() {
   useEffect(() => {
     axios
       .get("/api/application-manage/list", {
-        params: { currentPage: currentPage },
+        params: { currentPage: currentPage, selectedType },
       })
       .then((res) => {
         setApplicationList(res.data);
@@ -73,7 +75,7 @@ export function ApplicationMangeList() {
           navigate("/");
         }
       });
-  }, [account.id, reload, currentPage]);
+  }, [account.id, reload, currentPage, selectedType]);
 
   function handleRejectBtn(application) {
     const confirm = window.confirm("불합격 시키시겠습니까?");
@@ -119,6 +121,10 @@ export function ApplicationMangeList() {
     _hover: { bgColor: color, color: "white" },
   });
 
+  const handleListSelect = (event) => {
+    setSelectedType(event.target.value);
+  };
+
   if (applicationList === null) {
     return (
       <Center>
@@ -132,28 +138,50 @@ export function ApplicationMangeList() {
       {account.isBoss() && (
         <Box minH={"500px"} mb={"150px"}>
           <Box h={"600px"}>
-            <Box>
-              <Heading mb={"10px"} p={1}>
-                지원내역(사장)
-              </Heading>
-              <Divider mb={"40px"} borderWidth={"2px"} />
-            </Box>
+            <Heading p={1} fontFamily={"SBAggroB"}>
+              지원 내역
+            </Heading>
+            <Flex>
+              <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+                <Box h={"25px"} lineHeight={"25px"}>
+                  * 지원서를 확인하여 합격, 불합격을 처리해주세요.
+                </Box>
+                <Box h={"25px"} lineHeight={"25px"}>
+                  * 합격, 불합격이 처리되면 바꿀 수 없습니다.
+                </Box>
+              </Box>
+            </Flex>
+            <Select
+              size={"sm"}
+              w={"100px"}
+              mb={"10px"}
+              onChange={handleListSelect}
+            >
+              <option value="전체">전체</option>
+              <option value="합격">합격</option>
+              <option value="불합격">불합격</option>
+              <option value="미정">미정</option>
+            </Select>
             <Table borderRadius="lg" w="1050px">
-              <Thead bg="gray.100" p={2} fontWeight="bold">
+              <Thead
+                bg="gray.100"
+                borderTop={"1px solid gray"}
+                borderBottom={"2px solid #E9E9E9"}
+              >
                 <Tr>
-                  <Td w={"120px"} {...styles.th}>
+                  <Th w={"120px"} {...styles.th}>
                     지원 일자
-                  </Td>
-                  <Td {...styles.th}>지원 공고</Td>
-                  <Td w={"150px"} {...styles.th}>
+                  </Th>
+                  <Th {...styles.th}>지원 공고</Th>
+                  <Th w={"150px"} {...styles.th}>
                     지원서
-                  </Td>
-                  <Td w={"100px"} {...styles.th}>
+                  </Th>
+                  <Th w={"100px"} {...styles.th}>
                     상태
-                  </Td>
-                  <Td w={"100px"} {...styles.th}>
+                  </Th>
+                  <Th w={"100px"} {...styles.th}>
                     처리
-                  </Td>
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -191,24 +219,28 @@ export function ApplicationMangeList() {
                         : "미정"}
                     </Td>
                     <Td {...styles.td}>
-                      <Flex gap={1}>
-                        <Button
-                          {...btnStyles("royalblue")}
-                          onClick={() => handleAcceptBtn(application)} // 변경된 부분
-                          size={"sm"}
-                        >
-                          합격
-                        </Button>
-                        <Button
-                          {...btnStyles("orangered")}
-                          variant="outline"
-                          colorScheme="red"
-                          size={"sm"}
-                          onClick={() => handleRejectBtn(application)}
-                        >
-                          불합격
-                        </Button>
-                      </Flex>
+                      {application.isPassed === undefined ? (
+                        <Flex gap={1}>
+                          <Button
+                            {...btnStyles("royalblue")}
+                            onClick={() => handleAcceptBtn(application)} // 변경된 부분
+                            size={"sm"}
+                          >
+                            합격
+                          </Button>
+                          <Button
+                            {...btnStyles("orangered")}
+                            variant="outline"
+                            colorScheme="red"
+                            size={"sm"}
+                            onClick={() => handleRejectBtn(application)}
+                          >
+                            불합격
+                          </Button>
+                        </Flex>
+                      ) : (
+                        "완료"
+                      )}
                     </Td>
                   </Tr>
                 ))}

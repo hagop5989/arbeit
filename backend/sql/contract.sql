@@ -15,3 +15,10 @@ FROM contract;
 DELETE
 FROM contract
 WHERE alba_id = 69;
+
+ALTER TABLE contract
+    ADD CONSTRAINT contract_ibfk_1 FOREIGN KEY (boss_id) REFERENCES member (id) ON DELETE SET NULL;
+ALTER TABLE contract
+    ADD CONSTRAINT contract_ibfk_2 FOREIGN KEY (alba_id) REFERENCES application (member_id) ON DELETE SET NULL;
+ALTER TABLE contract
+    ADD CONSTRAINT contract_ibfk_3 FOREIGN KEY (jobs_id) REFERENCES application (jobs_id) ON DELETE SET NULL;

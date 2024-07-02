@@ -1,16 +1,12 @@
 import {
   Box,
   Button,
-  Center,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
   Image,
   Tab,
   TabList,
   Tabs,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -20,10 +16,11 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 
 const styles = {
   title: {
-    w: "90px",
-    fontSize: "xl",
+    w: "80px",
+    h: "30px",
+    lineHeight: "30px",
+    fontSize: "md",
     fontWeight: "bold",
-    borderRight: "3px solid orange",
     mr: "20px",
   },
 };
@@ -114,20 +111,28 @@ export function ResumeView() {
       {account.isLoggedIn() && (
         <Box w="full" maxW="70%" mx="auto" p={5}>
           <Box>
-            <Box
-              h={"70px"}
-              mb={"70px"}
-              bg={"#FF7F3E"}
-              color={"white"}
-              borderRadius={"10px"}
-            >
-              <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
-                이력서 정보
-              </Heading>
+            <Heading p={1} fontFamily={"SBAggroB"}>
+              이력서
+            </Heading>
+            <Box my={"20px"} h={"50px"} lineHeight={"50px"} mb={"50px"}>
+              * 이력서는 알바생 본인 및 지원한 사장님만 볼 수 있습니다.
             </Box>
-            <Flex gap={"20px"} flexDirection={"column"}>
-              <Center>
-                <Box w={"240px"} h={"240px"}>
+            <Box align={"right"} fontSize={"sm"}>
+              등록일 : {resume.inserted}
+            </Box>
+            <Box
+              fontFamily={"SBAggroB"}
+              textIndent={"10px"}
+              borderY={"1px solid #E0E0E0"}
+              h={"60px"}
+              lineHeight={"60px"}
+              mb={"40px"}
+            >
+              {resume.title}
+            </Box>
+            <Flex flexDirection={"column"}>
+              <Flex mb={"40px"}>
+                <Box w={"170px"} h={"170px"}>
                   <Image
                     w={"100%"}
                     h={"100%"}
@@ -142,24 +147,24 @@ export function ResumeView() {
                   />
                 </Box>
                 <Box w={"50%"} ml={"50px"} lineHeight={"30px"}>
-                  <Box display={"flex"} mb={"15px"}>
+                  <Box display={"flex"} mb={"5px"}>
                     <Box {...styles.title}>이름</Box>
                     <Box>{userName}</Box>
                   </Box>
 
-                  <Box display={"flex"} mb={"15px"}>
+                  <Box display={"flex"} mb={"5px"}>
                     <Box {...styles.title}>생년월일</Box>
                     <Box>
                       {resume.birthDate} (만 {nowAge}세)
                     </Box>
                   </Box>
 
-                  <Box display={"flex"} mb={"15px"}>
+                  <Box display={"flex"} mb={"5px"}>
                     <Box {...styles.title}>성별</Box>
                     <Box>{resume.gender == "MALE" ? "남성" : "여성"}</Box>
                   </Box>
 
-                  <Box display={"flex"} mb={"15px"}>
+                  <Box display={"flex"} mb={"5px"}>
                     <Box {...styles.title}>연락처</Box>
                     <Box>{formatPhoneNumber(resume.phone)}</Box>
                   </Box>
@@ -169,39 +174,51 @@ export function ResumeView() {
                     <Box>{resume.email}</Box>
                   </Box>
                 </Box>
-              </Center>
+              </Flex>
 
-              <FormControl my={4}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  제목
-                </FormLabel>
-                <Box textIndent={"10px"}>{resume.title}</Box>
-              </FormControl>
-
-              <FormControl mb={4}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+              <Box
+                mb={4}
+                h={"200px"}
+                p={"15px"}
+                bg={"#EDF2F7"}
+                borderRadius={"10px"}
+              >
+                <Box
+                  w={"100px"}
+                  fontSize={"lg"}
+                  fontWeight={"bold"}
+                  color={"gray.600"}
+                  mb={"10px"}
+                >
                   자기소개
-                </FormLabel>
-                <Box textIndent={"10px"}>{resume.content}</Box>
-              </FormControl>
+                </Box>
+                <Box>{resume.content}</Box>
+              </Box>
 
-              <Box mb={4}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
+              <Flex mb={"40px"}>
+                <Box
+                  w={"100px"}
+                  h="40px"
+                  ml={"15px"}
+                  lineHeight="40px"
+                  fontSize={"lg"}
+                  fontWeight={"bold"}
+                >
                   경력여부
-                </FormLabel>
-                <Tabs variant="solid-rounded" index={initialIndex}>
+                </Box>
+                <Tabs index={initialIndex}>
                   <TabList>
                     <Tab
-                      w={"160px"}
-                      h={"50px"}
+                      w={"70px"}
+                      h={"40px"}
                       border={"1px solid lightgray"}
                       onClick={(e) => e.preventDefault()} // 클릭 이벤트 무효화
                     >
                       신입
                     </Tab>
                     <Tab
-                      w={"160px"}
-                      h={"50px"}
+                      w={"70px"}
+                      h={"40px"}
                       border={"1px solid lightgray"}
                       onClick={(e) => e.preventDefault()} // 클릭 이벤트 무효화
                     >
@@ -209,26 +226,25 @@ export function ResumeView() {
                     </Tab>
                   </TabList>
                 </Tabs>
-              </Box>
+              </Flex>
 
-              <FormControl mb={4}>
-                <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"}>
-                  등록일
-                </FormLabel>
-                <Text>{resume.inserted}</Text>
-              </FormControl>
-              <Flex gap={"10px"}>
+              <Flex
+                gap={"10px"}
+                borderTop={"1px solid #E0E0E0"}
+                h={"80px"}
+                pt={"30px"}
+              >
                 <Button
-                  w={"50%"}
+                  size={"md"}
                   bgColor={"gray.500"}
                   color={"white"}
                   onClick={handlePrevClick}
                 >
-                  이전
+                  이전으로
                 </Button>
                 {account.hasAccess(resume.memberId) && (
                   <Button
-                    w={"50%"}
+                    size={"md"}
                     bgColor={"#FF7F3E"}
                     color={"white"}
                     onClick={() => navigate(`/resume/${resume.id}/edit`)}

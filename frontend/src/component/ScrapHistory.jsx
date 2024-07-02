@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Divider,
   Flex,
   Heading,
   Table,
@@ -60,26 +59,34 @@ function ScrapHistory(props) {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5} minHeight={"600px"} h={"100%"}>
-      <Heading mb={"10px"} p={1}>
+      <Heading p={1} fontFamily={"SBAggroB"}>
         스크랩한 공고
       </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
+      <Flex>
+        <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+          * 공고를 스크랩해서 편리하게 찾아보세요.
+        </Box>
+      </Flex>
       {scrapList.length === 0 && <Box>스크랩한 공고가 없습니다.</Box>}
       {scrapList.length === 0 || (
         <Box>
           <Table>
-            <Thead>
+            <Thead
+              bg="gray.100"
+              borderTop={"1px solid gray"}
+              borderBottom={"2px solid #E9E9E9"}
+            >
               <Tr>
-                <Th w={"50px"} fontSize={"md"}>
+                <Th w={"50px"} fontSize={"sm"}>
                   #
                 </Th>
-                <Th w={"500px"} fontSize={"md"}>
+                <Th w={"500px"} fontSize={"sm"}>
                   제목
                 </Th>
-                <Th minW={"130px"} fontSize={"md"}>
+                <Th minW={"130px"} fontSize={"sm"}>
                   마감일
                 </Th>
-                <Th w={"50px"} fontSize={"md"}>
+                <Th w={"50px"} fontSize={"sm"}>
                   관리
                 </Th>
               </Tr>
@@ -92,9 +99,8 @@ function ScrapHistory(props) {
                   cursor={"pointer"}
                   _hover={{ bgColor: "gray.200" }}
                 >
-                  <Td h={"10px"}>{index + 1}</Td>
+                  <Td>{index + 1}</Td>
                   <Td
-                    h={"10px"}
                     onClick={() => {
                       navigate(`/jobs/${item.jobsId}`);
                     }}
@@ -104,10 +110,8 @@ function ScrapHistory(props) {
                   >
                     {item.jobsTitle}
                   </Td>
-                  <Td h={"10px"} fontSize={"sm"}>
-                    2024-06-25
-                  </Td>
-                  <Td h={"10px"}>
+                  <Td fontSize={"sm"}>2024-06-25</Td>
+                  <Td>
                     <Flex gap={"10px"} h={"15px"} alignItems={"center"}>
                       {account.isAlba() && (
                         <Button
@@ -122,7 +126,9 @@ function ScrapHistory(props) {
                       )}
                       <Button
                         {...btnStyles("orangered")}
-                        size={"sm"}
+                        h={"30px"}
+                        w={"40px"}
+                        fontSize={"sm"}
                         onClick={() => handleDelete(item.id)}
                       >
                         삭제

@@ -29,14 +29,27 @@ public interface ApplicationMapper {
     String selectJobsTitleByJobsId(Integer jobsId);
 
     @Select("""
-            SELECT a.*,j.title AS jobsTitle
+            <script>
+            SELECT a.*, j.title AS jobsTitle
             FROM application a
-            JOIN jobs j ON a.jobs_id = j.id
-            WHERE a.member_id = #{memberId}
-            ORDER BY a.inserted DESC
-            LIMIT #{offset},8;
+             JOIN jobs j ON a.jobs_id = j.id
+             WHERE a.member_id = #{memberId}
+             <if test="selectedType != null">
+              <choose>
+                  <when test="selectedType == '합격'">
+                  AND a.is_passed = 1
+                  </when>
+                  <when test="selectedType == '불합격'">
+                  AND a.is_passed = 0
+                  </when>
+                  <when test="selectedType == '미정'">
+                   AND a.is_passed IS NULL
+              </when>
+              </choose>
+              </if>
+            </script>
             """)
-    List<Application> list(Integer memberId, Integer offset);
+    List<Application> list(Integer memberId, Integer offset, String selectedType);
 
     @Select("""
             SELECT a.*,j.title AS jobsTitle

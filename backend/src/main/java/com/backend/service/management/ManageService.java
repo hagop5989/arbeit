@@ -22,12 +22,12 @@ public class ManageService {
 
     private final ManageMapper mapper;
 
-    public List<Map<String, Object>> findApplications(Integer authId, Integer currentPage) {
+    public List<Map<String, Object>> findApplications(Integer authId, Integer currentPage, String selectedType) {
         Map<String, Object> pageInfo = new HashMap<>();
         Integer offset = paging(currentPage, pageInfo, authId);
 
         // 이름이 탈퇴한 유저 제외 하고 받아옴.
-        List<Map<String, Object>> applications = mapper.selectApplicationsByAuthId(authId, offset);
+        List<Map<String, Object>> applications = mapper.selectApplicationsByAuthId(authId, offset, selectedType);
         List<Map<String, Object>> mapList = new java.util.ArrayList<>(applications.stream()
                 .filter(application -> application.get("resumeId") != null)
                 .peek(ManageService::getFormatInserted)

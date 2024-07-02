@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Divider,
+  Flex,
   Heading,
   Table,
   Tbody,
@@ -41,24 +41,31 @@ function VisitHistory(props) {
 
   return (
     <Box w="full" maxW="70%" mx="auto" p={5} minHeight={"600px"} h={"100%"}>
-      <Heading mb={"10px"} p={1}>
-        최근 본 알바 공고
+      <Heading p={1} fontFamily={"SBAggroB"}>
+        최근 본 공고
       </Heading>
-      <Divider mb={"40px"} borderWidth={"2px"} />
-      {visitList.length === 0 || <Box>최대 10개까지 등록됩니다.</Box>}
+      <Flex>
+        <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+          * 최대 10개까지 저장됩니다.
+        </Box>
+      </Flex>
       {visitList.length === 0 && <Box>최근 방문한 공고가 없습니다.</Box>}
       <Box>
         <Table>
-          <Thead>
+          <Thead
+            bg="gray.100"
+            borderTop={"1px solid gray"}
+            borderBottom={"2px solid #E9E9E9"}
+          >
             <Tr>
-              <Th w={"50px"} fontSize={"md"}>
+              <Th w={"50px"} fontSize={"sm"}>
                 #
               </Th>
-              <Th w={"600px"} fontSize={"md"}>
+              <Th w={"600px"} fontSize={"sm"}>
                 제목
               </Th>
               {account.isAlba() && (
-                <Th minW={"100px"} fontSize={"md"}>
+                <Th minW={"100px"} fontSize={"sm"}>
                   관리
                 </Th>
               )}
@@ -72,9 +79,9 @@ function VisitHistory(props) {
                 cursor={"pointer"}
                 _hover={{ bgColor: "gray.300" }}
               >
-                <Td h={"10px"}>{index + 1}</Td>
+                <Td borderBottom={"1px solid #E0E0E0"}>{index + 1}</Td>
                 <Td
-                  h={"10px"}
+                  borderBottom={"1px solid #E0E0E0"}
                   onClick={() => {
                     navigate(item.url);
                   }}
@@ -84,7 +91,7 @@ function VisitHistory(props) {
                 >
                   {item.title}
                 </Td>
-                <Td h={"10px"}>
+                <Td borderBottom={"1px solid #E0E0E0"}>
                   {account.isAlba() && (
                     <Button
                       {...btnStyles("royalblue")}

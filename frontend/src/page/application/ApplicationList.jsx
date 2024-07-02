@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   Heading,
   Link,
@@ -12,10 +11,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Spinner,
   Table,
   Tbody,
   Td,
+  Th,
   Thead,
   Tr,
   useDisclosure,
@@ -34,6 +35,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = {
   th: {
+    fontSize: "sm",
     borderBottom: "2px solid #E0E0E0",
   },
   td: {
@@ -48,18 +50,21 @@ export function ApplicationList() {
   const [name, setName] = useState("");
   const [resumeTitle, setResumeTitle] = useState("");
   const [isCancel, setIsCancel] = useState(false);
+  const [selectedType, setSelectedType] = useState("전체");
+  const [pageInfo, setPageInfo] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const pageNums = [];
-  const [pageInfo, setPageInfo] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Read (jobs 리스트 받기)
   useEffect(() => {
     axios
-      .get(`/api/apply/list`, { params: { currentPage: currentPage } })
+      .get(`/api/apply/list`, {
+        params: { currentPage: currentPage, selectedType },
+      })
       .then((res) => {
         setApplicationList(res.data.applicationList);
         setPageInfo(res.data.pageInfo);
@@ -72,7 +77,7 @@ export function ApplicationList() {
           navigate("/");
         }
       });
-  }, [account.id, isCancel, currentPage]);
+  }, [account.id, isCancel, currentPage, selectedType]);
 
   // 합격 여부 문자열 변환 함수
   const isPassedToString = (decision) => {
@@ -138,6 +143,10 @@ export function ApplicationList() {
     _hover: { bgColor: color, color: "white" },
   });
 
+  const handleListSelect = (event) => {
+    setSelectedType(event.target.value);
+  };
+
   if (applicationList === null) {
     return <Spinner />;
   }
@@ -145,29 +154,39 @@ export function ApplicationList() {
   return (
     <Box w={"100%"} minH={"600px"}>
       <Box>
-        <Heading mb={"10px"} p={1}>
+        <Heading p={1} fontFamily={"SBAggroB"}>
           나의 지원 내역
         </Heading>
-        <Divider mb={"40px"} borderWidth={"2px"} />
+        <Flex>
+          <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+            * 이미 처리된 지원 내역은 취소할 수 없습니다.
+          </Box>
+        </Flex>
+        <Select size={"sm"} w={"100px"} mb={"10px"} onChange={handleListSelect}>
+          <option value="전체">전체</option>
+          <option value="합격">합격</option>
+          <option value="불합격">불합격</option>
+          <option value="미정">미정</option>
+        </Select>
         <Box>
           <Table borderRadius="lg" w="1050px">
-            <Thead bg="gray.100" p={2} fontWeight="bold">
+            <Thead bg="gray.100" borderTop={"1px solid gray"}>
               <Tr>
-                <Td w={"120px"} {...styles.th}>
+                <Th w={"120px"} {...styles.th}>
                   지원일자
-                </Td>
-                <Td w={"350px"} {...styles.th}>
+                </Th>
+                <Th w={"350px"} {...styles.th}>
                   지원 공고
-                </Td>
-                <Td w={"100px"} {...styles.th}>
+                </Th>
+                <Th w={"100px"} {...styles.th}>
                   지원서
-                </Td>
-                <Td w={"50px"} {...styles.th}>
+                </Th>
+                <Th w={"50px"} {...styles.th}>
                   상태
-                </Td>
-                <Td w={"100px"} {...styles.th}>
+                </Th>
+                <Th w={"100px"} {...styles.th}>
                   지원 취소
-                </Td>
+                </Th>
               </Tr>
             </Thead>
             <Tbody>

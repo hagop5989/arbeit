@@ -56,12 +56,13 @@ public class BoardService {
         like.put("count", mapper.selectCountLike(boardId));
 
         Map<String, Object> view = new HashMap<>();
-
+      
         if (authentication != null) {
             int v = mapper.selectViewByBoardIdAndMemberId(boardId, board.getMemberId());
             mapper.insertViewByBoardIdAndMemberId(boardId, authentication.getName()); // 조회
             view.put("view", v == 1);
         }
+
         view.put("count", mapper.selectCountView(boardId));
 
         result.put("board", board);

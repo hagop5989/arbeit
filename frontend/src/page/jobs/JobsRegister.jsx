@@ -116,6 +116,9 @@ export function JobsRegister() {
       })
       .catch((err) => {
         setErrors(err.response.data);
+        if (err.response.status === 413) {
+          alert("파일 용량이 너무 큽니다. 파일 하나당 10MB 등록가능합니다.");
+        }
       });
   }
 

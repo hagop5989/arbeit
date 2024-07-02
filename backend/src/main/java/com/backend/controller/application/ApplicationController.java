@@ -58,8 +58,8 @@ public class ApplicationController {
     }
 
     @GetMapping("/apply/list")
-    public Map<String, Object> list(@AuthId Integer authId, Integer currentPage) {
-        return service.findAllByAuthId(currentPage, authId);
+    public Map<String, Object> list(@AuthId Integer authId, Integer currentPage, String selectedType) {
+        return service.findAllByAuthId(currentPage, selectedType, authId);
     }
 
     @PostMapping("/resume/application-view")

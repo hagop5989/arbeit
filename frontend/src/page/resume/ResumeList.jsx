@@ -2,8 +2,9 @@ import {
   Box,
   Button,
   Checkbox,
-  Divider,
+  Flex,
   Heading,
+  Spacer,
   Table,
   Tbody,
   Td,
@@ -19,7 +20,7 @@ import { LoginContext } from "../../provider/LoginProvider.jsx";
 const styles = {
   th: {
     borderBottom: "1px solid gray",
-    fontSize: "medium",
+    fontSize: "sm",
   },
 };
 export function ResumeList() {
@@ -85,24 +86,32 @@ export function ResumeList() {
       {account.isAlba() && (
         <Box w={"100%"} h={"55vh"}>
           <Box>
-            <Heading mb={"10px"} p={1}>
-              나의 이력서
+            <Heading p={1} fontFamily={"SBAggroB"}>
+              이력서 관리
             </Heading>
-            <Divider mb={"40px"} borderWidth={"2px"} />
-            <Button
-              onClick={() => navigate("/resume/register")}
-              {...btnStyles("black")}
-              opacity={"0.7"}
-              w={120}
-              my={3}
-            >
-              이력서 등록
-            </Button>
+            <Flex>
+              <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+                * 이력서를 등록하면 알바 채용에 지원할 수 있습니다.
+              </Box>
+              <Spacer />
+              <Button
+                mt={"25px"}
+                {...btnStyles("black")}
+                opacity={"0.7"}
+                size={"sm"}
+                onClick={() => navigate("/resume/register")}
+              >
+                이력서 등록
+              </Button>
+            </Flex>
             <Box>
               <Table>
-                <Thead>
-                  <Tr borderTop={"1px solid gray"}>
-                    <Th {...styles.th}>#</Th>
+                <Thead
+                  bg="gray.100"
+                  borderTop={"1px solid gray"}
+                  borderBottom={"2px solid #E9E9E9"}
+                >
+                  <Tr>
                     <Th {...styles.th}>선택</Th>
                     <Th {...styles.th}>작성일</Th>
                     <Th {...styles.th}>제목</Th>
@@ -112,7 +121,6 @@ export function ResumeList() {
                 <Tbody>
                   {resumeList.map((resume, index) => (
                     <Tr key={resume.id} _hover={{ bg: "gray.100" }}>
-                      <Td>{index + 1}</Td>
                       <Td borderBottom={"1px solid #E0E0E0"} w={"80px"}>
                         <Checkbox
                           value={resume.id}
@@ -132,8 +140,9 @@ export function ResumeList() {
                       </Td>
                       <Td borderBottom={"1px solid #E0E0E0"}>
                         <Button
-                          {...btnStyles("orange")}
-                          opacity={"0.9"}
+                          colorScheme={"blue"}
+                          variant={"outline"}
+                          size={"sm"}
                           onClick={() => navigate(`/resume/${resume.id}/edit`)}
                         >
                           수정
@@ -143,13 +152,16 @@ export function ResumeList() {
                   ))}
                 </Tbody>
               </Table>
-              <Button
-                {...btnStyles("orangered")}
-                onClick={handleRemoveBtn}
-                mt={3}
-              >
-                삭제
-              </Button>
+              <Box>
+                <Button
+                  {...btnStyles("orangered")}
+                  size={"sm"}
+                  onClick={handleRemoveBtn}
+                  mt={3}
+                >
+                  삭제
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Box>
