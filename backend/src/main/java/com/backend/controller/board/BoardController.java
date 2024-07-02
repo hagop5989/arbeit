@@ -30,7 +30,7 @@ public class BoardController {
 
     @PostMapping("/write")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity write(@Validated BoardWriteForm form, BindingResult bindingResult,
+    public ResponseEntity write(@Validated @RequestBody BoardWriteForm form, BindingResult bindingResult,
                                 Authentication authentication) throws IOException {
 
         if (bindingResult.hasErrors()) {

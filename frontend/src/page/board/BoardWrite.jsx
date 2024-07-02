@@ -3,13 +3,12 @@ import {
   Button,
   Flex,
   FormControl,
-  FormHelperText,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
   Text,
   Textarea,
-  UnorderedList,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -17,62 +16,30 @@ import { useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { LoginContext } from "../../provider/LoginProvider.jsx";
 
-export function BoardWrite({ setIsWriteing }) {
+export function BoardWrite() {
   const [board, setBoard] = useState({});
   const [errors, setErrors] = useState({});
-  const [images, setImages] = useState([]);
   const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
+
   const maxContentLength = 500;
 
-  const fileNameList = [];
-  for (let i = 0; i < images.length; i++) {
-    fileNameList.push(<li key={i}>{images[i].name}</li>);
-  }
-
   function handleWriteBtn() {
-    if (!account || !account.id) {
-      toast({
-        status: "error",
-        description: "로그인해주세요",
-        position: "top",
-      });
-      return;
-    }
-
     axios
-      .postForm(`/api/board/write`, { ...board, memberId: account.id, images })
+      .post(`/api/board/write`, { ...board, memberId: account.id })
       .then(() => {
         toast({
           description: "글이 작성 되었습니다",
           status: "success",
           position: "top",
         });
-        navigate("/");
+        navigate(`/board/list`);
       })
       .catch((err) => {
         setErrors(err.response.data);
-        const code = err.response.status;
-        if (code === 400) {
-          toast({
-            status: "error",
-            description: "등록되지 않았습니다. 입력한 내용을 확인해주세요",
-            position: "top",
-          });
-        }
       })
       .finally();
-    setIsWriteing(false);
-  }
-
-  function handleWritecancel() {
-    navigate("/");
-    toast({
-      description: " 글작성이 취소되었습니다",
-      status: "info",
-      position: "top",
-    });
   }
 
   const handleInputChange = (prop) => (e) => {
@@ -80,60 +47,77 @@ export function BoardWrite({ setIsWriteing }) {
   };
 
   return (
-    <Box w={"735px"}>
-      <Box>
-        <Heading>게시판 작성</Heading>
-      </Box>
+    <Box w={"600px"} h={"600px"}>
+      <Heading
+        align={"center"}
+        color={"white"}
+        mb={"30px"}
+        size={"lg"}
+        bg={"#FF8708"}
+        lineHeight={"70px"}
+        fontFamily={"SBAggroB"}
+        borderRadius={"10px"}
+      >
+        질문 작성
+      </Heading>
       <Box>
         <Box>
-          <FormControl>
-            <FormLabel w={"100px"} fontSize={"xl"} fontWeight={"bold"} mt={8}>
-              제목
-            </FormLabel>
-            <Input
-              onChange={handleInputChange("title")}
-              placeholder={"제목을 입력해주세요."}
-            />
-            {errors && <FormHelperText>{errors.title}</FormHelperText>}
-            <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
-              내용
-            </FormLabel>
+          <FormControl isInvalid={errors.title !== undefined}>
+            <Flex>
+              <FormLabel
+                fontSize={"xl"}
+                fontWeight={"bold"}
+                color={"#3396FE"}
+                w={"80px"}
+                h={"40px"}
+                lineHeight={"38px"}
+              >
+                Q. 질문
+              </FormLabel>
+              <Box w={"100%"}>
+                <Input
+                  onChange={handleInputChange("title")}
+                  placeholder={"제목을 입력해주세요."}
+                />
+                {errors && (
+                  <FormErrorMessage mb={"10px"}>
+                    {errors.title}
+                  </FormErrorMessage>
+                )}
+              </Box>
+            </Flex>
+          </FormControl>
+          <FormControl isInvalid={errors.content !== undefined}>
             <Textarea
               onChange={handleInputChange("content")}
-              h={"150px"}
               placeholder={"내용을 입력해주세요."}
-            ></Textarea>
+              h={"400px"}
+              bg={"#EDF2F7"}
+            />
+            {errors && <FormErrorMessage>{errors.content}</FormErrorMessage>}
             <Text>
               {board.content?.length} / {maxContentLength}
             </Text>
-            {errors && <FormHelperText>{errors.content}</FormHelperText>}
           </FormControl>
-          <Box lineHeight={"30px"}>
-            <FormLabel mt={8} fontSize={"xl"} fontWeight={"bold"}>
-              파일첨부
-            </FormLabel>
-            <Input
-              multiple
-              type="file"
-              placeholder="파일을 첨부해주세요"
-              onChange={(e) => {
-                setImages(e.target.files);
-              }}
-            />
-            {fileNameList.length > 0 && (
-              <Box mt={2}>
-                <Text>첨부파일리스트</Text>
-                <UnorderedList>{fileNameList}</UnorderedList>
-              </Box>
-            )}
-          </Box>
         </Box>
-        <Flex mt={10} gap={"10px"}>
-          <Button onClick={handleWritecancel}>취소</Button>
-          <Button colorScheme={"blue"} onClick={handleWriteBtn}>
+        <Box align={"right"}>
+          <Button
+            onClick={handleWriteBtn}
+            colorScheme={"blue"}
+            size={"sm"}
+            mr={"5px"}
+          >
             등록
           </Button>
-        </Flex>
+          <Button
+            onClick={() => navigate("/board/list")}
+            colorScheme={"blue"}
+            size={"sm"}
+            variant={"outline"}
+          >
+            작성 취소
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

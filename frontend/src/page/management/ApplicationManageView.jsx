@@ -35,6 +35,7 @@ export function ApplicationManageView() {
   const { jobsId, albaId } = useParams();
   const [application, setApplication] = useState({});
   const [post, setPost] = useState(false);
+  const [reload, setReload] = useState(false);
 
   const navigate = useNavigate();
   const account = useContext(LoginContext);
@@ -58,7 +59,7 @@ export function ApplicationManageView() {
           navigate("/");
         }
       });
-  }, [jobsId, post]);
+  }, [jobsId, post, reload]);
 
   // 합격 여부 문자열 변환 함수
   const isPassedToString = (decision) => {
@@ -80,6 +81,7 @@ export function ApplicationManageView() {
   });
 
   function handleAccept() {
+    setApplication({ ...application, albaId, jobsId });
     onOpen(); // 계약 모달 열기
   }
   function handleRejectBtn() {
@@ -94,7 +96,9 @@ export function ApplicationManageView() {
         .catch((err) => {
           alert(err.response.data);
         })
-        .finally(() => {});
+        .finally(() => {
+          setReload(!reload);
+        });
     }
   }
 
@@ -215,6 +219,8 @@ export function ApplicationManageView() {
             isOpen={isOpen}
             onClose={onClose}
             application={application}
+            reload={reload}
+            setReload={setReload}
           />
         </Box>
       )}
