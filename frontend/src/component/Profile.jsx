@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Center, Flex, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Link, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -89,10 +89,12 @@ export function Profile() {
           >
             지원내역
             <Box fontSize={"13px"} lineHeight={"15px"}>
-              <Badge colorScheme={"orange"} fontSize={"12px"} h={"15px"}>
-                신규
-              </Badge>
-              {account.alarmNum}건 <FontAwesomeIcon icon={faChevronRight} />
+              <Flex>
+                <Text color={"orange"} fontSize={"12px"} h={"15px"} mr={1}>
+                  신규
+                </Text>
+                {account.alarmNum}건 <FontAwesomeIcon icon={faChevronRight} />
+              </Flex>
             </Box>
           </Link>
         </Box>
