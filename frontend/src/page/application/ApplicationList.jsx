@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Spinner,
   Table,
   Tbody,
@@ -49,18 +50,21 @@ export function ApplicationList() {
   const [name, setName] = useState("");
   const [resumeTitle, setResumeTitle] = useState("");
   const [isCancel, setIsCancel] = useState(false);
+  const [selectedType, setSelectedType] = useState("전체");
+  const [pageInfo, setPageInfo] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const pageNums = [];
-  const [pageInfo, setPageInfo] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Read (jobs 리스트 받기)
   useEffect(() => {
     axios
-      .get(`/api/apply/list`, { params: { currentPage: currentPage } })
+      .get(`/api/apply/list`, {
+        params: { currentPage: currentPage, selectedType },
+      })
       .then((res) => {
         setApplicationList(res.data.applicationList);
         setPageInfo(res.data.pageInfo);
@@ -73,7 +77,7 @@ export function ApplicationList() {
           navigate("/");
         }
       });
-  }, [account.id, isCancel, currentPage]);
+  }, [account.id, isCancel, currentPage, selectedType]);
 
   // 합격 여부 문자열 변환 함수
   const isPassedToString = (decision) => {
@@ -139,6 +143,10 @@ export function ApplicationList() {
     _hover: { bgColor: color, color: "white" },
   });
 
+  const handleListSelect = (event) => {
+    setSelectedType(event.target.value);
+  };
+
   if (applicationList === null) {
     return <Spinner />;
   }
@@ -154,6 +162,12 @@ export function ApplicationList() {
             * 이미 처리된 지원 내역은 취소할 수 없습니다.
           </Box>
         </Flex>
+        <Select size={"sm"} w={"100px"} mb={"10px"} onChange={handleListSelect}>
+          <option value="전체">전체</option>
+          <option value="합격">합격</option>
+          <option value="불합격">불합격</option>
+          <option value="미정">미정</option>
+        </Select>
         <Box>
           <Table borderRadius="lg" w="1050px">
             <Thead bg="gray.100" borderTop={"1px solid gray"}>

@@ -14,6 +14,7 @@ import java.util.Map;
 public interface ManageMapper {
 
     @Select("""
+            <script>
             SELECT
                 j.title jobsTitle,
                 a.jobs_id jobsId,
@@ -28,10 +29,24 @@ public interface ManageMapper {
             JOIN resume r ON r.id = a.resume_id
             JOIN member m ON a.member_id = m.id
             WHERE j.member_id= #{authId} AND m.name != '탈퇴한 유저'
+            <if test="selectedType != null">
+               <choose>
+                   <when test="selectedType == '합격'">
+                   AND a.is_passed = 1
+                   </when>
+                   <when test="selectedType == '불합격'">
+                   AND a.is_passed = 0
+                   </when>
+                   <when test="selectedType == '미정'">
+                    AND a.is_passed IS NULL
+               </when>
+               </choose>
+            </if>
             ORDER BY a.inserted DESC
             LIMIT #{offset},8;
+            </script>
             """)
-    List<Map<String, Object>> selectApplicationsByAuthId(Integer authId, Integer offset);
+    List<Map<String, Object>> selectApplicationsByAuthId(Integer authId, Integer offset, String selectedType);
 
     @Select("""
             SELECT

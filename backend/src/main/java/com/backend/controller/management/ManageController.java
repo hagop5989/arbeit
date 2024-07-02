@@ -25,8 +25,8 @@ public class ManageController {
     private final ManageService service;
 
     @GetMapping("/application-manage/list")
-    public List<Map<String, Object>> list(@AuthId Integer authId, Integer currentPage) {
-        return service.findApplications(authId, currentPage);
+    public List<Map<String, Object>> list(@AuthId Integer authId, Integer currentPage, String selectedType) {
+        return service.findApplications(authId, currentPage, selectedType);
     }
 
     @GetMapping("/jobsId/{jobsId}/application-manage/detail/{albaId}")
