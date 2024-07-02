@@ -1,8 +1,9 @@
 import {
   Box,
   Button,
-  Divider,
+  Flex,
   Heading,
+  Spacer,
   Spinner,
   Table,
   Tbody,
@@ -46,30 +47,36 @@ export function StoreList() {
       {account.isBoss() && (
         <Box w={"100%"} minHeight={"500px"}>
           <Box>
-            <Box>
-              <Heading mb={"10px"} p={1}>
-                사업장 목록
-              </Heading>
-              <Divider mb={"20px"} borderWidth={"2px"} />
-            </Box>
-            <Box mb={"20px"}>
+            <Heading p={1} fontFamily={"SBAggroB"}>
+              나의 사업장
+            </Heading>
+            <Flex>
+              <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+                * 사업장을 등록해야 공고를 등록할 수 있습니다.
+              </Box>
+              <Spacer />
               <Button
+                mt={"25px"}
                 bgColor={"white"}
                 color={"orange"}
                 border={"2px solid orange"}
+                size={"sm"}
                 _hover={{ bgColor: "orange", color: "white" }}
                 onClick={() => navigate("/store/register")}
               >
-                가게 등록
+                사업장 등록
               </Button>
-            </Box>
+            </Flex>
             <Table>
-              <Thead borderY={"2px solid #CCD4E0"}>
-                <Tr h={"20px"}>
-                  <Th fontSize={"medium"}>#</Th>
-                  <Th fontSize={"medium"}>사업장명</Th>
-                  <Th fontSize={"medium"}>주소</Th>
-                  <Th fontSize={"medium"}>사업장 등록일</Th>
+              <Thead
+                bg="gray.100"
+                borderTop={"1px solid gray"}
+                borderBottom={"2px solid #E9E9E9"}
+              >
+                <Tr>
+                  <Th fontSize={"sm"}>사업장 등록일</Th>
+                  <Th fontSize={"sm"}>사업장명</Th>
+                  <Th fontSize={"sm"}>주소</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -81,19 +88,19 @@ export function StoreList() {
                     }}
                     cursor={"pointer"}
                     onClick={() => navigate(`/store/${store.id}`)}
-                    height="100px"
+                    height="60px"
                     overflow="hidden"
                     borderBottom={"2px solid #E9E9E9"}
                   >
-                    <Td w={"50px"}>{store.id}</Td>
+                    <Td w={"150px"}>{store.inserted}</Td>
                     <Td>{store.name}</Td>
                     <Td>{store.address}</Td>
-                    <Td w={"150px"}>{store.inserted}</Td>
                   </Tr>
                 ))}
               </Tbody>
             </Table>
           </Box>
+          <Box mb={"20px"}></Box>
         </Box>
       )}
     </>

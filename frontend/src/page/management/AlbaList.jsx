@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Flex,
   Heading,
   Modal,
   ModalBody,
@@ -32,7 +32,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 const styles = {
   th: {
-    fontSize: "15px",
+    fontSize: "sm",
     borderBottom: "2px solid #E0E0E0",
   },
   td: {
@@ -104,13 +104,27 @@ export function AlbaList() {
   return (
     <Box minH={"500px"} mb={"150px"}>
       <Box>
-        <Heading mb={"10px"} p={1}>
-          직원 리스트
+        <Heading p={1} fontFamily={"SBAggroB"}>
+          직원 관리
         </Heading>
-        <Divider mb={"40px"} borderWidth={"2px"} />
+        <Flex>
+          <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+            <Box h={"25px"} lineHeight={"25px"}>
+              * 직원의 근무 기간이 끝나면 알바 점수를 부여해주세요!
+            </Box>
+            <Box h={"25px"} lineHeight={"25px"}>
+              * 높은 알바 점수는 이후 알바생이 알바를 구할 때 도움이 됩니다.
+            </Box>
+          </Box>
+        </Flex>
       </Box>
       <Table borderRadius="lg" w="1050px">
-        <Thead bg="gray.100" p={2} fontWeight="bold">
+        <Thead
+          bg="gray.100"
+          p={2}
+          borderTop={"1px solid gray"}
+          borderBottom={"2px solid #E9E9E9"}
+        >
           <Tr>
             <Th w={"20px"} {...styles.th}>
               #

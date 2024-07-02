@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   Heading,
   Link,
@@ -10,6 +9,7 @@ import {
   Table,
   Tbody,
   Td,
+  Th,
   Thead,
   Tr,
   useDisclosure,
@@ -30,7 +30,7 @@ import {
 
 const styles = {
   th: {
-    borderBottom: "2px solid #E0E0E0",
+    fontSize: "sm",
   },
   td: {
     borderBottom: "1px solid #E0E0E0",
@@ -132,28 +132,39 @@ export function ApplicationMangeList() {
       {account.isBoss() && (
         <Box minH={"500px"} mb={"150px"}>
           <Box h={"600px"}>
-            <Box>
-              <Heading mb={"10px"} p={1}>
-                지원내역(사장)
-              </Heading>
-              <Divider mb={"40px"} borderWidth={"2px"} />
-            </Box>
+            <Heading p={1} fontFamily={"SBAggroB"}>
+              지원 내역
+            </Heading>
+            <Flex>
+              <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+                <Box h={"25px"} lineHeight={"25px"}>
+                  * 지원서를 확인하여 합격, 불합격을 처리해주세요.
+                </Box>
+                <Box h={"25px"} lineHeight={"25px"}>
+                  * 합격, 불합격이 처리되면 바꿀 수 없습니다.
+                </Box>
+              </Box>
+            </Flex>
             <Table borderRadius="lg" w="1050px">
-              <Thead bg="gray.100" p={2} fontWeight="bold">
+              <Thead
+                bg="gray.100"
+                borderTop={"1px solid gray"}
+                borderBottom={"2px solid #E9E9E9"}
+              >
                 <Tr>
-                  <Td w={"120px"} {...styles.th}>
+                  <Th w={"120px"} {...styles.th}>
                     지원 일자
-                  </Td>
-                  <Td {...styles.th}>지원 공고</Td>
-                  <Td w={"150px"} {...styles.th}>
+                  </Th>
+                  <Th {...styles.th}>지원 공고</Th>
+                  <Th w={"150px"} {...styles.th}>
                     지원서
-                  </Td>
-                  <Td w={"100px"} {...styles.th}>
+                  </Th>
+                  <Th w={"100px"} {...styles.th}>
                     상태
-                  </Td>
-                  <Td w={"100px"} {...styles.th}>
+                  </Th>
+                  <Th w={"100px"} {...styles.th}>
                     처리
-                  </Td>
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>

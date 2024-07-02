@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   Heading,
   Link,
@@ -16,6 +15,7 @@ import {
   Table,
   Tbody,
   Td,
+  Th,
   Thead,
   Tr,
   useDisclosure,
@@ -34,6 +34,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = {
   th: {
+    fontSize: "sm",
     borderBottom: "2px solid #E0E0E0",
   },
   td: {
@@ -145,29 +146,33 @@ export function ApplicationList() {
   return (
     <Box w={"100%"} minH={"600px"}>
       <Box>
-        <Heading mb={"10px"} p={1}>
+        <Heading p={1} fontFamily={"SBAggroB"}>
           나의 지원 내역
         </Heading>
-        <Divider mb={"40px"} borderWidth={"2px"} />
+        <Flex>
+          <Box my={"20px"} h={"50px"} lineHeight={"50px"}>
+            * 이미 처리된 지원 내역은 취소할 수 없습니다.
+          </Box>
+        </Flex>
         <Box>
           <Table borderRadius="lg" w="1050px">
-            <Thead bg="gray.100" p={2} fontWeight="bold">
+            <Thead bg="gray.100" borderTop={"1px solid gray"}>
               <Tr>
-                <Td w={"120px"} {...styles.th}>
+                <Th w={"120px"} {...styles.th}>
                   지원일자
-                </Td>
-                <Td w={"350px"} {...styles.th}>
+                </Th>
+                <Th w={"350px"} {...styles.th}>
                   지원 공고
-                </Td>
-                <Td w={"100px"} {...styles.th}>
+                </Th>
+                <Th w={"100px"} {...styles.th}>
                   지원서
-                </Td>
-                <Td w={"50px"} {...styles.th}>
+                </Th>
+                <Th w={"50px"} {...styles.th}>
                   상태
-                </Td>
-                <Td w={"100px"} {...styles.th}>
+                </Th>
+                <Th w={"100px"} {...styles.th}>
                   지원 취소
-                </Td>
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
