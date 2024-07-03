@@ -79,9 +79,12 @@ function VisitHistory(props) {
                 cursor={"pointer"}
                 _hover={{ bgColor: "gray.300" }}
               >
-                <Td borderBottom={"1px solid #E0E0E0"}>{index + 1}</Td>
+                <Td borderBottom={"1px solid #E0E0E0"} h={"10px"}>
+                  {index + 1}
+                </Td>
                 <Td
                   borderBottom={"1px solid #E0E0E0"}
+                  h={"10px"}
                   onClick={() => {
                     navigate(item.url);
                   }}
@@ -91,9 +94,10 @@ function VisitHistory(props) {
                 >
                   {item.title}
                 </Td>
-                <Td borderBottom={"1px solid #E0E0E0"}>
+                <Td borderBottom={"1px solid #E0E0E0"} h={"10px"}>
                   {account.isAlba() && (
                     <Button
+                      my={"-10px"}
                       {...btnStyles("royalblue")}
                       size={"sm"}
                       onClick={() => navigate(`${item.url}?modal=open`)}

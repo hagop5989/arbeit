@@ -209,7 +209,7 @@ export function ResumeEdit() {
 
                   <Box display={"flex"}>
                     <Box {...styles.title}>성별</Box>
-                    <Box>{resume.gender}</Box>
+                    <Box>{resume.gender === "MALE" ? "남성" : "여성"}</Box>
                   </Box>
 
                   <Box display={"flex"}>

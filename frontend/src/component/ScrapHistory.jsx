@@ -112,10 +112,11 @@ function ScrapHistory(props) {
                   </Td>
                   <Td fontSize={"sm"}>2024-06-25</Td>
                   <Td>
-                    <Flex gap={"10px"} h={"15px"} alignItems={"center"}>
+                    <Flex gap={"5px"} h={"15px"} alignItems={"center"}>
                       {account.isAlba() && (
                         <Button
                           {...btnStyles("royalblue")}
+                          w={"50px"}
                           size={"sm"}
                           onClick={() =>
                             navigate(`/jobs/${item.jobsId}?modal=open`)
@@ -127,7 +128,7 @@ function ScrapHistory(props) {
                       <Button
                         {...btnStyles("orangered")}
                         h={"30px"}
-                        w={"40px"}
+                        w={"50px"}
                         fontSize={"sm"}
                         onClick={() => handleDelete(item.id)}
                       >

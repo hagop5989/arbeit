@@ -148,6 +148,11 @@ export function ApplicationList() {
     setSelectedType(event.target.value);
   };
 
+  // 날짜를 포맷팅하는 함수
+  function formatDate(dateString) {
+    return dateString.substring(2).replace(/-/g, "."); // "20" 제거 후 "-"을 "."로 대체
+  }
+
   if (applicationList === null) {
     return <Spinner />;
   }
@@ -197,7 +202,7 @@ export function ApplicationList() {
               {applicationList &&
                 applicationList.map((application, index) => (
                   <Tr key={index}>
-                    <Td {...styles.td}>{application.inserted}</Td>
+                    <Td {...styles.td}>{formatDate(application.inserted)}</Td>
                     <Td {...styles.td}>
                       <Link
                         href={`/jobs/${application.jobsId}`}
@@ -247,7 +252,13 @@ export function ApplicationList() {
                           취소
                         </Button>
                       ) : (
-                        <Box fontWeight={"bold"}>처리 완료</Box>
+                        <Box
+                          fontWeight={"bold"}
+                          color={"gray.500"}
+                          fontSize={"15px"}
+                        >
+                          처리 완료
+                        </Box>
                       )}
                     </Td>
                   </Tr>
