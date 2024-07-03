@@ -1,5 +1,6 @@
 package com.backend.service.scrap;
 
+import com.backend.config.AuthId;
 import com.backend.domain.scrap.Scrap;
 import com.backend.mapper.scrap.ScrapMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,9 @@ public class ScrapService {
 
     public void update(Scrap scarp) {
         mapper.update(scarp);
+    }
+
+    public Integer count(@AuthId Integer memberId) {
+        return mapper.count(memberId);
     }
 }

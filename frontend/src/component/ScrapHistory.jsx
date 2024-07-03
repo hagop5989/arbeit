@@ -110,7 +110,7 @@ function ScrapHistory(props) {
                   >
                     {item.jobsTitle}
                   </Td>
-                  <Td fontSize={"sm"}>2024-06-25</Td>
+                  <Td fontSize={"sm"}>{item.deadline}</Td>
                   <Td>
                     <Flex gap={"5px"} h={"15px"} alignItems={"center"}>
                       {account.isAlba() && (

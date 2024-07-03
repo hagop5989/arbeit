@@ -11,8 +11,8 @@ export function LoginProvider({ children }) {
   const [email, setEmail] = useState("");
   const [authority, setAuthority] = useState("");
   const [expired, setExpired] = useState(0);
-  const [alarmNum, setAlarmNum] = useState("");
-  const [scrapNum, setScrapNum] = useState("");
+  const [alarmNum, setAlarmNum] = useState(0);
+  const [scrapNum, setScrapNum] = useState(0);
   const [recentJobPages, setRecentJobPages] = useState(
     JSON.parse(localStorage.getItem("recentJobPages")) || [],
   ); // 최근 본 공고 페이지 URL을 저장하는 상태
@@ -42,6 +42,9 @@ export function LoginProvider({ children }) {
         setAlarmNum(res.data);
       });
     }
+    axios.get("/api/scrap/count").then((res) => {
+      setScrapNum(res.data);
+    });
   }, [authority, postCheck]);
 
   // 최근 본 공고 페이지 URL을 추가하는 함수
@@ -89,6 +92,7 @@ export function LoginProvider({ children }) {
     setEmail("");
     setName("");
     setAuthority("");
+    setAlarmNum(0);
   }
 
   // 권한 확인

@@ -33,4 +33,9 @@ public class ScrapController {
     public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
+
+    @GetMapping("count")
+    public Integer count(@AuthId Integer memberId) {
+        return service.count(memberId);
+    }
 }

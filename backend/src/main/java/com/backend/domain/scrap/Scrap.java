@@ -2,6 +2,8 @@ package com.backend.domain.scrap;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class Scrap {
     private Integer id;
@@ -12,4 +14,5 @@ public class Scrap {
 
     //DB 없음
     private Integer jobsFavoriteCount;
+    private LocalDate deadline;
 }
