@@ -155,8 +155,8 @@ export function ResumeList() {
                       </Td>
                       <Td borderBottom={"1px solid #E0E0E0"}>
                         <Button
-                          colorScheme={"blue"}
-                          variant={"outline"}
+                          {...btnStyles("royalblue")}
+                          borderWidth={"1px"}
                           size={"sm"}
                           onClick={() => navigate(`/resume/${resume.id}/edit`)}
                         >

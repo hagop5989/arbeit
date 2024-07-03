@@ -103,8 +103,11 @@ export function BoardList() {
     const value = e.target.value;
     setFilterType(value);
     setSelectedFilterDetail([]);
+    setInputKeyword("");
 
     const params = new URLSearchParams(searchParams);
+    params.set("page", 1);
+    params.set("keyword", "");
     params.set("filterType", value);
     params.set("filterDetail", []);
     navigate(`./?${params.toString()}`);
@@ -207,13 +210,13 @@ export function BoardList() {
           <Table variant="simple">
             <Thead>
               <Tr borderBottom={"2px solid lightgray"}>
-                <Th w={"50px"}>#</Th>
-                <Th w={"350px"}>제목</Th>
-                <Th w={"100px"}>작성자</Th>
+                <Th w={"70px"}>#</Th>
+                <Th w={"500px"}>제목</Th>
+                <Th w={"200px"}>작성자</Th>
                 <Th w={"50px"}>
                   <FontAwesomeIcon icon={faEye} />
                 </Th>
-                <Th w={"100px"}>작성일시</Th>
+                <Th w={"150px"}>작성일시</Th>
               </Tr>
             </Thead>
             <Tbody>

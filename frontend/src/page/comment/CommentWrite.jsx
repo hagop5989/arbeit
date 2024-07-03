@@ -18,12 +18,13 @@ import {
   faChevronRight,
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 export function CommentWrite({ boardId, reload, setReload }) {
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState({});
   const [isAnswered, setIsAnswered] = useState(false);
-
+  const navigate = useNavigate();
   const account = useContext(LoginContext);
 
   const maxCommentLength = 300;
@@ -31,7 +32,7 @@ export function CommentWrite({ boardId, reload, setReload }) {
   function handleSubmitBtn() {
     axios
       .post("/api/comment/write", {
-        ...comment,
+        comment,
         boardId,
         memberId: account.id,
       })
@@ -41,11 +42,13 @@ export function CommentWrite({ boardId, reload, setReload }) {
       .catch((err) => {
         setErrors(err.response.data);
       })
-      .finally(() => setReload(!reload));
+      .finally(() => {
+        setReload(!reload);
+      });
   }
 
-  const handleTextareaChange = (prop) => (e) => {
-    setComment({ ...comment, [prop]: e.target.value });
+  const handleTextareaChange = (e) => {
+    setComment(e.target.value);
   };
 
   function handleAnswerBtn() {
@@ -55,13 +58,31 @@ export function CommentWrite({ boardId, reload, setReload }) {
       alert("로그인 후 이용해주세요.");
     }
   }
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `1px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
 
   return (
     <Box w={"100%"} mb={"30px"}>
       <FormControl isInvalid={errors.comment !== undefined}>
-        <Box ml={"5px"} fontSize={"13px"}>
-          답변을 작성하려면 '답변하기'를 클릭해주세요.
-        </Box>
+        <Flex justifyContent="space-between">
+          <Box ml={"5px"} color={"gray.500"} fontSize={"13px"}>
+            답변을 작성하려면 '답변하기'를 클릭해주세요.
+          </Box>
+          <Button
+            onClick={() => navigate("/board/list")}
+            {...btnStyles("teal")}
+            fontSize={"sm"}
+            w={"50px"}
+            h={"30px"}
+            mt={"-30px"}
+          >
+            목록
+          </Button>
+        </Flex>
 
         <Flex
           w={"100px"}
@@ -71,6 +92,7 @@ export function CommentWrite({ boardId, reload, setReload }) {
           cursor={"pointer"}
           onClick={handleAnswerBtn}
           color={account.isLoggedIn() ? "black" : "gray.400"}
+          // justifyContent={"space-between"}
         >
           <Box mr={"5px"} ml={"5px"}>
             답변하기
@@ -89,7 +111,8 @@ export function CommentWrite({ boardId, reload, setReload }) {
               <Textarea
                 h={"70px"}
                 placeholder="댓글을 입력해주세요"
-                onChange={handleTextareaChange("comment")}
+                value={comment}
+                onChange={(e) => handleTextareaChange(e)}
               />
               <InputRightElement>
                 <Button
@@ -105,7 +128,7 @@ export function CommentWrite({ boardId, reload, setReload }) {
             </InputGroup>
             {errors && <FormErrorMessage>{errors.comment}</FormErrorMessage>}
             <Text>
-              {comment.comment?.length} / {maxCommentLength}
+              {comment?.length} / {maxCommentLength}
             </Text>
           </Box>
         )}

@@ -154,7 +154,7 @@ export function JobsList() {
 
     const params = new URLSearchParams({
       type: searchType,
-      keyword: searchKeyword,
+      keyword: "",
       page: 1,
       filterType: e.target.value,
       filterDetail: [],

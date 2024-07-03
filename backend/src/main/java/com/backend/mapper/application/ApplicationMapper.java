@@ -50,6 +50,7 @@ public interface ApplicationMapper {
               </when>
               </choose>
               </if>
+            LIMIT #{offset},8;
             </script>
             """)
     List<Application> list(Integer memberId, Integer offset, String selectedType);

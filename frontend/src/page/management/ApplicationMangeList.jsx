@@ -10,6 +10,7 @@ import {
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -188,7 +189,7 @@ export function ApplicationMangeList() {
                   <Th w={"100px"} {...styles.th}>
                     상태
                   </Th>
-                  <Th w={"170px"} {...styles.th}>
+                  <Th w={"160px"} {...styles.th}>
                     처리
                   </Th>
                 </Tr>
@@ -234,7 +235,9 @@ export function ApplicationMangeList() {
                           <Button
                             {...btnStyles("royalblue")}
                             onClick={() => handleAcceptBtn(application)} // 변경된 부분
+                            w={"53px"}
                             size={"sm"}
+                            letterSpacing={"1px"}
                           >
                             합격
                           </Button>
@@ -242,6 +245,7 @@ export function ApplicationMangeList() {
                             {...btnStyles("orangered")}
                             variant="outline"
                             colorScheme="red"
+                            w={"55px"}
                             size={"sm"}
                             onClick={() => handleRejectBtn(application)}
                           >
@@ -249,7 +253,13 @@ export function ApplicationMangeList() {
                           </Button>
                         </Flex>
                       ) : (
-                        "완료"
+                        <Text
+                          fontWeight={"bold"}
+                          color={"gray.500"}
+                          fontSize={"15px"}
+                        >
+                          처리 완료
+                        </Text>
                       )}
                     </Td>
                   </Tr>

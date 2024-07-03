@@ -5,6 +5,7 @@ import {
   Flex,
   FormControl,
   Spacer,
+  Text,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
@@ -61,14 +62,8 @@ export function CommentList({ boardId, reload, setReload }) {
       }
     }
 
-    function handleDelete() {
-      axios.delete(`/api/comment/${comment.id}`).then((res) => {
-        setReload(!reload);
-      });
-    }
-
     return (
-      <Box p={5} shadow="md" borderWidth="1px" w={"100%"}>
+      <Box p={5} shadow="md" borderWidth="1px" w={"100%"} borderRadius={"8px"}>
         <Flex fontSize={"17px"}>
           <Box mr={"10px"} color={"#F5C903"} pt={2}>
             A.
@@ -76,10 +71,10 @@ export function CommentList({ boardId, reload, setReload }) {
           {!isEditing && (
             <Box
               w="550px"
-              minH="80px"
+              minH="50px"
               bg={"#EDF2F7"}
-              mb={"10px"}
-              p={2}
+              mb={"5px"}
+              p={3}
               borderRadius={"10px"}
             >
               {comment.comment}
@@ -126,10 +121,14 @@ export function CommentList({ boardId, reload, setReload }) {
             </>
           )}
         </Flex>
-        <Flex>
-          <Box mr={"5px"}>작성자:</Box>
+        <Flex color={"gray.600"}>
+          <Box mr={"5px"} fontWeight={"bold"}>
+            작성자 :
+          </Box>
           <Box
-            color={comment.memberName === "탈퇴한 유저" ? "gray.400" : "black"}
+            color={
+              comment.memberName === "탈퇴한 유저" ? "gray.400" : "gray.600"
+            }
           >
             {comment.memberName}
           </Box>
@@ -143,12 +142,17 @@ export function CommentList({ boardId, reload, setReload }) {
   return (
     <Box>
       <Box mb={"5px"} mr={"5px"}>
-        답변 수 : {commentList.length}
+        <Flex>
+          <Text mr={2} fontWeight={"bold"}>
+            답변 수 :
+          </Text>
+          {commentList.length}
+        </Flex>
       </Box>
       {commentList.length === 0 && (
         <Box mr={"5px"}>작성된 답변이 없습니다.</Box>
       )}
-      <VStack spacing={8}>
+      <VStack spacing={4}>
         {commentList.map((comment) => (
           <Comment comment={comment} key={comment.id} />
         ))}

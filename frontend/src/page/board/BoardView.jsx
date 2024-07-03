@@ -77,6 +77,13 @@ export function BoardView() {
       });
   }
 
+  const btnStyles = (color) => ({
+    bgColor: "white",
+    color: color,
+    border: `1px solid ${color}`,
+    _hover: { bgColor: color, color: "white" },
+  });
+
   return (
     <Box w={"735px"} minH={"700px"}>
       <Helmet>
@@ -110,7 +117,9 @@ export function BoardView() {
           )}
         </Flex>
         <Flex ml={"45px"} color="#94908F">
-          <Box mr={1}>작성자:</Box>
+          <Box mr={1} fontWeight={"bold"}>
+            작성자 :
+          </Box>
           <Box mr={1}>{board.name} |</Box>
           <Box mr={1}>조회수</Box>
           <Box mr={4}>{view.count}</Box>
@@ -118,8 +127,7 @@ export function BoardView() {
           {account.hasAccess(board.memberId) && (
             <Box align={"right"}>
               <Button
-                colorScheme="blue"
-                variant={"outline"}
+                {...btnStyles("royalblue")}
                 w={"40px"}
                 h={"25px"}
                 fontSize={"12px"}
@@ -129,8 +137,7 @@ export function BoardView() {
                 수정
               </Button>
               <Button
-                colorScheme="red"
-                variant={"outline"}
+                {...btnStyles("orangered")}
                 w={"40px"}
                 h={"25px"}
                 fontSize={"12px"}
@@ -142,8 +149,15 @@ export function BoardView() {
           )}
         </Flex>
       </Box>
-      <Box bg="gray.100" h={"400px"} my={"40px"} p={"15px"} fontSize={"20px"}>
-        {board.content}
+      <Box
+        bg="gray.100"
+        h={"400px"}
+        my={"40px"}
+        p={"15px"}
+        fontSize={"20px"}
+        borderRadius={"8px"}
+      >
+        <Box p={4}>{board.content}</Box>
       </Box>
       <CommentWrite boardId={board.id} reload={reload} setReload={setReload} />
       <CommentList boardId={board.id} reload={reload} setReload={setReload} />
