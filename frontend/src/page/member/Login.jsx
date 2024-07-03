@@ -98,11 +98,16 @@ export function Login() {
       <Box
         h={"60px"}
         mb={"30px"}
-        bg={"#FF7F3E"}
+        bgGradient="linear(to-r, orange.500, orange.300)"
         color={"white"}
-        borderRadius={"10px"}
+        borderTopRadius={"10px"}
       >
-        <Heading size={"lg"} textAlign={"center"} lineHeight={"60px"}>
+        <Heading
+          size={"lg"}
+          textAlign={"center"}
+          lineHeight={"60px"}
+          fontFamily={"SBAggroB"}
+        >
           로그인
         </Heading>
       </Box>
