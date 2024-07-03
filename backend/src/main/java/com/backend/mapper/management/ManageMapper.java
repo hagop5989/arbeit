@@ -117,7 +117,7 @@ public interface ManageMapper {
             JOIN member m ON m.id = a.member_id
             JOIN resume r ON r.id = a.resume_id
             WHERE is_passed IS NULL
-            AND a.jobs_id
+            AND m.name != '탈퇴한 유저' AND a.jobs_id
             IN (SELECT j.id FROM jobs j WHERE j.member_id = #{memberId});
             """)
     Integer count(Integer memberId);

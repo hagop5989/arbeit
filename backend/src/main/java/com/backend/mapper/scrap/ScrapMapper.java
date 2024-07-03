@@ -14,8 +14,11 @@ public interface ScrapMapper {
     int insert(Scrap scarp);
 
     @Select("""
-            SELECT * FROM scrap
-            WHERE member_id = #{memberId}
+            SELECT s.*,
+                j.deadline AS deadline
+            FROM scrap s
+            JOIN jobs j ON j.id = s.jobs_id
+            WHERE s.member_id = #{memberId}
             """)
     List<Scrap> selectByMemberId(Integer memberId);
 
@@ -45,4 +48,13 @@ public interface ScrapMapper {
             WHERE favorite = 1 GROUP BY jobs_id;
                         """)
     List<Scrap> selectAll();
+
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM scrap s
+            WHERE s.member_id = #{memberId} AND s.favorite = 1;
+            """)
+    Integer count(Integer memberId);
+
 }
