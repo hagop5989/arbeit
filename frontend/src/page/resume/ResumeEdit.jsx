@@ -164,11 +164,16 @@ export function ResumeEdit() {
           <Box
             h={"70px"}
             mb={"70px"}
-            bg={"#FF7F3E"}
+            bgGradient="linear(to-r, orange.500, orange.300)"
             color={"white"}
-            borderRadius={"10px"}
+            borderTopRadius={"10px"}
           >
-            <Heading size={"lg"} textAlign={"center"} lineHeight={"70px"}>
+            <Heading
+              size={"lg"}
+              textAlign={"center"}
+              lineHeight={"70px"}
+              fontFamily={"SBAggroB"}
+            >
               이력서 수정
             </Heading>
           </Box>
