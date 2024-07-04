@@ -88,6 +88,7 @@ public interface ApplicationMapper {
             """)
     int deleteAllByJobsId(Integer jobsId);
 
+    /*d*/
     @Select("""
             SELECT COUNT(*)
             FROM application
