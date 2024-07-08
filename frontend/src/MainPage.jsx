@@ -336,9 +336,10 @@ function MainPage() {
               )
             }
           >
-            <Center
+            <Image
+              w={"100%"}
               {...categoryMenu}
-              backgroundImage="url('public/menu/industry.jpg')"
+              src="public/menu/industry.jpg"
             />
             <Center mt={"15px"}>생산업</Center>
           </Box>
@@ -351,9 +352,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/haircut.jpg')"
+                src="public/menu/haircut.jpg"
+                objectFit={"cover"}
               />
             </Box>
             <Center mt={"15px"}>미용</Center>
@@ -367,9 +370,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/office.jpg')"
+                src="public/menu/office.jpg"
+                objectFit={"cover"}
               />
             </Box>
             <Center mt={"15px"}>사무업무</Center>
@@ -383,9 +388,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/cafe.jpg')"
+                src="public/menu/cafe.jpg"
+                objectFit={"cover"}
               />
             </Box>
             <Center mt={"15px"}>카페</Center>
@@ -401,9 +408,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/market.jpg')"
+                src="public/menu/market.jpg"
+                objectFit={"cover"}
               />
             </Box>
             <Center mt={"15px"}>편의점</Center>
@@ -417,9 +426,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/beer.jpg')"
+                objectFit={"cover"}
+                src="public/menu/beer.jpg"
               />
             </Box>
             <Center mt={"15px"}>술집</Center>
@@ -433,9 +444,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/movie.jpg')"
+                objectFit={"cover"}
+                src="public/menu/movie.jpg"
               />
             </Box>
             <Center mt={"15px"}>영화관</Center>
@@ -449,9 +462,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/themapark.jpg')"
+                objectFit={"cover"}
+                src="public/menu/themapark.jpg"
               />
             </Box>
             <Center mt={"15px"}>놀이공원</Center>
@@ -467,9 +482,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/delivery.jpg')"
+                objectFit={"cover"}
+                src="public/menu/delivery.jpg"
               />
             </Box>
             <Center mt={"15px"}>배달</Center>
@@ -483,9 +500,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/food.jpg')"
+                objectFit={"cover"}
+                src="public/menu/food.jpg"
               />
             </Box>
             <Center mt={"15px"}>요식업</Center>
@@ -499,9 +518,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/circulation.jpg')"
+                objectFit={"cover"}
+                src="public/menu/circulation.jpg"
               />
             </Box>
             <Center mt={"15px"}>유통</Center>
@@ -515,9 +536,11 @@ function MainPage() {
             }
           >
             <Box>
-              <Center
+              <Image
+                w={"100%"}
                 {...categoryMenu}
-                backgroundImage="url('public/menu/etc.jpg')"
+                objectFit={"cover"}
+                src="public/menu/etc.jpg"
               />
             </Box>
             <Center mt={"15px"}>기타</Center>

@@ -65,6 +65,7 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
   const [isMatch, setIsMatch] = useState(false);
   const [isSendMail, setIsSendMail] = useState(false);
   const [authNumber, setAuthNumber] = useState("");
+  const [emailCheck, setEmailCheck] = useState(false);
 
   const [seconds, setSeconds] = useState(120); // 1분 = 60초
   const [isActive, setIsActive] = useState(false);
@@ -142,8 +143,9 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
       .post(`/api/mail-send`, email)
       .then((res) => {
         if (res.data === false) {
-          alert("이미 존재하는 이메일입니다.");
+          alert("이미 존재하는 이메일입니다. 다시 확인해주세요.");
           setIsSendMail(false);
+          setEmailCheck(false);
         }
       })
       .catch((err) => {
@@ -166,6 +168,23 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
     });
   }
 
+  function handleEmailCheck() {
+    axios
+      .get("/api/only-mail-check", { params: { email: currentEmail } })
+      .then((res) => {
+        if (res.status === 200) {
+          alert("회원가입 가능합니다.");
+          setEmailCheck(true);
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          alert(err.response.data);
+          setEmailCheck(false);
+        }
+      });
+  }
+
   return (
     <Box>
       <FormControl {...styles.formControl} isInvalid={isError(errors.email)}>
@@ -179,17 +198,31 @@ export function SignupComponent({ member, setMember, errors, setErrors }) {
                 placeholder={"이메일을 입력해주세요."}
                 defaultValue={currentEmail}
               />
-              <InputRightElement w={"100px"} mr={"10px"}>
-                <Button
-                  border={"1px solid black"}
-                  isDisabled={isMatch}
-                  h="1.75rem"
-                  size="sm"
-                  onClick={handleSendMailBtn}
-                >
-                  {isSendMail ? "재발송" : "인증번호 발송"}
-                </Button>
-              </InputRightElement>
+              {!emailCheck && (
+                <InputRightElement w={"100px"} mr={"10px"}>
+                  <Button
+                    border={"1px solid black"}
+                    h="1.75rem"
+                    size="sm"
+                    onClick={handleEmailCheck}
+                  >
+                    중복 확인
+                  </Button>
+                </InputRightElement>
+              )}
+              {emailCheck && (
+                <InputRightElement w={"100px"} mr={"10px"}>
+                  <Button
+                    border={"1px solid black"}
+                    isDisabled={isMatch}
+                    h="1.75rem"
+                    size="sm"
+                    onClick={handleSendMailBtn}
+                  >
+                    {isSendMail ? "재발송" : "인증번호 발송"}
+                  </Button>
+                </InputRightElement>
+              )}
             </InputGroup>
             {errors && <FormErrorMessage>{errors.email}</FormErrorMessage>}
           </Box>

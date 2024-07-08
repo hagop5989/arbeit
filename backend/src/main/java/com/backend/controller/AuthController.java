@@ -31,6 +31,7 @@ public class AuthController {
     private static Map<String, String> numbers = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
+
     @PostMapping("/signup")
     public ResponseEntity signup(@Validated @RequestBody MemberSignupForm form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -75,6 +76,18 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
+    }
+
+    @GetMapping("only-mail-check")
+    public ResponseEntity onlyMailCheck(@RequestParam String email) {
+        boolean checked = mailService.checkRegex(email);
+        if (!checked) {
+            return ResponseEntity.badRequest().body("입력 형식에 맞춰주세요.");
+        }
+        if (memberService.findByEmail(email) != null) {
+            return ResponseEntity.badRequest().body("이미 존재하는 이메일입니다.");
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/mail-check")
