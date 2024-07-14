@@ -13,3 +13,6 @@ http://43.201.105.97:8080/
 지원서 합격,불합격 / 
 버그수정 /
 화면 CSS
+
+[결과보고서]
+https://github.com/hagop5989/arbeit/blob/master/%EA%B2%B0%EA%B3%BC%EB%B3%B4%EA%B3%A0%EC%84%9C)%20ALBA%20CONNECTOR.pdf
