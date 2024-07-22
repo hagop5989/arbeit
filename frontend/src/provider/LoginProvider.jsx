@@ -72,6 +72,9 @@ export function LoginProvider({ children }) {
   function login(token) {
     localStorage.setItem("token", token);
     const payload = jwtDecode(token);
+    if (payload.exp * 1000 < Date.now()) {
+      localStorage.removeItem("token");
+    }
     setExpired(payload.exp);
     setId(payload.sub);
     setEmail(payload.email);

@@ -27,3 +27,5 @@ ssh -i src/main/resources/secret/key0527.pem ubuntu@43.201.105.97 'docker rm arb
 ssh -i src/main/resources/secret/key0527.pem ubuntu@43.201.105.97 'docker pull zang5989/arbeit'
 # 컨테이너 실행
 ssh -i src/main/resources/secret/key0527.pem ubuntu@43.201.105.97 'docker run -d -p 8080:8080 --restart always --name arbeit zang5989/arbeit'
+# 안쓰는 docker image 가지치기
+ssh -i src/main/resources/secret/key0527.pem ubuntu@43.201.105.97 'docker image prune -f'
