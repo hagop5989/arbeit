@@ -91,6 +91,11 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/encode")
+    public void encode(@RequestBody Map<String, String> request) {
+        memberService.encode(request.get("email"), request.get("password"));
+    }
+
     @GetMapping("/{albaId}/alba-score")
     public Integer getAlbaScore(@PathVariable Integer albaId) {
         return memberService.getAlbaScore(albaId);
@@ -103,4 +108,6 @@ public class MemberController {
         }
         return errors;
     }
+
+
 }

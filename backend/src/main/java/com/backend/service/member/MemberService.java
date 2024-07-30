@@ -202,4 +202,14 @@ public class MemberService {
 
         return result;
     }
+
+    /* 테스트용 코드 */
+    public void encode(String email, String password) {
+        Member member = mapper.selectByEmail(email);
+        if (member != null) {
+            String encoded = passwordEncoder.encode(password);
+            mapper.updatePwdByEmail(email, encoded);
+            System.out.println("pw 인코딩 완료.");
+        }
+    }
 }

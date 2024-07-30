@@ -32,17 +32,16 @@ export function Footer() {
   };
 
   return (
-    <Box h={"200px"} bg={"transparent"}>
+    <Box w={"1050px"} h={"200px"} bg={"transparent"}>
       <Box
-        w={"full"}
         // my={"20px"}
         borderY={"2px solid lightgray"}
         display={"flex"}
         justifyContent={"center"}
       >
         <Flex
-          w={"1050px"}
           h={"70px"}
+          flexWrap={"wrap"}
           justifyContent={"space-between"}
           cursor={"pointer"}
         >

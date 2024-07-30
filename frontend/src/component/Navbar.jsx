@@ -84,6 +84,7 @@ const Navbar = () => {
               <NavLink href="/faq">자주 묻는 질문(FAQ)</NavLink>
             </HStack>
             <Spacer />
+
             <Center gap={5}>
               {account.isLoggedIn() || (
                 <SmallLink href="/login">로그인</SmallLink>

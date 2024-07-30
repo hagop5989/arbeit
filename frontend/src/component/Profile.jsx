@@ -1,5 +1,5 @@
 import { Box, Button, Center, Flex, Link, Text } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../provider/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -127,6 +127,7 @@ export function Profile() {
           )}
         </Flex>
       </Box>
+
       <Center>
         {showScrollTop && (
           <Box
@@ -150,6 +151,19 @@ export function Profile() {
           </Box>
         )}
       </Center>
+      <Box
+        w={"300px"}
+        mt={5}
+        position={"absolute"}
+        fontSize={"sm"}
+        color={"gray"}
+      >
+        <Text fontWeight={"bold"}>
+          *테스트용ID(편의상) - 직접 가입 하셔도 됩니다
+        </Text>
+        <Text> - 알바 / ID: alba@alba.com , PW: alba1234!</Text>
+        <Text> - 사장 / ID: boss@boss.com , PW: boss1234!</Text>
+      </Box>
     </Box>
   );
 }

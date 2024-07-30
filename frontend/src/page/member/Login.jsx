@@ -45,6 +45,12 @@ export function Login() {
 
   const account = useContext(LoginContext);
 
+  function encodePw() {
+    axios.post("/api/member/encode", { email, password }).then(() => {
+      alert("성공");
+    });
+  }
+
   function handleLoginBtn() {
     axios
       .post(`/api/token`, { email, password, authority })
@@ -256,6 +262,8 @@ export function Login() {
           </Link>
           <Link href={"/signup"}>회원가입</Link>
         </Box>
+        {/* 테스트용 코드*/}
+        {/*<Button onClick={encodePw}>비밀번호 인코딩</Button>*/}
       </Box>
     </Box>
   );
